@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ claim.reference }} — eCabs Claims{% endblock %}
+{% block content %}
+<div class="detail-head">
+  <div>
+    <span class="ref">{{ claim.reference }}</span>
+    <span class="muted">
+      {{ claim.vehicle_registration|default:"no vehicle" }}
+      {% if claim.driver_name %} · {{ claim.driver_name }}{% endif %}
+      {% if claim.accident_date %} · {{ claim.accident_date|date:"d M Y" }}{% endif %}
+    </span>
+  </div>
+  <div class="row">
+    <span id="status-control">
+      {% include "claims/partials/status_control.html" %}
+    </span>
+    <a href="{% url 'claim_edit' claim.pk %}" class="btn">Edit details</a>
+  </div>
+</div>
+
+<nav class="tabs" id="claim-tabs">
+  {% with pk=claim.pk %}
+  <a href="{% url 'claim_detail' pk %}"
+     hx-get="{% url 'claim_tab' pk 'overview' %}" hx-target="#tab-panel" hx-push-url="{% url 'claim_detail' pk %}"
+     class="{% if active_tab == 'overview' %}active{% endif %}" onclick="setTab(this)">Overview</a>
+  <a href="{% url 'claim_tab' pk 'photos' %}"
+     hx-get="{% url 'claim_tab' pk 'photos' %}" hx-target="#tab-panel" hx-push-url="true"
+     class="{% if active_tab == 'photos' %}active{% endif %}" onclick="setTab(this)">Photos<span class="tab-count">{{ claim.photos.count }}</span></a>
+  <a href="{% url 'claim_tab' pk 'surveys' %}"
+     hx-get="{% url 'claim_tab' pk 'surveys' %}" hx-target="#tab-panel" hx-push-url="true"
+     class="{% if active_tab == 'surveys' %}active{% endif %}" onclick="setTab(this)">Surveys<span class="tab-count">{{ claim.surveys.count }}</span></a>
+  <a href="{% url 'claim_tab' pk 'emails' %}"
+     hx-get="{% url 'claim_tab' pk 'emails' %}" hx-target="#tab-panel" hx-push-url="true"
+     class="{% if active_tab == 'emails' %}active{% endif %}" onclick="setTab(this)">Emails<span class="tab-count">{{ claim.emails.count }}</span></a>
+  <a href="{% url 'claim_tab' pk 'reminders' %}"
+     hx-get="{% url 'claim_tab' pk 'reminders' %}" hx-target="#tab-panel" hx-push-url="true"
+     class="{% if active_tab == 'reminders' %}active{% endif %}" onclick="setTab(this)">Reminders<span class="tab-count">{{ claim.reminders.count }}</span></a>
+  <a href="{% url 'claim_tab' pk 'billing' %}"
+     hx-get="{% url 'claim_tab' pk 'billing' %}" hx-target="#tab-panel" hx-push-url="true"
+     class="{% if active_tab == 'billing' %}active{% endif %}" onclick="setTab(this)">Billing<span class="tab-count">{{ claim.billing_items.count }}</span></a>
+  <a href="{% url 'claim_tab' pk 'history' %}"
+     hx-get="{% url 'claim_tab' pk 'history' %}" hx-target="#tab-panel" hx-push-url="true"
+     class="{% if active_tab == 'history' %}active{% endif %}" onclick="setTab(this)">History</a>
+  {% endwith %}
+</nav>
+
+<div id="tab-panel">
+  {% include "claims/partials/tab_"|add:active_tab|add:".html" %}
+</div>
+
+<script>
+  function setTab(el) {
+    document.querySelectorAll('#claim-tabs a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+{% endblock %}

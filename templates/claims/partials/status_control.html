@@ -1,0 +1,10 @@
+<form hx-post="{% url 'claim_set_status' claim.pk %}"
+      hx-target="#status-control" hx-swap="innerHTML"
+      hx-trigger="change" class="row" style="gap:.4rem">
+  <span class="badge {{ claim.status }}">{{ claim.get_status_display }}</span>
+  <select name="status" aria-label="Change status" style="width:auto">
+    {% for value, label in statuses %}
+      <option value="{{ value }}" {% if value == claim.status %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+</form>

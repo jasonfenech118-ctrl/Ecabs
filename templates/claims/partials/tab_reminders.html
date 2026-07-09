@@ -1,0 +1,41 @@
+<details class="inline-form" {% if form_open %}open{% endif %}>
+  <summary>Add reminder</summary>
+  <form hx-post="{% url 'reminder_add' claim.pk %}" hx-target="#tab-panel" class="card">
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=reminder_form.title %}
+      {% include "claims/partials/field.html" with field=reminder_form.due_at %}
+      {% include "claims/partials/field.html" with field=reminder_form.assigned_to %}
+      {% include "claims/partials/field.html" with field=reminder_form.notes extra_class="span-2" %}
+    </div>
+    <button type="submit" class="btn btn-primary mt">Save reminder</button>
+  </form>
+</details>
+
+<div class="card table-wrap">
+  <table class="list">
+    <thead>
+      <tr><th style="width:2.5rem"></th><th>Reminder</th><th>Due</th><th>Assigned</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      {% for r in claim_reminders %}
+      <tr>
+        <td>
+          <form hx-post="{% url 'reminder_toggle' r.pk %}" hx-target="#tab-panel">
+            <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+                   {% if r.is_done %}checked{% endif %} aria-label="Mark done">
+          </form>
+        </td>
+        <td class="{% if r.is_done %}done{% endif %}">{{ r.title }}</td>
+        <td>
+          {% if r.is_overdue %}<span class="badge overdue">overdue</span> {% endif %}
+          {{ r.due_at|date:"d M Y H:i" }}
+        </td>
+        <td class="muted">{% if r.assigned_to %}{{ r.assigned_to.get_full_name|default:r.assigned_to.username }}{% else %}—{% endif %}</td>
+        <td class="muted">{{ r.notes|truncatechars:60|default:"—" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="empty">No reminders for this claim.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

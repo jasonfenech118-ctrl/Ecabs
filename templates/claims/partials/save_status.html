@@ -1,0 +1,5 @@
+{% if ok %}
+<span class="save-status ok">Draft saved at {{ saved_at|time:"H:i:s" }}</span>
+{% else %}
+<span class="save-status err">Couldn't save: {% for field, errs in errors.items %}{{ field }} — {{ errs|join:", " }}{% if not forloop.last %}; {% endif %}{% endfor %}</span>
+{% endif %}

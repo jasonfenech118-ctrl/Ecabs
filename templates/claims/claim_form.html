@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}{{ claim.reference }} — intake{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{% if claim.is_draft %}New claim{% else %}Edit claim{% endif %} <span class="muted">{{ claim.reference }}</span></h1>
+    <div class="sub">
+      <span class="badge {{ claim.status }}">{{ claim.get_status_display }}</span>
+      {% if claim.is_draft %} · auto-saves as you type; stays a draft until you submit{% endif %}
+    </div>
+  </div>
+  <a href="{{ claim.get_absolute_url }}" class="btn">View claim</a>
+</div>
+
+<form method="post"
+      action="{% url 'claim_submit' claim.pk %}"
+      hx-post="{% url 'claim_autosave' claim.pk %}"
+      hx-trigger="input changed delay:2s, change delay:1s"
+      hx-target="#save-status"
+      hx-swap="innerHTML"
+      hx-indicator="#save-status">
+  {% csrf_token %}
+
+  <fieldset>
+    <legend>Vehicle &amp; driver</legend>
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.vehicle_registration %}
+      {% include "claims/partials/field.html" with field=form.vehicle_make_model %}
+      {% include "claims/partials/field.html" with field=form.driver_name %}
+      {% include "claims/partials/field.html" with field=form.driver_phone %}
+      {% include "claims/partials/field.html" with field=form.driver_email %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Accident details</legend>
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.accident_date %}
+      {% include "claims/partials/field.html" with field=form.accident_time %}
+      {% include "claims/partials/field.html" with field=form.accident_location %}
+      {% include "claims/partials/field.html" with field=form.police_report_number %}
+      {% include "claims/partials/field.html" with field=form.fault %}
+      {% include "claims/partials/field.html" with field=form.description extra_class="span-2" %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Third party</legend>
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.third_party_name %}
+      {% include "claims/partials/field.html" with field=form.third_party_phone %}
+      {% include "claims/partials/field.html" with field=form.third_party_vehicle %}
+      {% include "claims/partials/field.html" with field=form.third_party_insurer %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Insurance</legend>
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.insurer %}
+      {% include "claims/partials/field.html" with field=form.policy_number %}
+      {% include "claims/partials/field.html" with field=form.excess_amount %}
+    </div>
+  </fieldset>
+
+  <div class="form-footer">
+    {% if claim.is_draft %}
+      <button type="submit" class="btn btn-primary">Submit claim</button>
+    {% else %}
+      <button type="submit" class="btn btn-primary">Save changes</button>
+    {% endif %}
+    <span id="save-status" class="save-status" aria-live="polite"></span>
+  </div>
+</form>
+{% endblock %}

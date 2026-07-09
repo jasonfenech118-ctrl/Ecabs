@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}eCabs Claims{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <script src="{% static 'js/htmx.min.js' %}" defer></script>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+{% if user.is_authenticated %}
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">eC</span>
+      <span class="brand-name">eCabs Claims</span>
+    </div>
+    <nav>
+      <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="{% url 'claim_list' %}" class="{% if 'claim' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="{% url 'reminder_list' %}" class="{% if 'reminder' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      {% if user.is_staff %}
+      <a href="{% url 'admin:index' %}"><span class="nav-icon">⚙</span> Admin</a>
+      {% endif %}
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="link-btn">Sign out</button>
+      </form>
+    </div>
+  </aside>
+  <main class="main">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% else %}
+<main class="main main-anon">
+  {% block anon_content %}{% endblock %}
+</main>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,9 @@
+Django>=5.2,<6.0
+django-simple-history>=3.7
+
+# Uncomment when enabling the Google Drive / Gmail integrations:
+# google-api-python-client>=2.100
+# google-auth>=2.23
+
+# Uncomment when switching to PostgreSQL:
+# psycopg[binary]>=3.1

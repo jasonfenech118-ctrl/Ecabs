@@ -1,0 +1,32 @@
+<details class="inline-form" {% if form_open %}open{% endif %}>
+  <summary>Log an email</summary>
+  <form hx-post="{% url 'email_add' claim.pk %}" hx-target="#tab-panel" class="card">
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=email_form.direction %}
+      {% include "claims/partials/field.html" with field=email_form.sent_at %}
+      {% include "claims/partials/field.html" with field=email_form.from_address %}
+      {% include "claims/partials/field.html" with field=email_form.to_address %}
+      {% include "claims/partials/field.html" with field=email_form.subject extra_class="span-2" %}
+      {% include "claims/partials/field.html" with field=email_form.body extra_class="span-2" %}
+    </div>
+    <button type="submit" class="btn btn-primary mt">Log email</button>
+  </form>
+</details>
+
+<div class="timeline">
+  {% for e in emails %}
+  <div class="timeline-item">
+    <div class="head">
+      <div>
+        <span class="badge {{ e.direction }}">{{ e.get_direction_display }}</span>
+        <strong>{{ e.subject }}</strong>
+      </div>
+      <span class="when">{{ e.sent_at|date:"d M Y H:i" }}</span>
+    </div>
+    <div class="addr">{{ e.from_address }} → {{ e.to_address }}{% if e.gmail_message_id %} · via Gmail{% endif %}</div>
+    {% if e.body %}<div class="body">{{ e.body|truncatechars:600 }}</div>{% endif %}
+  </div>
+  {% empty %}
+  <div class="empty">No correspondence logged for this claim.</div>
+  {% endfor %}
+</div>

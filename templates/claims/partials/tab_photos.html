@@ -1,0 +1,42 @@
+<div class="card">
+  <form hx-post="{% url 'photo_upload' claim.pk %}"
+        hx-target="#tab-panel" hx-encoding="multipart/form-data" class="row">
+    <div class="field" style="flex:1; min-width:220px">
+      <label for="id_file">Add photo or document</label>
+      <input type="file" name="file" id="id_file" accept="image/*,.pdf" required>
+    </div>
+    <div class="field" style="flex:2; min-width:220px">
+      <label for="id_caption">Caption (optional)</label>
+      <input type="text" name="caption" id="id_caption" maxlength="255">
+    </div>
+    <button type="submit" class="btn btn-primary" style="align-self:flex-end">Upload</button>
+  </form>
+  {% if not drive_enabled %}
+    <p class="muted" style="margin-bottom:0; font-size:.8rem">
+      Google Drive is not configured — files are stored locally for now. Set
+      <code>GOOGLE_DRIVE_CREDENTIALS_FILE</code> to switch to Drive.
+    </p>
+  {% endif %}
+</div>
+
+<div class="photo-grid">
+  {% for p in photos %}
+  <div class="photo-card">
+    {% if p.local_file and "image" in p.mime_type %}
+      <a href="{{ p.local_file.url }}" target="_blank"><img src="{{ p.local_file.url }}" alt="{{ p.caption|default:p.file_name }}"></a>
+    {% elif p.web_view_link %}
+      <a href="{{ p.web_view_link }}" target="_blank" rel="noopener"><div class="ph">🗎</div></a>
+    {% else %}
+      <div class="ph">🗎</div>
+    {% endif %}
+    <div class="meta">
+      <div class="name" title="{{ p.file_name }}">{{ p.file_name }}</div>
+      {% if p.caption %}<div>{{ p.caption }}</div>{% endif %}
+      <div class="sub">{{ p.uploaded_at|date:"d M Y H:i" }}{% if p.uploaded_by %} · {{ p.uploaded_by.get_full_name|default:p.uploaded_by.username }}{% endif %}</div>
+      {% if p.drive_file_id %}<div class="sub"><a href="{{ p.web_view_link }}" target="_blank" rel="noopener">View in Drive ↗</a></div>{% endif %}
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty" style="grid-column:1/-1">No photos uploaded yet.</div>
+  {% endfor %}
+</div>

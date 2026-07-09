@@ -1,0 +1,13 @@
+{% for c in claims %}
+<tr class="clickable" onclick="window.location='{{ c.get_absolute_url }}'">
+  <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
+  <td><span class="badge {{ c.status }}">{{ c.get_status_display }}</span></td>
+  <td>{{ c.vehicle_registration|default:"—" }}{% if c.vehicle_make_model %} <span class="muted">({{ c.vehicle_make_model }})</span>{% endif %}</td>
+  <td>{{ c.driver_name|default:"—" }}</td>
+  <td>{{ c.accident_date|date:"d M Y"|default:"—" }}</td>
+  <td>{{ c.insurer|default:"—" }}</td>
+  <td class="muted">{{ c.created_at|date:"d M Y" }}</td>
+</tr>
+{% empty %}
+<tr><td colspan="7" class="empty">No claims match your search.</td></tr>
+{% endfor %}

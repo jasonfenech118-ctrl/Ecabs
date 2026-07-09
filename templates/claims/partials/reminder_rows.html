@@ -1,0 +1,5 @@
+{% for r in reminders %}
+  {% include "claims/partials/reminder_row.html" with r=r scope="global" %}
+{% empty %}
+<tr><td colspan="5" class="empty">No reminders here.</td></tr>
+{% endfor %}

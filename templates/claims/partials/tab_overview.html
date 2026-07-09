@@ -1,0 +1,56 @@
+<div class="grid grid-2">
+  <div class="card">
+    <h3>Vehicle &amp; driver</h3>
+    <dl class="kv">
+      <dt>Registration</dt><dd>{{ claim.vehicle_registration|default:"—" }}</dd>
+      <dt>Make / model</dt><dd>{{ claim.vehicle_make_model|default:"—" }}</dd>
+      <dt>Driver</dt><dd>{{ claim.driver_name|default:"—" }}</dd>
+      <dt>Phone</dt><dd>{{ claim.driver_phone|default:"—" }}</dd>
+      <dt>Email</dt><dd>{{ claim.driver_email|default:"—" }}</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3>Accident</h3>
+    <dl class="kv">
+      <dt>Date &amp; time</dt>
+      <dd>{{ claim.accident_date|date:"d M Y"|default:"—" }}{% if claim.accident_time %} at {{ claim.accident_time|time:"H:i" }}{% endif %}</dd>
+      <dt>Location</dt><dd>{{ claim.accident_location|default:"—" }}</dd>
+      <dt>Police report</dt><dd>{{ claim.police_report_number|default:"—" }}</dd>
+      <dt>Fault</dt><dd>{{ claim.get_fault_display }}</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3>Third party</h3>
+    <dl class="kv">
+      <dt>Name</dt><dd>{{ claim.third_party_name|default:"—" }}</dd>
+      <dt>Phone</dt><dd>{{ claim.third_party_phone|default:"—" }}</dd>
+      <dt>Vehicle</dt><dd>{{ claim.third_party_vehicle|default:"—" }}</dd>
+      <dt>Insurer</dt><dd>{{ claim.third_party_insurer|default:"—" }}</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3>Insurance &amp; record</h3>
+    <dl class="kv">
+      <dt>Insurer</dt><dd>{{ claim.insurer|default:"—" }}</dd>
+      <dt>Policy number</dt><dd>{{ claim.policy_number|default:"—" }}</dd>
+      <dt>Excess</dt><dd>{% if claim.excess_amount %}€{{ claim.excess_amount }}{% else %}—{% endif %}</dd>
+      <dt>Created by</dt><dd>{% if claim.created_by %}{{ claim.created_by.get_full_name|default:claim.created_by.username }}{% else %}—{% endif %}</dd>
+      <dt>Created</dt><dd>{{ claim.created_at|date:"d M Y H:i" }}</dd>
+      <dt>Submitted</dt><dd>{{ claim.submitted_at|date:"d M Y H:i"|default:"not yet submitted" }}</dd>
+      {% if claim.drive_folder_id %}
+      <dt>Drive folder</dt>
+      <dd><a href="https://drive.google.com/drive/folders/{{ claim.drive_folder_id }}" target="_blank" rel="noopener">Open in Google Drive ↗</a></dd>
+      {% endif %}
+    </dl>
+  </div>
+</div>
+
+{% if claim.description %}
+<div class="card mt">
+  <h3>Description</h3>
+  <p style="white-space: pre-wrap; margin:0">{{ claim.description }}</p>
+</div>
+{% endif %}

@@ -1,0 +1,17 @@
+<tr id="reminder-{{ r.pk }}">
+  <td>
+    <form hx-post="{% url 'reminder_toggle' r.pk %}"
+          hx-target="#reminder-{{ r.pk }}" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+             {% if r.is_done %}checked{% endif %} aria-label="Mark done">
+    </form>
+  </td>
+  <td class="{% if r.is_done %}done{% endif %}">{{ r.title }}{% if r.notes %} <span class="muted">— {{ r.notes|truncatechars:60 }}</span>{% endif %}</td>
+  <td><a href="{% url 'claim_detail' r.claim.pk %}">{{ r.claim.reference }}</a></td>
+  <td>
+    {% if r.is_overdue %}<span class="badge overdue">overdue</span> {% endif %}
+    {{ r.due_at|date:"d M Y H:i" }}
+  </td>
+  <td class="muted">{% if r.assigned_to %}{{ r.assigned_to.get_full_name|default:r.assigned_to.username }}{% else %}—{% endif %}</td>
+</tr>

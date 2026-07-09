@@ -1,0 +1,32 @@
+<div class="card table-wrap">
+  <table class="list">
+    <thead>
+      <tr><th>When</th><th>Who</th><th>Action</th><th>Changes</th></tr>
+    </thead>
+    <tbody>
+      {% for entry in history_entries %}
+      <tr>
+        <td class="muted" style="white-space:nowrap">{{ entry.record.history_date|date:"d M Y H:i" }}</td>
+        <td>{% if entry.record.history_user %}{{ entry.record.history_user.get_full_name|default:entry.record.history_user.username }}{% else %}system{% endif %}</td>
+        <td>
+          {% if entry.record.history_type == "+" %}<span class="badge ok">created</span>
+          {% elif entry.record.history_type == "-" %}<span class="badge rejected">deleted</span>
+          {% else %}<span class="badge open">updated</span>{% endif %}
+        </td>
+        <td>
+          {% if entry.changes %}
+            {% for ch in entry.changes %}
+              <div><strong>{{ ch.field }}</strong>: <span class="muted">{{ ch.old|default:"(empty)"|truncatechars:60 }}</span> → {{ ch.new|default:"(empty)"|truncatechars:60 }}</div>
+            {% endfor %}
+          {% elif entry.record.history_type == "~" %}
+            <span class="muted">—</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="empty">No history recorded.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="muted" style="font-size:.8rem">Full audit trail is kept for dispute records — every change to the claim is versioned.</p>
