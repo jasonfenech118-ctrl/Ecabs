@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reminders — eCabs Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "M9M2u1Atlcvmlsyb2kEwMzVVX7oSZUWOHSrp1e5gqUFuQtczkyPa6hwxvH07HjfS"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">eC</span>
+      <span class="brand-name">eCabs Claims</span>
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="reminders.html" class="active">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+      <a href="#"><span class="nav-icon">⚙</span> Admin</a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Demo Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="page-head">
+  <div>
+    <h1>Reminders</h1>
+    <div class="sub">Follow-ups across all claims</div>
+  </div>
+</div>
+
+<div class="card">
+  <form class="toolbar"
+        hx-get="/reminders/"
+        hx-target="#reminder-rows"
+        hx-trigger="change"
+        hx-push-url="true">
+    <select name="show" style="max-width:200px" aria-label="Filter reminders">
+      <option value="open" selected>Open only</option>
+      <option value="all" >All reminders</option>
+    </select>
+  </form>
+
+  <div class="table-wrap">
+    <table class="list">
+      <thead>
+        <tr><th style="width:2.5rem"></th><th>Reminder</th><th>Claim</th><th>Due</th><th>Assigned</th></tr>
+      </thead>
+      <tbody id="reminder-rows">
+        
+  <tr id="reminder-1">
+  <td>
+    <form hx-post="/reminders/1/toggle/"
+          hx-target="#reminder-1" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">Chase insurer for update</td>
+  <td><a href="claim-1.html">CLM-2026-0001</a></td>
+  <td>
+    <span class="badge overdue">overdue</span> 
+    05 Jul 2026 22:34
+  </td>
+  <td class="muted">Demo Staff</td>
+</tr>
+
+
+  <tr id="reminder-4">
+  <td>
+    <form hx-post="/reminders/4/toggle/"
+          hx-target="#reminder-4" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">Chase insurer for update</td>
+  <td><a href="claim-4.html">CLM-2026-0004</a></td>
+  <td>
+    <span class="badge overdue">overdue</span> 
+    06 Jul 2026 22:34
+  </td>
+  <td class="muted">Demo Staff</td>
+</tr>
+
+
+  <tr id="reminder-6">
+  <td>
+    <form hx-post="/reminders/6/toggle/"
+          hx-target="#reminder-6" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">Chase insurer for update</td>
+  <td><a href="claim-6.html">CLM-2026-0006</a></td>
+  <td>
+    
+    10 Jul 2026 22:34
+  </td>
+  <td class="muted">Demo Staff</td>
+</tr>
+
+
+  <tr id="reminder-2">
+  <td>
+    <form hx-post="/reminders/2/toggle/"
+          hx-target="#reminder-2" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">Chase insurer for update</td>
+  <td><a href="claim-2.html">CLM-2026-0002</a></td>
+  <td>
+    
+    15 Jul 2026 22:34
+  </td>
+  <td class="muted">Demo Staff</td>
+</tr>
+
+
+  <tr id="reminder-3">
+  <td>
+    <form hx-post="/reminders/3/toggle/"
+          hx-target="#reminder-3" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">Chase insurer for update</td>
+  <td><a href="claim-3.html">CLM-2026-0003</a></td>
+  <td>
+    
+    16 Jul 2026 22:34
+  </td>
+  <td class="muted">Demo Staff</td>
+</tr>
+
+
+  <tr id="reminder-5">
+  <td>
+    <form hx-post="/reminders/5/toggle/"
+          hx-target="#reminder-5" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">Chase insurer for update</td>
+  <td><a href="claim-5.html">CLM-2026-0005</a></td>
+  <td>
+    
+    16 Jul 2026 22:34
+  </td>
+  <td class="muted">Demo Staff</td>
+</tr>
+
+
+  <tr id="reminder-7">
+  <td>
+    <form hx-post="/reminders/7/toggle/"
+          hx-target="#reminder-7" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">Chase insurer for update</td>
+  <td><a href="claim-7.html">CLM-2026-0007</a></td>
+  <td>
+    
+    18 Jul 2026 22:34
+  </td>
+  <td class="muted">Demo Staff</td>
+</tr>
+
+
+  <tr id="reminder-8">
+  <td>
+    <form hx-post="/reminders/8/toggle/"
+          hx-target="#reminder-8" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">Chase insurer for update</td>
+  <td><a href="claim-11.html">CLM-2026-0011</a></td>
+  <td>
+    
+    22 Jul 2026 22:34
+  </td>
+  <td class="muted">Demo Staff</td>
+</tr>
+
+
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  </main>
+</div>
+
+</body>
+</html>

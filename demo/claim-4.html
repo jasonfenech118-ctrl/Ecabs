@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLM-2026-0004 — eCabs Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "JOgiGptsvdf9SFtUOyoEnyXaWlcluGSTExVFdCYfAVphnG7i6MziHgyMuVOAc5bX"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">eC</span>
+      <span class="brand-name">eCabs Claims</span>
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="active">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+      <a href="#"><span class="nav-icon">⚙</span> Admin</a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Demo Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="detail-head">
+  <div>
+    <span class="ref">CLM-2026-0004</span>
+    <span class="muted">
+      ECB-330
+       · Karl Borg
+       · 07 Jul 2026
+    </span>
+  </div>
+  <div class="row">
+    <span id="status-control">
+      <form hx-post="/claims/4/status/"
+      hx-target="#status-control" hx-swap="innerHTML"
+      hx-trigger="change" class="row" style="gap:.4rem">
+  <span class="badge awaiting_survey">Awaiting survey</span>
+  <select name="status" aria-label="Change status" style="width:auto">
+    
+      <option value="draft" >Draft</option>
+    
+      <option value="open" >Open</option>
+    
+      <option value="awaiting_survey" selected>Awaiting survey</option>
+    
+      <option value="awaiting_insurer" >Awaiting insurer</option>
+    
+      <option value="settled" >Settled</option>
+    
+      <option value="closed" >Closed</option>
+    
+      <option value="rejected" >Rejected</option>
+    
+  </select>
+</form>
+
+    </span>
+    <a href="claim-4-edit.html" class="btn">Edit details</a>
+  </div>
+</div>
+
+<nav class="tabs" id="claim-tabs">
+  
+  <a href="claim-4.html"
+     hx-get="/claims/4/tab/overview/" hx-target="#tab-panel" hx-push-url="/claims/4/"
+     class="active" onclick="setTab(this)">Overview</a>
+  <a href="claim-4-photos.html"
+     hx-get="/claims/4/tab/photos/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
+  <a href="claim-4-surveys.html"
+     hx-get="/claims/4/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
+  <a href="claim-4-emails.html"
+     hx-get="/claims/4/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
+  <a href="claim-4-reminders.html"
+     hx-get="/claims/4/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+  <a href="claim-4-billing.html"
+     hx-get="/claims/4/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Billing<span class="tab-count">2</span></a>
+  <a href="claim-4-history.html"
+     hx-get="/claims/4/tab/history/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">History</a>
+  
+</nav>
+
+<div id="tab-panel">
+  <div class="grid grid-2">
+  <div class="card">
+    <h3>Vehicle &amp; driver</h3>
+    <dl class="kv">
+      <dt>Registration</dt><dd>ECB-330</dd>
+      <dt>Make / model</dt><dd>Kia Niro</dd>
+      <dt>Driver</dt><dd>Karl Borg</dd>
+      <dt>Phone</dt><dd>+356 7985475</dd>
+      <dt>Email</dt><dd>—</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3>Accident</h3>
+    <dl class="kv">
+      <dt>Date &amp; time</dt>
+      <dd>07 Jul 2026 at 20:34</dd>
+      <dt>Location</dt><dd>Valletta Road, Luqa</dd>
+      <dt>Police report</dt><dd>—</dd>
+      <dt>Fault</dt><dd>Third party at fault</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3>Third party</h3>
+    <dl class="kv">
+      <dt>Name</dt><dd>John Smith</dd>
+      <dt>Phone</dt><dd>—</dd>
+      <dt>Vehicle</dt><dd>BMW 320i — ABC-123</dd>
+      <dt>Insurer</dt><dd>Atlas Insurance</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3>Insurance &amp; record</h3>
+    <dl class="kv">
+      <dt>Insurer</dt><dd>Elmo Insurance</dd>
+      <dt>Policy number</dt><dd>POL-768025</dd>
+      <dt>Excess</dt><dd>€500.00</dd>
+      <dt>Created by</dt><dd>Demo Staff</dd>
+      <dt>Created</dt><dd>09 Jul 2026 22:34</dd>
+      <dt>Submitted</dt><dd>09 Jul 2026 22:34</dd>
+      
+    </dl>
+  </div>
+</div>
+
+
+<div class="card mt">
+  <h3>Description</h3>
+  <p style="white-space: pre-wrap; margin:0">Third party changed lanes without indicating and clipped the front bumper.</p>
+</div>
+
+
+</div>
+
+<script>
+  function setTab(el) {
+    document.querySelectorAll('#claim-tabs a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+
+  </main>
+</div>
+
+</body>
+</html>

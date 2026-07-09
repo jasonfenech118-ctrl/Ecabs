@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in — eCabs Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "eV5ewOJHaLHDeg04k2LS4hAYnZQ1PvsEnnKXSiIZqZL8JNun2VmnGp2iIr5AL9dx"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+
+<main class="main main-anon">
+  
+<div class="card login-card">
+  <h1>eCabs Claims</h1>
+  
+  <form method="post">
+    <input type="hidden" name="csrfmiddlewaretoken" value="eV5ewOJHaLHDeg04k2LS4hAYnZQ1PvsEnnKXSiIZqZL8JNun2VmnGp2iIr5AL9dx">
+    <div class="field">
+      <label for="id_username">Username</label>
+      <input type="text" name="username" id="id_username" autofocus required>
+    </div>
+    <div class="field">
+      <label for="id_password">Password</label>
+      <input type="password" name="password" id="id_password" required>
+    </div>
+    <input type="hidden" name="next" value="">
+    <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center">Sign in</button>
+  </form>
+</div>
+
+</main>
+
+</body>
+</html>

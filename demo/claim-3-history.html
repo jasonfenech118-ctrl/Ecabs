@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLM-2026-0003 — eCabs Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "I894Sml8nCZdwUYW0dkzI7J6pOisTTdIDROrpzQVsk9l1VCkirvd2PkIXoUHBiwM"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">eC</span>
+      <span class="brand-name">eCabs Claims</span>
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="active">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+      <a href="#"><span class="nav-icon">⚙</span> Admin</a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Demo Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="detail-head">
+  <div>
+    <span class="ref">CLM-2026-0003</span>
+    <span class="muted">
+      ECB-512
+       · Josef Camilleri
+       · 03 May 2026
+    </span>
+  </div>
+  <div class="row">
+    <span id="status-control">
+      <form hx-post="/claims/3/status/"
+      hx-target="#status-control" hx-swap="innerHTML"
+      hx-trigger="change" class="row" style="gap:.4rem">
+  <span class="badge open">Open</span>
+  <select name="status" aria-label="Change status" style="width:auto">
+    
+      <option value="draft" >Draft</option>
+    
+      <option value="open" selected>Open</option>
+    
+      <option value="awaiting_survey" >Awaiting survey</option>
+    
+      <option value="awaiting_insurer" >Awaiting insurer</option>
+    
+      <option value="settled" >Settled</option>
+    
+      <option value="closed" >Closed</option>
+    
+      <option value="rejected" >Rejected</option>
+    
+  </select>
+</form>
+
+    </span>
+    <a href="claim-3-edit.html" class="btn">Edit details</a>
+  </div>
+</div>
+
+<nav class="tabs" id="claim-tabs">
+  
+  <a href="claim-3.html"
+     hx-get="/claims/3/tab/overview/" hx-target="#tab-panel" hx-push-url="/claims/3/"
+     class="" onclick="setTab(this)">Overview</a>
+  <a href="claim-3-photos.html"
+     hx-get="/claims/3/tab/photos/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
+  <a href="claim-3-surveys.html"
+     hx-get="/claims/3/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
+  <a href="claim-3-emails.html"
+     hx-get="/claims/3/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
+  <a href="claim-3-reminders.html"
+     hx-get="/claims/3/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+  <a href="claim-3-billing.html"
+     hx-get="/claims/3/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+  <a href="claim-3-history.html"
+     hx-get="/claims/3/tab/history/" hx-target="#tab-panel" hx-push-url="true"
+     class="active" onclick="setTab(this)">History</a>
+  
+</nav>
+
+<div id="tab-panel">
+  <div class="card table-wrap">
+  <table class="list">
+    <thead>
+      <tr><th>When</th><th>Who</th><th>Action</th><th>Changes</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td class="muted" style="white-space:nowrap">09 Jul 2026 22:34</td>
+        <td>system</td>
+        <td>
+          <span class="badge open">updated</span>
+        </td>
+        <td>
+          
+            
+              <div><strong>submitted_at</strong>: <span class="muted">(empty)</span> → 2026-07-09 20:34:32.674727+00:00</div>
+            
+          
+        </td>
+      </tr>
+      
+      <tr>
+        <td class="muted" style="white-space:nowrap">09 Jul 2026 22:34</td>
+        <td>system</td>
+        <td>
+          <span class="badge ok">created</span>
+          
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
+</div>
+<p class="muted" style="font-size:.8rem">Full audit trail is kept for dispute records — every change to the claim is versioned.</p>
+
+</div>
+
+<script>
+  function setTab(el) {
+    document.querySelectorAll('#claim-tabs a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+
+  </main>
+</div>
+
+</body>
+</html>

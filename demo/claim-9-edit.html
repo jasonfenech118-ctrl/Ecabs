@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLM-2026-0009 — intake</title>
+  <link rel="stylesheet" href="../static/css/app.css">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "QP3kWK4w5NJMfFJhVrs5FHSGNZnIpRDxLyIHtXzjavTUKGnFdFDJZptilzZX7gWB"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">eC</span>
+      <span class="brand-name">eCabs Claims</span>
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="active">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+      <a href="#"><span class="nav-icon">⚙</span> Admin</a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Demo Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="page-head">
+  <div>
+    <h1>Edit claim <span class="muted">CLM-2026-0009</span></h1>
+    <div class="sub">
+      <span class="badge awaiting_insurer">Awaiting insurer</span>
+      
+    </div>
+  </div>
+  <a href="claim-9.html" class="btn">View claim</a>
+</div>
+
+<form method="post"
+      action="/claims/9/submit/"
+      hx-post="/claims/9/autosave/"
+      hx-trigger="input changed delay:2s, change delay:1s"
+      hx-target="#save-status"
+      hx-swap="innerHTML"
+      hx-indicator="#save-status">
+  <input type="hidden" name="csrfmiddlewaretoken" value="QP3kWK4w5NJMfFJhVrs5FHSGNZnIpRDxLyIHtXzjavTUKGnFdFDJZptilzZX7gWB">
+
+  <fieldset>
+    <legend>Vehicle &amp; driver</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_vehicle_registration">Vehicle registration</label>
+  <input type="text" name="vehicle_registration" value="ECB-214" maxlength="20" id="id_vehicle_registration">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_vehicle_make_model">Vehicle make model</label>
+  <input type="text" name="vehicle_make_model" value="Mercedes-Benz Vito" maxlength="100" id="id_vehicle_make_model">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_driver_name">Driver name</label>
+  <input type="text" name="driver_name" value="Karl Borg" maxlength="100" id="id_driver_name">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_driver_phone">Driver phone</label>
+  <input type="text" name="driver_phone" value="+356 7924637" maxlength="30" id="id_driver_phone">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_driver_email">Driver email</label>
+  <input type="email" name="driver_email" maxlength="254" id="id_driver_email">
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Accident details</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_accident_date">Accident date</label>
+  <input type="date" name="accident_date" value="08/06/2026" id="id_accident_date">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_accident_time">Accident time</label>
+  <input type="time" name="accident_time" value="20:34:32" id="id_accident_time">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_accident_location">Accident location</label>
+  <input type="text" name="accident_location" value="Valletta Road, Luqa" maxlength="255" id="id_accident_location">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_police_report_number">Police report number</label>
+  <input type="text" name="police_report_number" maxlength="50" id="id_police_report_number">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_fault">Fault</label>
+  <select name="fault" id="id_fault">
+  <option value="unknown">Not yet determined</option>
+
+  <option value="our_driver">Our driver at fault</option>
+
+  <option value="third_party">Third party at fault</option>
+
+  <option value="shared" selected>Shared / knock for knock</option>
+
+</select>
+  
+</div>
+
+      <div class="field span-2">
+  <label for="id_description">Description</label>
+  <textarea name="description" cols="40" rows="5" id="id_description">
+Third party changed lanes without indicating and clipped the front bumper.</textarea>
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Third party</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_third_party_name">Third party name</label>
+  <input type="text" name="third_party_name" value="John Smith" maxlength="100" id="id_third_party_name">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_third_party_phone">Third party phone</label>
+  <input type="text" name="third_party_phone" maxlength="30" id="id_third_party_phone">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_third_party_vehicle">Third party vehicle</label>
+  <input type="text" name="third_party_vehicle" value="BMW 320i — ABC-123" maxlength="100" id="id_third_party_vehicle">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_third_party_insurer">Third party insurer</label>
+  <input type="text" name="third_party_insurer" value="GasanMamo" maxlength="100" id="id_third_party_insurer">
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Insurance</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_insurer">Insurer</label>
+  <input type="text" name="insurer" value="GasanMamo" maxlength="100" id="id_insurer">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_policy_number">Policy number</label>
+  <input type="text" name="policy_number" value="POL-584967" maxlength="50" id="id_policy_number">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_excess_amount">Excess amount</label>
+  <input type="number" name="excess_amount" value="250.00" step="0.01" id="id_excess_amount">
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <div class="form-footer">
+    
+      <button type="submit" class="btn btn-primary">Save changes</button>
+    
+    <span id="save-status" class="save-status" aria-live="polite"></span>
+  </div>
+</form>
+
+  </main>
+</div>
+
+</body>
+</html>

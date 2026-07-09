@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLM-2026-0007 — eCabs Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "ovI1FNKQJQHg4hRwuDiqqfahdGvhIoptjenoc0fDOyRozivUMRt4KXLTLg7wqNIx"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">eC</span>
+      <span class="brand-name">eCabs Claims</span>
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="active">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+      <a href="#"><span class="nav-icon">⚙</span> Admin</a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Demo Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="detail-head">
+  <div>
+    <span class="ref">CLM-2026-0007</span>
+    <span class="muted">
+      ECB-512
+       · Karl Borg
+       · 04 Apr 2026
+    </span>
+  </div>
+  <div class="row">
+    <span id="status-control">
+      <form hx-post="/claims/7/status/"
+      hx-target="#status-control" hx-swap="innerHTML"
+      hx-trigger="change" class="row" style="gap:.4rem">
+  <span class="badge draft">Draft</span>
+  <select name="status" aria-label="Change status" style="width:auto">
+    
+      <option value="draft" selected>Draft</option>
+    
+      <option value="open" >Open</option>
+    
+      <option value="awaiting_survey" >Awaiting survey</option>
+    
+      <option value="awaiting_insurer" >Awaiting insurer</option>
+    
+      <option value="settled" >Settled</option>
+    
+      <option value="closed" >Closed</option>
+    
+      <option value="rejected" >Rejected</option>
+    
+  </select>
+</form>
+
+    </span>
+    <a href="claim-7-edit.html" class="btn">Edit details</a>
+  </div>
+</div>
+
+<nav class="tabs" id="claim-tabs">
+  
+  <a href="claim-7.html"
+     hx-get="/claims/7/tab/overview/" hx-target="#tab-panel" hx-push-url="/claims/7/"
+     class="" onclick="setTab(this)">Overview</a>
+  <a href="claim-7-photos.html"
+     hx-get="/claims/7/tab/photos/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
+  <a href="claim-7-surveys.html"
+     hx-get="/claims/7/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
+  <a href="claim-7-emails.html"
+     hx-get="/claims/7/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+  <a href="claim-7-reminders.html"
+     hx-get="/claims/7/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+  <a href="claim-7-billing.html"
+     hx-get="/claims/7/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
+     class="active" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+  <a href="claim-7-history.html"
+     hx-get="/claims/7/tab/history/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">History</a>
+  
+</nav>
+
+<div id="tab-panel">
+  <details class="inline-form" >
+  <summary>Add billing item</summary>
+  <form hx-post="/claims/7/billing/add/" hx-target="#tab-panel" class="card">
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_description">Description</label>
+  <input type="text" name="description" maxlength="255" required id="id_description">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_category">Category</label>
+  <select name="category" id="id_category">
+  <option value="repair">Repair</option>
+
+  <option value="towing">Towing</option>
+
+  <option value="survey">Survey fee</option>
+
+  <option value="excess">Excess</option>
+
+  <option value="legal">Legal</option>
+
+  <option value="other" selected>Other</option>
+
+</select>
+  
+</div>
+
+      <div class="field ">
+  <label for="id_amount">Amount</label>
+  <input type="number" name="amount" step="0.01" required id="id_amount">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_invoice_number">Invoice number</label>
+  <input type="text" name="invoice_number" maxlength="50" id="id_invoice_number">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_invoice_date">Invoice date</label>
+  <input type="date" name="invoice_date" id="id_invoice_date">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_status">Status</label>
+  <select name="status" id="id_status">
+  <option value="pending" selected>Pending</option>
+
+  <option value="invoiced">Invoiced</option>
+
+  <option value="paid">Paid</option>
+
+  <option value="written_off">Written off</option>
+
+</select>
+  
+</div>
+
+    </div>
+    <button type="submit" class="btn btn-primary mt">Save item</button>
+  </form>
+</details>
+
+<div class="card table-wrap">
+  <table class="list">
+    <thead>
+      <tr><th>Description</th><th>Category</th><th>Invoice</th><th>Date</th><th>Status</th><th class="right">Amount</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr><td colspan="6" class="empty">No billing items for this claim.</td></tr>
+      
+    </tbody>
+    
+  </table>
+</div>
+
+</div>
+
+<script>
+  function setTab(el) {
+    document.querySelectorAll('#claim-tabs a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+
+  </main>
+</div>
+
+</body>
+</html>
