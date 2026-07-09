@@ -15,11 +15,33 @@ from .forms import (
     PhotoUploadForm,
     ReminderForm,
     SurveyForm,
+    VehicleForm,
 )
-from .models import AccidentPhoto, BillingItem, Claim, EmailLog, Reminder, Survey
+from .models import (
+    AccidentPhoto,
+    BillingItem,
+    Claim,
+    EmailLog,
+    Reminder,
+    Survey,
+    Vehicle,
+)
 from .services import drive
 
 VALID_TABS = {"overview", "photos", "surveys", "emails", "reminders", "billing", "history"}
+
+
+def _compliance_due(limit=None):
+    """Upcoming/overdue VRT, licence and insurance renewals for active vehicles,
+    soonest first."""
+    horizon = timezone.localdate() + timedelta(days=30)
+    items = []
+    for vehicle in Vehicle.objects.filter(status=Vehicle.Status.ACTIVE):
+        for label, due, state in vehicle.compliance_items():
+            if due and due <= horizon:
+                items.append({"vehicle": vehicle, "label": label, "due": due, "state": state})
+    items.sort(key=lambda item: item["due"])
+    return items[:limit] if limit else items
 
 
 # --- Dashboard ---------------------------------------------------------------
@@ -46,6 +68,8 @@ def dashboard(request):
             status__in=[BillingItem.Status.PENDING, BillingItem.Status.INVOICED]
         ).aggregate(total=Sum("amount"))["total"] or Decimal("0"),
     }
+    compliance_due = _compliance_due(limit=8)
+    stats["compliance_due"] = len(_compliance_due())
     status_breakdown = (
         claims.values("status").annotate(n=Count("id")).order_by("-n")
     )
@@ -70,6 +94,7 @@ def dashboard(request):
             "breakdown": breakdown,
             "recent_claims": recent_claims,
             "upcoming_reminders": upcoming_reminders,
+            "compliance_due": compliance_due,
         },
     )
 
@@ -122,7 +147,12 @@ def claim_new(request):
 def claim_edit(request, pk):
     claim = get_object_or_404(Claim, pk=pk)
     form = ClaimForm(instance=claim)
-    return render(request, "claims/claim_form.html", {"claim": claim, "form": form})
+    active_vehicles = Vehicle.objects.filter(status=Vehicle.Status.ACTIVE)
+    return render(
+        request,
+        "claims/claim_form.html",
+        {"claim": claim, "form": form, "active_vehicles": active_vehicles},
+    )
 
 
 @login_required
@@ -326,3 +356,85 @@ def reminder_list(request):
     if request.headers.get("HX-Request"):
         return render(request, "claims/partials/reminder_rows.html", context)
     return render(request, "claims/reminder_list.html", context)
+
+
+# --- Vehicles ------------------------------------------------------------------
+
+@login_required
+def vehicle_list(request):
+    qs = Vehicle.objects.all()
+    q = request.GET.get("q", "").strip()
+    status = request.GET.get("status", "").strip()
+    if q:
+        qs = qs.filter(Q(registration__icontains=q) | Q(make_model__icontains=q))
+    if status:
+        qs = qs.filter(status=status)
+    context = {
+        "vehicles": qs,
+        "q": q,
+        "status": status,
+        "statuses": Vehicle.Status.choices,
+        "form": VehicleForm(),
+        "compliance_due": _compliance_due(),
+    }
+    if request.headers.get("HX-Request"):
+        return render(request, "claims/partials/vehicle_rows.html", context)
+    return render(request, "claims/vehicle_list.html", context)
+
+
+@login_required
+@require_POST
+def vehicle_add(request):
+    form = VehicleForm(request.POST)
+    if form.is_valid():
+        form.save()
+        return redirect("vehicle_list")
+    context = {
+        "vehicles": Vehicle.objects.all(),
+        "q": "",
+        "status": "",
+        "statuses": Vehicle.Status.choices,
+        "form": form,
+        "form_open": True,
+        "compliance_due": _compliance_due(),
+    }
+    return render(request, "claims/vehicle_list.html", context)
+
+
+@login_required
+def vehicle_edit(request, pk):
+    vehicle = get_object_or_404(Vehicle, pk=pk)
+    if request.method == "POST":
+        form = VehicleForm(request.POST, instance=vehicle)
+        if form.is_valid():
+            form.save()
+            return redirect("vehicle_list")
+    else:
+        form = VehicleForm(instance=vehicle)
+    related_claims = Claim.objects.filter(
+        vehicle_registration__iexact=vehicle.registration
+    )
+    return render(
+        request,
+        "claims/vehicle_form.html",
+        {"vehicle": vehicle, "form": form, "related_claims": related_claims},
+    )
+
+
+@login_required
+@require_POST
+def vehicle_toggle_status(request, pk):
+    vehicle = get_object_or_404(Vehicle, pk=pk)
+    if vehicle.is_active:
+        vehicle.retire()
+    else:
+        vehicle.reactivate()
+    return redirect("vehicle_edit", pk=vehicle.pk)
+
+
+@login_required
+@require_POST
+def vehicle_delete(request, pk):
+    vehicle = get_object_or_404(Vehicle, pk=pk)
+    vehicle.delete()
+    return redirect("vehicle_list")

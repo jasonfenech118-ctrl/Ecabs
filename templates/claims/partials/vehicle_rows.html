@@ -1,0 +1,24 @@
+{% for v in vehicles %}
+<tr>
+  <td><a href="{% url 'vehicle_edit' v.pk %}">{{ v.registration }}</a></td>
+  <td>{{ v.make_model|default:"—" }}{% if v.year %} <span class="muted">({{ v.year }})</span>{% endif %}</td>
+  <td>
+    {% if v.is_active %}<span class="badge open">Active</span>
+    {% else %}<span class="badge closed">Left fleet{% if v.retired_on %} {{ v.retired_on|date:"M Y" }}{% endif %}</span>{% endif %}
+  </td>
+  {% for label, due, state in v.compliance_items %}
+  <td>
+    {% if due %}
+      {{ due|date:"d M Y" }}
+      {% if v.is_active %}
+        {% if state == "overdue" %}<span class="badge overdue">overdue</span>
+        {% elif state == "soon" %}<span class="badge pending">soon</span>{% endif %}
+      {% endif %}
+    {% else %}<span class="muted">—</span>{% endif %}
+  </td>
+  {% endfor %}
+  <td><a href="{% url 'vehicle_edit' v.pk %}" class="btn btn-sm">Manage</a></td>
+</tr>
+{% empty %}
+<tr><td colspan="7" class="empty">No vehicles match.</td></tr>
+{% endfor %}

@@ -24,7 +24,7 @@ django.setup()
 from django.contrib.auth import get_user_model  # noqa: E402
 from django.test import Client  # noqa: E402
 
-from claims.models import Claim  # noqa: E402
+from claims.models import Claim, Vehicle  # noqa: E402
 
 OUT = Path(__file__).resolve().parent.parent / "demo"
 OUT.mkdir(exist_ok=True)
@@ -42,9 +42,12 @@ def build_url_map():
     urls = {
         "/": "index.html",
         "/claims/": "claims.html",
+        "/vehicles/": "vehicles.html",
         "/reminders/": "reminders.html",
         "/accounts/login/": "login.html",
     }
+    for pk in Vehicle.objects.values_list("pk", flat=True):
+        urls[f"/vehicles/{pk}/"] = f"vehicle-{pk}.html"
     for pk in Claim.objects.values_list("pk", flat=True):
         urls[f"/claims/{pk}/"] = f"claim-{pk}.html"
         urls[f"/claims/{pk}/edit/"] = f"claim-{pk}-edit.html"

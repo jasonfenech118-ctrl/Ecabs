@@ -1,8 +1,11 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
-from .models import Claim, Reminder
+from .models import Claim, Reminder, Vehicle, compliance_state
 
 
 class ClaimModelTests(TestCase):
@@ -80,6 +83,47 @@ class ViewTests(TestCase):
         self.client.post(reverse("reminder_toggle", args=[reminder.pk]))
         reminder.refresh_from_db()
         self.assertTrue(reminder.is_done)
+
+    def test_vehicle_add_retire_delete(self):
+        response = self.client.post(
+            reverse("vehicle_add"),
+            {"registration": "ECB-500", "make_model": "Toyota Yaris"},
+        )
+        self.assertRedirects(response, reverse("vehicle_list"))
+        vehicle = Vehicle.objects.get(registration="ECB-500")
+        self.assertTrue(vehicle.is_active)
+
+        self.client.post(reverse("vehicle_toggle_status", args=[vehicle.pk]))
+        vehicle.refresh_from_db()
+        self.assertFalse(vehicle.is_active)
+        self.assertIsNotNone(vehicle.retired_on)
+
+        self.client.post(reverse("vehicle_delete", args=[vehicle.pk]))
+        self.assertFalse(Vehicle.objects.filter(pk=vehicle.pk).exists())
+
+    def test_compliance_states_and_dashboard_reminder(self):
+        today = timezone.localdate()
+        self.assertEqual(compliance_state(today - timedelta(days=1)), "overdue")
+        self.assertEqual(compliance_state(today + timedelta(days=10)), "soon")
+        self.assertEqual(compliance_state(today + timedelta(days=90)), "ok")
+        self.assertEqual(compliance_state(None), "")
+
+        Vehicle.objects.create(
+            registration="ECB-600", vrt_due=today + timedelta(days=5)
+        )
+        response = self.client.get(reverse("dashboard"))
+        self.assertContains(response, "ECB-600")
+        self.assertContains(response, "due soon")
+
+    def test_retired_vehicle_not_in_compliance_list(self):
+        today = timezone.localdate()
+        Vehicle.objects.create(
+            registration="ECB-700",
+            status=Vehicle.Status.RETIRED,
+            vrt_due=today - timedelta(days=5),
+        )
+        response = self.client.get(reverse("dashboard"))
+        self.assertNotContains(response, "ECB-700")
 
     def test_login_required(self):
         self.client.logout()

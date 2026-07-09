@@ -20,6 +20,11 @@ front-end app).
   when Drive isn't configured.
 - **Email log** — correspondence recorded against the claim (Gmail API
   auto-pull can populate `gmail_message_id` later)
+- **Vehicles** — fleet register: add vehicles, mark them as left the fleet
+  (keeps history), or delete mistakes; each vehicle tracks VRT, road licence
+  and insurance due dates
+- **Renewal reminders** — anything due within 30 days (or overdue) shows on
+  the dashboard and the Vehicles page with overdue / due-soon badges
 - **Reminders** — per-claim and global follow-up list with overdue flags
 - **Billing** — cost items per claim with category, invoice and payment status
 

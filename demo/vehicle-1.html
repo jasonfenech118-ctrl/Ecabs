@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECB-101 — vehicle</title>
+  <link rel="stylesheet" href="../static/css/app.css">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "JOMSaNk2E9xvIiUjoLqtQhyS7vcXM5LV6G9908kNyzsGFPJ34qGXwjEO4pxpt6hr"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">eC</span>
+      <span class="brand-name">eCabs Claims</span>
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="active">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+      <a href="#"><span class="nav-icon">⚙</span> Admin</a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Demo Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="page-head">
+  <div>
+    <h1>ECB-101 <span class="muted">Toyota Corolla Hybrid</span></h1>
+    <div class="sub">
+      <span class="badge open">Active</span>
+      
+    </div>
+  </div>
+  <a href="vehicles.html" class="btn">← All vehicles</a>
+</div>
+
+<form method="post">
+  <input type="hidden" name="csrfmiddlewaretoken" value="JOMSaNk2E9xvIiUjoLqtQhyS7vcXM5LV6G9908kNyzsGFPJ34qGXwjEO4pxpt6hr">
+  <fieldset>
+    <legend>Vehicle details</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_registration">Registration</label>
+  <input type="text" name="registration" value="ECB-101" maxlength="20" required id="id_registration">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_make_model">Make model</label>
+  <input type="text" name="make_model" value="Toyota Corolla Hybrid" maxlength="100" id="id_make_model">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_year">Year</label>
+  <input type="number" name="year" value="2020" min="0" id="id_year">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_acquired_on">Acquired on</label>
+  <input type="date" name="acquired_on" value="04/06/2025" id="id_acquired_on">
+  
+</div>
+
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Renewals — used for the due-date reminders</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_vrt_due">VRT due</label>
+  <input type="date" name="vrt_due" value="27/06/2026" id="id_vrt_due">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_licence_due">Road licence due</label>
+  <input type="date" name="licence_due" value="03/08/2026" id="id_licence_due">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_insurance_due">Insurance renewal</label>
+  <input type="date" name="insurance_due" value="07/09/2026" id="id_insurance_due">
+  
+</div>
+
+    </div>
+    <p class="muted" style="font-size:.8rem; margin-bottom:0">
+      After renewing, update the date to the next due date and the reminder clears itself.
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend>Notes</legend>
+    <div class="field ">
+  <label for="id_notes">Notes</label>
+  <textarea name="notes" cols="40" rows="2" id="id_notes">
+</textarea>
+  
+</div>
+
+  </fieldset>
+  <div class="row" style="margin-bottom:1.5rem">
+    <button type="submit" class="btn btn-primary">Save vehicle</button>
+  </div>
+</form>
+
+<div class="card" style="margin-bottom:1rem">
+  <h3>Claims for this vehicle</h3>
+  
+    <div class="table-wrap">
+      <table class="list">
+        <thead><tr><th>Ref</th><th>Status</th><th>Accident date</th><th>Driver</th></tr></thead>
+        <tbody>
+          
+          <tr>
+            <td><a href="claim-9.html">CLM-2026-0009</a></td>
+            <td><span class="badge open">Open</span></td>
+            <td>06 Jun 2026</td>
+            <td>Maria Vella</td>
+          </tr>
+          
+          <tr>
+            <td><a href="claim-8.html">CLM-2026-0008</a></td>
+            <td><span class="badge closed">Closed</span></td>
+            <td>15 Jun 2026</td>
+            <td>Karl Borg</td>
+          </tr>
+          
+          <tr>
+            <td><a href="claim-7.html">CLM-2026-0007</a></td>
+            <td><span class="badge draft">Draft</span></td>
+            <td>07 May 2026</td>
+            <td>Luca Grech</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+  
+</div>
+
+<div class="card">
+  <h3>Fleet status</h3>
+  <div class="row">
+    <form method="post" action="/vehicles/1/toggle/">
+      <input type="hidden" name="csrfmiddlewaretoken" value="JOMSaNk2E9xvIiUjoLqtQhyS7vcXM5LV6G9908kNyzsGFPJ34qGXwjEO4pxpt6hr">
+      
+        <button type="submit" class="btn">Mark as left fleet</button>
+      
+    </form>
+    <form method="post" action="/vehicles/1/delete/"
+          onsubmit="return confirm('Delete ECB-101 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
+      <input type="hidden" name="csrfmiddlewaretoken" value="JOMSaNk2E9xvIiUjoLqtQhyS7vcXM5LV6G9908kNyzsGFPJ34qGXwjEO4pxpt6hr">
+      <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
+    </form>
+  </div>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">
+    Prefer “Mark as left fleet” for vehicles that leave the company — it keeps the
+    record and its claim history. Delete is for entries created by mistake.
+  </p>
+</div>
+
+  </main>
+</div>
+
+</body>
+</html>

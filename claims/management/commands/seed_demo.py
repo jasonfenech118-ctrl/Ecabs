@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from claims.models import BillingItem, Claim, EmailLog, Reminder, Survey
+from claims.models import BillingItem, Claim, EmailLog, Reminder, Survey, Vehicle
 
 VEHICLES = [
     ("ECB-101", "Toyota Corolla Hybrid"),
@@ -43,6 +43,29 @@ class Command(BaseCommand):
             self.stdout.write("Created user demo / demo1234")
 
         now = timezone.now()
+        today = timezone.localdate()
+        for i, (reg, model) in enumerate(VEHICLES):
+            Vehicle.objects.get_or_create(
+                registration=reg,
+                defaults={
+                    "make_model": model,
+                    "year": 2020 + i,
+                    "acquired_on": today - timedelta(days=400 + 100 * i),
+                    # Spread renewals: some overdue, some due soon, some fine.
+                    "vrt_due": today + timedelta(days=(-12, 9, 21, 80, 200)[i]),
+                    "licence_due": today + timedelta(days=(25, -3, 150, 14, 300)[i]),
+                    "insurance_due": today + timedelta(days=(60, 45, 5, 220, 130)[i]),
+                },
+            )
+        Vehicle.objects.get_or_create(
+            registration="ECB-088",
+            defaults={
+                "make_model": "Ford Transit (sold)",
+                "year": 2017,
+                "status": Vehicle.Status.RETIRED,
+                "retired_on": today - timedelta(days=90),
+            },
+        )
         statuses = list(Claim.Status.values)
         for i in range(12):
             reg, model = random.choice(VEHICLES)

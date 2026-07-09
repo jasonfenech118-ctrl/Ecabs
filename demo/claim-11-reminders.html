@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "QxZ4RBiBFVS9XWOorgCiPyDIVXTi5qJHLgEroONoKD2hsXsMJuNW9gektxvxNP2L"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "uGlYP2TFnIfJKPnXZ0P6Lmy2B947Wak3RyIfFnTqh8aUHmcHFF5AroEYy3pzDbQz"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -22,6 +22,9 @@
       </a>
       <a href="claims.html" class="active">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
       </a>
       <a href="reminders.html" class="">
         <span class="nav-icon">◷</span> Reminders
@@ -41,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0011</span>
     <span class="muted">
-      ECB-330
+      ECB-407
        · Karl Borg
-       · 30 Apr 2026
+       · 16 May 2026
     </span>
   </div>
   <div class="row">
@@ -89,13 +92,13 @@
      class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-11-emails.html"
      hx-get="/claims/11/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-11-reminders.html"
      hx-get="/claims/11/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+     class="active" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-11-billing.html"
      hx-get="/claims/11/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-11-history.html"
      hx-get="/claims/11/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -149,21 +152,7 @@
     </thead>
     <tbody>
       
-      <tr>
-        <td>
-          <form hx-post="/reminders/8/toggle/" hx-target="#tab-panel">
-            <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
-                    aria-label="Mark done">
-          </form>
-        </td>
-        <td class="">Chase insurer for update</td>
-        <td>
-          
-          22 Jul 2026 22:34
-        </td>
-        <td class="muted">Demo Staff</td>
-        <td class="muted">—</td>
-      </tr>
+      <tr><td colspan="5" class="empty">No reminders for this claim.</td></tr>
       
     </tbody>
   </table>

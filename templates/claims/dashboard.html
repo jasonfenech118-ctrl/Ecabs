@@ -28,6 +28,10 @@
     <div class="value {% if stats.overdue_reminders %}alert{% endif %}">{{ stats.overdue_reminders }}</div>
   </div>
   <div class="stat">
+    <div class="label">Renewals due</div>
+    <div class="value {% if stats.compliance_due %}alert{% endif %}">{{ stats.compliance_due }}</div>
+  </div>
+  <div class="stat">
     <div class="label">Billing outstanding</div>
     <div class="value">€{{ stats.billing_outstanding|floatformat:2|intcomma }}</div>
   </div>
@@ -83,6 +87,30 @@
     </div>
   </div>
 </div>
+
+{% if compliance_due %}
+<div class="card mt">
+  <h2>Vehicle renewals — VRT, licence &amp; insurance</h2>
+  <div class="table-wrap">
+    <table class="list">
+      <thead><tr><th>Vehicle</th><th>Renewal</th><th>Due</th><th></th></tr></thead>
+      <tbody>
+        {% for item in compliance_due %}
+        <tr>
+          <td><a href="{% url 'vehicle_edit' item.vehicle.pk %}">{{ item.vehicle.registration }}</a>
+              <span class="muted">{{ item.vehicle.make_model }}</span></td>
+          <td>{{ item.label }}</td>
+          <td>{{ item.due|date:"d M Y" }}</td>
+          <td><span class="badge {% if item.state == 'overdue' %}overdue{% else %}pending{% endif %}">
+            {% if item.state == 'overdue' %}overdue{% else %}due soon{% endif %}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0"><a href="{% url 'vehicle_list' %}">Manage vehicles →</a></p>
+</div>
+{% endif %}
 
 {% if breakdown %}
 <div class="card mt">

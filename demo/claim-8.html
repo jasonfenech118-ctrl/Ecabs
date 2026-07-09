@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "T2lcVD5jTKIN8d2OKG4qh6tfHorrli0vOL0zsQA6YsSVDeGc2Uf4BO4RfY3G3Hjz"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "yQyeRo8mJP4yWyjSM4SI3A805S9HRU5HVIVvHJ87DfZJT58CsJ8cJCeW2Mu9yVBd"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -22,6 +22,9 @@
       </a>
       <a href="claims.html" class="active">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
       </a>
       <a href="reminders.html" class="">
         <span class="nav-icon">◷</span> Reminders
@@ -41,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0008</span>
     <span class="muted">
-      ECB-330
-       · Amy Farrugia
-       · 09 Jun 2026
+      ECB-101
+       · Karl Borg
+       · 15 Jun 2026
     </span>
   </div>
   <div class="row">
@@ -51,7 +54,7 @@
       <form hx-post="/claims/8/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge settled">Settled</span>
+  <span class="badge closed">Closed</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
@@ -62,9 +65,9 @@
     
       <option value="awaiting_insurer" >Awaiting insurer</option>
     
-      <option value="settled" selected>Settled</option>
+      <option value="settled" >Settled</option>
     
-      <option value="closed" >Closed</option>
+      <option value="closed" selected>Closed</option>
     
       <option value="rejected" >Rejected</option>
     
@@ -86,16 +89,16 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-8-surveys.html"
      hx-get="/claims/8/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-8-emails.html"
      hx-get="/claims/8/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
   <a href="claim-8-reminders.html"
      hx-get="/claims/8/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-8-billing.html"
      hx-get="/claims/8/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
   <a href="claim-8-history.html"
      hx-get="/claims/8/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -107,10 +110,10 @@
   <div class="card">
     <h3>Vehicle &amp; driver</h3>
     <dl class="kv">
-      <dt>Registration</dt><dd>ECB-330</dd>
-      <dt>Make / model</dt><dd>Kia Niro</dd>
-      <dt>Driver</dt><dd>Amy Farrugia</dd>
-      <dt>Phone</dt><dd>+356 7911528</dd>
+      <dt>Registration</dt><dd>ECB-101</dd>
+      <dt>Make / model</dt><dd>Toyota Corolla Hybrid</dd>
+      <dt>Driver</dt><dd>Karl Borg</dd>
+      <dt>Phone</dt><dd>+356 7910843</dd>
       <dt>Email</dt><dd>—</dd>
     </dl>
   </div>
@@ -119,10 +122,10 @@
     <h3>Accident</h3>
     <dl class="kv">
       <dt>Date &amp; time</dt>
-      <dd>09 Jun 2026 at 20:34</dd>
-      <dt>Location</dt><dd>Tower Road, Sliema</dd>
+      <dd>15 Jun 2026 at 20:59</dd>
+      <dt>Location</dt><dd>Coast Road, Bahar ic-Caghaq</dd>
       <dt>Police report</dt><dd>—</dd>
-      <dt>Fault</dt><dd>Third party at fault</dd>
+      <dt>Fault</dt><dd>Shared / knock for knock</dd>
     </dl>
   </div>
 
@@ -140,11 +143,11 @@
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
       <dt>Insurer</dt><dd>Elmo Insurance</dd>
-      <dt>Policy number</dt><dd>POL-406675</dd>
-      <dt>Excess</dt><dd>€750.00</dd>
+      <dt>Policy number</dt><dd>POL-566253</dd>
+      <dt>Excess</dt><dd>€500.00</dd>
       <dt>Created by</dt><dd>Demo Staff</dd>
-      <dt>Created</dt><dd>09 Jul 2026 22:34</dd>
-      <dt>Submitted</dt><dd>09 Jul 2026 22:34</dd>
+      <dt>Created</dt><dd>09 Jul 2026 22:59</dd>
+      <dt>Submitted</dt><dd>09 Jul 2026 22:59</dd>
       
     </dl>
   </div>

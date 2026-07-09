@@ -1,6 +1,28 @@
 from django import forms
 
-from .models import BillingItem, Claim, EmailLog, Reminder, Survey
+from .models import BillingItem, Claim, EmailLog, Reminder, Survey, Vehicle
+
+
+class VehicleForm(forms.ModelForm):
+    class Meta:
+        model = Vehicle
+        fields = [
+            "registration",
+            "make_model",
+            "year",
+            "acquired_on",
+            "vrt_due",
+            "licence_due",
+            "insurance_due",
+            "notes",
+        ]
+        widgets = {
+            "acquired_on": forms.DateInput(attrs={"type": "date"}),
+            "vrt_due": forms.DateInput(attrs={"type": "date"}),
+            "licence_due": forms.DateInput(attrs={"type": "date"}),
+            "insurance_due": forms.DateInput(attrs={"type": "date"}),
+            "notes": forms.Textarea(attrs={"rows": 2}),
+        }
 
 
 class ClaimForm(forms.ModelForm):
@@ -33,6 +55,8 @@ class ClaimForm(forms.ModelForm):
             "accident_date": forms.DateInput(attrs={"type": "date"}),
             "accident_time": forms.TimeInput(attrs={"type": "time"}),
             "description": forms.Textarea(attrs={"rows": 5}),
+            # Suggests active fleet vehicles via the datalist in claim_form.html.
+            "vehicle_registration": forms.TextInput(attrs={"list": "vehicle-regs"}),
         }
 
     def __init__(self, *args, **kwargs):

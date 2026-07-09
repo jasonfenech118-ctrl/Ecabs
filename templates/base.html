@@ -23,6 +23,9 @@
       <a href="{% url 'claim_list' %}" class="{% if 'claim' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">▤</span> Claims
       </a>
+      <a href="{% url 'vehicle_list' %}" class="{% if 'vehicle' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
       <a href="{% url 'reminder_list' %}" class="{% if 'reminder' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">◷</span> Reminders
       </a>

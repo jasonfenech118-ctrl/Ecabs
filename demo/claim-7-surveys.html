@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "i08OokkyRrXwA5DhfSD3zv5OAIJwKgh2dJNbVxPlW97E56hFx6OHTdGq8ilLsFA6"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "8AUbet2ckrSrZW1XSHKlignBJLbobCbzvshs4O2XeRNCWtQHym0PYitxGFwQSDH5"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -22,6 +22,9 @@
       </a>
       <a href="claims.html" class="active">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
       </a>
       <a href="reminders.html" class="">
         <span class="nav-icon">◷</span> Reminders
@@ -41,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0007</span>
     <span class="muted">
-      ECB-512
-       · Karl Borg
-       · 04 Apr 2026
+      ECB-101
+       · Luca Grech
+       · 07 May 2026
     </span>
   </div>
   <div class="row">
@@ -89,13 +92,13 @@
      class="active" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-7-emails.html"
      hx-get="/claims/7/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-7-reminders.html"
      hx-get="/claims/7/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-7-billing.html"
      hx-get="/claims/7/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">2</span></a>
   <a href="claim-7-history.html"
      hx-get="/claims/7/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -162,8 +165,8 @@
       <tr>
         <td>P. Attard</td>
         <td>Attard Loss Adjusters</td>
-        <td><span class="badge cancelled">Cancelled</span></td>
-        <td>17 Jul 2026 22:34</td>
+        <td><span class="badge requested">Requested</span></td>
+        <td>18 Jul 2026 22:59</td>
         <td>—</td>
         <td class="muted">Inspection at depot.</td>
       </tr>

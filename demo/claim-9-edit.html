@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "QP3kWK4w5NJMfFJhVrs5FHSGNZnIpRDxLyIHtXzjavTUKGnFdFDJZptilzZX7gWB"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "jxoVoLtqnGkKjEtdfAJcOEG8kZQpb1hSGpLce6tbh6fVgbiXVfZGuGM4hTbRS2No"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -22,6 +22,9 @@
       </a>
       <a href="claims.html" class="active">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
       </a>
       <a href="reminders.html" class="">
         <span class="nav-icon">◷</span> Reminders
@@ -41,7 +44,7 @@
   <div>
     <h1>Edit claim <span class="muted">CLM-2026-0009</span></h1>
     <div class="sub">
-      <span class="badge awaiting_insurer">Awaiting insurer</span>
+      <span class="badge open">Open</span>
       
     </div>
   </div>
@@ -55,32 +58,36 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="QP3kWK4w5NJMfFJhVrs5FHSGNZnIpRDxLyIHtXzjavTUKGnFdFDJZptilzZX7gWB">
+  <input type="hidden" name="csrfmiddlewaretoken" value="jxoVoLtqnGkKjEtdfAJcOEG8kZQpb1hSGpLce6tbh6fVgbiXVfZGuGM4hTbRS2No">
+
+  <datalist id="vehicle-regs">
+    <option value="ECB-101">Toyota Corolla Hybrid</option><option value="ECB-214">Mercedes-Benz Vito</option><option value="ECB-330">Kia Niro</option><option value="ECB-407">Toyota Prius+</option><option value="ECB-512">Volkswagen Caddy</option>
+  </datalist>
 
   <fieldset>
     <legend>Vehicle &amp; driver</legend>
     <div class="form-grid">
       <div class="field ">
   <label for="id_vehicle_registration">Vehicle registration</label>
-  <input type="text" name="vehicle_registration" value="ECB-214" maxlength="20" id="id_vehicle_registration">
+  <input type="text" name="vehicle_registration" value="ECB-101" list="vehicle-regs" maxlength="20" id="id_vehicle_registration">
   
 </div>
 
       <div class="field ">
   <label for="id_vehicle_make_model">Vehicle make model</label>
-  <input type="text" name="vehicle_make_model" value="Mercedes-Benz Vito" maxlength="100" id="id_vehicle_make_model">
+  <input type="text" name="vehicle_make_model" value="Toyota Corolla Hybrid" maxlength="100" id="id_vehicle_make_model">
   
 </div>
 
       <div class="field ">
   <label for="id_driver_name">Driver name</label>
-  <input type="text" name="driver_name" value="Karl Borg" maxlength="100" id="id_driver_name">
+  <input type="text" name="driver_name" value="Maria Vella" maxlength="100" id="id_driver_name">
   
 </div>
 
       <div class="field ">
   <label for="id_driver_phone">Driver phone</label>
-  <input type="text" name="driver_phone" value="+356 7924637" maxlength="30" id="id_driver_phone">
+  <input type="text" name="driver_phone" value="+356 7943686" maxlength="30" id="id_driver_phone">
   
 </div>
 
@@ -98,19 +105,19 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_accident_date">Accident date</label>
-  <input type="date" name="accident_date" value="08/06/2026" id="id_accident_date">
+  <input type="date" name="accident_date" value="06/06/2026" id="id_accident_date">
   
 </div>
 
       <div class="field ">
   <label for="id_accident_time">Accident time</label>
-  <input type="time" name="accident_time" value="20:34:32" id="id_accident_time">
+  <input type="time" name="accident_time" value="20:59:44" id="id_accident_time">
   
 </div>
 
       <div class="field ">
   <label for="id_accident_location">Accident location</label>
-  <input type="text" name="accident_location" value="Valletta Road, Luqa" maxlength="255" id="id_accident_location">
+  <input type="text" name="accident_location" value="Tower Road, Sliema" maxlength="255" id="id_accident_location">
   
 </div>
 
@@ -180,13 +187,13 @@ Third party changed lanes without indicating and clipped the front bumper.</text
     <div class="form-grid">
       <div class="field ">
   <label for="id_insurer">Insurer</label>
-  <input type="text" name="insurer" value="GasanMamo" maxlength="100" id="id_insurer">
+  <input type="text" name="insurer" value="Atlas Insurance" maxlength="100" id="id_insurer">
   
 </div>
 
       <div class="field ">
   <label for="id_policy_number">Policy number</label>
-  <input type="text" name="policy_number" value="POL-584967" maxlength="50" id="id_policy_number">
+  <input type="text" name="policy_number" value="POL-393191" maxlength="50" id="id_policy_number">
   
 </div>
 

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "1uXxbCajq7BCgVwYWPBSHPL1MuqmWhEAWdCUIPF6vPLKLWame3Mw1xmDk42BEGXE"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "aR5AkOKBqzJTWD6NIDHn3cFumB4utsEcxJsRa9KmkZE4TaVxoiXRJeLqjvpWataI"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -22,6 +22,9 @@
       </a>
       <a href="claims.html" class="active">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
       </a>
       <a href="reminders.html" class="">
         <span class="nav-icon">◷</span> Reminders
@@ -41,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0009</span>
     <span class="muted">
-      ECB-214
-       · Karl Borg
-       · 08 Jun 2026
+      ECB-101
+       · Maria Vella
+       · 06 Jun 2026
     </span>
   </div>
   <div class="row">
@@ -51,16 +54,16 @@
       <form hx-post="/claims/9/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge awaiting_insurer">Awaiting insurer</span>
+  <span class="badge open">Open</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
-      <option value="open" >Open</option>
+      <option value="open" selected>Open</option>
     
       <option value="awaiting_survey" >Awaiting survey</option>
     
-      <option value="awaiting_insurer" selected>Awaiting insurer</option>
+      <option value="awaiting_insurer" >Awaiting insurer</option>
     
       <option value="settled" >Settled</option>
     
@@ -86,16 +89,16 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-9-surveys.html"
      hx-get="/claims/9/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-9-emails.html"
      hx-get="/claims/9/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
   <a href="claim-9-reminders.html"
      hx-get="/claims/9/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-9-billing.html"
      hx-get="/claims/9/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
+     class="active" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
   <a href="claim-9-history.html"
      hx-get="/claims/9/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -178,30 +181,12 @@
     <tbody>
       
       <tr>
-        <td>Bumper repair</td>
-        <td>Legal</td>
-        <td>—</td>
-        <td>—</td>
-        <td><span class="badge invoiced">Invoiced</span></td>
-        <td class="right">€96.00</td>
-      </tr>
-      
-      <tr>
-        <td>Survey fee</td>
+        <td>Rental replacement</td>
         <td>Repair</td>
         <td>—</td>
         <td>—</td>
-        <td><span class="badge invoiced">Invoiced</span></td>
-        <td class="right">€480.00</td>
-      </tr>
-      
-      <tr>
-        <td>Rental replacement</td>
-        <td>Legal</td>
-        <td>—</td>
-        <td>—</td>
-        <td><span class="badge invoiced">Invoiced</span></td>
-        <td class="right">€2356.00</td>
+        <td><span class="badge pending">Pending</span></td>
+        <td class="right">€2006.00</td>
       </tr>
       
     </tbody>
@@ -209,7 +194,7 @@
     <tfoot>
       <tr>
         <td colspan="5" class="right"><strong>Total</strong></td>
-        <td class="right"><strong>€2932</strong></td>
+        <td class="right"><strong>€2006</strong></td>
       </tr>
     </tfoot>
     

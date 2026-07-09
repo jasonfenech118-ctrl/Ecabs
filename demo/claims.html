@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "CoBslGUfdbgtFYMBu8dudVlsyZ6Q61Q4x7gPSTp2iTqBaZqZMmo8xDW46zI5Oq98"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "LMzSeDbNLJ4dNAHVohJvShOZDP043n3p8EW94YbyF9ZoK7wF4WZZyjUVAJlwKozV"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -22,6 +22,9 @@
       </a>
       <a href="claims.html" class="active">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
       </a>
       <a href="reminders.html" class="">
         <span class="nav-icon">◷</span> Reminders
@@ -42,7 +45,7 @@
     <h1>Claims</h1>
     <div class="sub">Search by reference, vehicle, driver, third party, policy or location</div>
   </div>
-  <a href="claim-13-edit.html" class="btn btn-primary">+ New claim</a>
+  <a href="claim-10-edit.html" class="btn btn-primary">+ New claim</a>
 </div>
 
 <div class="card">
@@ -82,22 +85,12 @@
       </thead>
       <tbody id="claim-rows">
         
-<tr class="clickable" onclick="window.location='/claims/13/'">
-  <td><a href="claim-13.html">CLM-2026-0013</a></td>
-  <td><span class="badge draft">Draft</span></td>
-  <td>ECB-777</td>
-  <td>Maria Vella</td>
-  <td>—</td>
-  <td>—</td>
-  <td class="muted">09 Jul 2026</td>
-</tr>
-
 <tr class="clickable" onclick="window.location='/claims/12/'">
   <td><a href="claim-12.html">CLM-2026-0012</a></td>
-  <td><span class="badge draft">Draft</span></td>
-  <td>ECB-214 <span class="muted">(Mercedes-Benz Vito)</span></td>
-  <td>Luca Grech</td>
-  <td>16 Apr 2026</td>
+  <td><span class="badge open">Open</span></td>
+  <td>ECB-512 <span class="muted">(Volkswagen Caddy)</span></td>
+  <td>Josef Camilleri</td>
+  <td>16 Mar 2026</td>
   <td>Elmo Insurance</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
@@ -105,39 +98,39 @@
 <tr class="clickable" onclick="window.location='/claims/11/'">
   <td><a href="claim-11.html">CLM-2026-0011</a></td>
   <td><span class="badge closed">Closed</span></td>
-  <td>ECB-330 <span class="muted">(Kia Niro)</span></td>
+  <td>ECB-407 <span class="muted">(Toyota Prius+)</span></td>
   <td>Karl Borg</td>
-  <td>30 Apr 2026</td>
-  <td>Elmo Insurance</td>
+  <td>16 May 2026</td>
+  <td>GasanMamo</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
 
 <tr class="clickable" onclick="window.location='/claims/10/'">
   <td><a href="claim-10.html">CLM-2026-0010</a></td>
-  <td><span class="badge open">Open</span></td>
-  <td>ECB-330 <span class="muted">(Kia Niro)</span></td>
-  <td>Maria Vella</td>
-  <td>10 Jun 2026</td>
+  <td><span class="badge draft">Draft</span></td>
+  <td>ECB-214 <span class="muted">(Mercedes-Benz Vito)</span></td>
+  <td>Amy Farrugia</td>
+  <td>17 May 2026</td>
   <td>Elmo Insurance</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
 
 <tr class="clickable" onclick="window.location='/claims/9/'">
   <td><a href="claim-9.html">CLM-2026-0009</a></td>
-  <td><span class="badge awaiting_insurer">Awaiting insurer</span></td>
-  <td>ECB-214 <span class="muted">(Mercedes-Benz Vito)</span></td>
-  <td>Karl Borg</td>
-  <td>08 Jun 2026</td>
-  <td>GasanMamo</td>
+  <td><span class="badge open">Open</span></td>
+  <td>ECB-101 <span class="muted">(Toyota Corolla Hybrid)</span></td>
+  <td>Maria Vella</td>
+  <td>06 Jun 2026</td>
+  <td>Atlas Insurance</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
 
 <tr class="clickable" onclick="window.location='/claims/8/'">
   <td><a href="claim-8.html">CLM-2026-0008</a></td>
-  <td><span class="badge settled">Settled</span></td>
-  <td>ECB-330 <span class="muted">(Kia Niro)</span></td>
-  <td>Amy Farrugia</td>
-  <td>09 Jun 2026</td>
+  <td><span class="badge closed">Closed</span></td>
+  <td>ECB-101 <span class="muted">(Toyota Corolla Hybrid)</span></td>
+  <td>Karl Borg</td>
+  <td>15 Jun 2026</td>
   <td>Elmo Insurance</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
@@ -145,69 +138,69 @@
 <tr class="clickable" onclick="window.location='/claims/7/'">
   <td><a href="claim-7.html">CLM-2026-0007</a></td>
   <td><span class="badge draft">Draft</span></td>
-  <td>ECB-512 <span class="muted">(Volkswagen Caddy)</span></td>
-  <td>Karl Borg</td>
-  <td>04 Apr 2026</td>
-  <td>Elmo Insurance</td>
+  <td>ECB-101 <span class="muted">(Toyota Corolla Hybrid)</span></td>
+  <td>Luca Grech</td>
+  <td>07 May 2026</td>
+  <td>GasanMamo</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
 
 <tr class="clickable" onclick="window.location='/claims/6/'">
   <td><a href="claim-6.html">CLM-2026-0006</a></td>
-  <td><span class="badge settled">Settled</span></td>
+  <td><span class="badge awaiting_survey">Awaiting survey</span></td>
   <td>ECB-214 <span class="muted">(Mercedes-Benz Vito)</span></td>
-  <td>Luca Grech</td>
-  <td>04 Jul 2026</td>
-  <td>Atlas Insurance</td>
+  <td>Karl Borg</td>
+  <td>10 Jun 2026</td>
+  <td>Elmo Insurance</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
 
 <tr class="clickable" onclick="window.location='/claims/5/'">
   <td><a href="claim-5.html">CLM-2026-0005</a></td>
   <td><span class="badge draft">Draft</span></td>
-  <td>ECB-101 <span class="muted">(Toyota Corolla Hybrid)</span></td>
-  <td>Luca Grech</td>
-  <td>18 Mar 2026</td>
-  <td>Mapfre Middlesea</td>
+  <td>ECB-407 <span class="muted">(Toyota Prius+)</span></td>
+  <td>Maria Vella</td>
+  <td>22 May 2026</td>
+  <td>Elmo Insurance</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
 
 <tr class="clickable" onclick="window.location='/claims/4/'">
   <td><a href="claim-4.html">CLM-2026-0004</a></td>
-  <td><span class="badge awaiting_survey">Awaiting survey</span></td>
-  <td>ECB-330 <span class="muted">(Kia Niro)</span></td>
-  <td>Karl Borg</td>
-  <td>07 Jul 2026</td>
-  <td>Elmo Insurance</td>
+  <td><span class="badge settled">Settled</span></td>
+  <td>ECB-407 <span class="muted">(Toyota Prius+)</span></td>
+  <td>Luca Grech</td>
+  <td>13 May 2026</td>
+  <td>Atlas Insurance</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
 
 <tr class="clickable" onclick="window.location='/claims/3/'">
   <td><a href="claim-3.html">CLM-2026-0003</a></td>
-  <td><span class="badge open">Open</span></td>
-  <td>ECB-512 <span class="muted">(Volkswagen Caddy)</span></td>
-  <td>Josef Camilleri</td>
-  <td>03 May 2026</td>
-  <td>GasanMamo</td>
+  <td><span class="badge rejected">Rejected</span></td>
+  <td>ECB-407 <span class="muted">(Toyota Prius+)</span></td>
+  <td>Amy Farrugia</td>
+  <td>29 Apr 2026</td>
+  <td>Elmo Insurance</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
 
 <tr class="clickable" onclick="window.location='/claims/2/'">
   <td><a href="claim-2.html">CLM-2026-0002</a></td>
   <td><span class="badge awaiting_insurer">Awaiting insurer</span></td>
-  <td>ECB-101 <span class="muted">(Toyota Corolla Hybrid)</span></td>
-  <td>Josef Camilleri</td>
-  <td>27 Mar 2026</td>
-  <td>Mapfre Middlesea</td>
+  <td>ECB-407 <span class="muted">(Toyota Prius+)</span></td>
+  <td>Maria Vella</td>
+  <td>10 May 2026</td>
+  <td>Atlas Insurance</td>
   <td class="muted">09 Jul 2026</td>
 </tr>
 
 <tr class="clickable" onclick="window.location='/claims/1/'">
   <td><a href="claim-1.html">CLM-2026-0001</a></td>
-  <td><span class="badge open">Open</span></td>
-  <td>ECB-101 <span class="muted">(Toyota Corolla Hybrid)</span></td>
-  <td>Josef Camilleri</td>
-  <td>26 Mar 2026</td>
+  <td><span class="badge closed">Closed</span></td>
+  <td>ECB-330 <span class="muted">(Kia Niro)</span></td>
+  <td>Karl Borg</td>
+  <td>27 Jun 2026</td>
   <td>Elmo Insurance</td>
   <td class="muted">09 Jul 2026</td>
 </tr>

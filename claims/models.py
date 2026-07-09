@@ -6,11 +6,91 @@ items all hang off it. Files live in Google Drive — only the Drive file ID
 and metadata are stored here.
 """
 
+from datetime import timedelta
+
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
+
+
+def compliance_state(due_date, soon_days=30):
+    """'overdue', 'soon' (within soon_days), 'ok', or '' when no date is set."""
+    if not due_date:
+        return ""
+    today = timezone.localdate()
+    if due_date < today:
+        return "overdue"
+    if due_date <= today + timedelta(days=soon_days):
+        return "soon"
+    return "ok"
+
+
+class Vehicle(models.Model):
+    """A fleet vehicle. Retire (close) vehicles that leave the company rather
+    than deleting them, so their claim history keeps its context."""
+
+    class Status(models.TextChoices):
+        ACTIVE = "active", "Active"
+        RETIRED = "retired", "No longer in fleet"
+
+    registration = models.CharField(max_length=20, unique=True)
+    make_model = models.CharField(max_length=100, blank=True)
+    year = models.PositiveIntegerField(null=True, blank=True)
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.ACTIVE, db_index=True
+    )
+    acquired_on = models.DateField(null=True, blank=True)
+    retired_on = models.DateField(null=True, blank=True)
+
+    # Compliance due dates — drive the renewal reminders.
+    vrt_due = models.DateField("VRT due", null=True, blank=True)
+    licence_due = models.DateField("Road licence due", null=True, blank=True)
+    insurance_due = models.DateField("Insurance renewal", null=True, blank=True)
+
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    history = HistoricalRecords()
+
+    class Meta:
+        ordering = ["registration"]
+
+    def __str__(self):
+        return self.registration
+
+    @property
+    def is_active(self):
+        return self.status == self.Status.ACTIVE
+
+    def compliance_items(self):
+        """(label, due date, state) for each tracked renewal."""
+        return [
+            ("VRT", self.vrt_due, compliance_state(self.vrt_due)),
+            ("Road licence", self.licence_due, compliance_state(self.licence_due)),
+            ("Insurance", self.insurance_due, compliance_state(self.insurance_due)),
+        ]
+
+    @property
+    def worst_compliance_state(self):
+        states = [s for _, _, s in self.compliance_items() if s]
+        if "overdue" in states:
+            return "overdue"
+        if "soon" in states:
+            return "soon"
+        return "ok" if states else ""
+
+    def retire(self):
+        self.status = self.Status.RETIRED
+        self.retired_on = timezone.localdate()
+        self.save()
+
+    def reactivate(self):
+        self.status = self.Status.ACTIVE
+        self.retired_on = None
+        self.save()
 
 
 class Claim(models.Model):

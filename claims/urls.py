@@ -17,6 +17,11 @@ urlpatterns = [
     path("claims/<int:pk>/emails/add/", views.email_add, name="email_add"),
     path("claims/<int:pk>/reminders/add/", views.reminder_add, name="reminder_add"),
     path("claims/<int:pk>/billing/add/", views.billing_add, name="billing_add"),
+    path("vehicles/", views.vehicle_list, name="vehicle_list"),
+    path("vehicles/add/", views.vehicle_add, name="vehicle_add"),
+    path("vehicles/<int:pk>/", views.vehicle_edit, name="vehicle_edit"),
+    path("vehicles/<int:pk>/toggle/", views.vehicle_toggle_status, name="vehicle_toggle_status"),
+    path("vehicles/<int:pk>/delete/", views.vehicle_delete, name="vehicle_delete"),
     path("reminders/", views.reminder_list, name="reminder_list"),
     path("reminders/<int:pk>/toggle/", views.reminder_toggle, name="reminder_toggle"),
 ]

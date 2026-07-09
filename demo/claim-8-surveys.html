@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "aKyZmxYwPe11phtzSsSGPBurHpgA1YCC5tdmTKtjUWb9Ui7XaG3k9j53fZSPJnVG"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "WJiHOzYpY4vP1DfhfrUpd9ah7VHNUHBRjBFYEUYaSuq0Ya41V6aTTbgd4P2fBI7n"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -22,6 +22,9 @@
       </a>
       <a href="claims.html" class="active">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
       </a>
       <a href="reminders.html" class="">
         <span class="nav-icon">◷</span> Reminders
@@ -41,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0008</span>
     <span class="muted">
-      ECB-330
-       · Amy Farrugia
-       · 09 Jun 2026
+      ECB-101
+       · Karl Borg
+       · 15 Jun 2026
     </span>
   </div>
   <div class="row">
@@ -51,7 +54,7 @@
       <form hx-post="/claims/8/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge settled">Settled</span>
+  <span class="badge closed">Closed</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
@@ -62,9 +65,9 @@
     
       <option value="awaiting_insurer" >Awaiting insurer</option>
     
-      <option value="settled" selected>Settled</option>
+      <option value="settled" >Settled</option>
     
-      <option value="closed" >Closed</option>
+      <option value="closed" selected>Closed</option>
     
       <option value="rejected" >Rejected</option>
     
@@ -86,16 +89,16 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-8-surveys.html"
      hx-get="/claims/8/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
+     class="active" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-8-emails.html"
      hx-get="/claims/8/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
   <a href="claim-8-reminders.html"
      hx-get="/claims/8/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-8-billing.html"
      hx-get="/claims/8/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
   <a href="claim-8-history.html"
      hx-get="/claims/8/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -159,7 +162,14 @@
     </thead>
     <tbody>
       
-      <tr><td colspan="6" class="empty">No surveys for this claim.</td></tr>
+      <tr>
+        <td>P. Attard</td>
+        <td>Attard Loss Adjusters</td>
+        <td><span class="badge requested">Requested</span></td>
+        <td>30 Jun 2026 22:59</td>
+        <td>—</td>
+        <td class="muted">Inspection at depot.</td>
+      </tr>
       
     </tbody>
   </table>

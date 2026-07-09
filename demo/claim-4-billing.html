@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "EnGyQHVyU5LlPW1kb7g2SslCbpAVK2osz6lVnUqlZNVtkXFItlrGcaWeJZcasrHw"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "kNGjiyZNipvNwWYOMaM7a5uZvWFXM2uIHF3A8TZycPqYttNysP2BQ7AVsQ0pt30e"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -22,6 +22,9 @@
       </a>
       <a href="claims.html" class="active">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
       </a>
       <a href="reminders.html" class="">
         <span class="nav-icon">◷</span> Reminders
@@ -41,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0004</span>
     <span class="muted">
-      ECB-330
-       · Karl Borg
-       · 07 Jul 2026
+      ECB-407
+       · Luca Grech
+       · 13 May 2026
     </span>
   </div>
   <div class="row">
@@ -51,18 +54,18 @@
       <form hx-post="/claims/4/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge awaiting_survey">Awaiting survey</span>
+  <span class="badge settled">Settled</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
       <option value="open" >Open</option>
     
-      <option value="awaiting_survey" selected>Awaiting survey</option>
+      <option value="awaiting_survey" >Awaiting survey</option>
     
       <option value="awaiting_insurer" >Awaiting insurer</option>
     
-      <option value="settled" >Settled</option>
+      <option value="settled" selected>Settled</option>
     
       <option value="closed" >Closed</option>
     
@@ -95,7 +98,7 @@
      class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-4-billing.html"
      hx-get="/claims/4/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Billing<span class="tab-count">2</span></a>
+     class="active" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
   <a href="claim-4-history.html"
      hx-get="/claims/4/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -178,21 +181,30 @@
     <tbody>
       
       <tr>
-        <td>Bumper repair</td>
+        <td>Rental replacement</td>
         <td>Other</td>
         <td>—</td>
         <td>—</td>
-        <td><span class="badge pending">Pending</span></td>
-        <td class="right">€395.00</td>
+        <td><span class="badge written_off">Written off</span></td>
+        <td class="right">€1309.00</td>
       </tr>
       
       <tr>
         <td>Towing to depot</td>
+        <td>Towing</td>
+        <td>—</td>
+        <td>—</td>
+        <td><span class="badge written_off">Written off</span></td>
+        <td class="right">€265.00</td>
+      </tr>
+      
+      <tr>
+        <td>Bumper repair</td>
         <td>Legal</td>
         <td>—</td>
         <td>—</td>
-        <td><span class="badge pending">Pending</span></td>
-        <td class="right">€1088.00</td>
+        <td><span class="badge paid">Paid</span></td>
+        <td class="right">€251.00</td>
       </tr>
       
     </tbody>
@@ -200,7 +212,7 @@
     <tfoot>
       <tr>
         <td colspan="5" class="right"><strong>Total</strong></td>
-        <td class="right"><strong>€1483</strong></td>
+        <td class="right"><strong>€1825</strong></td>
       </tr>
     </tfoot>
     

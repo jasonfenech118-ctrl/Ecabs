@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}{{ vehicle.registration }} — vehicle{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ vehicle.registration }} <span class="muted">{{ vehicle.make_model }}</span></h1>
+    <div class="sub">
+      {% if vehicle.is_active %}<span class="badge open">Active</span>
+      {% else %}<span class="badge closed">No longer in fleet{% if vehicle.retired_on %} since {{ vehicle.retired_on|date:"d M Y" }}{% endif %}</span>{% endif %}
+    </div>
+  </div>
+  <a href="{% url 'vehicle_list' %}" class="btn">← All vehicles</a>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+  <fieldset>
+    <legend>Vehicle details</legend>
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.registration %}
+      {% include "claims/partials/field.html" with field=form.make_model %}
+      {% include "claims/partials/field.html" with field=form.year %}
+      {% include "claims/partials/field.html" with field=form.acquired_on %}
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Renewals — used for the due-date reminders</legend>
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.vrt_due %}
+      {% include "claims/partials/field.html" with field=form.licence_due %}
+      {% include "claims/partials/field.html" with field=form.insurance_due %}
+    </div>
+    <p class="muted" style="font-size:.8rem; margin-bottom:0">
+      After renewing, update the date to the next due date and the reminder clears itself.
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend>Notes</legend>
+    {% include "claims/partials/field.html" with field=form.notes %}
+  </fieldset>
+  <div class="row" style="margin-bottom:1.5rem">
+    <button type="submit" class="btn btn-primary">Save vehicle</button>
+  </div>
+</form>
+
+<div class="card" style="margin-bottom:1rem">
+  <h3>Claims for this vehicle</h3>
+  {% if related_claims %}
+    <div class="table-wrap">
+      <table class="list">
+        <thead><tr><th>Ref</th><th>Status</th><th>Accident date</th><th>Driver</th></tr></thead>
+        <tbody>
+          {% for c in related_claims %}
+          <tr>
+            <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
+            <td><span class="badge {{ c.status }}">{{ c.get_status_display }}</span></td>
+            <td>{{ c.accident_date|date:"d M Y"|default:"—" }}</td>
+            <td>{{ c.driver_name|default:"—" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="muted" style="margin:0">No claims recorded against this registration.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3>Fleet status</h3>
+  <div class="row">
+    <form method="post" action="{% url 'vehicle_toggle_status' vehicle.pk %}">
+      {% csrf_token %}
+      {% if vehicle.is_active %}
+        <button type="submit" class="btn">Mark as left fleet</button>
+      {% else %}
+        <button type="submit" class="btn">Reactivate vehicle</button>
+      {% endif %}
+    </form>
+    <form method="post" action="{% url 'vehicle_delete' vehicle.pk %}"
+          onsubmit="return confirm('Delete {{ vehicle.registration }} permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
+      {% csrf_token %}
+      <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
+    </form>
+  </div>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">
+    Prefer “Mark as left fleet” for vehicles that leave the company — it keeps the
+    record and its claim history. Delete is for entries created by mistake.
+  </p>
+</div>
+{% endblock %}

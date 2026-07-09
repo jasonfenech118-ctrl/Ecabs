@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "LSQXIxpILj2BdpYkAG2b4lX1mDPwOseuGBvkfKUvQ1cJIqCISUdPo3yDUdrLwRxy"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "7PajFQwVw1yc6My2sykvZITmKoZrAvSIuHxAvbwGqrtn3jnM8dAZFKZiHikThwoe"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -22,6 +22,9 @@
       </a>
       <a href="claims.html" class="active">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
       </a>
       <a href="reminders.html" class="">
         <span class="nav-icon">◷</span> Reminders
@@ -41,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0011</span>
     <span class="muted">
-      ECB-330
+      ECB-407
        · Karl Borg
-       · 30 Apr 2026
+       · 16 May 2026
     </span>
   </div>
   <div class="row">
@@ -89,13 +92,13 @@
      class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-11-emails.html"
      hx-get="/claims/11/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-11-reminders.html"
      hx-get="/claims/11/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-11-billing.html"
      hx-get="/claims/11/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-11-history.html"
      hx-get="/claims/11/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -107,10 +110,10 @@
   <div class="card">
     <h3>Vehicle &amp; driver</h3>
     <dl class="kv">
-      <dt>Registration</dt><dd>ECB-330</dd>
-      <dt>Make / model</dt><dd>Kia Niro</dd>
+      <dt>Registration</dt><dd>ECB-407</dd>
+      <dt>Make / model</dt><dd>Toyota Prius+</dd>
       <dt>Driver</dt><dd>Karl Borg</dd>
-      <dt>Phone</dt><dd>+356 7925350</dd>
+      <dt>Phone</dt><dd>+356 7978336</dd>
       <dt>Email</dt><dd>—</dd>
     </dl>
   </div>
@@ -119,10 +122,10 @@
     <h3>Accident</h3>
     <dl class="kv">
       <dt>Date &amp; time</dt>
-      <dd>30 Apr 2026 at 20:34</dd>
-      <dt>Location</dt><dd>Valletta Road, Luqa</dd>
+      <dd>16 May 2026 at 20:59</dd>
+      <dt>Location</dt><dd>Coast Road, Bahar ic-Caghaq</dd>
       <dt>Police report</dt><dd>—</dd>
-      <dt>Fault</dt><dd>Third party at fault</dd>
+      <dt>Fault</dt><dd>Shared / knock for knock</dd>
     </dl>
   </div>
 
@@ -139,12 +142,12 @@
   <div class="card">
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
-      <dt>Insurer</dt><dd>Elmo Insurance</dd>
-      <dt>Policy number</dt><dd>POL-327942</dd>
-      <dt>Excess</dt><dd>€500.00</dd>
+      <dt>Insurer</dt><dd>GasanMamo</dd>
+      <dt>Policy number</dt><dd>POL-503082</dd>
+      <dt>Excess</dt><dd>€750.00</dd>
       <dt>Created by</dt><dd>Demo Staff</dd>
-      <dt>Created</dt><dd>09 Jul 2026 22:34</dd>
-      <dt>Submitted</dt><dd>09 Jul 2026 22:34</dd>
+      <dt>Created</dt><dd>09 Jul 2026 22:59</dd>
+      <dt>Submitted</dt><dd>09 Jul 2026 22:59</dd>
       
     </dl>
   </div>

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "YTCllTg1C9WnMwxBjDFrCGkzCXWCBBG6TChIS6LOHR6vhxbZBRQ5WoVbaxyRj0Za"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "oO1Em6RgWmJEMK57jEsYIZlDyKMhxk4kLGoVcrR1QMEPJhURZjIso1rzvE7JelAQ"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -22,6 +22,9 @@
       </a>
       <a href="claims.html" class="active">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
       </a>
       <a href="reminders.html" class="">
         <span class="nav-icon">◷</span> Reminders
@@ -39,10 +42,10 @@
     
 <div class="page-head">
   <div>
-    <h1>New claim <span class="muted">CLM-2026-0012</span></h1>
+    <h1>Edit claim <span class="muted">CLM-2026-0012</span></h1>
     <div class="sub">
-      <span class="badge draft">Draft</span>
-       · auto-saves as you type; stays a draft until you submit
+      <span class="badge open">Open</span>
+      
     </div>
   </div>
   <a href="claim-12.html" class="btn">View claim</a>
@@ -55,32 +58,36 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="YTCllTg1C9WnMwxBjDFrCGkzCXWCBBG6TChIS6LOHR6vhxbZBRQ5WoVbaxyRj0Za">
+  <input type="hidden" name="csrfmiddlewaretoken" value="oO1Em6RgWmJEMK57jEsYIZlDyKMhxk4kLGoVcrR1QMEPJhURZjIso1rzvE7JelAQ">
+
+  <datalist id="vehicle-regs">
+    <option value="ECB-101">Toyota Corolla Hybrid</option><option value="ECB-214">Mercedes-Benz Vito</option><option value="ECB-330">Kia Niro</option><option value="ECB-407">Toyota Prius+</option><option value="ECB-512">Volkswagen Caddy</option>
+  </datalist>
 
   <fieldset>
     <legend>Vehicle &amp; driver</legend>
     <div class="form-grid">
       <div class="field ">
   <label for="id_vehicle_registration">Vehicle registration</label>
-  <input type="text" name="vehicle_registration" value="ECB-214" maxlength="20" id="id_vehicle_registration">
+  <input type="text" name="vehicle_registration" value="ECB-512" list="vehicle-regs" maxlength="20" id="id_vehicle_registration">
   
 </div>
 
       <div class="field ">
   <label for="id_vehicle_make_model">Vehicle make model</label>
-  <input type="text" name="vehicle_make_model" value="Mercedes-Benz Vito" maxlength="100" id="id_vehicle_make_model">
+  <input type="text" name="vehicle_make_model" value="Volkswagen Caddy" maxlength="100" id="id_vehicle_make_model">
   
 </div>
 
       <div class="field ">
   <label for="id_driver_name">Driver name</label>
-  <input type="text" name="driver_name" value="Luca Grech" maxlength="100" id="id_driver_name">
+  <input type="text" name="driver_name" value="Josef Camilleri" maxlength="100" id="id_driver_name">
   
 </div>
 
       <div class="field ">
   <label for="id_driver_phone">Driver phone</label>
-  <input type="text" name="driver_phone" value="+356 7970589" maxlength="30" id="id_driver_phone">
+  <input type="text" name="driver_phone" value="+356 7963302" maxlength="30" id="id_driver_phone">
   
 </div>
 
@@ -98,19 +105,19 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_accident_date">Accident date</label>
-  <input type="date" name="accident_date" value="16/04/2026" id="id_accident_date">
+  <input type="date" name="accident_date" value="16/03/2026" id="id_accident_date">
   
 </div>
 
       <div class="field ">
   <label for="id_accident_time">Accident time</label>
-  <input type="time" name="accident_time" value="20:34:32" id="id_accident_time">
+  <input type="time" name="accident_time" value="20:59:44" id="id_accident_time">
   
 </div>
 
       <div class="field ">
   <label for="id_accident_location">Accident location</label>
-  <input type="text" name="accident_location" value="Triq ix-Xatt, Gzira" maxlength="255" id="id_accident_location">
+  <input type="text" name="accident_location" value="Valletta Road, Luqa" maxlength="255" id="id_accident_location">
   
 </div>
 
@@ -168,7 +175,7 @@ Third party changed lanes without indicating and clipped the front bumper.</text
 
       <div class="field ">
   <label for="id_third_party_insurer">Third party insurer</label>
-  <input type="text" name="third_party_insurer" value="GasanMamo" maxlength="100" id="id_third_party_insurer">
+  <input type="text" name="third_party_insurer" value="Mapfre Middlesea" maxlength="100" id="id_third_party_insurer">
   
 </div>
 
@@ -186,7 +193,7 @@ Third party changed lanes without indicating and clipped the front bumper.</text
 
       <div class="field ">
   <label for="id_policy_number">Policy number</label>
-  <input type="text" name="policy_number" value="POL-151874" maxlength="50" id="id_policy_number">
+  <input type="text" name="policy_number" value="POL-633202" maxlength="50" id="id_policy_number">
   
 </div>
 
@@ -201,7 +208,7 @@ Third party changed lanes without indicating and clipped the front bumper.</text
 
   <div class="form-footer">
     
-      <button type="submit" class="btn btn-primary">Submit claim</button>
+      <button type="submit" class="btn btn-primary">Save changes</button>
     
     <span id="save-status" class="save-status" aria-live="polite"></span>
   </div>

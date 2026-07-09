@@ -1,7 +1,30 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import AccidentPhoto, BillingItem, Claim, EmailLog, Reminder, Survey
+from .models import (
+    AccidentPhoto,
+    BillingItem,
+    Claim,
+    EmailLog,
+    Reminder,
+    Survey,
+    Vehicle,
+)
+
+
+@admin.register(Vehicle)
+class VehicleAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "registration",
+        "make_model",
+        "status",
+        "vrt_due",
+        "licence_due",
+        "insurance_due",
+        "retired_on",
+    )
+    list_filter = ("status",)
+    search_fields = ("registration", "make_model")
 
 
 class AccidentPhotoInline(admin.TabularInline):

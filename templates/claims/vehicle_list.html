@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Vehicles — eCabs Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Vehicles</h1>
+    <div class="sub">Fleet register with VRT, road licence and insurance renewals</div>
+  </div>
+</div>
+
+{% if compliance_due %}
+<div class="card" style="margin-bottom:1rem">
+  <h2>Renewals due in the next 30 days</h2>
+  <div class="table-wrap">
+    <table class="list">
+      <thead><tr><th>Vehicle</th><th>Renewal</th><th>Due</th><th></th></tr></thead>
+      <tbody>
+        {% for item in compliance_due %}
+        <tr>
+          <td><a href="{% url 'vehicle_edit' item.vehicle.pk %}">{{ item.vehicle.registration }}</a>
+              <span class="muted">{{ item.vehicle.make_model }}</span></td>
+          <td>{{ item.label }}</td>
+          <td>{{ item.due|date:"d M Y" }}</td>
+          <td><span class="badge {% if item.state == 'overdue' %}overdue{% else %}pending{% endif %}">
+            {% if item.state == 'overdue' %}overdue{% else %}due soon{% endif %}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<details class="inline-form" {% if form_open %}open{% endif %}>
+  <summary>Add vehicle</summary>
+  <form method="post" action="{% url 'vehicle_add' %}" class="card">
+    {% csrf_token %}
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.registration %}
+      {% include "claims/partials/field.html" with field=form.make_model %}
+      {% include "claims/partials/field.html" with field=form.year %}
+      {% include "claims/partials/field.html" with field=form.acquired_on %}
+      {% include "claims/partials/field.html" with field=form.vrt_due %}
+      {% include "claims/partials/field.html" with field=form.licence_due %}
+      {% include "claims/partials/field.html" with field=form.insurance_due %}
+      {% include "claims/partials/field.html" with field=form.notes %}
+    </div>
+    <button type="submit" class="btn btn-primary mt">Add vehicle</button>
+  </form>
+</details>
+
+<div class="card">
+  <form class="toolbar"
+        hx-get="{% url 'vehicle_list' %}"
+        hx-target="#vehicle-rows"
+        hx-trigger="input changed delay:400ms from:find input, change from:find select"
+        hx-push-url="true">
+    <input type="search" name="q" value="{{ q }}" placeholder="Search registration or model…" aria-label="Search vehicles">
+    <select name="status" aria-label="Filter by status" style="max-width:220px">
+      <option value="">All vehicles</option>
+      {% for value, label in statuses %}
+        <option value="{{ value }}" {% if value == status %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </form>
+
+  <div class="table-wrap">
+    <table class="list">
+      <thead>
+        <tr>
+          <th>Registration</th><th>Make / model</th><th>Status</th>
+          <th>VRT due</th><th>Licence due</th><th>Insurance due</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="vehicle-rows">
+        {% include "claims/partials/vehicle_rows.html" %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
