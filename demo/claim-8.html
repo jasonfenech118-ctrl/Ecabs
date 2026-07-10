@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "yQyeRo8mJP4yWyjSM4SI3A805S9HRU5HVIVvHJ87DfZJT58CsJ8cJCeW2Mu9yVBd"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "kYrS2Bssmy7aTTTVIqjvFNUzAmPyYXQfMlAQjasENrnYBeMaUbNgatiZ0H7vMlzl"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -46,7 +46,7 @@
     <span class="muted">
       ECB-101
        · Karl Borg
-       · 15 Jun 2026
+       · 05 Apr 2026
     </span>
   </div>
   <div class="row">
@@ -54,12 +54,12 @@
       <form hx-post="/claims/8/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge closed">Closed</span>
+  <span class="badge open">Open</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
-      <option value="open" >Open</option>
+      <option value="open" selected>Open</option>
     
       <option value="awaiting_survey" >Awaiting survey</option>
     
@@ -67,7 +67,7 @@
     
       <option value="settled" >Settled</option>
     
-      <option value="closed" selected>Closed</option>
+      <option value="closed" >Closed</option>
     
       <option value="rejected" >Rejected</option>
     
@@ -89,7 +89,7 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-8-surveys.html"
      hx-get="/claims/8/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
   <a href="claim-8-emails.html"
      hx-get="/claims/8/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
@@ -98,7 +98,7 @@
      class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-8-billing.html"
      hx-get="/claims/8/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-8-history.html"
      hx-get="/claims/8/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -113,7 +113,7 @@
       <dt>Registration</dt><dd>ECB-101</dd>
       <dt>Make / model</dt><dd>Toyota Corolla Hybrid</dd>
       <dt>Driver</dt><dd>Karl Borg</dd>
-      <dt>Phone</dt><dd>+356 7910843</dd>
+      <dt>Phone</dt><dd>+356 7983319</dd>
       <dt>Email</dt><dd>—</dd>
     </dl>
   </div>
@@ -122,10 +122,10 @@
     <h3>Accident</h3>
     <dl class="kv">
       <dt>Date &amp; time</dt>
-      <dd>15 Jun 2026 at 20:59</dd>
-      <dt>Location</dt><dd>Coast Road, Bahar ic-Caghaq</dd>
+      <dd>05 Apr 2026 at 19:00</dd>
+      <dt>Location</dt><dd>Aldo Moro Road, Marsa</dd>
       <dt>Police report</dt><dd>—</dd>
-      <dt>Fault</dt><dd>Shared / knock for knock</dd>
+      <dt>Fault</dt><dd>Our driver at fault</dd>
     </dl>
   </div>
 
@@ -135,19 +135,19 @@
       <dt>Name</dt><dd>John Smith</dd>
       <dt>Phone</dt><dd>—</dd>
       <dt>Vehicle</dt><dd>BMW 320i — ABC-123</dd>
-      <dt>Insurer</dt><dd>GasanMamo</dd>
+      <dt>Insurer</dt><dd>Mapfre Middlesea</dd>
     </dl>
   </div>
 
   <div class="card">
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
-      <dt>Insurer</dt><dd>Elmo Insurance</dd>
-      <dt>Policy number</dt><dd>POL-566253</dd>
-      <dt>Excess</dt><dd>€500.00</dd>
+      <dt>Insurer</dt><dd>GasanMamo</dd>
+      <dt>Policy number</dt><dd>POL-384490</dd>
+      <dt>Excess</dt><dd>€750.00</dd>
       <dt>Created by</dt><dd>Demo Staff</dd>
-      <dt>Created</dt><dd>09 Jul 2026 22:59</dd>
-      <dt>Submitted</dt><dd>09 Jul 2026 22:59</dd>
+      <dt>Created</dt><dd>10 Jul 2026 21:00</dd>
+      <dt>Submitted</dt><dd>10 Jul 2026 21:00</dd>
       
     </dl>
   </div>

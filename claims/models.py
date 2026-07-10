@@ -44,9 +44,7 @@ class Vehicle(models.Model):
     acquired_on = models.DateField(null=True, blank=True)
     retired_on = models.DateField(null=True, blank=True)
 
-    # Compliance due dates — drive the renewal reminders.
-    vrt_due = models.DateField("VRT due", null=True, blank=True)
-    licence_due = models.DateField("Road licence due", null=True, blank=True)
+    # Renewal due date — drives the reminders on the dashboard.
     insurance_due = models.DateField("Insurance renewal", null=True, blank=True)
 
     notes = models.TextField(blank=True)
@@ -68,8 +66,6 @@ class Vehicle(models.Model):
     def compliance_items(self):
         """(label, due date, state) for each tracked renewal."""
         return [
-            ("VRT", self.vrt_due, compliance_state(self.vrt_due)),
-            ("Road licence", self.licence_due, compliance_state(self.licence_due)),
             ("Insurance", self.insurance_due, compliance_state(self.insurance_due)),
         ]
 

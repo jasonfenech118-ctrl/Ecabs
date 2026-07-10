@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "W08fuU6krh4EbYDagNI7o5IT7hmtRUasjSvwkf65lHZP8vsUWsYB47OP4bHVyVGY"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "LAdGCNKjNOW8IR1hgj4TzO71AOcms0U1dXmETmKveHcWqcUws4yE4uvr09ujgoD7"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0001</span>
     <span class="muted">
-      ECB-330
-       · Karl Borg
-       · 27 Jun 2026
+      ECB-101
+       · Maria Vella
+       · 02 Jul 2026
     </span>
   </div>
   <div class="row">
@@ -54,7 +54,7 @@
       <form hx-post="/claims/1/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge closed">Closed</span>
+  <span class="badge rejected">Rejected</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
@@ -67,9 +67,9 @@
     
       <option value="settled" >Settled</option>
     
-      <option value="closed" selected>Closed</option>
+      <option value="closed" >Closed</option>
     
-      <option value="rejected" >Rejected</option>
+      <option value="rejected" selected>Rejected</option>
     
   </select>
 </form>
@@ -98,7 +98,7 @@
      class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-1-billing.html"
      hx-get="/claims/1/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
+     class="active" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-1-history.html"
      hx-get="/claims/1/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -180,41 +180,9 @@
     </thead>
     <tbody>
       
-      <tr>
-        <td>Rental replacement</td>
-        <td>Survey fee</td>
-        <td>—</td>
-        <td>—</td>
-        <td><span class="badge invoiced">Invoiced</span></td>
-        <td class="right">€751.00</td>
-      </tr>
-      
-      <tr>
-        <td>Rental replacement</td>
-        <td>Excess</td>
-        <td>—</td>
-        <td>—</td>
-        <td><span class="badge written_off">Written off</span></td>
-        <td class="right">€1453.00</td>
-      </tr>
-      
-      <tr>
-        <td>Bumper repair</td>
-        <td>Towing</td>
-        <td>—</td>
-        <td>—</td>
-        <td><span class="badge pending">Pending</span></td>
-        <td class="right">€438.00</td>
-      </tr>
+      <tr><td colspan="6" class="empty">No billing items for this claim.</td></tr>
       
     </tbody>
-    
-    <tfoot>
-      <tr>
-        <td colspan="5" class="right"><strong>Total</strong></td>
-        <td class="right"><strong>€2642</strong></td>
-      </tr>
-    </tfoot>
     
   </table>
 </div>

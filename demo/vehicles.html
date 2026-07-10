@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "rOy1hlamnVzxh0Hxlopl53g5eEvW8TTkOGVi7Ga7hluIexwh13FPL5m1byQoPUpQ"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "aazxTgagL9yjFURbrC0iOSBFfTUvJcofCxIvaPasc2O7nfKqDnu3jyZ5FecsxA7l"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -43,13 +43,13 @@
 <div class="page-head">
   <div>
     <h1>Vehicles</h1>
-    <div class="sub">Fleet register with VRT, road licence and insurance renewals</div>
+    <div class="sub">Fleet register with insurance renewal reminders</div>
   </div>
 </div>
 
 
 <div class="card" style="margin-bottom:1rem">
-  <h2>Renewals due in the next 30 days</h2>
+  <h2>Insurance renewals due in the next 30 days</h2>
   <div class="table-wrap">
     <table class="list">
       <thead><tr><th>Vehicle</th><th>Renewal</th><th>Due</th><th></th></tr></thead>
@@ -58,8 +58,8 @@
         <tr>
           <td><a href="vehicle-1.html">ECB-101</a>
               <span class="muted">Toyota Corolla Hybrid</span></td>
-          <td>VRT</td>
-          <td>27 Jun 2026</td>
+          <td>Insurance</td>
+          <td>28 Jun 2026</td>
           <td><span class="badge overdue">
             overdue</span></td>
         </tr>
@@ -67,53 +67,17 @@
         <tr>
           <td><a href="vehicle-2.html">ECB-214</a>
               <span class="muted">Mercedes-Benz Vito</span></td>
-          <td>Road licence</td>
-          <td>06 Jul 2026</td>
-          <td><span class="badge overdue">
-            overdue</span></td>
+          <td>Insurance</td>
+          <td>19 Jul 2026</td>
+          <td><span class="badge pending">
+            due soon</span></td>
         </tr>
         
         <tr>
           <td><a href="vehicle-3.html">ECB-330</a>
               <span class="muted">Kia Niro</span></td>
           <td>Insurance</td>
-          <td>14 Jul 2026</td>
-          <td><span class="badge pending">
-            due soon</span></td>
-        </tr>
-        
-        <tr>
-          <td><a href="vehicle-2.html">ECB-214</a>
-              <span class="muted">Mercedes-Benz Vito</span></td>
-          <td>VRT</td>
-          <td>18 Jul 2026</td>
-          <td><span class="badge pending">
-            due soon</span></td>
-        </tr>
-        
-        <tr>
-          <td><a href="vehicle-4.html">ECB-407</a>
-              <span class="muted">Toyota Prius+</span></td>
-          <td>Road licence</td>
-          <td>23 Jul 2026</td>
-          <td><span class="badge pending">
-            due soon</span></td>
-        </tr>
-        
-        <tr>
-          <td><a href="vehicle-3.html">ECB-330</a>
-              <span class="muted">Kia Niro</span></td>
-          <td>VRT</td>
-          <td>30 Jul 2026</td>
-          <td><span class="badge pending">
-            due soon</span></td>
-        </tr>
-        
-        <tr>
-          <td><a href="vehicle-1.html">ECB-101</a>
-              <span class="muted">Toyota Corolla Hybrid</span></td>
-          <td>Road licence</td>
-          <td>03 Aug 2026</td>
+          <td>31 Jul 2026</td>
           <td><span class="badge pending">
             due soon</span></td>
         </tr>
@@ -127,7 +91,7 @@
 <details class="inline-form" >
   <summary>Add vehicle</summary>
   <form method="post" action="/vehicles/add/" class="card">
-    <input type="hidden" name="csrfmiddlewaretoken" value="rOy1hlamnVzxh0Hxlopl53g5eEvW8TTkOGVi7Ga7hluIexwh13FPL5m1byQoPUpQ">
+    <input type="hidden" name="csrfmiddlewaretoken" value="aazxTgagL9yjFURbrC0iOSBFfTUvJcofCxIvaPasc2O7nfKqDnu3jyZ5FecsxA7l">
     <div class="form-grid">
       <div class="field ">
   <label for="id_registration">Registration</label>
@@ -150,18 +114,6 @@
       <div class="field ">
   <label for="id_acquired_on">Acquired on</label>
   <input type="date" name="acquired_on" id="id_acquired_on">
-  
-</div>
-
-      <div class="field ">
-  <label for="id_vrt_due">VRT due</label>
-  <input type="date" name="vrt_due" id="id_vrt_due">
-  
-</div>
-
-      <div class="field ">
-  <label for="id_licence_due">Road licence due</label>
-  <input type="date" name="licence_due" id="id_licence_due">
   
 </div>
 
@@ -205,7 +157,7 @@
       <thead>
         <tr>
           <th>Registration</th><th>Make / model</th><th>Status</th>
-          <th>VRT due</th><th>Licence due</th><th>Insurance due</th><th></th>
+          <th>Insurance due</th><th></th>
         </tr>
       </thead>
       <tbody id="vehicle-rows">
@@ -215,14 +167,6 @@
   <td>Ford Transit (sold) <span class="muted">(2017)</span></td>
   <td>
     <span class="badge closed">Left fleet Apr 2026</span>
-  </td>
-  
-  <td>
-    <span class="muted">—</span>
-  </td>
-  
-  <td>
-    <span class="muted">—</span>
   </td>
   
   <td>
@@ -242,27 +186,9 @@
   
   <td>
     
-      27 Jun 2026
+      28 Jun 2026
       
         <span class="badge overdue">overdue</span>
-        
-      
-    
-  </td>
-  
-  <td>
-    
-      03 Aug 2026
-      
-        <span class="badge pending">soon</span>
-      
-    
-  </td>
-  
-  <td>
-    
-      07 Sep 2026
-      
         
       
     
@@ -281,28 +207,9 @@
   
   <td>
     
-      18 Jul 2026
+      19 Jul 2026
       
         <span class="badge pending">soon</span>
-      
-    
-  </td>
-  
-  <td>
-    
-      06 Jul 2026
-      
-        <span class="badge overdue">overdue</span>
-        
-      
-    
-  </td>
-  
-  <td>
-    
-      23 Aug 2026
-      
-        
       
     
   </td>
@@ -320,25 +227,7 @@
   
   <td>
     
-      30 Jul 2026
-      
-        <span class="badge pending">soon</span>
-      
-    
-  </td>
-  
-  <td>
-    
-      06 Dec 2026
-      
-        
-      
-    
-  </td>
-  
-  <td>
-    
-      14 Jul 2026
+      31 Jul 2026
       
         <span class="badge pending">soon</span>
       
@@ -358,25 +247,7 @@
   
   <td>
     
-      27 Sep 2026
-      
-        
-      
-    
-  </td>
-  
-  <td>
-    
-      23 Jul 2026
-      
-        <span class="badge pending">soon</span>
-      
-    
-  </td>
-  
-  <td>
-    
-      14 Feb 2027
+      15 Feb 2027
       
         
       
@@ -396,25 +267,7 @@
   
   <td>
     
-      25 Jan 2027
-      
-        
-      
-    
-  </td>
-  
-  <td>
-    
-      05 May 2027
-      
-        
-      
-    
-  </td>
-  
-  <td>
-    
-      16 Nov 2026
+      17 Nov 2026
       
         
       

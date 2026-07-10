@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "x3gDjExbvPIpibgEqzqw3JooSEqshZhOUVDU9ZxWpfDAfI5o6eG0JLukPyLUY0Nk"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "VfH2UMqYN92jHLVliZ5WPyfLXPamyZqknCQ0blqae2i7p6OAuKzHkeDbnasjmn9q"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -46,7 +46,7 @@
     <span class="muted">
       ECB-101
        · Karl Borg
-       · 15 Jun 2026
+       · 05 Apr 2026
     </span>
   </div>
   <div class="row">
@@ -54,12 +54,12 @@
       <form hx-post="/claims/8/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge closed">Closed</span>
+  <span class="badge open">Open</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
-      <option value="open" >Open</option>
+      <option value="open" selected>Open</option>
     
       <option value="awaiting_survey" >Awaiting survey</option>
     
@@ -67,7 +67,7 @@
     
       <option value="settled" >Settled</option>
     
-      <option value="closed" selected>Closed</option>
+      <option value="closed" >Closed</option>
     
       <option value="rejected" >Rejected</option>
     
@@ -89,7 +89,7 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-8-surveys.html"
      hx-get="/claims/8/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
   <a href="claim-8-emails.html"
      hx-get="/claims/8/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
@@ -98,7 +98,7 @@
      class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-8-billing.html"
      hx-get="/claims/8/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
+     class="active" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-8-history.html"
      hx-get="/claims/8/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -180,41 +180,9 @@
     </thead>
     <tbody>
       
-      <tr>
-        <td>Survey fee</td>
-        <td>Repair</td>
-        <td>—</td>
-        <td>—</td>
-        <td><span class="badge paid">Paid</span></td>
-        <td class="right">€1332.00</td>
-      </tr>
-      
-      <tr>
-        <td>Survey fee</td>
-        <td>Excess</td>
-        <td>—</td>
-        <td>—</td>
-        <td><span class="badge written_off">Written off</span></td>
-        <td class="right">€1754.00</td>
-      </tr>
-      
-      <tr>
-        <td>Towing to depot</td>
-        <td>Other</td>
-        <td>—</td>
-        <td>—</td>
-        <td><span class="badge paid">Paid</span></td>
-        <td class="right">€2299.00</td>
-      </tr>
+      <tr><td colspan="6" class="empty">No billing items for this claim.</td></tr>
       
     </tbody>
-    
-    <tfoot>
-      <tr>
-        <td colspan="5" class="right"><strong>Total</strong></td>
-        <td class="right"><strong>€5385</strong></td>
-      </tr>
-    </tfoot>
     
   </table>
 </div>

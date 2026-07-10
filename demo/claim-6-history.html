@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "JPw6E3PfIyULSBEdIOEzeTLqCZgST9n46HTnuoP0CYPWP8tXotU3UVRmzTBkAaTA"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "yvNFH0p4JYBbiC8j5FMgkPWfQR1AT7J40SWDYzpgaRRZ0X1yhqg1PvkFgcjxHvsa"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0006</span>
     <span class="muted">
-      ECB-214
+      ECB-407
        · Karl Borg
-       · 10 Jun 2026
+       · 17 Jun 2026
     </span>
   </div>
   <div class="row">
@@ -54,14 +54,14 @@
       <form hx-post="/claims/6/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge awaiting_survey">Awaiting survey</span>
+  <span class="badge open">Open</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
-      <option value="open" >Open</option>
+      <option value="open" selected>Open</option>
     
-      <option value="awaiting_survey" selected>Awaiting survey</option>
+      <option value="awaiting_survey" >Awaiting survey</option>
     
       <option value="awaiting_insurer" >Awaiting insurer</option>
     
@@ -114,7 +114,7 @@
     <tbody>
       
       <tr>
-        <td class="muted" style="white-space:nowrap">09 Jul 2026 22:59</td>
+        <td class="muted" style="white-space:nowrap">10 Jul 2026 21:00</td>
         <td>system</td>
         <td>
           <span class="badge open">updated</span>
@@ -122,14 +122,14 @@
         <td>
           
             
-              <div><strong>submitted_at</strong>: <span class="muted">(empty)</span> → 2026-07-09 20:59:45.093234+00:00</div>
+              <div><strong>submitted_at</strong>: <span class="muted">(empty)</span> → 2026-07-10 19:00:44.990183+00:00</div>
             
           
         </td>
       </tr>
       
       <tr>
-        <td class="muted" style="white-space:nowrap">09 Jul 2026 22:59</td>
+        <td class="muted" style="white-space:nowrap">10 Jul 2026 21:00</td>
         <td>system</td>
         <td>
           <span class="badge ok">created</span>

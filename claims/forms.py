@@ -11,15 +11,11 @@ class VehicleForm(forms.ModelForm):
             "make_model",
             "year",
             "acquired_on",
-            "vrt_due",
-            "licence_due",
             "insurance_due",
             "notes",
         ]
         widgets = {
             "acquired_on": forms.DateInput(attrs={"type": "date"}),
-            "vrt_due": forms.DateInput(attrs={"type": "date"}),
-            "licence_due": forms.DateInput(attrs={"type": "date"}),
             "insurance_due": forms.DateInput(attrs={"type": "date"}),
             "notes": forms.Textarea(attrs={"rows": 2}),
         }

@@ -52,9 +52,7 @@ class Command(BaseCommand):
                     "year": 2020 + i,
                     "acquired_on": today - timedelta(days=400 + 100 * i),
                     # Spread renewals: some overdue, some due soon, some fine.
-                    "vrt_due": today + timedelta(days=(-12, 9, 21, 80, 200)[i]),
-                    "licence_due": today + timedelta(days=(25, -3, 150, 14, 300)[i]),
-                    "insurance_due": today + timedelta(days=(60, 45, 5, 220, 130)[i]),
+                    "insurance_due": today + timedelta(days=(-12, 9, 21, 220, 130)[i]),
                 },
             )
         Vehicle.objects.get_or_create(

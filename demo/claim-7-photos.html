@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "BlvQuLSTdibYivZlRirmlejPTgcwDBsTYdS7k6SE7I69f2O5xXHQ1gpLQaxYkCYp"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "kgorKxoHY5rBTHJiNeGmuUNtnfdOUl13MDxp16oTpYHpB2CxZZa7ZAbTNAvLIJK9"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0007</span>
     <span class="muted">
-      ECB-101
-       · Luca Grech
-       · 07 May 2026
+      ECB-407
+       · Josef Camilleri
+       · 01 Jul 2026
     </span>
   </div>
   <div class="row">
@@ -54,10 +54,10 @@
       <form hx-post="/claims/7/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge draft">Draft</span>
+  <span class="badge settled">Settled</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
-      <option value="draft" selected>Draft</option>
+      <option value="draft" >Draft</option>
     
       <option value="open" >Open</option>
     
@@ -65,7 +65,7 @@
     
       <option value="awaiting_insurer" >Awaiting insurer</option>
     
-      <option value="settled" >Settled</option>
+      <option value="settled" selected>Settled</option>
     
       <option value="closed" >Closed</option>
     
@@ -89,16 +89,16 @@
      class="active" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-7-surveys.html"
      hx-get="/claims/7/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
   <a href="claim-7-emails.html"
      hx-get="/claims/7/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-7-reminders.html"
      hx-get="/claims/7/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-7-billing.html"
      hx-get="/claims/7/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">2</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-7-history.html"
      hx-get="/claims/7/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>

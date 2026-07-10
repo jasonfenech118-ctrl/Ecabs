@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "pagbqdsWupjyua7LWZhu5YSsQXD9E4z5M2DsgysHoPeJrHWvCExYL0YoNRYBl55B"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "qrGfufBTMUTN39gYeh1pa9rGRkJdIvknSOPdLOB5dN9BLu9dq2vaFPP6hF1awT3t"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -42,10 +42,10 @@
     
 <div class="page-head">
   <div>
-    <h1>Edit claim <span class="muted">CLM-2026-0004</span></h1>
+    <h1>New claim <span class="muted">CLM-2026-0004</span></h1>
     <div class="sub">
-      <span class="badge settled">Settled</span>
-      
+      <span class="badge draft">Draft</span>
+       · auto-saves as you type; stays a draft until you submit
     </div>
   </div>
   <a href="claim-4.html" class="btn">View claim</a>
@@ -58,7 +58,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="pagbqdsWupjyua7LWZhu5YSsQXD9E4z5M2DsgysHoPeJrHWvCExYL0YoNRYBl55B">
+  <input type="hidden" name="csrfmiddlewaretoken" value="qrGfufBTMUTN39gYeh1pa9rGRkJdIvknSOPdLOB5dN9BLu9dq2vaFPP6hF1awT3t">
 
   <datalist id="vehicle-regs">
     <option value="ECB-101">Toyota Corolla Hybrid</option><option value="ECB-214">Mercedes-Benz Vito</option><option value="ECB-330">Kia Niro</option><option value="ECB-407">Toyota Prius+</option><option value="ECB-512">Volkswagen Caddy</option>
@@ -69,25 +69,25 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_vehicle_registration">Vehicle registration</label>
-  <input type="text" name="vehicle_registration" value="ECB-407" list="vehicle-regs" maxlength="20" id="id_vehicle_registration">
+  <input type="text" name="vehicle_registration" value="ECB-512" list="vehicle-regs" maxlength="20" id="id_vehicle_registration">
   
 </div>
 
       <div class="field ">
   <label for="id_vehicle_make_model">Vehicle make model</label>
-  <input type="text" name="vehicle_make_model" value="Toyota Prius+" maxlength="100" id="id_vehicle_make_model">
+  <input type="text" name="vehicle_make_model" value="Volkswagen Caddy" maxlength="100" id="id_vehicle_make_model">
   
 </div>
 
       <div class="field ">
   <label for="id_driver_name">Driver name</label>
-  <input type="text" name="driver_name" value="Luca Grech" maxlength="100" id="id_driver_name">
+  <input type="text" name="driver_name" value="Amy Farrugia" maxlength="100" id="id_driver_name">
   
 </div>
 
       <div class="field ">
   <label for="id_driver_phone">Driver phone</label>
-  <input type="text" name="driver_phone" value="+356 7914404" maxlength="30" id="id_driver_phone">
+  <input type="text" name="driver_phone" value="+356 7930391" maxlength="30" id="id_driver_phone">
   
 </div>
 
@@ -105,19 +105,19 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_accident_date">Accident date</label>
-  <input type="date" name="accident_date" value="13/05/2026" id="id_accident_date">
+  <input type="date" name="accident_date" value="04/05/2026" id="id_accident_date">
   
 </div>
 
       <div class="field ">
   <label for="id_accident_time">Accident time</label>
-  <input type="time" name="accident_time" value="20:59:44" id="id_accident_time">
+  <input type="time" name="accident_time" value="19:00:44" id="id_accident_time">
   
 </div>
 
       <div class="field ">
   <label for="id_accident_location">Accident location</label>
-  <input type="text" name="accident_location" value="Coast Road, Bahar ic-Caghaq" maxlength="255" id="id_accident_location">
+  <input type="text" name="accident_location" value="Tower Road, Sliema" maxlength="255" id="id_accident_location">
   
 </div>
 
@@ -130,13 +130,13 @@
       <div class="field ">
   <label for="id_fault">Fault</label>
   <select name="fault" id="id_fault">
-  <option value="unknown" selected>Not yet determined</option>
+  <option value="unknown">Not yet determined</option>
 
   <option value="our_driver">Our driver at fault</option>
 
   <option value="third_party">Third party at fault</option>
 
-  <option value="shared">Shared / knock for knock</option>
+  <option value="shared" selected>Shared / knock for knock</option>
 
 </select>
   
@@ -187,13 +187,13 @@ Third party changed lanes without indicating and clipped the front bumper.</text
     <div class="form-grid">
       <div class="field ">
   <label for="id_insurer">Insurer</label>
-  <input type="text" name="insurer" value="Atlas Insurance" maxlength="100" id="id_insurer">
+  <input type="text" name="insurer" value="Elmo Insurance" maxlength="100" id="id_insurer">
   
 </div>
 
       <div class="field ">
   <label for="id_policy_number">Policy number</label>
-  <input type="text" name="policy_number" value="POL-998890" maxlength="50" id="id_policy_number">
+  <input type="text" name="policy_number" value="POL-776110" maxlength="50" id="id_policy_number">
   
 </div>
 
@@ -208,7 +208,7 @@ Third party changed lanes without indicating and clipped the front bumper.</text
 
   <div class="form-footer">
     
-      <button type="submit" class="btn btn-primary">Save changes</button>
+      <button type="submit" class="btn btn-primary">Submit claim</button>
     
     <span id="save-status" class="save-status" aria-live="polite"></span>
   </div>

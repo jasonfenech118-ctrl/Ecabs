@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "IJHtgXV2NirDMJzcz715BJCQHR5IqckP5B4K6iVNHImOJgoWfMhzhLIMELqa7dQl"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "dpMGdnkq5IFdlA3kKjrBACa5ZXHDtT7aFMVEuWkCwBV13VWzW4Vm5iyvpiZAhhQg"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0010</span>
     <span class="muted">
-      ECB-214
-       · Amy Farrugia
-       · 17 May 2026
+      ECB-512
+       · Josef Camilleri
+       · 10 May 2026
     </span>
   </div>
   <div class="row">
@@ -89,16 +89,16 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-10-surveys.html"
      hx-get="/claims/10/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
   <a href="claim-10-emails.html"
      hx-get="/claims/10/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
      class="active" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-10-reminders.html"
      hx-get="/claims/10/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-10-billing.html"
      hx-get="/claims/10/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-10-history.html"
      hx-get="/claims/10/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -125,7 +125,7 @@
 
       <div class="field ">
   <label for="id_sent_at">Sent at</label>
-  <input type="datetime-local" name="sent_at" value="2026-07-09 23:02:21" required id="id_sent_at"><input type="hidden" name="initial-sent_at" value="2026-07-09 23:02:21" id="initial-id_sent_at">
+  <input type="datetime-local" name="sent_at" value="2026-07-10 21:00:45" required id="id_sent_at"><input type="hidden" name="initial-sent_at" value="2026-07-10 21:00:45" id="initial-id_sent_at">
   
 </div>
 
@@ -164,10 +164,10 @@
   <div class="timeline-item">
     <div class="head">
       <div>
-        <span class="badge in">Received</span>
+        <span class="badge out">Sent</span>
         <strong>Claim CLM-2026-0010 — accident report</strong>
       </div>
-      <span class="when">02 Jul 2026 22:59</span>
+      <span class="when">24 Jun 2026 21:00</span>
     </div>
     <div class="addr">claims@ecabs.example → claims@insurer.example</div>
     <div class="body">Please find attached the accident report and photos.</div>

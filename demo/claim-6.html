@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "2GcEaCcJdudmLiKz9c2rG5025ijJyBF3pyzV0Xcu7U8xIPzjPRiVm76Y2cEbfCbz"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "lNMhwfhqQvTYpkQjr5hRr3EZqQVr5UVzNaVfNOhCho9M7FJyDQLCWJ2pQbdoTiEF"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0006</span>
     <span class="muted">
-      ECB-214
+      ECB-407
        · Karl Borg
-       · 10 Jun 2026
+       · 17 Jun 2026
     </span>
   </div>
   <div class="row">
@@ -54,14 +54,14 @@
       <form hx-post="/claims/6/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge awaiting_survey">Awaiting survey</span>
+  <span class="badge open">Open</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
-      <option value="open" >Open</option>
+      <option value="open" selected>Open</option>
     
-      <option value="awaiting_survey" selected>Awaiting survey</option>
+      <option value="awaiting_survey" >Awaiting survey</option>
     
       <option value="awaiting_insurer" >Awaiting insurer</option>
     
@@ -110,10 +110,10 @@
   <div class="card">
     <h3>Vehicle &amp; driver</h3>
     <dl class="kv">
-      <dt>Registration</dt><dd>ECB-214</dd>
-      <dt>Make / model</dt><dd>Mercedes-Benz Vito</dd>
+      <dt>Registration</dt><dd>ECB-407</dd>
+      <dt>Make / model</dt><dd>Toyota Prius+</dd>
       <dt>Driver</dt><dd>Karl Borg</dd>
-      <dt>Phone</dt><dd>+356 7914711</dd>
+      <dt>Phone</dt><dd>+356 7948788</dd>
       <dt>Email</dt><dd>—</dd>
     </dl>
   </div>
@@ -122,10 +122,10 @@
     <h3>Accident</h3>
     <dl class="kv">
       <dt>Date &amp; time</dt>
-      <dd>10 Jun 2026 at 20:59</dd>
-      <dt>Location</dt><dd>Tower Road, Sliema</dd>
+      <dd>17 Jun 2026 at 19:00</dd>
+      <dt>Location</dt><dd>Triq ix-Xatt, Gzira</dd>
       <dt>Police report</dt><dd>—</dd>
-      <dt>Fault</dt><dd>Not yet determined</dd>
+      <dt>Fault</dt><dd>Shared / knock for knock</dd>
     </dl>
   </div>
 
@@ -135,19 +135,19 @@
       <dt>Name</dt><dd>John Smith</dd>
       <dt>Phone</dt><dd>—</dd>
       <dt>Vehicle</dt><dd>BMW 320i — ABC-123</dd>
-      <dt>Insurer</dt><dd>Atlas Insurance</dd>
+      <dt>Insurer</dt><dd>Mapfre Middlesea</dd>
     </dl>
   </div>
 
   <div class="card">
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
-      <dt>Insurer</dt><dd>Elmo Insurance</dd>
-      <dt>Policy number</dt><dd>POL-942242</dd>
-      <dt>Excess</dt><dd>€500.00</dd>
+      <dt>Insurer</dt><dd>Mapfre Middlesea</dd>
+      <dt>Policy number</dt><dd>POL-864258</dd>
+      <dt>Excess</dt><dd>€750.00</dd>
       <dt>Created by</dt><dd>Demo Staff</dd>
-      <dt>Created</dt><dd>09 Jul 2026 22:59</dd>
-      <dt>Submitted</dt><dd>09 Jul 2026 22:59</dd>
+      <dt>Created</dt><dd>10 Jul 2026 21:00</dd>
+      <dt>Submitted</dt><dd>10 Jul 2026 21:00</dd>
       
     </dl>
   </div>

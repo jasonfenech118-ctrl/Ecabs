@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "v0jMh8ihdL028ayNjJY6DiuR8EqlYOJ2SSG37ti27bVd5HnxZoeAjkAN5yLNFPfy"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "PMo0TUwS2INTh5Dph5W513MNh0XSpGFxh9xYatw4tB3HZqwEtQqQwJadHlfPd4oD"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0006</span>
     <span class="muted">
-      ECB-214
+      ECB-407
        · Karl Borg
-       · 10 Jun 2026
+       · 17 Jun 2026
     </span>
   </div>
   <div class="row">
@@ -54,14 +54,14 @@
       <form hx-post="/claims/6/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge awaiting_survey">Awaiting survey</span>
+  <span class="badge open">Open</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
-      <option value="open" >Open</option>
+      <option value="open" selected>Open</option>
     
-      <option value="awaiting_survey" selected>Awaiting survey</option>
+      <option value="awaiting_survey" >Awaiting survey</option>
     
       <option value="awaiting_insurer" >Awaiting insurer</option>
     
@@ -154,7 +154,7 @@
       
       <tr>
         <td>
-          <form hx-post="/reminders/5/toggle/" hx-target="#tab-panel">
+          <form hx-post="/reminders/4/toggle/" hx-target="#tab-panel">
             <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
                     aria-label="Mark done">
           </form>
@@ -162,7 +162,7 @@
         <td class="">Chase insurer for update</td>
         <td>
           
-          23 Jul 2026 22:59
+          24 Jul 2026 21:00
         </td>
         <td class="muted">Demo Staff</td>
         <td class="muted">—</td>

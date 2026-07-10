@@ -24,10 +24,8 @@
     </div>
   </fieldset>
   <fieldset>
-    <legend>Renewals — used for the due-date reminders</legend>
+    <legend>Insurance renewal — used for the due-date reminder</legend>
     <div class="form-grid">
-      {% include "claims/partials/field.html" with field=form.vrt_due %}
-      {% include "claims/partials/field.html" with field=form.licence_due %}
       {% include "claims/partials/field.html" with field=form.insurance_due %}
     </div>
     <p class="muted" style="font-size:.8rem; margin-bottom:0">

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "xXGqVYGyeg13tpxOncQBSoNltaE96PrvUP3HLjGj8GWeqWmy3R65yqThq4ZBNQX1"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "elIN4zkUt80cW7o2ouxn1kbWbQPeO8wwGIRLl8k6U1g0EshhAf18w0zmBb7bCwfC"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,14 +44,14 @@
   <div>
     <h1>ECB-088 <span class="muted">Ford Transit (sold)</span></h1>
     <div class="sub">
-      <span class="badge closed">No longer in fleet since 10 Apr 2026</span>
+      <span class="badge closed">No longer in fleet since 11 Apr 2026</span>
     </div>
   </div>
   <a href="vehicles.html" class="btn">← All vehicles</a>
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="xXGqVYGyeg13tpxOncQBSoNltaE96PrvUP3HLjGj8GWeqWmy3R65yqThq4ZBNQX1">
+  <input type="hidden" name="csrfmiddlewaretoken" value="elIN4zkUt80cW7o2ouxn1kbWbQPeO8wwGIRLl8k6U1g0EshhAf18w0zmBb7bCwfC">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
@@ -82,20 +82,8 @@
     </div>
   </fieldset>
   <fieldset>
-    <legend>Renewals — used for the due-date reminders</legend>
+    <legend>Insurance renewal — used for the due-date reminder</legend>
     <div class="form-grid">
-      <div class="field ">
-  <label for="id_vrt_due">VRT due</label>
-  <input type="date" name="vrt_due" id="id_vrt_due">
-  
-</div>
-
-      <div class="field ">
-  <label for="id_licence_due">Road licence due</label>
-  <input type="date" name="licence_due" id="id_licence_due">
-  
-</div>
-
       <div class="field ">
   <label for="id_insurance_due">Insurance renewal</label>
   <input type="date" name="insurance_due" id="id_insurance_due">
@@ -133,14 +121,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/6/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="xXGqVYGyeg13tpxOncQBSoNltaE96PrvUP3HLjGj8GWeqWmy3R65yqThq4ZBNQX1">
+      <input type="hidden" name="csrfmiddlewaretoken" value="elIN4zkUt80cW7o2ouxn1kbWbQPeO8wwGIRLl8k6U1g0EshhAf18w0zmBb7bCwfC">
       
         <button type="submit" class="btn">Reactivate vehicle</button>
       
     </form>
     <form method="post" action="/vehicles/6/delete/"
           onsubmit="return confirm('Delete ECB-088 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="xXGqVYGyeg13tpxOncQBSoNltaE96PrvUP3HLjGj8GWeqWmy3R65yqThq4ZBNQX1">
+      <input type="hidden" name="csrfmiddlewaretoken" value="elIN4zkUt80cW7o2ouxn1kbWbQPeO8wwGIRLl8k6U1g0EshhAf18w0zmBb7bCwfC">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>

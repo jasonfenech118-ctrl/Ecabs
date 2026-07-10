@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "ujHx4sOkNDj3KyyvkjeXZjMNhCDpyfHpRb4OUNO5H3eeH5nf0YurFlSJewYRfgdV"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "WIdKSxc4Lm09DwEAXTRVT3c183qqF96Jo5mI96cgcfgXlRxP9ElGoJAryoIntxPP"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -52,7 +52,7 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="ujHx4sOkNDj3KyyvkjeXZjMNhCDpyfHpRb4OUNO5H3eeH5nf0YurFlSJewYRfgdV">
+  <input type="hidden" name="csrfmiddlewaretoken" value="WIdKSxc4Lm09DwEAXTRVT3c183qqF96Jo5mI96cgcfgXlRxP9ElGoJAryoIntxPP">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
@@ -76,30 +76,18 @@
 
       <div class="field ">
   <label for="id_acquired_on">Acquired on</label>
-  <input type="date" name="acquired_on" value="24/02/2025" id="id_acquired_on">
+  <input type="date" name="acquired_on" value="25/02/2025" id="id_acquired_on">
   
 </div>
 
     </div>
   </fieldset>
   <fieldset>
-    <legend>Renewals — used for the due-date reminders</legend>
+    <legend>Insurance renewal — used for the due-date reminder</legend>
     <div class="form-grid">
       <div class="field ">
-  <label for="id_vrt_due">VRT due</label>
-  <input type="date" name="vrt_due" value="18/07/2026" id="id_vrt_due">
-  
-</div>
-
-      <div class="field ">
-  <label for="id_licence_due">Road licence due</label>
-  <input type="date" name="licence_due" value="06/07/2026" id="id_licence_due">
-  
-</div>
-
-      <div class="field ">
   <label for="id_insurance_due">Insurance renewal</label>
-  <input type="date" name="insurance_due" value="23/08/2026" id="id_insurance_due">
+  <input type="date" name="insurance_due" value="19/07/2026" id="id_insurance_due">
   
 </div>
 
@@ -132,16 +120,9 @@
         <tbody>
           
           <tr>
-            <td><a href="claim-10.html">CLM-2026-0010</a></td>
-            <td><span class="badge draft">Draft</span></td>
-            <td>17 May 2026</td>
-            <td>Amy Farrugia</td>
-          </tr>
-          
-          <tr>
-            <td><a href="claim-6.html">CLM-2026-0006</a></td>
-            <td><span class="badge awaiting_survey">Awaiting survey</span></td>
-            <td>10 Jun 2026</td>
+            <td><a href="claim-11.html">CLM-2026-0011</a></td>
+            <td><span class="badge awaiting_insurer">Awaiting insurer</span></td>
+            <td>20 Apr 2026</td>
             <td>Karl Borg</td>
           </tr>
           
@@ -155,14 +136,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/2/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="ujHx4sOkNDj3KyyvkjeXZjMNhCDpyfHpRb4OUNO5H3eeH5nf0YurFlSJewYRfgdV">
+      <input type="hidden" name="csrfmiddlewaretoken" value="WIdKSxc4Lm09DwEAXTRVT3c183qqF96Jo5mI96cgcfgXlRxP9ElGoJAryoIntxPP">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
     <form method="post" action="/vehicles/2/delete/"
           onsubmit="return confirm('Delete ECB-214 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="ujHx4sOkNDj3KyyvkjeXZjMNhCDpyfHpRb4OUNO5H3eeH5nf0YurFlSJewYRfgdV">
+      <input type="hidden" name="csrfmiddlewaretoken" value="WIdKSxc4Lm09DwEAXTRVT3c183qqF96Jo5mI96cgcfgXlRxP9ElGoJAryoIntxPP">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>

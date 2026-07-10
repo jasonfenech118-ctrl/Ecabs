@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "84WNpV7PO5TaoNFfUoqm06tK6Z4E69VDvWj4fg7AIvOllkuZA3GQG8zG3Tp6Nar9"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "HJdbn00HzqIBtIiXcOzpO7LIT1CU2tWi96m9Ez0T0jYpb3bcoz3ajN98jmURQRFo"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0009</span>
     <span class="muted">
-      ECB-101
-       · Maria Vella
-       · 06 Jun 2026
+      ECB-407
+       · Amy Farrugia
+       · 27 Mar 2026
     </span>
   </div>
   <div class="row">
@@ -89,16 +89,16 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-9-surveys.html"
      hx-get="/claims/9/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
   <a href="claim-9-emails.html"
      hx-get="/claims/9/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-9-reminders.html"
      hx-get="/claims/9/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
      class="active" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-9-billing.html"
      hx-get="/claims/9/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-9-history.html"
      hx-get="/claims/9/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -154,7 +154,7 @@
       
       <tr>
         <td>
-          <form hx-post="/reminders/8/toggle/" hx-target="#tab-panel">
+          <form hx-post="/reminders/6/toggle/" hx-target="#tab-panel">
             <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
                     aria-label="Mark done">
           </form>
@@ -162,7 +162,7 @@
         <td class="">Chase insurer for update</td>
         <td>
           
-          13 Jul 2026 22:59
+          14 Jul 2026 21:00
         </td>
         <td class="muted">Demo Staff</td>
         <td class="muted">—</td>

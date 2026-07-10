@@ -18,8 +18,6 @@ class VehicleAdmin(SimpleHistoryAdmin):
         "registration",
         "make_model",
         "status",
-        "vrt_due",
-        "licence_due",
         "insurance_due",
         "retired_on",
     )

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "OGN4fKH71ETfJfvJpy2EdSHEH7U1pjuLbyal55HSV4OqGMkt5di8TUNAE1ft6k0h"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "xotGf8nqJHsCl0P9EnZCickZvbvIGOArZLCEwHnCaAIq3lIoQ8tnNSIpVwNFucjx"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -58,7 +58,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="OGN4fKH71ETfJfvJpy2EdSHEH7U1pjuLbyal55HSV4OqGMkt5di8TUNAE1ft6k0h">
+  <input type="hidden" name="csrfmiddlewaretoken" value="xotGf8nqJHsCl0P9EnZCickZvbvIGOArZLCEwHnCaAIq3lIoQ8tnNSIpVwNFucjx">
 
   <datalist id="vehicle-regs">
     <option value="ECB-101">Toyota Corolla Hybrid</option><option value="ECB-214">Mercedes-Benz Vito</option><option value="ECB-330">Kia Niro</option><option value="ECB-407">Toyota Prius+</option><option value="ECB-512">Volkswagen Caddy</option>
@@ -69,25 +69,25 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_vehicle_registration">Vehicle registration</label>
-  <input type="text" name="vehicle_registration" value="ECB-407" list="vehicle-regs" maxlength="20" id="id_vehicle_registration">
+  <input type="text" name="vehicle_registration" value="ECB-101" list="vehicle-regs" maxlength="20" id="id_vehicle_registration">
   
 </div>
 
       <div class="field ">
   <label for="id_vehicle_make_model">Vehicle make model</label>
-  <input type="text" name="vehicle_make_model" value="Toyota Prius+" maxlength="100" id="id_vehicle_make_model">
+  <input type="text" name="vehicle_make_model" value="Toyota Corolla Hybrid" maxlength="100" id="id_vehicle_make_model">
   
 </div>
 
       <div class="field ">
   <label for="id_driver_name">Driver name</label>
-  <input type="text" name="driver_name" value="Maria Vella" maxlength="100" id="id_driver_name">
+  <input type="text" name="driver_name" value="Luca Grech" maxlength="100" id="id_driver_name">
   
 </div>
 
       <div class="field ">
   <label for="id_driver_phone">Driver phone</label>
-  <input type="text" name="driver_phone" value="+356 7983534" maxlength="30" id="id_driver_phone">
+  <input type="text" name="driver_phone" value="+356 7914846" maxlength="30" id="id_driver_phone">
   
 </div>
 
@@ -105,13 +105,13 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_accident_date">Accident date</label>
-  <input type="date" name="accident_date" value="10/05/2026" id="id_accident_date">
+  <input type="date" name="accident_date" value="20/03/2026" id="id_accident_date">
   
 </div>
 
       <div class="field ">
   <label for="id_accident_time">Accident time</label>
-  <input type="time" name="accident_time" value="20:59:44" id="id_accident_time">
+  <input type="time" name="accident_time" value="19:00:44" id="id_accident_time">
   
 </div>
 
@@ -134,9 +134,9 @@
 
   <option value="our_driver">Our driver at fault</option>
 
-  <option value="third_party" selected>Third party at fault</option>
+  <option value="third_party">Third party at fault</option>
 
-  <option value="shared">Shared / knock for knock</option>
+  <option value="shared" selected>Shared / knock for knock</option>
 
 </select>
   
@@ -175,7 +175,7 @@ Third party changed lanes without indicating and clipped the front bumper.</text
 
       <div class="field ">
   <label for="id_third_party_insurer">Third party insurer</label>
-  <input type="text" name="third_party_insurer" value="Atlas Insurance" maxlength="100" id="id_third_party_insurer">
+  <input type="text" name="third_party_insurer" value="Mapfre Middlesea" maxlength="100" id="id_third_party_insurer">
   
 </div>
 
@@ -193,7 +193,7 @@ Third party changed lanes without indicating and clipped the front bumper.</text
 
       <div class="field ">
   <label for="id_policy_number">Policy number</label>
-  <input type="text" name="policy_number" value="POL-745069" maxlength="50" id="id_policy_number">
+  <input type="text" name="policy_number" value="POL-401193" maxlength="50" id="id_policy_number">
   
 </div>
 

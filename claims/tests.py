@@ -109,7 +109,7 @@ class ViewTests(TestCase):
         self.assertEqual(compliance_state(None), "")
 
         Vehicle.objects.create(
-            registration="ECB-600", vrt_due=today + timedelta(days=5)
+            registration="ECB-600", insurance_due=today + timedelta(days=5)
         )
         response = self.client.get(reverse("dashboard"))
         self.assertContains(response, "ECB-600")
@@ -120,7 +120,7 @@ class ViewTests(TestCase):
         Vehicle.objects.create(
             registration="ECB-700",
             status=Vehicle.Status.RETIRED,
-            vrt_due=today - timedelta(days=5),
+            insurance_due=today - timedelta(days=5),
         )
         response = self.client.get(reverse("dashboard"))
         self.assertNotContains(response, "ECB-700")

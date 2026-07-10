@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "FwyXxvdygL9DR56DF2xtFqFU8CUimBk72oVenQdjab4OOCVnlHNXlsLQ5wfK3CQD"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "dm1xUAPug26rPalbdJ2FZ0bGLwIEoJIYFJavb9PGHVmfxveqpuwquGz6bR0Bc7r4"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0006</span>
     <span class="muted">
-      ECB-214
+      ECB-407
        · Karl Borg
-       · 10 Jun 2026
+       · 17 Jun 2026
     </span>
   </div>
   <div class="row">
@@ -54,14 +54,14 @@
       <form hx-post="/claims/6/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge awaiting_survey">Awaiting survey</span>
+  <span class="badge open">Open</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
-      <option value="open" >Open</option>
+      <option value="open" selected>Open</option>
     
-      <option value="awaiting_survey" selected>Awaiting survey</option>
+      <option value="awaiting_survey" >Awaiting survey</option>
     
       <option value="awaiting_insurer" >Awaiting insurer</option>
     

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "hLczhPRTQxjC2Cw0BCJEfLQU2Db8N4YcEDzQ7aREKXeNZ9lKhhZ8VNWQZxwAu5uI"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "YRaSMiLWlC6KACMpjPtoeWoCeBTmPaYIqejQ3RL8MvmyiXFEvAX9JCM2EWbjDyHO"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0002</span>
     <span class="muted">
-      ECB-407
-       · Maria Vella
-       · 10 May 2026
+      ECB-101
+       · Luca Grech
+       · 20 Mar 2026
     </span>
   </div>
   <div class="row">
@@ -98,7 +98,7 @@
      class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-2-billing.html"
      hx-get="/claims/2/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">2</span></a>
   <a href="claim-2-history.html"
      hx-get="/claims/2/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -125,7 +125,7 @@
 
       <div class="field ">
   <label for="id_sent_at">Sent at</label>
-  <input type="datetime-local" name="sent_at" value="2026-07-09 23:02:21" required id="id_sent_at"><input type="hidden" name="initial-sent_at" value="2026-07-09 23:02:21" id="initial-id_sent_at">
+  <input type="datetime-local" name="sent_at" value="2026-07-10 21:00:46" required id="id_sent_at"><input type="hidden" name="initial-sent_at" value="2026-07-10 21:00:46" id="initial-id_sent_at">
   
 </div>
 
@@ -164,10 +164,10 @@
   <div class="timeline-item">
     <div class="head">
       <div>
-        <span class="badge in">Received</span>
+        <span class="badge out">Sent</span>
         <strong>Claim CLM-2026-0002 — accident report</strong>
       </div>
-      <span class="when">09 Jul 2026 22:59</span>
+      <span class="when">07 Jul 2026 21:00</span>
     </div>
     <div class="addr">claims@ecabs.example → claims@insurer.example</div>
     <div class="body">Please find attached the accident report and photos.</div>

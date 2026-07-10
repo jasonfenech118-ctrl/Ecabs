@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "eITOeV8Y6a1uYxhM5Y4qRc3CRpx9pfSGBAg54g8J0AWFV46wLDkUxe9yOjSB6goc"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "BbF3wljIs9VgGJU8DTS86l953HLKee5g3yO1NUjUT2b4o4NnPEmTB1xvt23H2COm"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0002</span>
     <span class="muted">
-      ECB-407
-       · Maria Vella
-       · 10 May 2026
+      ECB-101
+       · Luca Grech
+       · 20 Mar 2026
     </span>
   </div>
   <div class="row">
@@ -98,7 +98,7 @@
      class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-2-billing.html"
      hx-get="/claims/2/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
+     class="active" onclick="setTab(this)">Billing<span class="tab-count">2</span></a>
   <a href="claim-2-history.html"
      hx-get="/claims/2/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -181,12 +181,12 @@
     <tbody>
       
       <tr>
-        <td>Survey fee</td>
-        <td>Repair</td>
+        <td>Towing to depot</td>
+        <td>Excess</td>
         <td>—</td>
         <td>—</td>
         <td><span class="badge paid">Paid</span></td>
-        <td class="right">€1167.00</td>
+        <td class="right">€887.00</td>
       </tr>
       
       <tr>
@@ -194,17 +194,8 @@
         <td>Other</td>
         <td>—</td>
         <td>—</td>
-        <td><span class="badge written_off">Written off</span></td>
-        <td class="right">€582.00</td>
-      </tr>
-      
-      <tr>
-        <td>Towing to depot</td>
-        <td>Towing</td>
-        <td>—</td>
-        <td>—</td>
-        <td><span class="badge written_off">Written off</span></td>
-        <td class="right">€596.00</td>
+        <td><span class="badge invoiced">Invoiced</span></td>
+        <td class="right">€1833.00</td>
       </tr>
       
     </tbody>
@@ -212,7 +203,7 @@
     <tfoot>
       <tr>
         <td colspan="5" class="right"><strong>Total</strong></td>
-        <td class="right"><strong>€2345</strong></td>
+        <td class="right"><strong>€2720</strong></td>
       </tr>
     </tfoot>
     

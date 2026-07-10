@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "kN3W5gjlcChrXQpNfvw04ACNxzGkJEF5HFqdVBj662cCUnexVaMuKCIJut1MqFbB"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "xoskW5F2msEw6eXPRzCaU6wsTkwpZrcOZLBidEFeNlUkOzQ43k6VpMUSjFOmNPVU"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0001</span>
     <span class="muted">
-      ECB-330
-       · Karl Borg
-       · 27 Jun 2026
+      ECB-101
+       · Maria Vella
+       · 02 Jul 2026
     </span>
   </div>
   <div class="row">
@@ -54,7 +54,7 @@
       <form hx-post="/claims/1/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge closed">Closed</span>
+  <span class="badge rejected">Rejected</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
@@ -67,9 +67,9 @@
     
       <option value="settled" >Settled</option>
     
-      <option value="closed" selected>Closed</option>
+      <option value="closed" >Closed</option>
     
-      <option value="rejected" >Rejected</option>
+      <option value="rejected" selected>Rejected</option>
     
   </select>
 </form>
@@ -98,7 +98,7 @@
      class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-1-billing.html"
      hx-get="/claims/1/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-1-history.html"
      hx-get="/claims/1/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -110,10 +110,10 @@
   <div class="card">
     <h3>Vehicle &amp; driver</h3>
     <dl class="kv">
-      <dt>Registration</dt><dd>ECB-330</dd>
-      <dt>Make / model</dt><dd>Kia Niro</dd>
-      <dt>Driver</dt><dd>Karl Borg</dd>
-      <dt>Phone</dt><dd>+356 7984627</dd>
+      <dt>Registration</dt><dd>ECB-101</dd>
+      <dt>Make / model</dt><dd>Toyota Corolla Hybrid</dd>
+      <dt>Driver</dt><dd>Maria Vella</dd>
+      <dt>Phone</dt><dd>+356 7919987</dd>
       <dt>Email</dt><dd>—</dd>
     </dl>
   </div>
@@ -122,8 +122,8 @@
     <h3>Accident</h3>
     <dl class="kv">
       <dt>Date &amp; time</dt>
-      <dd>27 Jun 2026 at 20:59</dd>
-      <dt>Location</dt><dd>Triq ix-Xatt, Gzira</dd>
+      <dd>02 Jul 2026 at 19:00</dd>
+      <dt>Location</dt><dd>Aldo Moro Road, Marsa</dd>
       <dt>Police report</dt><dd>—</dd>
       <dt>Fault</dt><dd>Shared / knock for knock</dd>
     </dl>
@@ -135,19 +135,19 @@
       <dt>Name</dt><dd>John Smith</dd>
       <dt>Phone</dt><dd>—</dd>
       <dt>Vehicle</dt><dd>BMW 320i — ABC-123</dd>
-      <dt>Insurer</dt><dd>Mapfre Middlesea</dd>
+      <dt>Insurer</dt><dd>Atlas Insurance</dd>
     </dl>
   </div>
 
   <div class="card">
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
-      <dt>Insurer</dt><dd>Elmo Insurance</dd>
-      <dt>Policy number</dt><dd>POL-454178</dd>
-      <dt>Excess</dt><dd>€750.00</dd>
+      <dt>Insurer</dt><dd>GasanMamo</dd>
+      <dt>Policy number</dt><dd>POL-159521</dd>
+      <dt>Excess</dt><dd>€500.00</dd>
       <dt>Created by</dt><dd>Demo Staff</dd>
-      <dt>Created</dt><dd>09 Jul 2026 22:59</dd>
-      <dt>Submitted</dt><dd>09 Jul 2026 22:59</dd>
+      <dt>Created</dt><dd>10 Jul 2026 21:00</dd>
+      <dt>Submitted</dt><dd>10 Jul 2026 21:00</dd>
       
     </dl>
   </div>

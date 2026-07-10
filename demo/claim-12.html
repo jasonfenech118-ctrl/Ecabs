@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "kMCzBJe8vozSEoAXfacKdAwoa3FGXVtDHEZQr4eTpOu3BVpHVPseTCCk7X08EWZ9"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "q1pwQ4QBQZ0kUOODTW2scHyU7v2BgFu5Soyu7DQNhSg8C9HS5HwdHnWkxQky43db"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -44,9 +44,9 @@
   <div>
     <span class="ref">CLM-2026-0012</span>
     <span class="muted">
-      ECB-512
-       · Josef Camilleri
-       · 16 Mar 2026
+      ECB-407
+       · Amy Farrugia
+       · 09 May 2026
     </span>
   </div>
   <div class="row">
@@ -54,12 +54,12 @@
       <form hx-post="/claims/12/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge open">Open</span>
+  <span class="badge closed">Closed</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
-      <option value="open" selected>Open</option>
+      <option value="open" >Open</option>
     
       <option value="awaiting_survey" >Awaiting survey</option>
     
@@ -67,7 +67,7 @@
     
       <option value="settled" >Settled</option>
     
-      <option value="closed" >Closed</option>
+      <option value="closed" selected>Closed</option>
     
       <option value="rejected" >Rejected</option>
     
@@ -89,16 +89,16 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-12-surveys.html"
      hx-get="/claims/12/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
   <a href="claim-12-emails.html"
      hx-get="/claims/12/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-12-reminders.html"
      hx-get="/claims/12/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-12-billing.html"
      hx-get="/claims/12/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">2</span></a>
   <a href="claim-12-history.html"
      hx-get="/claims/12/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -110,10 +110,10 @@
   <div class="card">
     <h3>Vehicle &amp; driver</h3>
     <dl class="kv">
-      <dt>Registration</dt><dd>ECB-512</dd>
-      <dt>Make / model</dt><dd>Volkswagen Caddy</dd>
-      <dt>Driver</dt><dd>Josef Camilleri</dd>
-      <dt>Phone</dt><dd>+356 7963302</dd>
+      <dt>Registration</dt><dd>ECB-407</dd>
+      <dt>Make / model</dt><dd>Toyota Prius+</dd>
+      <dt>Driver</dt><dd>Amy Farrugia</dd>
+      <dt>Phone</dt><dd>+356 7971146</dd>
       <dt>Email</dt><dd>—</dd>
     </dl>
   </div>
@@ -122,8 +122,8 @@
     <h3>Accident</h3>
     <dl class="kv">
       <dt>Date &amp; time</dt>
-      <dd>16 Mar 2026 at 20:59</dd>
-      <dt>Location</dt><dd>Valletta Road, Luqa</dd>
+      <dd>09 May 2026 at 19:00</dd>
+      <dt>Location</dt><dd>Aldo Moro Road, Marsa</dd>
       <dt>Police report</dt><dd>—</dd>
       <dt>Fault</dt><dd>Shared / knock for knock</dd>
     </dl>
@@ -135,19 +135,19 @@
       <dt>Name</dt><dd>John Smith</dd>
       <dt>Phone</dt><dd>—</dd>
       <dt>Vehicle</dt><dd>BMW 320i — ABC-123</dd>
-      <dt>Insurer</dt><dd>Mapfre Middlesea</dd>
+      <dt>Insurer</dt><dd>Elmo Insurance</dd>
     </dl>
   </div>
 
   <div class="card">
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
-      <dt>Insurer</dt><dd>Elmo Insurance</dd>
-      <dt>Policy number</dt><dd>POL-633202</dd>
-      <dt>Excess</dt><dd>€500.00</dd>
+      <dt>Insurer</dt><dd>Mapfre Middlesea</dd>
+      <dt>Policy number</dt><dd>POL-510483</dd>
+      <dt>Excess</dt><dd>€250.00</dd>
       <dt>Created by</dt><dd>Demo Staff</dd>
-      <dt>Created</dt><dd>09 Jul 2026 22:59</dd>
-      <dt>Submitted</dt><dd>09 Jul 2026 22:59</dd>
+      <dt>Created</dt><dd>10 Jul 2026 21:00</dd>
+      <dt>Submitted</dt><dd>10 Jul 2026 21:00</dd>
       
     </dl>
   </div>
