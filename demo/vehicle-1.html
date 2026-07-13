@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "9RIEkPsag0OiNf9O50oOJutMYPjqKkwRgpXDO6e5pXKwHp4vdzdDENr3PE3qo7yX"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "Y29Skxadu7lsvm1Fle9Qdo7icf2h8lZjkV2HjCYVgKJNmI9fDFVzciRqSop0nNUG"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -64,7 +64,7 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="9RIEkPsag0OiNf9O50oOJutMYPjqKkwRgpXDO6e5pXKwHp4vdzdDENr3PE3qo7yX">
+  <input type="hidden" name="csrfmiddlewaretoken" value="Y29Skxadu7lsvm1Fle9Qdo7icf2h8lZjkV2HjCYVgKJNmI9fDFVzciRqSop0nNUG">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
@@ -155,14 +155,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/1/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="9RIEkPsag0OiNf9O50oOJutMYPjqKkwRgpXDO6e5pXKwHp4vdzdDENr3PE3qo7yX">
+      <input type="hidden" name="csrfmiddlewaretoken" value="Y29Skxadu7lsvm1Fle9Qdo7icf2h8lZjkV2HjCYVgKJNmI9fDFVzciRqSop0nNUG">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
     <form method="post" action="/vehicles/1/delete/"
           onsubmit="return confirm('Delete ECB-101 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="9RIEkPsag0OiNf9O50oOJutMYPjqKkwRgpXDO6e5pXKwHp4vdzdDENr3PE3qo7yX">
+      <input type="hidden" name="csrfmiddlewaretoken" value="Y29Skxadu7lsvm1Fle9Qdo7icf2h8lZjkV2HjCYVgKJNmI9fDFVzciRqSop0nNUG">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>
