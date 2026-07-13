@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Add vehicle — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Add vehicle</h1>
+    <div class="sub">Register a vehicle in the fleet</div>
+  </div>
+  <a href="{% url 'vehicle_list' %}" class="btn">← All vehicles</a>
+</div>
+
+<form method="post" class="card" style="max-width:820px">
+  {% csrf_token %}
+  <div class="form-grid">
+    {% include "claims/partials/field.html" with field=form.registration %}
+    {% include "claims/partials/field.html" with field=form.make_model %}
+    {% include "claims/partials/field.html" with field=form.year %}
+    {% include "claims/partials/field.html" with field=form.acquired_on %}
+    {% include "claims/partials/field.html" with field=form.insurance_due %}
+    {% include "claims/partials/field.html" with field=form.notes extra_class="span-2" %}
+  </div>
+  <button type="submit" class="btn btn-primary mt">Add vehicle</button>
+</form>
+{% endblock %}

@@ -50,6 +50,7 @@ class BillingItemInline(admin.TabularInline):
 class ClaimAdmin(SimpleHistoryAdmin):
     list_display = (
         "reference",
+        "case_ref",
         "status",
         "vehicle_registration",
         "driver_name",

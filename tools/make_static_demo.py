@@ -44,6 +44,7 @@ def build_url_map():
         "/dashboard/": "dashboard.html",
         "/claims/": "claims.html",
         "/claims/master/": "master.html",
+        "/vehicles/add/": "vehicle-add.html",
         "/add/photo/": "add-photo.html",
         "/add/email/": "add-email.html",
         "/add/survey/": "add-survey.html",

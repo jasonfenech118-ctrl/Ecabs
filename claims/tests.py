@@ -199,6 +199,63 @@ class ViewTests(TestCase):
         sync_auto_reminders()
         self.assertEqual(Reminder.objects.filter(is_auto=True).count(), 2)
 
+    def test_case_number_assigned_on_submit(self):
+        a = Claim.objects.create()
+        self.assertIsNone(a.case_number)
+        self.assertEqual(a.case_ref, "")
+        a.submit()
+        a.refresh_from_db()
+        self.assertEqual(a.case_number, 1)
+        self.assertEqual(a.case_ref, "VD-00001")
+        # Second claim gets the next running number; never resets.
+        b = Claim.objects.create(status=Claim.Status.OPEN)
+        self.assertEqual(b.case_number, 2)
+
+    def test_master_sheet_grouped_by_month_and_summary(self):
+        from datetime import date
+
+        Claim.objects.create(
+            status=Claim.Status.OPEN, accident_date=date(2026, 3, 15),
+            created_by=self.user,
+        )
+        Claim.objects.create(
+            status=Claim.Status.CLOSED, accident_date=date(2025, 11, 2),
+            created_by=self.user,
+        )
+        response = self.client.get(reverse("master_sheet"))
+        self.assertContains(response, "March 2026")
+        self.assertContains(response, "November 2025")
+        self.assertContains(response, "Claims by status")
+        # Newest month appears before the older one in the page.
+        body = response.content.decode()
+        self.assertLess(body.index("March 2026"), body.index("November 2025"))
+
+    def test_master_overdue_flag_filter(self):
+        from datetime import timedelta
+
+        today = timezone.localdate()
+        overdue = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-OVR",
+            chase_on=today - timedelta(days=2), created_by=self.user,
+        )
+        Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-OK",
+            chase_on=today + timedelta(days=5), created_by=self.user,
+        )
+        response = self.client.get(reverse("master_sheet"), {"flag": "overdue"})
+        self.assertContains(response, "ECB-OVR")
+        self.assertNotContains(response, "ECB-OK")
+
+    def test_vehicle_add_page(self):
+        response = self.client.get(reverse("vehicle_add"))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            reverse("vehicle_add"),
+            {"registration": "ECB-NEW", "make_model": "Kia Picanto"},
+        )
+        self.assertRedirects(response, reverse("vehicle_list"))
+        self.assertTrue(Vehicle.objects.filter(registration="ECB-NEW").exists())
+
     def test_master_sheet_and_csv(self):
         from decimal import Decimal
 

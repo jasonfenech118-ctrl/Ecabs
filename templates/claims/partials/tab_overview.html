@@ -50,6 +50,7 @@
   <div class="card">
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
+      <dt>Case no</dt><dd>{{ claim.case_ref|default:"— (assigned on submit)" }}</dd>
       <dt>Our insurer</dt><dd>{{ claim.insurer|default:"—" }}</dd>
       <dt>Policy number</dt><dd>{{ claim.policy_number|default:"—" }}</dd>
       <dt>Insurer claim no</dt><dd>{{ claim.insurer_claim_number|default:"—" }}</dd>

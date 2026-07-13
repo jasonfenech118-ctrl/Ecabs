@@ -36,6 +36,12 @@ from .services.auto_reminders import sync_auto_reminders
 
 VALID_TABS = {"overview", "photos", "surveys", "emails", "reminders", "billing", "history"}
 
+OPEN_STATUSES = [
+    Claim.Status.OPEN,
+    Claim.Status.AWAITING_SURVEY,
+    Claim.Status.AWAITING_INSURER,
+]
+
 
 def _compliance_due(limit=None):
     """Upcoming/overdue VRT, licence and insurance renewals for active vehicles,
@@ -158,6 +164,11 @@ def _filtered_claims(request):
         )
     if status:
         qs = qs.filter(status=status)
+    flag = request.GET.get("flag", "").strip()
+    if flag == "overdue":
+        qs = qs.filter(status__in=OPEN_STATUSES, chase_on__lt=timezone.localdate())
+    elif flag == "urgent":
+        qs = qs.filter(urgent=True)
     return qs
 
 
@@ -450,22 +461,16 @@ def vehicle_list(request):
 
 
 @login_required
-@require_POST
 def vehicle_add(request):
-    form = VehicleForm(request.POST)
-    if form.is_valid():
-        form.save()
-        return redirect("vehicle_list")
-    context = {
-        "vehicles": Vehicle.objects.all(),
-        "q": "",
-        "status": "",
-        "statuses": Vehicle.Status.choices,
-        "form": form,
-        "form_open": True,
-        "compliance_due": _compliance_due(),
-    }
-    return render(request, "claims/vehicle_list.html", context)
+    """Full-page add-vehicle form (linked from the home menu)."""
+    if request.method == "POST":
+        form = VehicleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("vehicle_list")
+    else:
+        form = VehicleForm()
+    return render(request, "claims/vehicle_add.html", {"form": form})
 
 
 @login_required
@@ -578,6 +583,7 @@ def _fmt_bool(v):
 
 
 MASTER_COLUMNS = [
+    ("Case no", lambda c: c.case_ref),
     ("Ref", lambda c: c.reference),
     ("Status", lambda c: c.get_status_display()),
     ("Urgent", lambda c: "URGENT" if c.urgent else ""),
@@ -625,19 +631,77 @@ MASTER_COLUMNS = [
 ]
 
 
+def _by_accident_desc(claims):
+    """Newest accident first; claims with no accident date sort to the end."""
+    from datetime import date
+
+    return sorted(claims, key=lambda c: c.accident_date or date.min, reverse=True)
+
+
+def _month_year_groups(claims):
+    """Group claims into month/year sections (newest first) for the sheet."""
+    groups = []
+    for c in _by_accident_desc(claims):
+        if c.accident_date:
+            key = (c.accident_date.year, c.accident_date.month)
+            label = c.accident_date.strftime("%B %Y")
+        else:
+            key, label = None, "No accident date"
+        if not groups or groups[-1]["key"] != key:
+            groups.append({"key": key, "label": label, "rows": []})
+        groups[-1]["rows"].append(
+            {"pk": c.pk, "cells": [fn(c) for _, fn in MASTER_COLUMNS]}
+        )
+    return groups
+
+
+def _status_summary():
+    """Counts and outstanding totals per status, plus overdue/urgent/total."""
+    claims = list(Claim.objects.all())
+    today = timezone.localdate()
+
+    def agg(predicate):
+        matched = [c for c in claims if predicate(c)]
+        total = sum((c.outstanding_amount for c in matched), Decimal("0"))
+        return len(matched), total
+
+    rows = []
+    for value, label in Claim.Status.choices:
+        count, outstanding = agg(lambda c, v=value: c.status == v)
+        rows.append(
+            {"label": label, "count": count, "outstanding": outstanding,
+             "query": f"status={value}"}
+        )
+    count, outstanding = agg(
+        lambda c: c.status in OPEN_STATUSES and c.chase_on and c.chase_on < today
+    )
+    rows.append(
+        {"label": "Overdue (chase date passed)", "count": count,
+         "outstanding": outstanding, "query": "flag=overdue", "highlight": True}
+    )
+    count, outstanding = agg(lambda c: c.urgent)
+    rows.append(
+        {"label": "Urgent", "count": count, "outstanding": outstanding,
+         "query": "flag=urgent", "highlight": True}
+    )
+    count, outstanding = agg(lambda c: True)
+    rows.append(
+        {"label": "Total claims", "count": count, "outstanding": outstanding,
+         "query": "", "total": True}
+    )
+    return rows
+
+
 @login_required
 def master_sheet(request):
-    claims = _filtered_claims(request)
-    headers = [h for h, _ in MASTER_COLUMNS]
-    rows = [
-        {"pk": c.pk, "cells": [fn(c) for _, fn in MASTER_COLUMNS]} for c in claims
-    ]
+    groups = _month_year_groups(_filtered_claims(request))
     return render(
         request,
         "claims/master_sheet.html",
         {
-            "headers": headers,
-            "rows": rows,
+            "headers": [h for h, _ in MASTER_COLUMNS],
+            "groups": groups,
+            "summary": _status_summary(),
             "statuses": Claim.Status.choices,
             "q": request.GET.get("q", ""),
             "status": request.GET.get("status", ""),
@@ -655,6 +719,6 @@ def master_sheet_csv(request):
     response["Content-Disposition"] = 'attachment; filename="master-sheet.csv"'
     writer = csv.writer(response)
     writer.writerow([h for h, _ in MASTER_COLUMNS])
-    for claim in _filtered_claims(request):
+    for claim in _by_accident_desc(_filtered_claims(request)):
         writer.writerow([fn(claim) for _, fn in MASTER_COLUMNS])
     return response

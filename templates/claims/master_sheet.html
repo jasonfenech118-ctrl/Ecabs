@@ -4,9 +4,32 @@
 <div class="page-head">
   <div>
     <h1>Master sheet</h1>
-    <div class="sub">Every claim, every column — like the old spreadsheet, but always up to date</div>
+    <div class="sub">Every claim, every column, grouped by month — like the old spreadsheet, but always up to date</div>
   </div>
   <a href="{% url 'master_sheet_csv' %}?q={{ q|urlencode }}&status={{ status|urlencode }}" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+</div>
+
+<div class="card" style="margin-bottom:1rem">
+  <h2>Claims by status</h2>
+  <div class="table-wrap">
+    <table class="list" style="max-width:520px">
+      <thead><tr><th>Category</th><th class="right">Claims</th><th class="right">Outstanding</th></tr></thead>
+      <tbody>
+        {% for row in summary %}
+        <tr class="{% if row.total %}summary-total{% endif %}">
+          <td>
+            <a href="{% url 'master_sheet' %}{% if row.query %}?{{ row.query }}{% endif %}">
+              {% if row.highlight %}<span class="badge overdue">{{ row.label }}</span>{% else %}{{ row.label }}{% endif %}
+            </a>
+          </td>
+          <td class="right">{{ row.count }}</td>
+          <td class="right">{% if row.outstanding %}€{{ row.outstanding|floatformat:2 }}{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">Click a category to filter the sheet below.</p>
 </div>
 
 <div class="card">
@@ -27,16 +50,19 @@
         <tr>{% for h in headers %}<th>{{ h }}</th>{% endfor %}</tr>
       </thead>
       <tbody>
-        {% for row in rows %}
-        <tr>
-          {% for cell in row.cells %}
-            {% if forloop.first %}
-              <td class="sticky-col"><a href="{% url 'claim_detail' row.pk %}">{{ cell }}</a></td>
-            {% else %}
-              <td>{{ cell|default:"" }}</td>
-            {% endif %}
+        {% for group in groups %}
+        <tr class="month-group"><td colspan="{{ headers|length }}">{{ group.label }} · {{ group.rows|length }} claim{{ group.rows|length|pluralize }}</td></tr>
+          {% for row in group.rows %}
+          <tr>
+            {% for cell in row.cells %}
+              {% if forloop.first %}
+                <td class="sticky-col"><a href="{% url 'claim_detail' row.pk %}">{{ cell }}</a></td>
+              {% else %}
+                <td>{{ cell|default:"" }}</td>
+              {% endif %}
+            {% endfor %}
+          </tr>
           {% endfor %}
-        </tr>
         {% empty %}
         <tr><td colspan="{{ headers|length }}" class="empty">No claims match.</td></tr>
         {% endfor %}
@@ -44,7 +70,7 @@
     </table>
   </div>
   <p class="muted" style="font-size:.8rem; margin-bottom:0">
-    Scroll sideways for all columns — the reference column stays put. The CSV download opens directly in Excel.
+    Grouped newest month first. Scroll sideways for all columns — the case number column stays put. The CSV opens directly in Excel.
   </p>
 </div>
 {% endblock %}

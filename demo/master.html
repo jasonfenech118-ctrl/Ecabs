@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "yikQseZNqP9wouYVN5SeA6PBiNOvAVfAJuZFfneuXxMBaFe6qh7YvteCdblGl8hp"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "gGJIOjYdVg1lc0EmdJYiiAKeScxvX1ACHxXfVRQCcBg63B0UEOcSuZAtcRCkOWa5"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -46,9 +46,122 @@
 <div class="page-head">
   <div>
     <h1>Master sheet</h1>
-    <div class="sub">Every claim, every column — like the old spreadsheet, but always up to date</div>
+    <div class="sub">Every claim, every column, grouped by month — like the old spreadsheet, but always up to date</div>
   </div>
   <a href="/claims/master/csv/?q=&status=" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+</div>
+
+<div class="card" style="margin-bottom:1rem">
+  <h2>Claims by status</h2>
+  <div class="table-wrap">
+    <table class="list" style="max-width:520px">
+      <thead><tr><th>Category</th><th class="right">Claims</th><th class="right">Outstanding</th></tr></thead>
+      <tbody>
+        
+        <tr class="">
+          <td>
+            <a href="/claims/master/?status=draft">
+              Draft
+            </a>
+          </td>
+          <td class="right">1</td>
+          <td class="right">—</td>
+        </tr>
+        
+        <tr class="">
+          <td>
+            <a href="/claims/master/?status=open">
+              Open
+            </a>
+          </td>
+          <td class="right">0</td>
+          <td class="right">—</td>
+        </tr>
+        
+        <tr class="">
+          <td>
+            <a href="/claims/master/?status=awaiting_survey">
+              Awaiting survey
+            </a>
+          </td>
+          <td class="right">0</td>
+          <td class="right">—</td>
+        </tr>
+        
+        <tr class="">
+          <td>
+            <a href="/claims/master/?status=awaiting_insurer">
+              Awaiting insurer
+            </a>
+          </td>
+          <td class="right">0</td>
+          <td class="right">—</td>
+        </tr>
+        
+        <tr class="">
+          <td>
+            <a href="/claims/master/?status=settled">
+              Settled
+            </a>
+          </td>
+          <td class="right">0</td>
+          <td class="right">—</td>
+        </tr>
+        
+        <tr class="">
+          <td>
+            <a href="/claims/master/?status=closed">
+              Closed
+            </a>
+          </td>
+          <td class="right">0</td>
+          <td class="right">—</td>
+        </tr>
+        
+        <tr class="">
+          <td>
+            <a href="/claims/master/?status=rejected">
+              Rejected
+            </a>
+          </td>
+          <td class="right">0</td>
+          <td class="right">—</td>
+        </tr>
+        
+        <tr class="">
+          <td>
+            <a href="/claims/master/?flag=overdue">
+              <span class="badge overdue">Overdue (chase date passed)</span>
+            </a>
+          </td>
+          <td class="right">0</td>
+          <td class="right">—</td>
+        </tr>
+        
+        <tr class="">
+          <td>
+            <a href="/claims/master/?flag=urgent">
+              <span class="badge overdue">Urgent</span>
+            </a>
+          </td>
+          <td class="right">0</td>
+          <td class="right">—</td>
+        </tr>
+        
+        <tr class="summary-total">
+          <td>
+            <a href="master.html">
+              Total claims
+            </a>
+          </td>
+          <td class="right">1</td>
+          <td class="right">—</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">Click a category to filter the sheet below.</p>
 </div>
 
 <div class="card">
@@ -78,195 +191,202 @@
   <div class="table-wrap master-wrap">
     <table class="list master">
       <thead>
-        <tr><th>Ref</th><th>Status</th><th>Urgent</th><th>Date of acc</th><th>Our reg</th><th>Driver name</th><th>TP reg</th><th>TP vehicle make</th><th>TP driver name</th><th>TP driver contact</th><th>TP owner name</th><th>TP owner contact</th><th>TP insurance</th><th>TP claim no</th><th>TP2 reg</th><th>TP2 owner</th><th>TP2 contact</th><th>TP2 insurance</th><th>Report type</th><th>Report ref</th><th>Fault (OI/TP)</th><th>Drivable</th><th>Survey in hand</th><th>Estimate</th><th>Our insurer</th><th>Policy no</th><th>Insurer claim no</th><th>Bills sent</th><th>Invoice no</th><th>Labour (net)</th><th>Spray + material</th><th>Parts</th><th>LOE days</th><th>LOE daily</th><th>Loss of earnings</th><th>Others</th><th>TOTAL claim</th><th>Settlement</th><th>Amount paid</th><th>Offset</th><th>Outstanding</th><th>Next action</th><th>Chase on</th><th>Created</th></tr>
+        <tr><th>Case no</th><th>Ref</th><th>Status</th><th>Urgent</th><th>Date of acc</th><th>Our reg</th><th>Driver name</th><th>TP reg</th><th>TP vehicle make</th><th>TP driver name</th><th>TP driver contact</th><th>TP owner name</th><th>TP owner contact</th><th>TP insurance</th><th>TP claim no</th><th>TP2 reg</th><th>TP2 owner</th><th>TP2 contact</th><th>TP2 insurance</th><th>Report type</th><th>Report ref</th><th>Fault (OI/TP)</th><th>Drivable</th><th>Survey in hand</th><th>Estimate</th><th>Our insurer</th><th>Policy no</th><th>Insurer claim no</th><th>Bills sent</th><th>Invoice no</th><th>Labour (net)</th><th>Spray + material</th><th>Parts</th><th>LOE days</th><th>LOE daily</th><th>Loss of earnings</th><th>Others</th><th>TOTAL claim</th><th>Settlement</th><th>Amount paid</th><th>Offset</th><th>Outstanding</th><th>Next action</th><th>Chase on</th><th>Created</th></tr>
       </thead>
       <tbody>
         
-        <tr>
+        <tr class="month-group"><td colspan="45">No accident date · 1 claim</td></tr>
           
+          <tr>
             
-              <td class="sticky-col"><a href="claim-1.html">CLM-2026-0001</a></td>
+              
+                <td class="sticky-col"><a href="claim-1.html"></a></td>
+              
             
+              
+                <td>CLM-2026-0001</td>
+              
+            
+              
+                <td>Draft</td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td>Not yet determined</td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td>No</td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td>0.00</td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td>0.00</td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td>0.00</td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td></td>
+              
+            
+              
+                <td>13/07/2026</td>
+              
+            
+          </tr>
           
-            
-              <td>Draft</td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td>Not yet determined</td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td>No</td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td>0.00</td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td>0.00</td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td>0.00</td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td></td>
-            
-          
-            
-              <td>13/07/2026</td>
-            
-          
-        </tr>
         
       </tbody>
     </table>
   </div>
   <p class="muted" style="font-size:.8rem; margin-bottom:0">
-    Scroll sideways for all columns — the reference column stays put. The CSV download opens directly in Excel.
+    Grouped newest month first. Scroll sideways for all columns — the case number column stays put. The CSV opens directly in Excel.
   </p>
 </div>
 

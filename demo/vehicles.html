@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "r4XXBWWqlWWV2FFfsyPbjBGxtXH8HcxRCgCMo5b7SEz0OQVq5K4VeY5yolejspzG"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "O7OD0wHkRAQ6DLFOJ9FNzueFOb7Z2H2ifY2a74zJ8V5Rum1maeTnLT4U8QcOTCCL"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -48,77 +48,10 @@
     <h1>Vehicles</h1>
     <div class="sub">Fleet register with insurance renewal reminders</div>
   </div>
+  <a href="vehicle-add.html" class="btn btn-primary">+ Add vehicle</a>
 </div>
 
 
-<div class="card" style="margin-bottom:1rem">
-  <h2>Insurance renewals due in the next 30 days</h2>
-  <div class="table-wrap">
-    <table class="list">
-      <thead><tr><th>Vehicle</th><th>Renewal</th><th>Due</th><th></th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td><a href="vehicle-1.html">ABC123</a>
-              <span class="muted">Toyota Vitz</span></td>
-          <td>Insurance</td>
-          <td>25 Jul 2026</td>
-          <td><span class="badge pending">
-            due soon</span></td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-<details class="inline-form" >
-  <summary>Add vehicle</summary>
-  <form method="post" action="/vehicles/add/" class="card">
-    <input type="hidden" name="csrfmiddlewaretoken" value="r4XXBWWqlWWV2FFfsyPbjBGxtXH8HcxRCgCMo5b7SEz0OQVq5K4VeY5yolejspzG">
-    <div class="form-grid">
-      <div class="field ">
-  <label for="id_registration">Registration</label>
-  <input type="text" name="registration" maxlength="20" required id="id_registration">
-  
-</div>
-
-      <div class="field ">
-  <label for="id_make_model">Make model</label>
-  <input type="text" name="make_model" maxlength="100" id="id_make_model">
-  
-</div>
-
-      <div class="field ">
-  <label for="id_year">Year</label>
-  <input type="number" name="year" min="0" id="id_year">
-  
-</div>
-
-      <div class="field ">
-  <label for="id_acquired_on">Acquired on</label>
-  <input type="date" name="acquired_on" id="id_acquired_on">
-  
-</div>
-
-      <div class="field ">
-  <label for="id_insurance_due">Insurance renewal</label>
-  <input type="date" name="insurance_due" id="id_insurance_due">
-  
-</div>
-
-      <div class="field ">
-  <label for="id_notes">Notes</label>
-  <textarea name="notes" cols="40" rows="2" id="id_notes">
-</textarea>
-  
-</div>
-
-    </div>
-    <button type="submit" class="btn btn-primary mt">Add vehicle</button>
-  </form>
-</details>
 
 <div class="card">
   <form class="toolbar"
@@ -147,25 +80,7 @@
       </thead>
       <tbody id="vehicle-rows">
         
-<tr>
-  <td><a href="vehicle-1.html">ABC123</a></td>
-  <td>Toyota Vitz</td>
-  <td>
-    <span class="badge open">Active</span>
-    
-  </td>
-  
-  <td>
-    
-      25 Jul 2026
-      
-        <span class="badge pending">soon</span>
-      
-    
-  </td>
-  
-  <td><a href="vehicle-1.html" class="btn btn-sm">Manage</a></td>
-</tr>
+<tr><td colspan="5" class="empty">No vehicles match.</td></tr>
 
 
       </tbody>

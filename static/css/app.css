@@ -239,6 +239,11 @@ table.master .sticky-col, table.master thead th:first-child {
   border-right: 1px solid var(--border);
 }
 table.master thead th:first-child { z-index: 3; }
+tr.month-group td {
+  position: sticky; left: 0; background: var(--accent-soft); color: var(--accent);
+  font-weight: 700; font-size: .85rem; letter-spacing: .02em;
+}
+tr.summary-total td { font-weight: 700; border-top: 2px solid var(--border); }
 
 .login-card { width: 360px; }
 .login-card h1 { text-align: center; margin-bottom: 1rem; }

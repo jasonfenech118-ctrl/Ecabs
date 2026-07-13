@@ -6,6 +6,7 @@
     <h1>Vehicles</h1>
     <div class="sub">Fleet register with insurance renewal reminders</div>
   </div>
+  <a href="{% url 'vehicle_add' %}" class="btn btn-primary">+ Add vehicle</a>
 </div>
 
 {% if compliance_due %}
@@ -30,22 +31,6 @@
   </div>
 </div>
 {% endif %}
-
-<details class="inline-form" {% if form_open %}open{% endif %}>
-  <summary>Add vehicle</summary>
-  <form method="post" action="{% url 'vehicle_add' %}" class="card">
-    {% csrf_token %}
-    <div class="form-grid">
-      {% include "claims/partials/field.html" with field=form.registration %}
-      {% include "claims/partials/field.html" with field=form.make_model %}
-      {% include "claims/partials/field.html" with field=form.year %}
-      {% include "claims/partials/field.html" with field=form.acquired_on %}
-      {% include "claims/partials/field.html" with field=form.insurance_due %}
-      {% include "claims/partials/field.html" with field=form.notes %}
-    </div>
-    <button type="submit" class="btn btn-primary mt">Add vehicle</button>
-  </form>
-</details>
 
 <div class="card">
   <form class="toolbar"

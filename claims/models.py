@@ -113,6 +113,11 @@ class Claim(models.Model):
         OTHER = "other", "Other"
 
     reference = models.CharField(max_length=20, unique=True, editable=False)
+    # Internal company case number — a running count that never resets, assigned
+    # once a draft becomes a real claim. Shown as "VD-00001".
+    case_number = models.PositiveIntegerField(
+        unique=True, null=True, blank=True, editable=False
+    )
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.DRAFT, db_index=True
     )
@@ -237,6 +242,9 @@ class Claim(models.Model):
     def save(self, *args, **kwargs):
         if not self.reference:
             self.reference = self._next_reference()
+        # Assign the company case number once the claim is real (off draft).
+        if self.case_number is None and self.status != self.Status.DRAFT:
+            self.case_number = self._next_case_number()
         super().save(*args, **kwargs)
 
     @classmethod
@@ -251,6 +259,15 @@ class Claim(models.Model):
         )
         seq = int(last.rsplit("-", 1)[1]) + 1 if last else 1
         return f"{prefix}{seq:04d}"
+
+    @classmethod
+    def _next_case_number(cls):
+        return (cls.objects.aggregate(m=models.Max("case_number"))["m"] or 0) + 1
+
+    @property
+    def case_ref(self):
+        """Company case number, e.g. VD-00042 (blank until off draft)."""
+        return f"VD-{self.case_number:05d}" if self.case_number else ""
 
     @property
     def is_draft(self):

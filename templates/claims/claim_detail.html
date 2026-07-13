@@ -4,6 +4,7 @@
 <div class="detail-head">
   <div>
     <span class="ref">{{ claim.reference }}</span>
+    {% if claim.case_ref %}<span class="badge in">{{ claim.case_ref }}</span>{% endif %}
     {% if claim.urgent %}<span class="badge overdue">URGENT</span>{% endif %}
     <span class="muted">
       {{ claim.vehicle_registration|default:"no vehicle" }}
