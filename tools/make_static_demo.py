@@ -85,9 +85,10 @@ def rewrite(html, urls):
 def main():
     # A throwaway login for rendering, and one blank draft so the
     # "+ New claim" button leads to the empty intake form.
-    user, _ = get_user_model().objects.get_or_create(
-        username="preview", defaults={"first_name": "eCabs", "last_name": "Staff"}
-    )
+    user, _ = get_user_model().objects.get_or_create(username="preview")
+    if user.first_name != "Vai Drive":
+        user.first_name, user.last_name = "Vai Drive", "Staff"
+        user.save()
     if not Claim.objects.filter(status=Claim.Status.DRAFT).exists():
         Claim.objects.create(created_by=user)
     urls = build_url_map()

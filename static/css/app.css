@@ -239,7 +239,10 @@ details.inline-form[open] summary::before { content: "− "; }
 @media (max-width: 800px) {
   .layout { flex-direction: column; }
   .sidebar { width: 100%; height: auto; position: static; flex-direction: row; align-items: center; flex-wrap: wrap; }
-  .sidebar nav { flex-direction: row; }
+  .sidebar nav { flex-direction: row; flex-wrap: wrap; }
+  .brand { padding: .6rem .75rem; }
+  .brand-logo { width: 110px; }
+  .home-logo { width: 200px; }
   .main { padding: 1rem; }
   .form-footer { margin: 0 -1rem; padding: .8rem 1rem; }
   .kv { grid-template-columns: 1fr; }
