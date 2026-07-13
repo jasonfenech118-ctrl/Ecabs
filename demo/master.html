@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "P5akyuJFdF42FdEaUuzJGofTHhY8zBSPG3ldbHzsn0C2fUZIS5mR3k7r13VzJatv"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "P04gNnSzhlvppNugJRMDn9RaW8VKZA7rJMKKaK2STCHCTjACmbTlLouLn3J2F21r"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -60,7 +60,10 @@
     <h1>Master sheet</h1>
     <div class="sub">Every claim, every column, grouped by month — like the old spreadsheet, but always up to date</div>
   </div>
-  <a href="/claims/master/csv/?q=&status=" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+  <div class="row">
+    <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+    <a href="/claims/master/csv/?q=&status=" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+  </div>
 </div>
 
 <div class="card" style="margin-bottom:1rem">

@@ -6,7 +6,10 @@
     <h1>Master sheet</h1>
     <div class="sub">Every claim, every column, grouped by month — like the old spreadsheet, but always up to date</div>
   </div>
-  <a href="{% url 'master_sheet_csv' %}?q={{ q|urlencode }}&status={{ status|urlencode }}" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+  <div class="row">
+    <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+    <a href="{% url 'master_sheet_csv' %}?q={{ q|urlencode }}&status={{ status|urlencode }}" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+  </div>
 </div>
 
 <div class="card" style="margin-bottom:1rem">

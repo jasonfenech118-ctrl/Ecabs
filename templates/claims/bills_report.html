@@ -6,7 +6,10 @@
     <h1>Bills sent — {{ label }}</h1>
     <div class="sub">Claims whose bill was sent in the selected month</div>
   </div>
-  <a href="{% url 'bills_report' %}?month={{ month_str }}&format=csv" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+  <div class="row">
+    <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+    <a href="{% url 'bills_report' %}?month={{ month_str }}&format=csv" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+  </div>
 </div>
 
 {% if groups %}

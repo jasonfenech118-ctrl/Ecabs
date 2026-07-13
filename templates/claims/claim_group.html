@@ -6,7 +6,10 @@
     <h1>{{ title }} <span class="muted">({{ claims|length }})</span></h1>
     <div class="sub">{{ subtitle }}</div>
   </div>
-  <a href="{% url 'claim_new' %}" class="btn btn-primary">+ New claim</a>
+  <div class="row">
+    <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+    <a href="{% url 'claim_new' %}" class="btn btn-primary">+ New claim</a>
+  </div>
 </div>
 
 <div class="card">

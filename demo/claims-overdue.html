@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "vAye1lGxUy7wormAG6L74bl8EtDL7TyUmyJ7Eywk4TFwY8H8EHyfr7dGYfAchs9A"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "2CcDr0WgmjWQH459WFPSeGJfmWTGZ1cEWoS7On6zYA83bAbvzZWACVmQNRHYFt6E"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -60,7 +60,10 @@
     <h1>Overdue claims <span class="muted">(2)</span></h1>
     <div class="sub">Open claims past their chase date</div>
   </div>
-  <a href="claim-9-edit.html" class="btn btn-primary">+ New claim</a>
+  <div class="row">
+    <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+    <a href="claim-9-edit.html" class="btn btn-primary">+ New claim</a>
+  </div>
 </div>
 
 <div class="card">

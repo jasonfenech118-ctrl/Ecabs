@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "Ea9TQutoAZt23xm2JO71ThxPd2pb0xtPv8kMtHjbKk12DeHAHpU9gdpnxOmCa64v"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "w4k9fMleSXSDd8anPMmuR8qmxwANdVTtqQ0DC9vxue4QHEgJs6tcfn3XYro5TnNt"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -60,7 +60,10 @@
     <h1>Bills sent — July 2026</h1>
     <div class="sub">Claims whose bill was sent in the selected month</div>
   </div>
-  <a href="/claims/bills/?month=2026-07&format=csv" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+  <div class="row">
+    <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+    <a href="/claims/bills/?month=2026-07&format=csv" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+  </div>
 </div>
 
 

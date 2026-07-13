@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "REPk8WEXvilipOanRK6nSg5zwrLKxXd9IC0dL9uKFDTiZvvVPlTvfcX7QdIbHwOP"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "w8XTgMx33mDWnUBYDzPaWFSQIsVyukMjqUDnD9HmFDP9RqHkgTWSkUvr9nJQaMGj"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -60,7 +60,10 @@
     <h1>Open claims <span class="muted">(5)</span></h1>
     <div class="sub">Claims still being worked — open, awaiting survey or awaiting insurer</div>
   </div>
-  <a href="claim-9-edit.html" class="btn btn-primary">+ New claim</a>
+  <div class="row">
+    <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+    <a href="claim-9-edit.html" class="btn btn-primary">+ New claim</a>
+  </div>
 </div>
 
 <div class="card">
