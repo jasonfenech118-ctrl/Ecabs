@@ -8,13 +8,13 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "kdUTpzpK1xJilOx7Yk77y96xoRNMxO6giXKdKOKVtv3Q9QVV1xjwcI8xON3wkmrb"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "9RIEkPsag0OiNf9O50oOJutMYPjqKkwRgpXDO6e5pXKwHp4vdzdDENr3PE3qo7yX"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
-    <div class="brand">
-      <img src="../static/img/vai-drive.jpg" alt="Vai Drive" class="brand-logo">
-    </div>
+    <a href="index.html" class="brand" title="Home">
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
+    </a>
     <nav>
       <a href="index.html" class="">
         <span class="nav-icon">⌂</span> Home
@@ -64,7 +64,7 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="kdUTpzpK1xJilOx7Yk77y96xoRNMxO6giXKdKOKVtv3Q9QVV1xjwcI8xON3wkmrb">
+  <input type="hidden" name="csrfmiddlewaretoken" value="9RIEkPsag0OiNf9O50oOJutMYPjqKkwRgpXDO6e5pXKwHp4vdzdDENr3PE3qo7yX">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
@@ -155,14 +155,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/1/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="kdUTpzpK1xJilOx7Yk77y96xoRNMxO6giXKdKOKVtv3Q9QVV1xjwcI8xON3wkmrb">
+      <input type="hidden" name="csrfmiddlewaretoken" value="9RIEkPsag0OiNf9O50oOJutMYPjqKkwRgpXDO6e5pXKwHp4vdzdDENr3PE3qo7yX">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
     <form method="post" action="/vehicles/1/delete/"
           onsubmit="return confirm('Delete ECB-101 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="kdUTpzpK1xJilOx7Yk77y96xoRNMxO6giXKdKOKVtv3Q9QVV1xjwcI8xON3wkmrb">
+      <input type="hidden" name="csrfmiddlewaretoken" value="9RIEkPsag0OiNf9O50oOJutMYPjqKkwRgpXDO6e5pXKwHp4vdzdDENr3PE3qo7yX">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>

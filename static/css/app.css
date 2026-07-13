@@ -38,7 +38,8 @@ h3 { font-size: .95rem; margin: 0 0 .5rem; }
   width: 220px; flex-shrink: 0; background: #56718c; color: #dbe5ee;
   display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh;
 }
-.brand { padding: .9rem .9rem .6rem; }
+.brand { display: block; padding: .9rem .9rem .6rem; }
+.brand:hover { text-decoration: none; }
 .brand-logo { width: 100%; border-radius: 10px; display: block; }
 .sidebar nav { display: flex; flex-direction: column; padding: .5rem; gap: 2px; flex: 1; }
 .sidebar nav a {
