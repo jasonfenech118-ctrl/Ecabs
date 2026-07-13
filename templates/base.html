@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}eCabs Claims{% endblock %}</title>
+  <title>{% block title %}Vai Drive Claims{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <script src="{% static 'js/htmx.min.js' %}" defer></script>
 </head>
@@ -13,8 +13,7 @@
 <div class="layout">
   <aside class="sidebar">
     <div class="brand">
-      <span class="brand-mark">eC</span>
-      <span class="brand-name">eCabs Claims</span>
+      <img src="{% static 'img/vai-drive.jpg' %}" alt="Vai Drive" class="brand-logo">
     </div>
     <nav>
       <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">

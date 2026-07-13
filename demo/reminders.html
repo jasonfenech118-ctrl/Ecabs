@@ -4,17 +4,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reminders — eCabs Claims</title>
+  <title>Reminders — Vai Drive Claims</title>
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "ALjU24KeTZjvYQoEddkV0kYGLUa5TRRC3lFqkhIVxbkrA9d1VXxNllKZQ7uq6dS9"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "TUnBj8B2SXNvCfDRwHq1W6IP6aZ0Ozc8fKSBVaTUWGg6fj432DPW7y5mHeSn5oc4"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
     <div class="brand">
-      <span class="brand-mark">eC</span>
-      <span class="brand-name">eCabs Claims</span>
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive" class="brand-logo">
     </div>
     <nav>
       <a href="index.html" class="">
@@ -51,7 +50,7 @@
 <details class="inline-form" >
   <summary>Add reminder</summary>
   <form method="post" action="/reminders/add/" class="card">
-    <input type="hidden" name="csrfmiddlewaretoken" value="ALjU24KeTZjvYQoEddkV0kYGLUa5TRRC3lFqkhIVxbkrA9d1VXxNllKZQ7uq6dS9">
+    <input type="hidden" name="csrfmiddlewaretoken" value="TUnBj8B2SXNvCfDRwHq1W6IP6aZ0Ozc8fKSBVaTUWGg6fj432DPW7y5mHeSn5oc4">
     <div class="form-grid">
       <div class="field ">
   <label for="id_title">Title</label>
@@ -82,6 +81,8 @@
   <option value="" selected>---------</option>
 
   <option value="1">preview</option>
+
+  <option value="2">jason</option>
 
 </select>
   
@@ -118,7 +119,49 @@
       </thead>
       <tbody id="reminder-rows">
         
-<tr><td colspan="5" class="empty">No reminders here.</td></tr>
+  <tr id="reminder-2">
+  <td>
+    <form hx-post="/reminders/2/toggle/"
+          hx-target="#reminder-2" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">
+    Call Frances re old files
+    
+  </td>
+  <td><span class="muted">—</span></td>
+  <td>
+    
+    20 Jul 2026 10:00
+  </td>
+  <td class="muted">—</td>
+</tr>
+
+
+  <tr id="reminder-1">
+  <td>
+    <form hx-post="/reminders/1/toggle/"
+          hx-target="#reminder-1" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">
+    Insurance renewal — ABC123 <span class="badge in">auto</span>
+     <span class="muted">— ABC123 Toyota Vitz insurance is due on 25 Jul 2026.</span>
+  </td>
+  <td><span class="muted">—</span></td>
+  <td>
+    
+    25 Jul 2026 09:00
+  </td>
+  <td class="muted">—</td>
+</tr>
+
 
 
       </tbody>

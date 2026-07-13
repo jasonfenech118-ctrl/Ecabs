@@ -14,5 +14,5 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-admin.site.site_header = "eCabs Claims Administration"
-admin.site.site_title = "eCabs Claims"
+admin.site.site_header = "Vai Drive Claims Administration"
+admin.site.site_title = "Vai Drive Claims"

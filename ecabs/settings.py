@@ -1,5 +1,5 @@
 """
-Django settings for the eCabs internal insurance claim system.
+Django settings for the Vai Drive internal insurance claim system.
 
 Internal staff-only tool. SQLite for now; the DATABASES block is isolated
 so switching to PostgreSQL later is a one-block change (plus psycopg install).

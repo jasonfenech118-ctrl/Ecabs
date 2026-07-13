@@ -1,8 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Sign in — eCabs Claims{% endblock %}
+{% load static %}
+{% block title %}Sign in — Vai Drive Claims{% endblock %}
 {% block anon_content %}
 <div class="card login-card">
-  <h1>eCabs Claims</h1>
+  <img src="{% static 'img/vai-drive.jpg' %}" alt="Vai Drive" class="login-logo">
+  <h1>Claims</h1>
   {% if form.errors %}
     <p class="errorlist" style="padding-left:0">Your username and password didn't match. Please try again.</p>
   {% endif %}

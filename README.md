@@ -1,4 +1,4 @@
-# eCabs Claims
+# Vai Drive Claims
 
 Internal insurance claim system for the lease fleet. Staff-only — no customer
 access. Built with Django + server-rendered templates + HTMX (no separate

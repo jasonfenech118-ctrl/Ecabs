@@ -4,17 +4,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vehicles — eCabs Claims</title>
+  <title>Vehicles — Vai Drive Claims</title>
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "gdYEubWFjHursmztsiD6FQD13FIiqrqQJNkaMoUmXTvn4FoQa2QY0Rpk8S2DDNrn"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "nAA25Po8WPYDrVK71Jabos91IeJHhpUOJq52HRG00yre4ZbjxFz6zUwyjiC4yeUK"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
     <div class="brand">
-      <span class="brand-mark">eC</span>
-      <span class="brand-name">eCabs Claims</span>
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive" class="brand-logo">
     </div>
     <nav>
       <a href="index.html" class="">
@@ -49,11 +48,32 @@
 </div>
 
 
+<div class="card" style="margin-bottom:1rem">
+  <h2>Insurance renewals due in the next 30 days</h2>
+  <div class="table-wrap">
+    <table class="list">
+      <thead><tr><th>Vehicle</th><th>Renewal</th><th>Due</th><th></th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td><a href="vehicle-1.html">ABC123</a>
+              <span class="muted">Toyota Vitz</span></td>
+          <td>Insurance</td>
+          <td>25 Jul 2026</td>
+          <td><span class="badge pending">
+            due soon</span></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
 
 <details class="inline-form" >
   <summary>Add vehicle</summary>
   <form method="post" action="/vehicles/add/" class="card">
-    <input type="hidden" name="csrfmiddlewaretoken" value="gdYEubWFjHursmztsiD6FQD13FIiqrqQJNkaMoUmXTvn4FoQa2QY0Rpk8S2DDNrn">
+    <input type="hidden" name="csrfmiddlewaretoken" value="nAA25Po8WPYDrVK71Jabos91IeJHhpUOJq52HRG00yre4ZbjxFz6zUwyjiC4yeUK">
     <div class="form-grid">
       <div class="field ">
   <label for="id_registration">Registration</label>
@@ -124,7 +144,25 @@
       </thead>
       <tbody id="vehicle-rows">
         
-<tr><td colspan="5" class="empty">No vehicles match.</td></tr>
+<tr>
+  <td><a href="vehicle-1.html">ABC123</a></td>
+  <td>Toyota Vitz</td>
+  <td>
+    <span class="badge open">Active</span>
+    
+  </td>
+  
+  <td>
+    
+      25 Jul 2026
+      
+        <span class="badge pending">soon</span>
+      
+    
+  </td>
+  
+  <td><a href="vehicle-1.html" class="btn btn-sm">Manage</a></td>
+</tr>
 
 
       </tbody>
