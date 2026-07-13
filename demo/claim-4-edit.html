@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "kSXUppIm0pKU2eaCTw2qI3OCyCrHUYYoGLQJouw4M28fTAicbXO9HXyKeLOq9qTL"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "KEUlV44tvYrcYyeHA1Js1nzsjSXOc5TOOLkvB2RB5XbHWOpdoHqVlQihob0CfZMo"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -36,6 +36,9 @@
       </a>
       <a href="master.html" class="">
         <span class="nav-icon">▥</span> Master sheet
+      </a>
+      <a href="bills.html" class="">
+        <span class="nav-icon">€</span> Bills this month
       </a>
       <a href="vehicles.html" class="">
         <span class="nav-icon">⬖</span> Vehicles
@@ -70,7 +73,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="kSXUppIm0pKU2eaCTw2qI3OCyCrHUYYoGLQJouw4M28fTAicbXO9HXyKeLOq9qTL">
+  <input type="hidden" name="csrfmiddlewaretoken" value="KEUlV44tvYrcYyeHA1Js1nzsjSXOc5TOOLkvB2RB5XbHWOpdoHqVlQihob0CfZMo">
 
   <datalist id="vehicle-regs">
     <option value="ECB-101">Toyota Corolla Hybrid</option>
@@ -331,13 +334,13 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_bills_sent_on">Bills sent</label>
-  <input type="date" name="bills_sent_on" id="id_bills_sent_on">
+  <input type="date" name="bills_sent_on" value="07/07/2026" id="id_bills_sent_on">
   
 </div>
 
       <div class="field ">
   <label for="id_invoice_number">Invoice no</label>
-  <input type="text" name="invoice_number" maxlength="50" id="id_invoice_number">
+  <input type="text" name="invoice_number" value="100055" maxlength="50" id="id_invoice_number">
   
 </div>
 

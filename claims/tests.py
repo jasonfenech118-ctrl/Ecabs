@@ -199,6 +199,31 @@ class ViewTests(TestCase):
         sync_auto_reminders()
         self.assertEqual(Reminder.objects.filter(is_auto=True).count(), 2)
 
+    def test_bills_report_month_and_csv(self):
+        from datetime import date
+        from decimal import Decimal
+
+        Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-BILL",
+            bills_sent_on=date(2026, 7, 5), invoice_number="100050",
+            labour_amount=Decimal("100.00"), parts_amount=Decimal("50.00"),
+            created_by=self.user,
+        )
+        Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-OTHER",
+            bills_sent_on=date(2026, 6, 20), created_by=self.user,
+        )
+        r = self.client.get(reverse("bills_report"), {"month": "2026-07"})
+        self.assertContains(r, "ECB-BILL")
+        self.assertNotContains(r, "ECB-OTHER")
+        self.assertContains(r, "July 2026")
+        self.assertContains(r, "150.00")  # total for the month
+
+        csv = self.client.get(reverse("bills_report"), {"month": "2026-07", "format": "csv"})
+        self.assertEqual(csv["Content-Type"], "text/csv")
+        self.assertIn("ECB-BILL", csv.content.decode())
+        self.assertIn("100050", csv.content.decode())
+
     def test_claim_group_tables(self):
         from datetime import timedelta
 

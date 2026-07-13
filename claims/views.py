@@ -741,6 +741,69 @@ def master_sheet(request):
 
 
 @login_required
+def bills_report(request):
+    """Bills sent in a chosen month (defaults to the current month), with totals
+    and a CSV export — the monthly billing worksheet."""
+    from datetime import date
+
+    today = timezone.localdate()
+    month_str = request.GET.get("month", today.strftime("%Y-%m"))
+    try:
+        year, month = (int(x) for x in month_str.split("-"))
+        date(year, month, 1)
+    except (ValueError, TypeError):
+        year, month, month_str = today.year, today.month, today.strftime("%Y-%m")
+
+    claims = list(
+        Claim.objects.filter(
+            bills_sent_on__year=year, bills_sent_on__month=month
+        ).order_by("bills_sent_on")
+    )
+    total_claim = sum((c.total_claim_amount for c in claims), Decimal("0"))
+    total_paid = sum((c.amount_paid or Decimal("0") for c in claims), Decimal("0"))
+    total_out = sum((c.outstanding_amount for c in claims), Decimal("0"))
+    label = date(year, month, 1).strftime("%B %Y")
+
+    if request.GET.get("format") == "csv":
+        import csv
+
+        from django.http import HttpResponse
+
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="bills-{month_str}.csv"'
+        writer = csv.writer(response)
+        writer.writerow(
+            ["Case no", "Ref", "Our reg", "Driver", "Bill sent", "Invoice no",
+             "Total claim", "Amount paid", "Outstanding"]
+        )
+        for c in claims:
+            writer.writerow(
+                [c.case_ref, c.reference, c.vehicle_registration, c.driver_name,
+                 _fmt_date(c.bills_sent_on), c.invoice_number,
+                 _fmt_money(c.total_claim_amount), _fmt_money(c.amount_paid),
+                 _fmt_money(c.outstanding_amount)]
+            )
+        writer.writerow(
+            ["", "", "", "", "", "TOTAL",
+             _fmt_money(total_claim), _fmt_money(total_paid), _fmt_money(total_out)]
+        )
+        return response
+
+    return render(
+        request,
+        "claims/bills_report.html",
+        {
+            "claims": claims,
+            "month_str": month_str,
+            "label": label,
+            "total_claim": total_claim,
+            "total_paid": total_paid,
+            "total_out": total_out,
+        },
+    )
+
+
+@login_required
 def master_sheet_csv(request):
     import csv
 

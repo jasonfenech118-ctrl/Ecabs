@@ -37,6 +37,9 @@
       <a href="{% url 'master_sheet' %}" class="{% if 'master' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">▥</span> Master sheet
       </a>
+      <a href="{% url 'bills_report' %}" class="{% if request.resolver_match.url_name == 'bills_report' %}active{% endif %}">
+        <span class="nav-icon">€</span> Bills this month
+      </a>
       <a href="{% url 'vehicle_list' %}" class="{% if 'vehicle' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">⬖</span> Vehicles
       </a>

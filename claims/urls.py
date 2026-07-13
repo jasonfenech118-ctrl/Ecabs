@@ -9,6 +9,7 @@ urlpatterns = [
     path("claims/group/<slug:group>/", views.claim_group, name="claim_group"),
     path("claims/master/", views.master_sheet, name="master_sheet"),
     path("claims/master/csv/", views.master_sheet_csv, name="master_sheet_csv"),
+    path("claims/bills/", views.bills_report, name="bills_report"),
     path("add/<slug:kind>/", views.record_add, name="record_add"),
     path("claims/new/", views.claim_new, name="claim_new"),
     path("claims/<int:pk>/", views.claim_detail, name="claim_detail"),
