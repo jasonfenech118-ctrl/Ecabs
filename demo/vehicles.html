@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "O7OD0wHkRAQ6DLFOJ9FNzueFOb7Z2H2ifY2a74zJ8V5Rum1maeTnLT4U8QcOTCCL"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "i9Rpge5rgM6745UKq37DXJyxH73tbj5vgTHJBtqCIKqFS7iytgj2BiAx73jdYRqq"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -24,6 +24,15 @@
       </a>
       <a href="claims.html" class="">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="claims-open.html" class="nav-sub ">
+        <span class="nav-icon">●</span> Open claims
+      </a>
+      <a href="claims-closed.html" class="nav-sub ">
+        <span class="nav-icon">○</span> Closed claims
+      </a>
+      <a href="claims-overdue.html" class="nav-sub ">
+        <span class="nav-icon">▲</span> Overdue
       </a>
       <a href="master.html" class="">
         <span class="nav-icon">▥</span> Master sheet
@@ -51,6 +60,27 @@
   <a href="vehicle-add.html" class="btn btn-primary">+ Add vehicle</a>
 </div>
 
+
+<div class="card" style="margin-bottom:1rem">
+  <h2>Insurance renewals due in the next 30 days</h2>
+  <div class="table-wrap">
+    <table class="list">
+      <thead><tr><th>Vehicle</th><th>Renewal</th><th>Due</th><th></th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td><a href="vehicle-1.html">ECB-101</a>
+              <span class="muted">Toyota Corolla Hybrid</span></td>
+          <td>Insurance</td>
+          <td>31 Jul 2026</td>
+          <td><span class="badge pending">
+            due soon</span></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</div>
 
 
 <div class="card">
@@ -80,7 +110,25 @@
       </thead>
       <tbody id="vehicle-rows">
         
-<tr><td colspan="5" class="empty">No vehicles match.</td></tr>
+<tr>
+  <td><a href="vehicle-1.html">ECB-101</a></td>
+  <td>Toyota Corolla Hybrid</td>
+  <td>
+    <span class="badge open">Active</span>
+    
+  </td>
+  
+  <td>
+    
+      31 Jul 2026
+      
+        <span class="badge pending">soon</span>
+      
+    
+  </td>
+  
+  <td><a href="vehicle-1.html" class="btn btn-sm">Manage</a></td>
+</tr>
 
 
       </tbody>

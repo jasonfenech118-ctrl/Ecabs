@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLM-2026-0004 — Vai Drive Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css?v=2">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "jom8O1hM3VL9zAob1PeHtgdY6PAuId3sh8cs9gCXvT5HnCMZ42q67PfYwLQevLon"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive" class="brand-logo">
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a href="dashboard.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="claims-open.html" class="nav-sub ">
+        <span class="nav-icon">●</span> Open claims
+      </a>
+      <a href="claims-closed.html" class="nav-sub ">
+        <span class="nav-icon">○</span> Closed claims
+      </a>
+      <a href="claims-overdue.html" class="nav-sub ">
+        <span class="nav-icon">▲</span> Overdue
+      </a>
+      <a href="master.html" class="">
+        <span class="nav-icon">▥</span> Master sheet
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Vai Drive Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="detail-head">
+  <div>
+    <span class="ref">CLM-2026-0004</span>
+    <span class="badge in">VD-00004</span>
+    <span class="badge overdue">URGENT</span>
+    <span class="muted">
+      ECB-407
+       · Amy Farrugia
+       · 08 May 2026
+    </span>
+  </div>
+  <div class="row">
+    <span id="status-control">
+      <form hx-post="/claims/4/status/"
+      hx-target="#status-control" hx-swap="innerHTML"
+      hx-trigger="change" class="row" style="gap:.4rem">
+  <span class="badge open">Open</span>
+  <select name="status" aria-label="Change status" style="width:auto">
+    
+      <option value="draft" >Draft</option>
+    
+      <option value="open" selected>Open</option>
+    
+      <option value="awaiting_survey" >Awaiting survey</option>
+    
+      <option value="awaiting_insurer" >Awaiting insurer</option>
+    
+      <option value="settled" >Settled</option>
+    
+      <option value="closed" >Closed</option>
+    
+      <option value="rejected" >Rejected</option>
+    
+  </select>
+</form>
+
+    </span>
+    <a href="claim-4-edit.html" class="btn">Edit details</a>
+  </div>
+</div>
+
+<nav class="tabs" id="claim-tabs">
+  
+  <a href="claim-4.html"
+     hx-get="/claims/4/tab/overview/" hx-target="#tab-panel" hx-push-url="/claims/4/"
+     class="active" onclick="setTab(this)">Overview</a>
+  <a href="claim-4-photos.html"
+     hx-get="/claims/4/tab/photos/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
+  <a href="claim-4-surveys.html"
+     hx-get="/claims/4/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
+  <a href="claim-4-emails.html"
+     hx-get="/claims/4/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+  <a href="claim-4-reminders.html"
+     hx-get="/claims/4/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+  <a href="claim-4-billing.html"
+     hx-get="/claims/4/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+  <a href="claim-4-history.html"
+     hx-get="/claims/4/tab/history/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">History</a>
+  
+</nav>
+
+<div id="tab-panel">
+  <div class="grid grid-2">
+  <div class="card">
+    <h3>Vehicle &amp; driver</h3>
+    <dl class="kv">
+      <dt>Registration</dt><dd>ECB-407</dd>
+      <dt>Make / model</dt><dd>—</dd>
+      <dt>Driver</dt><dd>Amy Farrugia</dd>
+      <dt>Phone</dt><dd>—</dd>
+      <dt>Email</dt><dd>—</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3>Accident</h3>
+    <dl class="kv">
+      <dt>Date &amp; time</dt>
+      <dd>08 May 2026</dd>
+      <dt>Location</dt><dd>Valletta Road, Luqa</dd>
+      <dt>Report type</dt><dd>—</dd>
+      <dt>Report ref</dt><dd>—</dd>
+      <dt>Fault (OI / TP)</dt><dd>Third party (TP) at fault</dd>
+      <dt>Drivable?</dt>
+      <dd>Unknown</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h3>Third party</h3>
+    <dl class="kv">
+      <dt>Reg no</dt><dd>GHI789</dd>
+      <dt>Vehicle make</dt><dd>—</dd>
+      <dt>Driver</dt><dd>Peter Borg</dd>
+      <dt>Owner</dt><dd>—</dd>
+      <dt>Insurance</dt><dd>Elmo Insurance</dd>
+      <dt>TP claim no</dt><dd>—</dd>
+    </dl>
+  </div>
+
+  
+
+  <div class="card">
+    <h3>Insurance &amp; record</h3>
+    <dl class="kv">
+      <dt>Case no</dt><dd>VD-00004</dd>
+      <dt>Our insurer</dt><dd>GasanMamo</dd>
+      <dt>Policy number</dt><dd>—</dd>
+      <dt>Insurer claim no</dt><dd>—</dd>
+      <dt>Excess</dt><dd>—</dd>
+      <dt>Survey in hand?</dt><dd>No</dd>
+      <dt>Estimate</dt><dd>—</dd>
+      <dt>Created by</dt><dd>Vai Drive Staff</dd>
+      <dt>Created</dt><dd>13 Jul 2026 21:56</dd>
+      <dt>Submitted</dt><dd>13 Jul 2026 21:56</dd>
+      
+    </dl>
+  </div>
+</div>
+
+<div class="card mt">
+  <h3>Recovery — claim from third party</h3>
+  <div class="grid grid-2">
+    <dl class="kv">
+      <dt>Bills sent</dt><dd>—</dd>
+      <dt>Invoice no</dt><dd>—</dd>
+      <dt>Labour (net)</dt><dd>€310.00</dd>
+      <dt>Spray + material</dt><dd>—</dd>
+      <dt>Parts</dt><dd>€905.40</dd>
+      <dt>Loss of earnings</dt>
+      <dd>—</dd>
+      <dt>Others</dt><dd>—</dd>
+    </dl>
+    <dl class="kv">
+      <dt>Total claim</dt><dd><strong>€1215.40</strong></dd>
+      <dt>Settlement</dt><dd>—</dd>
+      <dt>Amount paid</dt><dd>€200.00</dd>
+      <dt>Offset</dt><dd>—</dd>
+      <dt>Outstanding</dt>
+      <dd><strong style="color:var(--danger)">€1015.40</strong></dd>
+      <dt>Next action</dt><dd>Chase Elmo — no response</dd>
+      <dt>Chase on</dt><dd>09 Jul 2026 <span class="badge overdue">URGENT</span></dd>
+    </dl>
+  </div>
+</div>
+
+
+
+</div>
+
+<script>
+  function setTab(el) {
+    document.querySelectorAll('#claim-tabs a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+
+  </main>
+</div>
+
+</body>
+</html>

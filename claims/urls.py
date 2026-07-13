@@ -6,6 +6,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("claims/", views.claim_list, name="claim_list"),
+    path("claims/group/<slug:group>/", views.claim_group, name="claim_group"),
     path("claims/master/", views.master_sheet, name="master_sheet"),
     path("claims/master/csv/", views.master_sheet_csv, name="master_sheet_csv"),
     path("add/<slug:kind>/", views.record_add, name="record_add"),

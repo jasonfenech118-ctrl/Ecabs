@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLM-2026-0008 — Vai Drive Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css?v=2">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "GmQwNgnJZjH6wZGo1hBRbztWn6FJgASuE6GQ8vIUrh1Ek14c4uNgP8vWN2Vt38dp"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive" class="brand-logo">
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a href="dashboard.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="claims-open.html" class="nav-sub ">
+        <span class="nav-icon">●</span> Open claims
+      </a>
+      <a href="claims-closed.html" class="nav-sub ">
+        <span class="nav-icon">○</span> Closed claims
+      </a>
+      <a href="claims-overdue.html" class="nav-sub ">
+        <span class="nav-icon">▲</span> Overdue
+      </a>
+      <a href="master.html" class="">
+        <span class="nav-icon">▥</span> Master sheet
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Vai Drive Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="detail-head">
+  <div>
+    <span class="ref">CLM-2026-0008</span>
+    <span class="badge in">VD-00008</span>
+    
+    <span class="muted">
+      ECB-330
+       · Josef Camilleri
+       · 19 Dec 2025
+    </span>
+  </div>
+  <div class="row">
+    <span id="status-control">
+      <form hx-post="/claims/8/status/"
+      hx-target="#status-control" hx-swap="innerHTML"
+      hx-trigger="change" class="row" style="gap:.4rem">
+  <span class="badge rejected">Rejected</span>
+  <select name="status" aria-label="Change status" style="width:auto">
+    
+      <option value="draft" >Draft</option>
+    
+      <option value="open" >Open</option>
+    
+      <option value="awaiting_survey" >Awaiting survey</option>
+    
+      <option value="awaiting_insurer" >Awaiting insurer</option>
+    
+      <option value="settled" >Settled</option>
+    
+      <option value="closed" >Closed</option>
+    
+      <option value="rejected" selected>Rejected</option>
+    
+  </select>
+</form>
+
+    </span>
+    <a href="claim-8-edit.html" class="btn">Edit details</a>
+  </div>
+</div>
+
+<nav class="tabs" id="claim-tabs">
+  
+  <a href="claim-8.html"
+     hx-get="/claims/8/tab/overview/" hx-target="#tab-panel" hx-push-url="/claims/8/"
+     class="" onclick="setTab(this)">Overview</a>
+  <a href="claim-8-photos.html"
+     hx-get="/claims/8/tab/photos/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
+  <a href="claim-8-surveys.html"
+     hx-get="/claims/8/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
+     class="active" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
+  <a href="claim-8-emails.html"
+     hx-get="/claims/8/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+  <a href="claim-8-reminders.html"
+     hx-get="/claims/8/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
+  <a href="claim-8-billing.html"
+     hx-get="/claims/8/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+  <a href="claim-8-history.html"
+     hx-get="/claims/8/tab/history/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">History</a>
+  
+</nav>
+
+<div id="tab-panel">
+  <details class="inline-form" >
+  <summary>Add survey</summary>
+  <form hx-post="/claims/8/surveys/add/" hx-target="#tab-panel" class="card">
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_surveyor_name">Surveyor name</label>
+  <input type="text" name="surveyor_name" maxlength="100" required id="id_surveyor_name">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_surveyor_company">Surveyor company</label>
+  <input type="text" name="surveyor_company" maxlength="100" id="id_surveyor_company">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_status">Status</label>
+  <select name="status" id="id_status">
+  <option value="requested" selected>Requested</option>
+
+  <option value="scheduled">Scheduled</option>
+
+  <option value="completed">Completed</option>
+
+  <option value="cancelled">Cancelled</option>
+
+</select>
+  
+</div>
+
+      <div class="field ">
+  <label for="id_scheduled_for">Scheduled for</label>
+  <input type="datetime-local" name="scheduled_for" id="id_scheduled_for">
+  
+</div>
+
+      <div class="field span-2">
+  <label for="id_notes">Notes</label>
+  <textarea name="notes" cols="40" rows="3" id="id_notes">
+</textarea>
+  
+</div>
+
+    </div>
+    <button type="submit" class="btn btn-primary mt">Save survey</button>
+  </form>
+</details>
+
+<div class="card table-wrap">
+  <table class="list">
+    <thead>
+      <tr><th>Surveyor</th><th>Company</th><th>Status</th><th>Scheduled</th><th>Completed</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr><td colspan="6" class="empty">No surveys for this claim.</td></tr>
+      
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<script>
+  function setTab(el) {
+    document.querySelectorAll('#claim-tabs a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+
+  </main>
+</div>
+
+</body>
+</html>

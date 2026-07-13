@@ -199,6 +199,38 @@ class ViewTests(TestCase):
         sync_auto_reminders()
         self.assertEqual(Reminder.objects.filter(is_auto=True).count(), 2)
 
+    def test_claim_group_tables(self):
+        from datetime import timedelta
+
+        today = timezone.localdate()
+        open_c = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-OPN", created_by=self.user
+        )
+        closed_c = Claim.objects.create(
+            status=Claim.Status.CLOSED, vehicle_registration="ECB-CLS", created_by=self.user
+        )
+        overdue_c = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-OVD",
+            chase_on=today - timedelta(days=3), created_by=self.user,
+        )
+
+        r = self.client.get(reverse("claim_group", args=["open"]))
+        self.assertContains(r, "ECB-OPN")
+        self.assertContains(r, "ECB-OVD")  # overdue is also open
+        self.assertNotContains(r, "ECB-CLS")
+
+        r = self.client.get(reverse("claim_group", args=["closed"]))
+        self.assertContains(r, "ECB-CLS")
+        self.assertNotContains(r, "ECB-OPN")
+
+        r = self.client.get(reverse("claim_group", args=["overdue"]))
+        self.assertContains(r, "ECB-OVD")
+        self.assertNotContains(r, "ECB-OPN")
+
+        self.assertEqual(
+            self.client.get(reverse("claim_group", args=["bogus"])).status_code, 400
+        )
+
     def test_case_number_assigned_on_submit(self):
         a = Claim.objects.create()
         self.assertIsNone(a.case_number)

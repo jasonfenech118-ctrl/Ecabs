@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ title }} <span class="muted">({{ claims|length }})</span></h1>
+    <div class="sub">{{ subtitle }}</div>
+  </div>
+  <a href="{% url 'claim_new' %}" class="btn btn-primary">+ New claim</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="list">
+      <thead>
+        <tr>
+          <th>Case no</th><th>Ref</th><th>Status</th><th>Accident date</th>
+          <th>Our reg</th><th>Driver</th><th>TP reg</th><th>Insurer</th>
+          <th>Chase on</th><th class="right">Outstanding</th><th>Next action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in claims %}
+        <tr class="clickable" onclick="window.location='{{ c.get_absolute_url }}'">
+          <td>{{ c.case_ref|default:"—" }}</td>
+          <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
+          <td><span class="badge {{ c.status }}">{{ c.get_status_display }}</span>{% if c.urgent %} <span class="badge overdue">URGENT</span>{% endif %}</td>
+          <td>{{ c.accident_date|date:"d M Y"|default:"—" }}</td>
+          <td>{{ c.vehicle_registration|default:"—" }}</td>
+          <td>{{ c.driver_name|default:"—" }}</td>
+          <td>{{ c.third_party_registration|default:"—" }}</td>
+          <td>{{ c.insurer|default:"—" }}</td>
+          <td>
+            {% if c.chase_on %}
+              {% if group == "overdue" %}<span class="badge overdue">{{ c.chase_on|date:"d M Y" }}</span>{% else %}{{ c.chase_on|date:"d M Y" }}{% endif %}
+            {% else %}—{% endif %}
+          </td>
+          <td class="right">{% if c.outstanding_amount %}€{{ c.outstanding_amount|floatformat:2 }}{% else %}—{% endif %}</td>
+          <td class="muted">{{ c.next_action|default:"—"|truncatechars:40 }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="11" class="empty">No {{ title|lower }} right now.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -41,6 +41,11 @@ OPEN_STATUSES = [
     Claim.Status.AWAITING_SURVEY,
     Claim.Status.AWAITING_INSURER,
 ]
+FINISHED_STATUSES = [
+    Claim.Status.SETTLED,
+    Claim.Status.CLOSED,
+    Claim.Status.REJECTED,
+]
 
 
 def _compliance_due(limit=None):
@@ -185,6 +190,32 @@ def claim_list(request):
     if request.headers.get("HX-Request"):
         return render(request, "claims/partials/claim_rows.html", context)
     return render(request, "claims/claim_list.html", context)
+
+
+@login_required
+def claim_group(request, group):
+    """Focused tables: open, closed/finished, or overdue claims."""
+    today = timezone.localdate()
+    if group == "open":
+        qs = Claim.objects.filter(status__in=OPEN_STATUSES)
+        title = "Open claims"
+        subtitle = "Claims still being worked — open, awaiting survey or awaiting insurer"
+    elif group == "closed":
+        qs = Claim.objects.filter(status__in=FINISHED_STATUSES)
+        title = "Closed claims"
+        subtitle = "Finished claims — settled, closed or rejected"
+    elif group == "overdue":
+        qs = Claim.objects.filter(status__in=OPEN_STATUSES, chase_on__lt=today)
+        title = "Overdue claims"
+        subtitle = "Open claims past their chase date"
+    else:
+        return HttpResponseBadRequest("Unknown group")
+    claims = qs.order_by("-accident_date", "-created_at")
+    return render(
+        request,
+        "claims/claim_group.html",
+        {"claims": claims, "title": title, "subtitle": subtitle, "group": group},
+    )
 
 
 # --- Intake form with auto-save ------------------------------------------------

@@ -1,0 +1,437 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLM-2026-0009 — intake</title>
+  <link rel="stylesheet" href="../static/css/app.css?v=2">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "ElS0BCUWJTrHgouzqwjKCJ0D8LUF738jC5IkWRf7bRLf4qSntJv9gi2DyHapUBte"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive" class="brand-logo">
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a href="dashboard.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="claims-open.html" class="nav-sub ">
+        <span class="nav-icon">●</span> Open claims
+      </a>
+      <a href="claims-closed.html" class="nav-sub ">
+        <span class="nav-icon">○</span> Closed claims
+      </a>
+      <a href="claims-overdue.html" class="nav-sub ">
+        <span class="nav-icon">▲</span> Overdue
+      </a>
+      <a href="master.html" class="">
+        <span class="nav-icon">▥</span> Master sheet
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Vai Drive Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="page-head">
+  <div>
+    <h1>New claim <span class="muted">CLM-2026-0009</span></h1>
+    <div class="sub">
+      <span class="badge draft">Draft</span>
+       · auto-saves as you type; stays a draft until you submit
+    </div>
+  </div>
+  <a href="claim-9.html" class="btn">View claim</a>
+</div>
+
+<form method="post"
+      action="/claims/9/submit/"
+      hx-post="/claims/9/autosave/"
+      hx-trigger="input changed delay:2s, change delay:1s"
+      hx-target="#save-status"
+      hx-swap="innerHTML"
+      hx-indicator="#save-status">
+  <input type="hidden" name="csrfmiddlewaretoken" value="ElS0BCUWJTrHgouzqwjKCJ0D8LUF738jC5IkWRf7bRLf4qSntJv9gi2DyHapUBte">
+
+  <datalist id="vehicle-regs">
+    <option value="ECB-101">Toyota Corolla Hybrid</option>
+  </datalist>
+
+  <fieldset>
+    <legend>Vehicle &amp; driver</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_vehicle_registration">Vehicle registration</label>
+  <input type="text" name="vehicle_registration" list="vehicle-regs" maxlength="20" id="id_vehicle_registration">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_vehicle_make_model">Vehicle make model</label>
+  <input type="text" name="vehicle_make_model" maxlength="100" id="id_vehicle_make_model">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_driver_name">Driver name</label>
+  <input type="text" name="driver_name" maxlength="100" id="id_driver_name">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_driver_phone">Driver phone</label>
+  <input type="text" name="driver_phone" maxlength="30" id="id_driver_phone">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_driver_email">Driver email</label>
+  <input type="email" name="driver_email" maxlength="254" id="id_driver_email">
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Accident details</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_accident_date">Accident date</label>
+  <input type="date" name="accident_date" id="id_accident_date">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_accident_time">Accident time</label>
+  <input type="time" name="accident_time" id="id_accident_time">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_accident_location">Accident location</label>
+  <input type="text" name="accident_location" maxlength="255" id="id_accident_location">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_report_type">Report type</label>
+  <select name="report_type" id="id_report_type">
+  <option value="" selected>---------</option>
+
+  <option value="etars">ETARS</option>
+
+  <option value="f2r">F2R (front to rear)</option>
+
+  <option value="rar">RAR (police report)</option>
+
+  <option value="other">Other</option>
+
+</select>
+  
+</div>
+
+      <div class="field ">
+  <label for="id_police_report_number">Report reference no</label>
+  <input type="text" name="police_report_number" maxlength="50" id="id_police_report_number">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_fault">Fault (OI / TP)</label>
+  <select name="fault" id="id_fault">
+  <option value="unknown" selected>Not yet determined</option>
+
+  <option value="our_driver">Our insured (OI) at fault</option>
+
+  <option value="third_party">Third party (TP) at fault</option>
+
+  <option value="shared">Shared / knock for knock</option>
+
+</select>
+  
+</div>
+
+      <div class="field ">
+  <label for="id_drivable">Drivable?</label>
+  <select name="drivable" id="id_drivable">
+  <option value="unknown" selected>Unknown</option>
+
+  <option value="true">Yes</option>
+
+  <option value="false">No</option>
+
+</select>
+  
+</div>
+
+      <div class="field span-2">
+  <label for="id_description">Description</label>
+  <textarea name="description" cols="40" rows="5" id="id_description">
+</textarea>
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Third party</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_third_party_registration">TP reg no</label>
+  <input type="text" name="third_party_registration" maxlength="20" id="id_third_party_registration">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_third_party_vehicle">TP vehicle make</label>
+  <input type="text" name="third_party_vehicle" maxlength="100" id="id_third_party_vehicle">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_third_party_name">TP driver name</label>
+  <input type="text" name="third_party_name" maxlength="100" id="id_third_party_name">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_third_party_phone">TP driver contact no</label>
+  <input type="text" name="third_party_phone" maxlength="30" id="id_third_party_phone">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_third_party_owner_name">TP owner name</label>
+  <input type="text" name="third_party_owner_name" maxlength="100" id="id_third_party_owner_name">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_third_party_owner_phone">TP owner contact no</label>
+  <input type="text" name="third_party_owner_phone" maxlength="30" id="id_third_party_owner_phone">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_third_party_insurer">TP insurance</label>
+  <input type="text" name="third_party_insurer" maxlength="100" id="id_third_party_insurer">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_tp_claim_number">TP claim no</label>
+  <input type="text" name="tp_claim_number" maxlength="50" id="id_tp_claim_number">
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Second third party (if any)</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_tp2_registration">TP2 reg no</label>
+  <input type="text" name="tp2_registration" maxlength="20" id="id_tp2_registration">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_tp2_owner_name">TP2 owner name</label>
+  <input type="text" name="tp2_owner_name" maxlength="100" id="id_tp2_owner_name">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_tp2_owner_phone">TP2 contact no</label>
+  <input type="text" name="tp2_owner_phone" maxlength="30" id="id_tp2_owner_phone">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_tp2_insurer">TP2 insurance</label>
+  <input type="text" name="tp2_insurer" maxlength="100" id="id_tp2_insurer">
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Insurance</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_insurer">Our insurer</label>
+  <input type="text" name="insurer" maxlength="100" id="id_insurer">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_policy_number">Policy number</label>
+  <input type="text" name="policy_number" maxlength="50" id="id_policy_number">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_insurer_claim_number">Our insurer claim no</label>
+  <input type="text" name="insurer_claim_number" maxlength="50" id="id_insurer_claim_number">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_excess_amount">Excess amount</label>
+  <input type="number" name="excess_amount" step="0.01" id="id_excess_amount">
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Survey &amp; estimate</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_survey_in_hand">Survey in hand?</label>
+  <input type="checkbox" name="survey_in_hand" id="id_survey_in_hand">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_estimate_amount">Estimate claim amt</label>
+  <input type="number" name="estimate_amount" step="0.01" id="id_estimate_amount">
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Recovery — amounts claimed from the third party</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_bills_sent_on">Bills sent</label>
+  <input type="date" name="bills_sent_on" id="id_bills_sent_on">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_invoice_number">Invoice no</label>
+  <input type="text" name="invoice_number" maxlength="50" id="id_invoice_number">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_labour_amount">Labour (net)</label>
+  <input type="number" name="labour_amount" step="0.01" id="id_labour_amount">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_spray_material_amount">Spray + material (net)</label>
+  <input type="number" name="spray_material_amount" step="0.01" id="id_spray_material_amount">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_parts_amount">Parts</label>
+  <input type="number" name="parts_amount" step="0.01" id="id_parts_amount">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_loe_days">LOE days</label>
+  <input type="number" name="loe_days" min="0" id="id_loe_days">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_loe_daily_rate">LOE daily amount</label>
+  <input type="number" name="loe_daily_rate" step="0.01" id="id_loe_daily_rate">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_others_amount">Others</label>
+  <input type="number" name="others_amount" step="0.01" id="id_others_amount">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_settlement_amount">Settlement</label>
+  <input type="number" name="settlement_amount" step="0.01" id="id_settlement_amount">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_amount_paid">Amount paid</label>
+  <input type="number" name="amount_paid" step="0.01" id="id_amount_paid">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_offset_amount">Offset</label>
+  <input type="number" name="offset_amount" step="0.01" id="id_offset_amount">
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Workflow</legend>
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_next_action">Claim phase / next action</label>
+  <input type="text" name="next_action" maxlength="200" id="id_next_action">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_chase_on">Chase on</label>
+  <input type="date" name="chase_on" id="id_chase_on">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_urgent">Urgent</label>
+  <input type="checkbox" name="urgent" id="id_urgent">
+  
+</div>
+
+    </div>
+  </fieldset>
+
+  <div class="form-footer">
+    
+      <button type="submit" class="btn btn-primary">Submit claim</button>
+    
+    <span id="save-status" class="save-status" aria-live="polite"></span>
+  </div>
+</form>
+
+  </main>
+</div>
+
+</body>
+</html>

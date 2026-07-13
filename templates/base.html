@@ -22,8 +22,17 @@
       <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
         <span class="nav-icon">▦</span> Dashboard
       </a>
-      <a href="{% url 'claim_list' %}" class="{% if 'claim' in request.resolver_match.url_name %}active{% endif %}">
+      <a href="{% url 'claim_list' %}" class="{% if request.resolver_match.url_name == 'claim_list' %}active{% endif %}">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="{% url 'claim_group' 'open' %}" class="nav-sub {% if request.resolver_match.url_name == 'claim_group' and request.resolver_match.kwargs.group == 'open' %}active{% endif %}">
+        <span class="nav-icon">●</span> Open claims
+      </a>
+      <a href="{% url 'claim_group' 'closed' %}" class="nav-sub {% if request.resolver_match.url_name == 'claim_group' and request.resolver_match.kwargs.group == 'closed' %}active{% endif %}">
+        <span class="nav-icon">○</span> Closed claims
+      </a>
+      <a href="{% url 'claim_group' 'overdue' %}" class="nav-sub {% if request.resolver_match.url_name == 'claim_group' and request.resolver_match.kwargs.group == 'overdue' %}active{% endif %}">
+        <span class="nav-icon">▲</span> Overdue
       </a>
       <a href="{% url 'master_sheet' %}" class="{% if 'master' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">▥</span> Master sheet

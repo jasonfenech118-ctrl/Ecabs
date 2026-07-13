@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Closed claims — Vai Drive Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css?v=2">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "fVNUHm5iCehMELb32d3h9wyevzsuJjnmdFDe2Bqt4cBksNzR5qfGN5AeVvIewRIh"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive" class="brand-logo">
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a href="dashboard.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="claims-open.html" class="nav-sub ">
+        <span class="nav-icon">●</span> Open claims
+      </a>
+      <a href="claims-closed.html" class="nav-sub active">
+        <span class="nav-icon">○</span> Closed claims
+      </a>
+      <a href="claims-overdue.html" class="nav-sub ">
+        <span class="nav-icon">▲</span> Overdue
+      </a>
+      <a href="master.html" class="">
+        <span class="nav-icon">▥</span> Master sheet
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Vai Drive Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="page-head">
+  <div>
+    <h1>Closed claims <span class="muted">(3)</span></h1>
+    <div class="sub">Finished claims — settled, closed or rejected</div>
+  </div>
+  <a href="claim-9-edit.html" class="btn btn-primary">+ New claim</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="list">
+      <thead>
+        <tr>
+          <th>Case no</th><th>Ref</th><th>Status</th><th>Accident date</th>
+          <th>Our reg</th><th>Driver</th><th>TP reg</th><th>Insurer</th>
+          <th>Chase on</th><th class="right">Outstanding</th><th>Next action</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr class="clickable" onclick="window.location='/claims/6/'">
+          <td>VD-00006</td>
+          <td><a href="claim-6.html">CLM-2026-0006</a></td>
+          <td><span class="badge settled">Settled</span></td>
+          <td>14 Mar 2026</td>
+          <td>ECB-101</td>
+          <td>Karl Borg</td>
+          <td>—</td>
+          <td>Mapfre Middlesea</td>
+          <td>
+            —
+          </td>
+          <td class="right">—</td>
+          <td class="muted">—</td>
+        </tr>
+        
+        <tr class="clickable" onclick="window.location='/claims/7/'">
+          <td>VD-00007</td>
+          <td><a href="claim-7.html">CLM-2026-0007</a></td>
+          <td><span class="badge closed">Closed</span></td>
+          <td>02 Feb 2026</td>
+          <td>ECB-214</td>
+          <td>Maria Vella</td>
+          <td>—</td>
+          <td>Atlas Insurance</td>
+          <td>
+            —
+          </td>
+          <td class="right">—</td>
+          <td class="muted">—</td>
+        </tr>
+        
+        <tr class="clickable" onclick="window.location='/claims/8/'">
+          <td>VD-00008</td>
+          <td><a href="claim-8.html">CLM-2026-0008</a></td>
+          <td><span class="badge rejected">Rejected</span></td>
+          <td>19 Dec 2025</td>
+          <td>ECB-330</td>
+          <td>Josef Camilleri</td>
+          <td>—</td>
+          <td>GasanMamo</td>
+          <td>
+            —
+          </td>
+          <td class="right">—</td>
+          <td class="muted">Rejected — no third-party details</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  </main>
+</div>
+
+</body>
+</html>

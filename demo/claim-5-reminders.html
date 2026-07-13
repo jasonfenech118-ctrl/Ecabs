@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLM-2026-0005 — Vai Drive Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css?v=2">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "WvcRjABrq0poakmAledD4f202jB0j7K8Uf2bEPWCSYJWYmKoorp2IO40sfRK6F53"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive" class="brand-logo">
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a href="dashboard.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="claims-open.html" class="nav-sub ">
+        <span class="nav-icon">●</span> Open claims
+      </a>
+      <a href="claims-closed.html" class="nav-sub ">
+        <span class="nav-icon">○</span> Closed claims
+      </a>
+      <a href="claims-overdue.html" class="nav-sub ">
+        <span class="nav-icon">▲</span> Overdue
+      </a>
+      <a href="master.html" class="">
+        <span class="nav-icon">▥</span> Master sheet
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Vai Drive Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="detail-head">
+  <div>
+    <span class="ref">CLM-2026-0005</span>
+    <span class="badge in">VD-00005</span>
+    
+    <span class="muted">
+      ECB-512
+       · Luca Grech
+       · 27 Apr 2026
+    </span>
+  </div>
+  <div class="row">
+    <span id="status-control">
+      <form hx-post="/claims/5/status/"
+      hx-target="#status-control" hx-swap="innerHTML"
+      hx-trigger="change" class="row" style="gap:.4rem">
+  <span class="badge awaiting_insurer">Awaiting insurer</span>
+  <select name="status" aria-label="Change status" style="width:auto">
+    
+      <option value="draft" >Draft</option>
+    
+      <option value="open" >Open</option>
+    
+      <option value="awaiting_survey" >Awaiting survey</option>
+    
+      <option value="awaiting_insurer" selected>Awaiting insurer</option>
+    
+      <option value="settled" >Settled</option>
+    
+      <option value="closed" >Closed</option>
+    
+      <option value="rejected" >Rejected</option>
+    
+  </select>
+</form>
+
+    </span>
+    <a href="claim-5-edit.html" class="btn">Edit details</a>
+  </div>
+</div>
+
+<nav class="tabs" id="claim-tabs">
+  
+  <a href="claim-5.html"
+     hx-get="/claims/5/tab/overview/" hx-target="#tab-panel" hx-push-url="/claims/5/"
+     class="" onclick="setTab(this)">Overview</a>
+  <a href="claim-5-photos.html"
+     hx-get="/claims/5/tab/photos/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
+  <a href="claim-5-surveys.html"
+     hx-get="/claims/5/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
+  <a href="claim-5-emails.html"
+     hx-get="/claims/5/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+  <a href="claim-5-reminders.html"
+     hx-get="/claims/5/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
+     class="active" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+  <a href="claim-5-billing.html"
+     hx-get="/claims/5/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+  <a href="claim-5-history.html"
+     hx-get="/claims/5/tab/history/" hx-target="#tab-panel" hx-push-url="true"
+     class="" onclick="setTab(this)">History</a>
+  
+</nav>
+
+<div id="tab-panel">
+  <details class="inline-form" >
+  <summary>Add reminder</summary>
+  <form hx-post="/claims/5/reminders/add/" hx-target="#tab-panel" class="card">
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_title">Title</label>
+  <input type="text" name="title" maxlength="200" required id="id_title">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_due_at">Due at</label>
+  <input type="datetime-local" name="due_at" required id="id_due_at">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_assigned_to">Assigned to</label>
+  <select name="assigned_to" id="id_assigned_to">
+  <option value="" selected>---------</option>
+
+  <option value="1">preview</option>
+
+</select>
+  
+</div>
+
+      <div class="field span-2">
+  <label for="id_notes">Notes</label>
+  <textarea name="notes" cols="40" rows="2" id="id_notes">
+</textarea>
+  
+</div>
+
+    </div>
+    <button type="submit" class="btn btn-primary mt">Save reminder</button>
+  </form>
+</details>
+
+<div class="card table-wrap">
+  <table class="list">
+    <thead>
+      <tr><th style="width:2.5rem"></th><th>Reminder</th><th>Due</th><th>Assigned</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>
+          <form hx-post="/reminders/2/toggle/" hx-target="#tab-panel">
+            <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+                    aria-label="Mark done">
+          </form>
+        </td>
+        <td class="">Chase CLM-2026-0005: O/S payment from Argus</td>
+        <td>
+          <span class="badge overdue">overdue</span> 
+          02 Jul 2026 09:00
+        </td>
+        <td class="muted">—</td>
+        <td class="muted">—</td>
+      </tr>
+      
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<script>
+  function setTab(el) {
+    document.querySelectorAll('#claim-tabs a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+
+  </main>
+</div>
+
+</body>
+</html>

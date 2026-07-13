@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "R6W33GCf8ffNqMXyrv9wYG3UNOh3MduoiXaAaeuEpAuyhnj6SAn6a5T97tmSD84R"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "Bl2S6xovlTNCnPAZOScngnSLCMrSEVrSz5ScrMJGNR7abRYNR5oMUWUL2IHCrtMN"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -24,6 +24,15 @@
       </a>
       <a href="claims.html" class="">
         <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="claims-open.html" class="nav-sub ">
+        <span class="nav-icon">●</span> Open claims
+      </a>
+      <a href="claims-closed.html" class="nav-sub ">
+        <span class="nav-icon">○</span> Closed claims
+      </a>
+      <a href="claims-overdue.html" class="nav-sub ">
+        <span class="nav-icon">▲</span> Overdue
       </a>
       <a href="master.html" class="">
         <span class="nav-icon">▥</span> Master sheet
@@ -50,7 +59,7 @@
 </div>
 
 <div class="tile-grid">
-  <a href="claim-1-edit.html" class="tile tile-primary">
+  <a href="claim-9-edit.html" class="tile tile-primary">
     <span class="tile-icon">＋</span>
     <span class="tile-title">New claim</span>
     <span class="tile-sub">Record an accident — saves as you type</span>
@@ -59,19 +68,19 @@
   <a href="claims.html" class="tile">
     <span class="tile-icon">▤</span>
     <span class="tile-title">Claims</span>
-    <span class="tile-sub">0 open — search &amp; manage</span>
+    <span class="tile-sub">5 open — search &amp; manage</span>
   </a>
 
-  <a href="reminders.html" class="tile ">
+  <a href="reminders.html" class="tile tile-alert">
     <span class="tile-icon">◷</span>
     <span class="tile-title">Reminders</span>
-    <span class="tile-sub">nothing due</span>
+    <span class="tile-sub">2 due now</span>
   </a>
 
   <a href="vehicles.html" class="tile">
     <span class="tile-icon">⬖</span>
     <span class="tile-title">Vehicles</span>
-    <span class="tile-sub">0 active in fleet</span>
+    <span class="tile-sub">1 active in fleet</span>
   </a>
 
   <a href="dashboard.html" class="tile">

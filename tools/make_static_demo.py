@@ -43,6 +43,9 @@ def build_url_map():
         "/": "index.html",
         "/dashboard/": "dashboard.html",
         "/claims/": "claims.html",
+        "/claims/group/open/": "claims-open.html",
+        "/claims/group/closed/": "claims-closed.html",
+        "/claims/group/overdue/": "claims-overdue.html",
         "/claims/master/": "master.html",
         "/vehicles/add/": "vehicle-add.html",
         "/add/photo/": "add-photo.html",
@@ -88,6 +91,75 @@ def rewrite(html, urls):
     return html
 
 
+def seed_samples(user):
+    """Populate a handful of open / closed / overdue claims for the preview only.
+    The live app stays empty — this runs against the throwaway preview database."""
+    from datetime import date, timedelta
+    from decimal import Decimal
+
+    from django.utils import timezone
+
+    from claims.models import Vehicle
+
+    if Claim.objects.exclude(status=Claim.Status.DRAFT).exists():
+        return
+    today = timezone.localdate()
+    Vehicle.objects.get_or_create(
+        registration="ECB-101",
+        defaults={"make_model": "Toyota Corolla Hybrid", "insurance_due": today + timedelta(days=18)},
+    )
+
+    S = Claim.Status
+    F = Claim.Fault
+    samples = [
+        # Open
+        dict(status=S.OPEN, vehicle_registration="ECB-101", driver_name="Karl Borg",
+             accident_date=date(2026, 6, 12), accident_location="Tower Road, Sliema",
+             third_party_registration="ABC123", third_party_name="John Smith",
+             third_party_insurer="Mapfre Middlesea", insurer="Atlas Insurance",
+             fault=F.THIRD_PARTY, chase_on=today + timedelta(days=6),
+             next_action="Awaiting survey report",
+             labour_amount=Decimal("243.60"), parts_amount=Decimal("800.21")),
+        dict(status=S.AWAITING_INSURER, vehicle_registration="ECB-214", driver_name="Maria Vella",
+             accident_date=date(2026, 6, 3), accident_location="Aldo Moro Road, Marsa",
+             third_party_registration="DEF456", third_party_insurer="GasanMamo",
+             insurer="Mapfre Middlesea", fault=F.THIRD_PARTY,
+             chase_on=today + timedelta(days=3), next_action="O/S payment from MSI",
+             labour_amount=Decimal("150.00"), parts_amount=Decimal("420.00")),
+        dict(status=S.AWAITING_SURVEY, vehicle_registration="ECB-330", driver_name="Josef Camilleri",
+             accident_date=date(2026, 5, 21), accident_location="Coast Road, Bahar ic-Caghaq",
+             insurer="Atlas Insurance", fault=F.UNKNOWN,
+             next_action="Book surveyor"),
+        # Overdue (open, chase date passed)
+        dict(status=S.OPEN, vehicle_registration="ECB-407", driver_name="Amy Farrugia",
+             accident_date=date(2026, 5, 8), accident_location="Valletta Road, Luqa",
+             third_party_registration="GHI789", third_party_name="Peter Borg",
+             third_party_insurer="Elmo Insurance", insurer="GasanMamo",
+             fault=F.THIRD_PARTY, urgent=True, chase_on=today - timedelta(days=4),
+             next_action="Chase Elmo — no response",
+             labour_amount=Decimal("310.00"), parts_amount=Decimal("905.40"),
+             amount_paid=Decimal("200.00")),
+        dict(status=S.AWAITING_INSURER, vehicle_registration="ECB-512", driver_name="Luca Grech",
+             accident_date=date(2026, 4, 27), accident_location="St Anne Street, Floriana",
+             third_party_registration="JKL012", insurer="Atlas Insurance",
+             fault=F.THIRD_PARTY, chase_on=today - timedelta(days=11),
+             next_action="O/S payment from Argus", parts_amount=Decimal("640.00")),
+        # Closed / finished
+        dict(status=S.SETTLED, vehicle_registration="ECB-101", driver_name="Karl Borg",
+             accident_date=date(2026, 3, 14), insurer="Mapfre Middlesea",
+             fault=F.THIRD_PARTY, settlement_amount=Decimal("1250.00"),
+             amount_paid=Decimal("1250.00"), labour_amount=Decimal("500.00"),
+             parts_amount=Decimal("750.00")),
+        dict(status=S.CLOSED, vehicle_registration="ECB-214", driver_name="Maria Vella",
+             accident_date=date(2026, 2, 2), insurer="Atlas Insurance", fault=F.OUR_DRIVER),
+        dict(status=S.REJECTED, vehicle_registration="ECB-330", driver_name="Josef Camilleri",
+             accident_date=date(2025, 12, 19), insurer="GasanMamo", fault=F.SHARED,
+             next_action="Rejected — no third-party details"),
+    ]
+    for data in samples:
+        Claim.objects.create(created_by=user, submitted_at=timezone.now(), **data)
+
+
 def main():
     # A throwaway login for rendering, and one blank draft so the
     # "+ New claim" button leads to the empty intake form.
@@ -95,6 +167,7 @@ def main():
     if user.first_name != "Vai Drive":
         user.first_name, user.last_name = "Vai Drive", "Staff"
         user.save()
+    seed_samples(user)
     if not Claim.objects.filter(status=Claim.Status.DRAFT).exists():
         Claim.objects.create(created_by=user)
     urls = build_url_map()
