@@ -205,6 +205,7 @@ class ViewTests(TestCase):
 
         Claim.objects.create(
             status=Claim.Status.OPEN, vehicle_registration="ECB-BILL",
+            third_party_insurer="Mapfre Middlesea",
             bills_sent_on=date(2026, 7, 5), invoice_number="100050",
             labour_amount=Decimal("100.00"), parts_amount=Decimal("50.00"),
             created_by=self.user,
@@ -217,6 +218,7 @@ class ViewTests(TestCase):
         self.assertContains(r, "ECB-BILL")
         self.assertNotContains(r, "ECB-OTHER")
         self.assertContains(r, "July 2026")
+        self.assertContains(r, "Mapfre Middlesea")  # grouped by insurer
         self.assertContains(r, "150.00")  # total for the month
 
         csv = self.client.get(reverse("bills_report"), {"month": "2026-07", "format": "csv"})

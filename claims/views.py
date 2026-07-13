@@ -757,12 +757,27 @@ def bills_report(request):
     claims = list(
         Claim.objects.filter(
             bills_sent_on__year=year, bills_sent_on__month=month
-        ).order_by("bills_sent_on")
+        ).order_by("third_party_insurer", "bills_sent_on")
     )
     total_claim = sum((c.total_claim_amount for c in claims), Decimal("0"))
     total_paid = sum((c.amount_paid or Decimal("0") for c in claims), Decimal("0"))
     total_out = sum((c.outstanding_amount for c in claims), Decimal("0"))
     label = date(year, month, 1).strftime("%B %Y")
+
+    # Group the month's bills by the insurer being claimed from.
+    groups = []
+    for c in claims:
+        insurer = c.third_party_insurer or "(no insurer recorded)"
+        if not groups or groups[-1]["insurer"] != insurer:
+            groups.append(
+                {"insurer": insurer, "rows": [], "total_claim": Decimal("0"),
+                 "total_paid": Decimal("0"), "total_out": Decimal("0")}
+            )
+        g = groups[-1]
+        g["rows"].append(c)
+        g["total_claim"] += c.total_claim_amount
+        g["total_paid"] += c.amount_paid or Decimal("0")
+        g["total_out"] += c.outstanding_amount
 
     if request.GET.get("format") == "csv":
         import csv
@@ -773,18 +788,24 @@ def bills_report(request):
         response["Content-Disposition"] = f'attachment; filename="bills-{month_str}.csv"'
         writer = csv.writer(response)
         writer.writerow(
-            ["Case no", "Ref", "Our reg", "Driver", "Bill sent", "Invoice no",
+            ["TP insurance", "Case no", "Ref", "Our reg", "Bill sent", "Invoice no",
              "Total claim", "Amount paid", "Outstanding"]
         )
-        for c in claims:
+        for g in groups:
+            for c in g["rows"]:
+                writer.writerow(
+                    [g["insurer"], c.case_ref, c.reference, c.vehicle_registration,
+                     _fmt_date(c.bills_sent_on), c.invoice_number,
+                     _fmt_money(c.total_claim_amount), _fmt_money(c.amount_paid),
+                     _fmt_money(c.outstanding_amount)]
+                )
             writer.writerow(
-                [c.case_ref, c.reference, c.vehicle_registration, c.driver_name,
-                 _fmt_date(c.bills_sent_on), c.invoice_number,
-                 _fmt_money(c.total_claim_amount), _fmt_money(c.amount_paid),
-                 _fmt_money(c.outstanding_amount)]
+                [f"{g['insurer']} — subtotal", "", "", "", "", "",
+                 _fmt_money(g["total_claim"]), _fmt_money(g["total_paid"]),
+                 _fmt_money(g["total_out"])]
             )
         writer.writerow(
-            ["", "", "", "", "", "TOTAL",
+            ["TOTAL", "", "", "", "", "",
              _fmt_money(total_claim), _fmt_money(total_paid), _fmt_money(total_out)]
         )
         return response
@@ -793,6 +814,7 @@ def bills_report(request):
         request,
         "claims/bills_report.html",
         {
+            "groups": groups,
             "claims": claims,
             "month_str": month_str,
             "label": label,

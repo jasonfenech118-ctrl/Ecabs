@@ -22,32 +22,40 @@
     <table class="list">
       <thead>
         <tr>
-          <th>Case no</th><th>Ref</th><th>Our reg</th><th>Driver</th>
+          <th>Case no</th><th>Ref</th><th>Our reg</th>
           <th>Bill sent</th><th>Invoice no</th>
           <th class="right">Total claim</th><th class="right">Amount paid</th><th class="right">Outstanding</th>
         </tr>
       </thead>
       <tbody>
-        {% for c in claims %}
-        <tr class="clickable" onclick="window.location='{{ c.get_absolute_url }}'">
-          <td>{{ c.case_ref|default:"—" }}</td>
-          <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
-          <td>{{ c.vehicle_registration|default:"—" }}</td>
-          <td>{{ c.driver_name|default:"—" }}</td>
-          <td>{{ c.bills_sent_on|date:"d M Y" }}</td>
-          <td>{{ c.invoice_number|default:"—" }}</td>
-          <td class="right">€{{ c.total_claim_amount|floatformat:2 }}</td>
-          <td class="right">{% if c.amount_paid %}€{{ c.amount_paid|floatformat:2 }}{% else %}—{% endif %}</td>
-          <td class="right">€{{ c.outstanding_amount|floatformat:2 }}</td>
-        </tr>
+        {% for g in groups %}
+        <tr class="month-group"><td colspan="8">{{ g.insurer }} · {{ g.rows|length }} bill{{ g.rows|length|pluralize }}</td></tr>
+          {% for c in g.rows %}
+          <tr class="clickable" onclick="window.location='{{ c.get_absolute_url }}'">
+            <td>{{ c.case_ref|default:"—" }}</td>
+            <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
+            <td>{{ c.vehicle_registration|default:"—" }}</td>
+            <td>{{ c.bills_sent_on|date:"d M Y" }}</td>
+            <td>{{ c.invoice_number|default:"—" }}</td>
+            <td class="right">€{{ c.total_claim_amount|floatformat:2 }}</td>
+            <td class="right">{% if c.amount_paid %}€{{ c.amount_paid|floatformat:2 }}{% else %}—{% endif %}</td>
+            <td class="right">€{{ c.outstanding_amount|floatformat:2 }}</td>
+          </tr>
+          {% endfor %}
+          <tr class="subtotal-row">
+            <td colspan="5" class="right"><em>{{ g.insurer }} subtotal</em></td>
+            <td class="right">€{{ g.total_claim|floatformat:2 }}</td>
+            <td class="right">€{{ g.total_paid|floatformat:2 }}</td>
+            <td class="right">€{{ g.total_out|floatformat:2 }}</td>
+          </tr>
         {% empty %}
-        <tr><td colspan="9" class="empty">No bills were sent in {{ label }}.</td></tr>
+        <tr><td colspan="8" class="empty">No bills were sent in {{ label }}.</td></tr>
         {% endfor %}
       </tbody>
       {% if claims %}
       <tfoot>
         <tr class="summary-total">
-          <td colspan="6" class="right"><strong>{{ claims|length }} bill{{ claims|length|pluralize }} — total</strong></td>
+          <td colspan="5" class="right"><strong>{{ claims|length }} bill{{ claims|length|pluralize }} — grand total</strong></td>
           <td class="right"><strong>€{{ total_claim|floatformat:2 }}</strong></td>
           <td class="right"><strong>€{{ total_paid|floatformat:2 }}</strong></td>
           <td class="right"><strong>€{{ total_out|floatformat:2 }}</strong></td>
@@ -56,5 +64,6 @@
       {% endif %}
     </table>
   </div>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">Grouped by the insurer the bill was sent to, with a subtotal each.</p>
 </div>
 {% endblock %}
