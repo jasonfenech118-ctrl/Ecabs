@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "G2O1EaCdYXx4h3pIyzvv8CV2cr3A62lkBtzg7wtLH4K2OmdAPMGzaeGnhccswKAB"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "Jw3sfV2duuEhpP4XaMOp53YyUQaSiMfwMcEZSJrmbrppohrxEzxN4UoUphaGNem0"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -30,11 +30,9 @@
         <span class="nav-icon">◷</span> Reminders
       </a>
       
-      <a href="#"><span class="nav-icon">⚙</span> Admin</a>
-      
     </nav>
     <div class="sidebar-footer">
-      <span class="user-name">Demo Staff</span>
+      <span class="user-name">eCabs Staff</span>
       <a class="link-btn" href="login.html">Sign out</a>
     </div>
   </aside>
@@ -48,50 +46,11 @@
 </div>
 
 
-<div class="card" style="margin-bottom:1rem">
-  <h2>Insurance renewals due in the next 30 days</h2>
-  <div class="table-wrap">
-    <table class="list">
-      <thead><tr><th>Vehicle</th><th>Renewal</th><th>Due</th><th></th></tr></thead>
-      <tbody>
-        
-        <tr>
-          <td><a href="vehicle-1.html">ECB-101</a>
-              <span class="muted">Toyota Corolla Hybrid</span></td>
-          <td>Insurance</td>
-          <td>01 Jul 2026</td>
-          <td><span class="badge overdue">
-            overdue</span></td>
-        </tr>
-        
-        <tr>
-          <td><a href="vehicle-2.html">ECB-214</a>
-              <span class="muted">Mercedes-Benz Vito</span></td>
-          <td>Insurance</td>
-          <td>22 Jul 2026</td>
-          <td><span class="badge pending">
-            due soon</span></td>
-        </tr>
-        
-        <tr>
-          <td><a href="vehicle-3.html">ECB-330</a>
-              <span class="muted">Kia Niro</span></td>
-          <td>Insurance</td>
-          <td>03 Aug 2026</td>
-          <td><span class="badge pending">
-            due soon</span></td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </div>
-</div>
-
 
 <details class="inline-form" >
   <summary>Add vehicle</summary>
   <form method="post" action="/vehicles/add/" class="card">
-    <input type="hidden" name="csrfmiddlewaretoken" value="G2O1EaCdYXx4h3pIyzvv8CV2cr3A62lkBtzg7wtLH4K2OmdAPMGzaeGnhccswKAB">
+    <input type="hidden" name="csrfmiddlewaretoken" value="Jw3sfV2duuEhpP4XaMOp53YyUQaSiMfwMcEZSJrmbrppohrxEzxN4UoUphaGNem0">
     <div class="form-grid">
       <div class="field ">
   <label for="id_registration">Registration</label>
@@ -162,120 +121,7 @@
       </thead>
       <tbody id="vehicle-rows">
         
-<tr>
-  <td><a href="vehicle-6.html">ECB-088</a></td>
-  <td>Ford Transit (sold) <span class="muted">(2017)</span></td>
-  <td>
-    <span class="badge closed">Left fleet Apr 2026</span>
-  </td>
-  
-  <td>
-    <span class="muted">—</span>
-  </td>
-  
-  <td><a href="vehicle-6.html" class="btn btn-sm">Manage</a></td>
-</tr>
-
-<tr>
-  <td><a href="vehicle-1.html">ECB-101</a></td>
-  <td>Toyota Corolla Hybrid <span class="muted">(2020)</span></td>
-  <td>
-    <span class="badge open">Active</span>
-    
-  </td>
-  
-  <td>
-    
-      01 Jul 2026
-      
-        <span class="badge overdue">overdue</span>
-        
-      
-    
-  </td>
-  
-  <td><a href="vehicle-1.html" class="btn btn-sm">Manage</a></td>
-</tr>
-
-<tr>
-  <td><a href="vehicle-2.html">ECB-214</a></td>
-  <td>Mercedes-Benz Vito <span class="muted">(2021)</span></td>
-  <td>
-    <span class="badge open">Active</span>
-    
-  </td>
-  
-  <td>
-    
-      22 Jul 2026
-      
-        <span class="badge pending">soon</span>
-      
-    
-  </td>
-  
-  <td><a href="vehicle-2.html" class="btn btn-sm">Manage</a></td>
-</tr>
-
-<tr>
-  <td><a href="vehicle-3.html">ECB-330</a></td>
-  <td>Kia Niro <span class="muted">(2022)</span></td>
-  <td>
-    <span class="badge open">Active</span>
-    
-  </td>
-  
-  <td>
-    
-      03 Aug 2026
-      
-        <span class="badge pending">soon</span>
-      
-    
-  </td>
-  
-  <td><a href="vehicle-3.html" class="btn btn-sm">Manage</a></td>
-</tr>
-
-<tr>
-  <td><a href="vehicle-4.html">ECB-407</a></td>
-  <td>Toyota Prius+ <span class="muted">(2023)</span></td>
-  <td>
-    <span class="badge open">Active</span>
-    
-  </td>
-  
-  <td>
-    
-      18 Feb 2027
-      
-        
-      
-    
-  </td>
-  
-  <td><a href="vehicle-4.html" class="btn btn-sm">Manage</a></td>
-</tr>
-
-<tr>
-  <td><a href="vehicle-5.html">ECB-512</a></td>
-  <td>Volkswagen Caddy <span class="muted">(2024)</span></td>
-  <td>
-    <span class="badge open">Active</span>
-    
-  </td>
-  
-  <td>
-    
-      20 Nov 2026
-      
-        
-      
-    
-  </td>
-  
-  <td><a href="vehicle-5.html" class="btn btn-sm">Manage</a></td>
-</tr>
+<tr><td colspan="5" class="empty">No vehicles match.</td></tr>
 
 
       </tbody>

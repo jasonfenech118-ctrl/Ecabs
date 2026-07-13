@@ -39,13 +39,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Then open http://127.0.0.1:8000/ and sign in. Optional demo data:
-
-```bat
-python manage.py seed_demo
-```
-
-(creates a `demo` / `demo1234` staff user and 12 sample claims)
+Then open http://127.0.0.1:8000/ and sign in with the superuser you created.
 
 ## Google Drive integration
 

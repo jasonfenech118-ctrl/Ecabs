@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "HbfgCXIudZVFde7QM2ICf5YAS3miHfB4CC0v5jz2W68DKxVI3fTGhHJVXOva7XQl"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "iBAofvYU60AOarybgcRWy4w2A9nM8bK8lhbVSjn3NXlW9TVLKZAkxVWo5AnADDRC"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -30,11 +30,9 @@
         <span class="nav-icon">◷</span> Reminders
       </a>
       
-      <a href="#"><span class="nav-icon">⚙</span> Admin</a>
-      
     </nav>
     <div class="sidebar-footer">
-      <span class="user-name">Demo Staff</span>
+      <span class="user-name">eCabs Staff</span>
       <a class="link-btn" href="login.html">Sign out</a>
     </div>
   </aside>
@@ -43,11 +41,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0001</span>
-    <span class="badge overdue">URGENT</span>
+    
     <span class="muted">
-      ECB-330
-       · Maria Vella
-       · 03 Jul 2026
+      no vehicle
+      
+      
     </span>
   </div>
   <div class="row">
@@ -55,10 +53,10 @@
       <form hx-post="/claims/1/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge rejected">Rejected</span>
+  <span class="badge draft">Draft</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
-      <option value="draft" >Draft</option>
+      <option value="draft" selected>Draft</option>
     
       <option value="open" >Open</option>
     
@@ -70,7 +68,7 @@
     
       <option value="closed" >Closed</option>
     
-      <option value="rejected" selected>Rejected</option>
+      <option value="rejected" >Rejected</option>
     
   </select>
 </form>
@@ -90,16 +88,16 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-1-surveys.html"
      hx-get="/claims/1/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
   <a href="claim-1-emails.html"
      hx-get="/claims/1/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
+     class="active" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
   <a href="claim-1-reminders.html"
      hx-get="/claims/1/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-1-billing.html"
      hx-get="/claims/1/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-1-history.html"
      hx-get="/claims/1/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -126,7 +124,7 @@
 
       <div class="field ">
   <label for="id_sent_at">Sent at</label>
-  <input type="datetime-local" name="sent_at" value="2026-07-13 20:59:33" required id="id_sent_at"><input type="hidden" name="initial-sent_at" value="2026-07-13 20:59:33" id="initial-id_sent_at">
+  <input type="datetime-local" name="sent_at" value="2026-07-13 21:25:18" required id="id_sent_at"><input type="hidden" name="initial-sent_at" value="2026-07-13 21:25:18" id="initial-id_sent_at">
   
 </div>
 
@@ -162,17 +160,7 @@
 
 <div class="timeline">
   
-  <div class="timeline-item">
-    <div class="head">
-      <div>
-        <span class="badge out">Sent</span>
-        <strong>Claim CLM-2026-0001 — accident report</strong>
-      </div>
-      <span class="when">17 Jun 2026 20:59</span>
-    </div>
-    <div class="addr">claims@ecabs.example → claims@insurer.example</div>
-    <div class="body">Please find attached the accident report and photos.</div>
-  </div>
+  <div class="empty">No correspondence logged for this claim.</div>
   
 </div>
 

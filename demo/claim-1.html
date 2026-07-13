@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "Yo1mSKu73HHn878ZgFEYd5QKKYcEKGiLTPMBl6lFMOUlFqWRxSP2fHB5PJlwaox2"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "rAbw1vl9SrUpFw55TPAQBTCOCBkHORd5ugM3EjKizoFxEYsFnCjeAK2a72kvjjkz"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -30,11 +30,9 @@
         <span class="nav-icon">◷</span> Reminders
       </a>
       
-      <a href="#"><span class="nav-icon">⚙</span> Admin</a>
-      
     </nav>
     <div class="sidebar-footer">
-      <span class="user-name">Demo Staff</span>
+      <span class="user-name">eCabs Staff</span>
       <a class="link-btn" href="login.html">Sign out</a>
     </div>
   </aside>
@@ -43,11 +41,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0001</span>
-    <span class="badge overdue">URGENT</span>
+    
     <span class="muted">
-      ECB-330
-       · Maria Vella
-       · 03 Jul 2026
+      no vehicle
+      
+      
     </span>
   </div>
   <div class="row">
@@ -55,10 +53,10 @@
       <form hx-post="/claims/1/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge rejected">Rejected</span>
+  <span class="badge draft">Draft</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
-      <option value="draft" >Draft</option>
+      <option value="draft" selected>Draft</option>
     
       <option value="open" >Open</option>
     
@@ -70,7 +68,7 @@
     
       <option value="closed" >Closed</option>
     
-      <option value="rejected" selected>Rejected</option>
+      <option value="rejected" >Rejected</option>
     
   </select>
 </form>
@@ -90,16 +88,16 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-1-surveys.html"
      hx-get="/claims/1/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
   <a href="claim-1-emails.html"
      hx-get="/claims/1/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
   <a href="claim-1-reminders.html"
      hx-get="/claims/1/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-1-billing.html"
      hx-get="/claims/1/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
   <a href="claim-1-history.html"
      hx-get="/claims/1/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -111,10 +109,10 @@
   <div class="card">
     <h3>Vehicle &amp; driver</h3>
     <dl class="kv">
-      <dt>Registration</dt><dd>ECB-330</dd>
-      <dt>Make / model</dt><dd>Kia Niro</dd>
-      <dt>Driver</dt><dd>Maria Vella</dd>
-      <dt>Phone</dt><dd>+356 7974771</dd>
+      <dt>Registration</dt><dd>—</dd>
+      <dt>Make / model</dt><dd>—</dd>
+      <dt>Driver</dt><dd>—</dd>
+      <dt>Phone</dt><dd>—</dd>
       <dt>Email</dt><dd>—</dd>
     </dl>
   </div>
@@ -123,25 +121,25 @@
     <h3>Accident</h3>
     <dl class="kv">
       <dt>Date &amp; time</dt>
-      <dd>03 Jul 2026 at 18:59</dd>
-      <dt>Location</dt><dd>Coast Road, Bahar ic-Caghaq</dd>
-      <dt>Report type</dt><dd>RAR (police report)</dd>
+      <dd>—</dd>
+      <dt>Location</dt><dd>—</dd>
+      <dt>Report type</dt><dd>—</dd>
       <dt>Report ref</dt><dd>—</dd>
-      <dt>Fault (OI / TP)</dt><dd>Third party (TP) at fault</dd>
+      <dt>Fault (OI / TP)</dt><dd>Not yet determined</dd>
       <dt>Drivable?</dt>
-      <dd>Yes</dd>
+      <dd>Unknown</dd>
     </dl>
   </div>
 
   <div class="card">
     <h3>Third party</h3>
     <dl class="kv">
-      <dt>Reg no</dt><dd>BCX534</dd>
-      <dt>Vehicle make</dt><dd>Peugeot 208</dd>
-      <dt>Driver</dt><dd>John Smith · +356 9910604</dd>
-      <dt>Owner</dt><dd>Josianne Nicolosi</dd>
-      <dt>Insurance</dt><dd>Mapfre Middlesea</dd>
-      <dt>TP claim no</dt><dd>C34-271741</dd>
+      <dt>Reg no</dt><dd>—</dd>
+      <dt>Vehicle make</dt><dd>—</dd>
+      <dt>Driver</dt><dd>—</dd>
+      <dt>Owner</dt><dd>—</dd>
+      <dt>Insurance</dt><dd>—</dd>
+      <dt>TP claim no</dt><dd>—</dd>
     </dl>
   </div>
 
@@ -150,15 +148,15 @@
   <div class="card">
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
-      <dt>Our insurer</dt><dd>Elmo Insurance</dd>
-      <dt>Policy number</dt><dd>POL-556152</dd>
-      <dt>Insurer claim no</dt><dd>C17-205104</dd>
-      <dt>Excess</dt><dd>€750.00</dd>
+      <dt>Our insurer</dt><dd>—</dd>
+      <dt>Policy number</dt><dd>—</dd>
+      <dt>Insurer claim no</dt><dd>—</dd>
+      <dt>Excess</dt><dd>—</dd>
       <dt>Survey in hand?</dt><dd>No</dd>
-      <dt>Estimate</dt><dd>€2242.00</dd>
-      <dt>Created by</dt><dd>Demo Staff</dd>
-      <dt>Created</dt><dd>13 Jul 2026 20:59</dd>
-      <dt>Submitted</dt><dd>13 Jul 2026 20:59</dd>
+      <dt>Estimate</dt><dd>—</dd>
+      <dt>Created by</dt><dd>eCabs Staff</dd>
+      <dt>Created</dt><dd>13 Jul 2026 21:25</dd>
+      <dt>Submitted</dt><dd>not yet submitted</dd>
       
     </dl>
   </div>
@@ -168,33 +166,28 @@
   <h3>Recovery — claim from third party</h3>
   <div class="grid grid-2">
     <dl class="kv">
-      <dt>Bills sent</dt><dd>03 Jun 2026</dd>
-      <dt>Invoice no</dt><dd>100099</dd>
-      <dt>Labour (net)</dt><dd>€264.00</dd>
-      <dt>Spray + material</dt><dd>€182.00</dd>
-      <dt>Parts</dt><dd>€271.00</dd>
+      <dt>Bills sent</dt><dd>—</dd>
+      <dt>Invoice no</dt><dd>—</dd>
+      <dt>Labour (net)</dt><dd>—</dd>
+      <dt>Spray + material</dt><dd>—</dd>
+      <dt>Parts</dt><dd>—</dd>
       <dt>Loss of earnings</dt>
       <dd>—</dd>
       <dt>Others</dt><dd>—</dd>
     </dl>
     <dl class="kv">
-      <dt>Total claim</dt><dd><strong>€717.00</strong></dd>
+      <dt>Total claim</dt><dd><strong>€0.00</strong></dd>
       <dt>Settlement</dt><dd>—</dd>
-      <dt>Amount paid</dt><dd>€344.00</dd>
-      <dt>Offset</dt><dd>€240.00</dd>
+      <dt>Amount paid</dt><dd>—</dd>
+      <dt>Offset</dt><dd>—</dd>
       <dt>Outstanding</dt>
-      <dd><strong style="color:var(--danger)">€133.00</strong></dd>
-      <dt>Next action</dt><dd>Awaiting survey report</dd>
-      <dt>Chase on</dt><dd>27 Jul 2026 <span class="badge overdue">URGENT</span></dd>
+      <dd><strong >€0.00</strong></dd>
+      <dt>Next action</dt><dd>—</dd>
+      <dt>Chase on</dt><dd>—</dd>
     </dl>
   </div>
 </div>
 
-
-<div class="card mt">
-  <h3>Description</h3>
-  <p style="white-space: pre-wrap; margin:0">Third party changed lanes without indicating and clipped the front bumper.</p>
-</div>
 
 
 </div>

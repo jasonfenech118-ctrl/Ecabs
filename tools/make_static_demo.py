@@ -33,8 +33,8 @@ TABS = ["photos", "surveys", "emails", "reminders", "billing", "history"]
 
 BANNER = (
     '<div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;'
-    'font-size:.85rem;text-align:center">Static preview with demo data — '
-    "search, auto-save and uploads need the Django server running.</div>"
+    'font-size:.85rem;text-align:center">Static preview — data entry, '
+    "search and auto-save work when the Django server is running.</div>"
 )
 
 
@@ -82,10 +82,14 @@ def rewrite(html, urls):
 
 
 def main():
+    # A throwaway login for rendering, and one blank draft so the
+    # "+ New claim" button leads to the empty intake form.
+    user, _ = get_user_model().objects.get_or_create(
+        username="preview", defaults={"first_name": "eCabs", "last_name": "Staff"}
+    )
+    if not Claim.objects.filter(status=Claim.Status.DRAFT).exists():
+        Claim.objects.create(created_by=user)
     urls = build_url_map()
-    user = get_user_model().objects.filter(username="demo").first()
-    if user is None:
-        raise SystemExit("Run `manage.py seed_demo` first (needs the demo user).")
 
     anon = Client()
     page = anon.get("/accounts/login/")
