@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "LAdGCNKjNOW8IR1hgj4TzO71AOcms0U1dXmETmKveHcWqcUws4yE4uvr09ujgoD7"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "9RPFuQIn5zDxqyFlVa8j6qxiLUwgs8yu4iAUXczVOGQvXRtdcnjn82iDQFF8SQNL"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -43,10 +43,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0001</span>
+    <span class="badge overdue">URGENT</span>
     <span class="muted">
-      ECB-101
+      ECB-330
        · Maria Vella
-       · 02 Jul 2026
+       · 03 Jul 2026
     </span>
   </div>
   <div class="row">
@@ -92,13 +93,13 @@
      class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-1-emails.html"
      hx-get="/claims/1/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-1-reminders.html"
      hx-get="/claims/1/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-1-billing.html"
      hx-get="/claims/1/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+     class="active" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
   <a href="claim-1-history.html"
      hx-get="/claims/1/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -180,9 +181,23 @@
     </thead>
     <tbody>
       
-      <tr><td colspan="6" class="empty">No billing items for this claim.</td></tr>
+      <tr>
+        <td>Rental replacement</td>
+        <td>Repair</td>
+        <td>—</td>
+        <td>—</td>
+        <td><span class="badge invoiced">Invoiced</span></td>
+        <td class="right">€1286.00</td>
+      </tr>
       
     </tbody>
+    
+    <tfoot>
+      <tr>
+        <td colspan="5" class="right"><strong>Total</strong></td>
+        <td class="right"><strong>€1286</strong></td>
+      </tr>
+    </tfoot>
     
   </table>
 </div>

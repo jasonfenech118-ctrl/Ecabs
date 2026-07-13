@@ -16,27 +16,46 @@
       <dt>Date &amp; time</dt>
       <dd>{{ claim.accident_date|date:"d M Y"|default:"—" }}{% if claim.accident_time %} at {{ claim.accident_time|time:"H:i" }}{% endif %}</dd>
       <dt>Location</dt><dd>{{ claim.accident_location|default:"—" }}</dd>
-      <dt>Police report</dt><dd>{{ claim.police_report_number|default:"—" }}</dd>
-      <dt>Fault</dt><dd>{{ claim.get_fault_display }}</dd>
+      <dt>Report type</dt><dd>{{ claim.get_report_type_display|default:"—" }}</dd>
+      <dt>Report ref</dt><dd>{{ claim.police_report_number|default:"—" }}</dd>
+      <dt>Fault (OI / TP)</dt><dd>{{ claim.get_fault_display }}</dd>
+      <dt>Drivable?</dt>
+      <dd>{% if claim.drivable is None %}Unknown{% elif claim.drivable %}Yes{% else %}No{% endif %}</dd>
     </dl>
   </div>
 
   <div class="card">
     <h3>Third party</h3>
     <dl class="kv">
-      <dt>Name</dt><dd>{{ claim.third_party_name|default:"—" }}</dd>
-      <dt>Phone</dt><dd>{{ claim.third_party_phone|default:"—" }}</dd>
-      <dt>Vehicle</dt><dd>{{ claim.third_party_vehicle|default:"—" }}</dd>
-      <dt>Insurer</dt><dd>{{ claim.third_party_insurer|default:"—" }}</dd>
+      <dt>Reg no</dt><dd>{{ claim.third_party_registration|default:"—" }}</dd>
+      <dt>Vehicle make</dt><dd>{{ claim.third_party_vehicle|default:"—" }}</dd>
+      <dt>Driver</dt><dd>{{ claim.third_party_name|default:"—" }}{% if claim.third_party_phone %} · {{ claim.third_party_phone }}{% endif %}</dd>
+      <dt>Owner</dt><dd>{{ claim.third_party_owner_name|default:"—" }}{% if claim.third_party_owner_phone %} · {{ claim.third_party_owner_phone }}{% endif %}</dd>
+      <dt>Insurance</dt><dd>{{ claim.third_party_insurer|default:"—" }}</dd>
+      <dt>TP claim no</dt><dd>{{ claim.tp_claim_number|default:"—" }}</dd>
     </dl>
   </div>
+
+  {% if claim.tp2_registration or claim.tp2_owner_name or claim.tp2_insurer %}
+  <div class="card">
+    <h3>Second third party</h3>
+    <dl class="kv">
+      <dt>Reg no</dt><dd>{{ claim.tp2_registration|default:"—" }}</dd>
+      <dt>Owner</dt><dd>{{ claim.tp2_owner_name|default:"—" }}{% if claim.tp2_owner_phone %} · {{ claim.tp2_owner_phone }}{% endif %}</dd>
+      <dt>Insurance</dt><dd>{{ claim.tp2_insurer|default:"—" }}</dd>
+    </dl>
+  </div>
+  {% endif %}
 
   <div class="card">
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
-      <dt>Insurer</dt><dd>{{ claim.insurer|default:"—" }}</dd>
+      <dt>Our insurer</dt><dd>{{ claim.insurer|default:"—" }}</dd>
       <dt>Policy number</dt><dd>{{ claim.policy_number|default:"—" }}</dd>
+      <dt>Insurer claim no</dt><dd>{{ claim.insurer_claim_number|default:"—" }}</dd>
       <dt>Excess</dt><dd>{% if claim.excess_amount %}€{{ claim.excess_amount }}{% else %}—{% endif %}</dd>
+      <dt>Survey in hand?</dt><dd>{{ claim.survey_in_hand|yesno:"Yes,No" }}</dd>
+      <dt>Estimate</dt><dd>{% if claim.estimate_amount %}€{{ claim.estimate_amount }}{% else %}—{% endif %}</dd>
       <dt>Created by</dt><dd>{% if claim.created_by %}{{ claim.created_by.get_full_name|default:claim.created_by.username }}{% else %}—{% endif %}</dd>
       <dt>Created</dt><dd>{{ claim.created_at|date:"d M Y H:i" }}</dd>
       <dt>Submitted</dt><dd>{{ claim.submitted_at|date:"d M Y H:i"|default:"not yet submitted" }}</dd>
@@ -44,6 +63,32 @@
       <dt>Drive folder</dt>
       <dd><a href="https://drive.google.com/drive/folders/{{ claim.drive_folder_id }}" target="_blank" rel="noopener">Open in Google Drive ↗</a></dd>
       {% endif %}
+    </dl>
+  </div>
+</div>
+
+<div class="card mt">
+  <h3>Recovery — claim from third party</h3>
+  <div class="grid grid-2">
+    <dl class="kv">
+      <dt>Bills sent</dt><dd>{{ claim.bills_sent_on|date:"d M Y"|default:"—" }}</dd>
+      <dt>Invoice no</dt><dd>{{ claim.invoice_number|default:"—" }}</dd>
+      <dt>Labour (net)</dt><dd>{% if claim.labour_amount %}€{{ claim.labour_amount }}{% else %}—{% endif %}</dd>
+      <dt>Spray + material</dt><dd>{% if claim.spray_material_amount %}€{{ claim.spray_material_amount }}{% else %}—{% endif %}</dd>
+      <dt>Parts</dt><dd>{% if claim.parts_amount %}€{{ claim.parts_amount }}{% else %}—{% endif %}</dd>
+      <dt>Loss of earnings</dt>
+      <dd>{% if claim.loe_days %}{{ claim.loe_days }} day{{ claim.loe_days|pluralize }} × €{{ claim.loe_daily_rate|default:"0" }} = €{{ claim.loss_of_earnings }}{% else %}—{% endif %}</dd>
+      <dt>Others</dt><dd>{% if claim.others_amount %}€{{ claim.others_amount }}{% else %}—{% endif %}</dd>
+    </dl>
+    <dl class="kv">
+      <dt>Total claim</dt><dd><strong>€{{ claim.total_claim_amount|floatformat:2 }}</strong></dd>
+      <dt>Settlement</dt><dd>{% if claim.settlement_amount %}€{{ claim.settlement_amount }}{% else %}—{% endif %}</dd>
+      <dt>Amount paid</dt><dd>{% if claim.amount_paid %}€{{ claim.amount_paid }}{% else %}—{% endif %}</dd>
+      <dt>Offset</dt><dd>{% if claim.offset_amount %}€{{ claim.offset_amount }}{% else %}—{% endif %}</dd>
+      <dt>Outstanding</dt>
+      <dd><strong {% if claim.outstanding_amount > 0 %}style="color:var(--danger)"{% endif %}>€{{ claim.outstanding_amount|floatformat:2 }}</strong></dd>
+      <dt>Next action</dt><dd>{{ claim.next_action|default:"—" }}</dd>
+      <dt>Chase on</dt><dd>{{ claim.chase_on|date:"d M Y"|default:"—" }}{% if claim.urgent %} <span class="badge overdue">URGENT</span>{% endif %}</dd>
     </dl>
   </div>
 </div>

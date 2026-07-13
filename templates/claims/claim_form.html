@@ -42,8 +42,10 @@
       {% include "claims/partials/field.html" with field=form.accident_date %}
       {% include "claims/partials/field.html" with field=form.accident_time %}
       {% include "claims/partials/field.html" with field=form.accident_location %}
+      {% include "claims/partials/field.html" with field=form.report_type %}
       {% include "claims/partials/field.html" with field=form.police_report_number %}
       {% include "claims/partials/field.html" with field=form.fault %}
+      {% include "claims/partials/field.html" with field=form.drivable %}
       {% include "claims/partials/field.html" with field=form.description extra_class="span-2" %}
     </div>
   </fieldset>
@@ -51,10 +53,24 @@
   <fieldset>
     <legend>Third party</legend>
     <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.third_party_registration %}
+      {% include "claims/partials/field.html" with field=form.third_party_vehicle %}
       {% include "claims/partials/field.html" with field=form.third_party_name %}
       {% include "claims/partials/field.html" with field=form.third_party_phone %}
-      {% include "claims/partials/field.html" with field=form.third_party_vehicle %}
+      {% include "claims/partials/field.html" with field=form.third_party_owner_name %}
+      {% include "claims/partials/field.html" with field=form.third_party_owner_phone %}
       {% include "claims/partials/field.html" with field=form.third_party_insurer %}
+      {% include "claims/partials/field.html" with field=form.tp_claim_number %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Second third party (if any)</legend>
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.tp2_registration %}
+      {% include "claims/partials/field.html" with field=form.tp2_owner_name %}
+      {% include "claims/partials/field.html" with field=form.tp2_owner_phone %}
+      {% include "claims/partials/field.html" with field=form.tp2_insurer %}
     </div>
   </fieldset>
 
@@ -63,7 +79,42 @@
     <div class="form-grid">
       {% include "claims/partials/field.html" with field=form.insurer %}
       {% include "claims/partials/field.html" with field=form.policy_number %}
+      {% include "claims/partials/field.html" with field=form.insurer_claim_number %}
       {% include "claims/partials/field.html" with field=form.excess_amount %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Survey &amp; estimate</legend>
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.survey_in_hand %}
+      {% include "claims/partials/field.html" with field=form.estimate_amount %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Recovery — amounts claimed from the third party</legend>
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.bills_sent_on %}
+      {% include "claims/partials/field.html" with field=form.invoice_number %}
+      {% include "claims/partials/field.html" with field=form.labour_amount %}
+      {% include "claims/partials/field.html" with field=form.spray_material_amount %}
+      {% include "claims/partials/field.html" with field=form.parts_amount %}
+      {% include "claims/partials/field.html" with field=form.loe_days %}
+      {% include "claims/partials/field.html" with field=form.loe_daily_rate %}
+      {% include "claims/partials/field.html" with field=form.others_amount %}
+      {% include "claims/partials/field.html" with field=form.settlement_amount %}
+      {% include "claims/partials/field.html" with field=form.amount_paid %}
+      {% include "claims/partials/field.html" with field=form.offset_amount %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Workflow</legend>
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.next_action %}
+      {% include "claims/partials/field.html" with field=form.chase_on %}
+      {% include "claims/partials/field.html" with field=form.urgent %}
     </div>
   </fieldset>
 

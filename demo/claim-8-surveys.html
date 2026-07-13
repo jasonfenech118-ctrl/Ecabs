@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "rAeROSzbHleZjNf2MdbSdeonX4aWX2aVTXnP5rzn8euN188hYYFDIUMNnpsTLqT1"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "D6yQZxbCHDikbQ2zd4hx9E8z7gplWeoGyxj5sT2aqKviI9QruhsBbgTUc1ydmWDX"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -43,10 +43,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0008</span>
+    <span class="badge overdue">URGENT</span>
     <span class="muted">
-      ECB-101
-       · Karl Borg
-       · 05 Apr 2026
+      ECB-407
+       · Amy Farrugia
+       · 19 Apr 2026
     </span>
   </div>
   <div class="row">
@@ -54,12 +55,12 @@
       <form hx-post="/claims/8/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge open">Open</span>
+  <span class="badge rejected">Rejected</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
-      <option value="open" selected>Open</option>
+      <option value="open" >Open</option>
     
       <option value="awaiting_survey" >Awaiting survey</option>
     
@@ -69,7 +70,7 @@
     
       <option value="closed" >Closed</option>
     
-      <option value="rejected" >Rejected</option>
+      <option value="rejected" selected>Rejected</option>
     
   </select>
 </form>
@@ -89,7 +90,7 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-8-surveys.html"
      hx-get="/claims/8/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
+     class="active" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-8-emails.html"
      hx-get="/claims/8/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
@@ -98,7 +99,7 @@
      class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-8-billing.html"
      hx-get="/claims/8/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
   <a href="claim-8-history.html"
      hx-get="/claims/8/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -162,7 +163,14 @@
     </thead>
     <tbody>
       
-      <tr><td colspan="6" class="empty">No surveys for this claim.</td></tr>
+      <tr>
+        <td>P. Attard</td>
+        <td>Attard Loss Adjusters</td>
+        <td><span class="badge requested">Requested</span></td>
+        <td>06 Jul 2026 20:59</td>
+        <td>—</td>
+        <td class="muted">Inspection at depot.</td>
+      </tr>
       
     </tbody>
   </table>

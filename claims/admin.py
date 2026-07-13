@@ -57,12 +57,16 @@ class ClaimAdmin(SimpleHistoryAdmin):
         "insurer",
         "created_at",
     )
-    list_filter = ("status", "fault", "insurer")
+    list_filter = ("status", "fault", "urgent", "report_type", "insurer")
     search_fields = (
         "reference",
         "vehicle_registration",
         "driver_name",
         "third_party_name",
+        "third_party_registration",
+        "third_party_owner_name",
+        "tp_claim_number",
+        "insurer_claim_number",
         "policy_number",
         "accident_location",
     )

@@ -79,14 +79,41 @@ class Command(BaseCommand):
                 accident_location=random.choice(LOCATIONS),
                 description="Third party changed lanes without indicating and clipped the front bumper.",
                 fault=random.choice(list(Claim.Fault.values)),
+                third_party_registration=f"{random.choice('ABCDEF')}{random.choice('ABCDEF')}{random.choice('XYZ')}{random.randint(100, 999)}",
+                third_party_vehicle=random.choice(["BMW 320i", "Nissan Qashqai", "Peugeot 208", "Mazda 3"]),
                 third_party_name="John Smith",
-                third_party_vehicle="BMW 320i — ABC-123",
+                third_party_phone=f"+356 99{random.randint(100000, 999999) // 10}",
+                third_party_owner_name=random.choice(["Josianne Nicolosi", "Henri Perini", "Edwin Saliba", ""]),
                 third_party_insurer=random.choice(INSURERS),
+                tp_claim_number=random.choice([f"C34-{random.randint(200000, 299999)}", ""]),
+                report_type=random.choice(list(Claim.ReportType.values) + [""]),
+                drivable=random.choice([True, False, None]),
+                survey_in_hand=random.random() > 0.5,
+                estimate_amount=Decimal(random.randint(300, 3000)),
                 insurer=random.choice(INSURERS),
                 policy_number=f"POL-{random.randint(100000, 999999)}",
+                insurer_claim_number=random.choice([f"C17-{random.randint(200000, 299999)}", ""]),
                 excess_amount=Decimal(random.choice(["250.00", "500.00", "750.00"])),
                 created_by=user,
             )
+            if claim.status != Claim.Status.DRAFT and random.random() > 0.3:
+                claim.bills_sent_on = now.date() - timedelta(days=random.randint(0, 60))
+                claim.invoice_number = str(random.randint(100050, 100099))
+                claim.labour_amount = Decimal(random.randint(50, 300))
+                claim.spray_material_amount = Decimal(random.randint(100, 500))
+                claim.parts_amount = Decimal(random.randint(100, 900))
+                if random.random() > 0.5:
+                    claim.loe_days = random.randint(1, 6)
+                    claim.loe_daily_rate = Decimal("40.00")
+                if random.random() > 0.5:
+                    claim.amount_paid = Decimal(random.randint(0, 500))
+                    claim.offset_amount = Decimal("240.00")
+                claim.next_action = random.choice(
+                    ["O/S payment from MSI", "O/S payment from Argus", "Awaiting survey report", ""]
+                )
+                claim.chase_on = now.date() + timedelta(days=random.randint(-3, 20))
+                claim.urgent = random.random() > 0.75
+                claim.save()
             if claim.status != Claim.Status.DRAFT:
                 claim.submitted_at = claim.created_at
                 claim.save()

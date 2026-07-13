@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "EggyQI8IRCmSIwU2Faj4wD2Vm1EYV4l86Dpw7h8UivCGqRNhRVNP1jqlMmWVJs4e"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "QfMItI3wnQhmVlngoqQfXetoHA3d01VaLGxXW4U46XuksEb8FD1jZQeJMlc5qJar"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -52,7 +52,7 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="EggyQI8IRCmSIwU2Faj4wD2Vm1EYV4l86Dpw7h8UivCGqRNhRVNP1jqlMmWVJs4e">
+  <input type="hidden" name="csrfmiddlewaretoken" value="QfMItI3wnQhmVlngoqQfXetoHA3d01VaLGxXW4U46XuksEb8FD1jZQeJMlc5qJar">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
@@ -76,7 +76,7 @@
 
       <div class="field ">
   <label for="id_acquired_on">Acquired on</label>
-  <input type="date" name="acquired_on" value="09/08/2024" id="id_acquired_on">
+  <input type="date" name="acquired_on" value="12/08/2024" id="id_acquired_on">
   
 </div>
 
@@ -87,7 +87,7 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_insurance_due">Insurance renewal</label>
-  <input type="date" name="insurance_due" value="15/02/2027" id="id_insurance_due">
+  <input type="date" name="insurance_due" value="18/02/2027" id="id_insurance_due">
   
 </div>
 
@@ -120,31 +120,17 @@
         <tbody>
           
           <tr>
-            <td><a href="claim-12.html">CLM-2026-0012</a></td>
-            <td><span class="badge closed">Closed</span></td>
-            <td>09 May 2026</td>
+            <td><a href="claim-8.html">CLM-2026-0008</a></td>
+            <td><span class="badge rejected">Rejected</span></td>
+            <td>19 Apr 2026</td>
             <td>Amy Farrugia</td>
-          </tr>
-          
-          <tr>
-            <td><a href="claim-9.html">CLM-2026-0009</a></td>
-            <td><span class="badge open">Open</span></td>
-            <td>27 Mar 2026</td>
-            <td>Amy Farrugia</td>
-          </tr>
-          
-          <tr>
-            <td><a href="claim-7.html">CLM-2026-0007</a></td>
-            <td><span class="badge settled">Settled</span></td>
-            <td>01 Jul 2026</td>
-            <td>Josef Camilleri</td>
           </tr>
           
           <tr>
             <td><a href="claim-6.html">CLM-2026-0006</a></td>
-            <td><span class="badge open">Open</span></td>
-            <td>17 Jun 2026</td>
-            <td>Karl Borg</td>
+            <td><span class="badge draft">Draft</span></td>
+            <td>25 Apr 2026</td>
+            <td>Maria Vella</td>
           </tr>
           
         </tbody>
@@ -157,14 +143,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/4/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="EggyQI8IRCmSIwU2Faj4wD2Vm1EYV4l86Dpw7h8UivCGqRNhRVNP1jqlMmWVJs4e">
+      <input type="hidden" name="csrfmiddlewaretoken" value="QfMItI3wnQhmVlngoqQfXetoHA3d01VaLGxXW4U46XuksEb8FD1jZQeJMlc5qJar">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
     <form method="post" action="/vehicles/4/delete/"
           onsubmit="return confirm('Delete ECB-407 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="EggyQI8IRCmSIwU2Faj4wD2Vm1EYV4l86Dpw7h8UivCGqRNhRVNP1jqlMmWVJs4e">
+      <input type="hidden" name="csrfmiddlewaretoken" value="QfMItI3wnQhmVlngoqQfXetoHA3d01VaLGxXW4U46XuksEb8FD1jZQeJMlc5qJar">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>

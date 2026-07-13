@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "WIdKSxc4Lm09DwEAXTRVT3c183qqF96Jo5mI96cgcfgXlRxP9ElGoJAryoIntxPP"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "c6F7arx7vluZSY5Lc50ktwPonSi0vfn47xqmDNoFesHXphTDtibov8AJsDrSVXCl"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -52,7 +52,7 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="WIdKSxc4Lm09DwEAXTRVT3c183qqF96Jo5mI96cgcfgXlRxP9ElGoJAryoIntxPP">
+  <input type="hidden" name="csrfmiddlewaretoken" value="c6F7arx7vluZSY5Lc50ktwPonSi0vfn47xqmDNoFesHXphTDtibov8AJsDrSVXCl">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
@@ -76,7 +76,7 @@
 
       <div class="field ">
   <label for="id_acquired_on">Acquired on</label>
-  <input type="date" name="acquired_on" value="25/02/2025" id="id_acquired_on">
+  <input type="date" name="acquired_on" value="28/02/2025" id="id_acquired_on">
   
 </div>
 
@@ -87,7 +87,7 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_insurance_due">Insurance renewal</label>
-  <input type="date" name="insurance_due" value="19/07/2026" id="id_insurance_due">
+  <input type="date" name="insurance_due" value="22/07/2026" id="id_insurance_due">
   
 </div>
 
@@ -120,10 +120,24 @@
         <tbody>
           
           <tr>
-            <td><a href="claim-11.html">CLM-2026-0011</a></td>
-            <td><span class="badge awaiting_insurer">Awaiting insurer</span></td>
-            <td>20 Apr 2026</td>
-            <td>Karl Borg</td>
+            <td><a href="claim-12.html">CLM-2026-0012</a></td>
+            <td><span class="badge closed">Closed</span></td>
+            <td>01 Apr 2026</td>
+            <td>Amy Farrugia</td>
+          </tr>
+          
+          <tr>
+            <td><a href="claim-7.html">CLM-2026-0007</a></td>
+            <td><span class="badge closed">Closed</span></td>
+            <td>28 Mar 2026</td>
+            <td>Maria Vella</td>
+          </tr>
+          
+          <tr>
+            <td><a href="claim-5.html">CLM-2026-0005</a></td>
+            <td><span class="badge rejected">Rejected</span></td>
+            <td>23 Apr 2026</td>
+            <td>Maria Vella</td>
           </tr>
           
         </tbody>
@@ -136,14 +150,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/2/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="WIdKSxc4Lm09DwEAXTRVT3c183qqF96Jo5mI96cgcfgXlRxP9ElGoJAryoIntxPP">
+      <input type="hidden" name="csrfmiddlewaretoken" value="c6F7arx7vluZSY5Lc50ktwPonSi0vfn47xqmDNoFesHXphTDtibov8AJsDrSVXCl">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
     <form method="post" action="/vehicles/2/delete/"
           onsubmit="return confirm('Delete ECB-214 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="WIdKSxc4Lm09DwEAXTRVT3c183qqF96Jo5mI96cgcfgXlRxP9ElGoJAryoIntxPP">
+      <input type="hidden" name="csrfmiddlewaretoken" value="c6F7arx7vluZSY5Lc50ktwPonSi0vfn47xqmDNoFesHXphTDtibov8AJsDrSVXCl">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>

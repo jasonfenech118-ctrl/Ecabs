@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "fKptrv5b3XiUgZuaiHtqBFuI9fSE6rxBH7yrI45nuQyIYknpusXb6lS8zAaBUPgH"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "8Fq7UBhJ8YANluS8RI4ziwTYuz8pAcdU36bmnX8hR5NLSNG08VfDk8Ejzkhh0Usb"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -43,10 +43,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0010</span>
+    
     <span class="muted">
       ECB-512
-       · Josef Camilleri
-       · 10 May 2026
+       · Maria Vella
+       · 25 May 2026
     </span>
   </div>
   <div class="row">
@@ -54,16 +55,16 @@
       <form hx-post="/claims/10/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge draft">Draft</span>
+  <span class="badge awaiting_insurer">Awaiting insurer</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
-      <option value="draft" selected>Draft</option>
+      <option value="draft" >Draft</option>
     
       <option value="open" >Open</option>
     
       <option value="awaiting_survey" >Awaiting survey</option>
     
-      <option value="awaiting_insurer" >Awaiting insurer</option>
+      <option value="awaiting_insurer" selected>Awaiting insurer</option>
     
       <option value="settled" >Settled</option>
     
@@ -95,10 +96,10 @@
      class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-10-reminders.html"
      hx-get="/claims/10/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-10-billing.html"
      hx-get="/claims/10/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">2</span></a>
   <a href="claim-10-history.html"
      hx-get="/claims/10/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="active" onclick="setTab(this)">History</a>
@@ -114,7 +115,51 @@
     <tbody>
       
       <tr>
-        <td class="muted" style="white-space:nowrap">10 Jul 2026 21:00</td>
+        <td class="muted" style="white-space:nowrap">13 Jul 2026 20:59</td>
+        <td>system</td>
+        <td>
+          <span class="badge open">updated</span>
+        </td>
+        <td>
+          
+            
+              <div><strong>submitted_at</strong>: <span class="muted">(empty)</span> → 2026-07-13 18:59:31.727684+00:00</div>
+            
+          
+        </td>
+      </tr>
+      
+      <tr>
+        <td class="muted" style="white-space:nowrap">13 Jul 2026 20:59</td>
+        <td>system</td>
+        <td>
+          <span class="badge open">updated</span>
+        </td>
+        <td>
+          
+            
+              <div><strong>amount_paid</strong>: <span class="muted">(empty)</span> → 218.00</div>
+            
+              <div><strong>bills_sent_on</strong>: <span class="muted">(empty)</span> → 2026-05-27</div>
+            
+              <div><strong>chase_on</strong>: <span class="muted">(empty)</span> → 2026-07-21</div>
+            
+              <div><strong>invoice_number</strong>: <span class="muted">(empty)</span> → 100073</div>
+            
+              <div><strong>labour_amount</strong>: <span class="muted">(empty)</span> → 281.00</div>
+            
+              <div><strong>offset_amount</strong>: <span class="muted">(empty)</span> → 240.00</div>
+            
+              <div><strong>parts_amount</strong>: <span class="muted">(empty)</span> → 730.00</div>
+            
+              <div><strong>spray_material_amount</strong>: <span class="muted">(empty)</span> → 193.00</div>
+            
+          
+        </td>
+      </tr>
+      
+      <tr>
+        <td class="muted" style="white-space:nowrap">13 Jul 2026 20:59</td>
         <td>system</td>
         <td>
           <span class="badge ok">created</span>

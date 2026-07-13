@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "xWYkkSB4ynmdOiCiplekfZqNoj67jqP3Zj7iBrBgZgC1wDvxB6I5KFOdOEo47Oy9"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "HWCQgeFs9Nmcqdo608iiCQUAvrb2e0lXCnn5JAw0SUzaXwcYhltmEsFVAckUEIAe"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -43,10 +43,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0001</span>
+    <span class="badge overdue">URGENT</span>
     <span class="muted">
-      ECB-101
+      ECB-330
        · Maria Vella
-       · 02 Jul 2026
+       · 03 Jul 2026
     </span>
   </div>
   <div class="row">
@@ -92,13 +93,13 @@
      class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-1-emails.html"
      hx-get="/claims/1/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-1-reminders.html"
      hx-get="/claims/1/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+     class="active" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-1-billing.html"
      hx-get="/claims/1/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
   <a href="claim-1-history.html"
      hx-get="/claims/1/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -152,21 +153,7 @@
     </thead>
     <tbody>
       
-      <tr>
-        <td>
-          <form hx-post="/reminders/1/toggle/" hx-target="#tab-panel">
-            <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
-                    aria-label="Mark done">
-          </form>
-        </td>
-        <td class="">Chase insurer for update</td>
-        <td>
-          
-          18 Jul 2026 21:00
-        </td>
-        <td class="muted">Demo Staff</td>
-        <td class="muted">—</td>
-      </tr>
+      <tr><td colspan="5" class="empty">No reminders for this claim.</td></tr>
       
     </tbody>
   </table>

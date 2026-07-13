@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "QKRRqpPbOzEX2LAGGTt7Yq1NPXUY9FW0i70PHYPnfsULK6tVSEXSt6pdficVX3F6"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "kt0YvfKj4DrjhGkkGyKLwi5FsyHAxmeqfULdYBBRNKEhOZ8cXLVPyUQ0xjQsX4tH"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -52,7 +52,7 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="QKRRqpPbOzEX2LAGGTt7Yq1NPXUY9FW0i70PHYPnfsULK6tVSEXSt6pdficVX3F6">
+  <input type="hidden" name="csrfmiddlewaretoken" value="kt0YvfKj4DrjhGkkGyKLwi5FsyHAxmeqfULdYBBRNKEhOZ8cXLVPyUQ0xjQsX4tH">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
@@ -76,7 +76,7 @@
 
       <div class="field ">
   <label for="id_acquired_on">Acquired on</label>
-  <input type="date" name="acquired_on" value="17/11/2024" id="id_acquired_on">
+  <input type="date" name="acquired_on" value="20/11/2024" id="id_acquired_on">
   
 </div>
 
@@ -87,7 +87,7 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_insurance_due">Insurance renewal</label>
-  <input type="date" name="insurance_due" value="31/07/2026" id="id_insurance_due">
+  <input type="date" name="insurance_due" value="03/08/2026" id="id_insurance_due">
   
 </div>
 
@@ -120,10 +120,10 @@
         <tbody>
           
           <tr>
-            <td><a href="claim-3.html">CLM-2026-0003</a></td>
-            <td><span class="badge open">Open</span></td>
-            <td>23 Mar 2026</td>
-            <td>Karl Borg</td>
+            <td><a href="claim-1.html">CLM-2026-0001</a></td>
+            <td><span class="badge rejected">Rejected</span></td>
+            <td>03 Jul 2026</td>
+            <td>Maria Vella</td>
           </tr>
           
         </tbody>
@@ -136,14 +136,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/3/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="QKRRqpPbOzEX2LAGGTt7Yq1NPXUY9FW0i70PHYPnfsULK6tVSEXSt6pdficVX3F6">
+      <input type="hidden" name="csrfmiddlewaretoken" value="kt0YvfKj4DrjhGkkGyKLwi5FsyHAxmeqfULdYBBRNKEhOZ8cXLVPyUQ0xjQsX4tH">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
     <form method="post" action="/vehicles/3/delete/"
           onsubmit="return confirm('Delete ECB-330 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="QKRRqpPbOzEX2LAGGTt7Yq1NPXUY9FW0i70PHYPnfsULK6tVSEXSt6pdficVX3F6">
+      <input type="hidden" name="csrfmiddlewaretoken" value="kt0YvfKj4DrjhGkkGyKLwi5FsyHAxmeqfULdYBBRNKEhOZ8cXLVPyUQ0xjQsX4tH">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>

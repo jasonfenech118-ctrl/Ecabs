@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "dpFyyNCyFk0BaO5OD38B6736uJnIJjBiFMOwPmCK6dgpS9Y3POCmBNrwU4FFxHko"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "fMNbAulbckPNwq2wgjeioKTgtbypg9EZadyq3QcJVr2L3JQoxwpmqmEByWHhGRTg"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -43,10 +43,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0011</span>
+    
     <span class="muted">
-      ECB-214
-       · Karl Borg
-       · 20 Apr 2026
+      ECB-512
+       · Luca Grech
+       · 01 Jun 2026
     </span>
   </div>
   <div class="row">
@@ -54,7 +55,7 @@
       <form hx-post="/claims/11/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge awaiting_insurer">Awaiting insurer</span>
+  <span class="badge closed">Closed</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
@@ -63,11 +64,11 @@
     
       <option value="awaiting_survey" >Awaiting survey</option>
     
-      <option value="awaiting_insurer" selected>Awaiting insurer</option>
+      <option value="awaiting_insurer" >Awaiting insurer</option>
     
       <option value="settled" >Settled</option>
     
-      <option value="closed" >Closed</option>
+      <option value="closed" selected>Closed</option>
     
       <option value="rejected" >Rejected</option>
     
@@ -89,16 +90,16 @@
      class="" onclick="setTab(this)">Photos<span class="tab-count">0</span></a>
   <a href="claim-11-surveys.html"
      hx-get="/claims/11/tab/surveys/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-11-emails.html"
      hx-get="/claims/11/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
   <a href="claim-11-reminders.html"
      hx-get="/claims/11/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-11-billing.html"
      hx-get="/claims/11/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
+     class="active" onclick="setTab(this)">Billing<span class="tab-count">3</span></a>
   <a href="claim-11-history.html"
      hx-get="/claims/11/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -181,12 +182,30 @@
     <tbody>
       
       <tr>
+        <td>Bumper repair</td>
+        <td>Other</td>
+        <td>—</td>
+        <td>—</td>
+        <td><span class="badge paid">Paid</span></td>
+        <td class="right">€930.00</td>
+      </tr>
+      
+      <tr>
+        <td>Survey fee</td>
+        <td>Legal</td>
+        <td>—</td>
+        <td>—</td>
+        <td><span class="badge pending">Pending</span></td>
+        <td class="right">€1552.00</td>
+      </tr>
+      
+      <tr>
         <td>Survey fee</td>
         <td>Repair</td>
         <td>—</td>
         <td>—</td>
-        <td><span class="badge pending">Pending</span></td>
-        <td class="right">€806.00</td>
+        <td><span class="badge invoiced">Invoiced</span></td>
+        <td class="right">€2261.00</td>
       </tr>
       
     </tbody>
@@ -194,7 +213,7 @@
     <tfoot>
       <tr>
         <td colspan="5" class="right"><strong>Total</strong></td>
-        <td class="right"><strong>€806</strong></td>
+        <td class="right"><strong>€4743</strong></td>
       </tr>
     </tfoot>
     

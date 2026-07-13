@@ -70,6 +70,15 @@ def dashboard(request):
     }
     compliance_due = _compliance_due(limit=8)
     stats["compliance_due"] = len(_compliance_due())
+
+    open_claims = claims.filter(status__in=open_statuses)
+    stats["recovery_outstanding"] = sum(
+        (c.outstanding_amount for c in open_claims), Decimal("0")
+    )
+    today = timezone.localdate()
+    chasers = open_claims.filter(
+        Q(urgent=True) | Q(chase_on__lte=today + timedelta(days=7)),
+    ).order_by("chase_on")[:8]
     status_breakdown = (
         claims.values("status").annotate(n=Count("id")).order_by("-n")
     )
@@ -95,6 +104,7 @@ def dashboard(request):
             "recent_claims": recent_claims,
             "upcoming_reminders": upcoming_reminders,
             "compliance_due": compliance_due,
+            "chasers": chasers,
         },
     )
 
@@ -111,6 +121,10 @@ def _filtered_claims(request):
             | Q(vehicle_registration__icontains=q)
             | Q(driver_name__icontains=q)
             | Q(third_party_name__icontains=q)
+            | Q(third_party_registration__icontains=q)
+            | Q(third_party_owner_name__icontains=q)
+            | Q(tp_claim_number__icontains=q)
+            | Q(insurer_claim_number__icontains=q)
             | Q(policy_number__icontains=q)
             | Q(accident_location__icontains=q)
         )

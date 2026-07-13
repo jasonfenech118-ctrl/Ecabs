@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "q1pwQ4QBQZ0kUOODTW2scHyU7v2BgFu5Soyu7DQNhSg8C9HS5HwdHnWkxQky43db"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "JmqwipsJf4AbL7Xoup9l4BC7vtnX0JqiENbLLLjhYbN9iqLgLCkp6dnsAewPqrFz"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -43,10 +43,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0012</span>
+    
     <span class="muted">
-      ECB-407
+      ECB-214
        · Amy Farrugia
-       · 09 May 2026
+       · 01 Apr 2026
     </span>
   </div>
   <div class="row">
@@ -95,7 +96,7 @@
      class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-12-reminders.html"
      hx-get="/claims/12/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
   <a href="claim-12-billing.html"
      hx-get="/claims/12/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Billing<span class="tab-count">2</span></a>
@@ -110,10 +111,10 @@
   <div class="card">
     <h3>Vehicle &amp; driver</h3>
     <dl class="kv">
-      <dt>Registration</dt><dd>ECB-407</dd>
-      <dt>Make / model</dt><dd>Toyota Prius+</dd>
+      <dt>Registration</dt><dd>ECB-214</dd>
+      <dt>Make / model</dt><dd>Mercedes-Benz Vito</dd>
       <dt>Driver</dt><dd>Amy Farrugia</dd>
-      <dt>Phone</dt><dd>+356 7971146</dd>
+      <dt>Phone</dt><dd>+356 7995318</dd>
       <dt>Email</dt><dd>—</dd>
     </dl>
   </div>
@@ -122,33 +123,69 @@
     <h3>Accident</h3>
     <dl class="kv">
       <dt>Date &amp; time</dt>
-      <dd>09 May 2026 at 19:00</dd>
-      <dt>Location</dt><dd>Aldo Moro Road, Marsa</dd>
-      <dt>Police report</dt><dd>—</dd>
-      <dt>Fault</dt><dd>Shared / knock for knock</dd>
+      <dd>01 Apr 2026 at 18:59</dd>
+      <dt>Location</dt><dd>Coast Road, Bahar ic-Caghaq</dd>
+      <dt>Report type</dt><dd>RAR (police report)</dd>
+      <dt>Report ref</dt><dd>—</dd>
+      <dt>Fault (OI / TP)</dt><dd>Our insured (OI) at fault</dd>
+      <dt>Drivable?</dt>
+      <dd>Unknown</dd>
     </dl>
   </div>
 
   <div class="card">
     <h3>Third party</h3>
     <dl class="kv">
-      <dt>Name</dt><dd>John Smith</dd>
-      <dt>Phone</dt><dd>—</dd>
-      <dt>Vehicle</dt><dd>BMW 320i — ABC-123</dd>
-      <dt>Insurer</dt><dd>Elmo Insurance</dd>
+      <dt>Reg no</dt><dd>CCY965</dd>
+      <dt>Vehicle make</dt><dd>Nissan Qashqai</dd>
+      <dt>Driver</dt><dd>John Smith · +356 9967736</dd>
+      <dt>Owner</dt><dd>Henri Perini</dd>
+      <dt>Insurance</dt><dd>Elmo Insurance</dd>
+      <dt>TP claim no</dt><dd>—</dd>
     </dl>
   </div>
+
+  
 
   <div class="card">
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
-      <dt>Insurer</dt><dd>Mapfre Middlesea</dd>
-      <dt>Policy number</dt><dd>POL-510483</dd>
-      <dt>Excess</dt><dd>€250.00</dd>
+      <dt>Our insurer</dt><dd>Mapfre Middlesea</dd>
+      <dt>Policy number</dt><dd>POL-493497</dd>
+      <dt>Insurer claim no</dt><dd>—</dd>
+      <dt>Excess</dt><dd>€750.00</dd>
+      <dt>Survey in hand?</dt><dd>No</dd>
+      <dt>Estimate</dt><dd>€1752.00</dd>
       <dt>Created by</dt><dd>Demo Staff</dd>
-      <dt>Created</dt><dd>10 Jul 2026 21:00</dd>
-      <dt>Submitted</dt><dd>10 Jul 2026 21:00</dd>
+      <dt>Created</dt><dd>13 Jul 2026 20:59</dd>
+      <dt>Submitted</dt><dd>13 Jul 2026 20:59</dd>
       
+    </dl>
+  </div>
+</div>
+
+<div class="card mt">
+  <h3>Recovery — claim from third party</h3>
+  <div class="grid grid-2">
+    <dl class="kv">
+      <dt>Bills sent</dt><dd>08 Jun 2026</dd>
+      <dt>Invoice no</dt><dd>100074</dd>
+      <dt>Labour (net)</dt><dd>€174.00</dd>
+      <dt>Spray + material</dt><dd>€496.00</dd>
+      <dt>Parts</dt><dd>€662.00</dd>
+      <dt>Loss of earnings</dt>
+      <dd>5 days × €40.00 = €200.00</dd>
+      <dt>Others</dt><dd>—</dd>
+    </dl>
+    <dl class="kv">
+      <dt>Total claim</dt><dd><strong>€1532.00</strong></dd>
+      <dt>Settlement</dt><dd>—</dd>
+      <dt>Amount paid</dt><dd>—</dd>
+      <dt>Offset</dt><dd>—</dd>
+      <dt>Outstanding</dt>
+      <dd><strong style="color:var(--danger)">€1532.00</strong></dd>
+      <dt>Next action</dt><dd>O/S payment from MSI</dd>
+      <dt>Chase on</dt><dd>30 Jul 2026</dd>
     </dl>
   </div>
 </div>

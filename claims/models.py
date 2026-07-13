@@ -7,6 +7,7 @@ and metadata are stored here.
 """
 
 from datetime import timedelta
+from decimal import Decimal
 
 from django.conf import settings
 from django.db import models
@@ -101,9 +102,15 @@ class Claim(models.Model):
 
     class Fault(models.TextChoices):
         UNKNOWN = "unknown", "Not yet determined"
-        OUR_DRIVER = "our_driver", "Our driver at fault"
-        THIRD_PARTY = "third_party", "Third party at fault"
+        OUR_DRIVER = "our_driver", "Our insured (OI) at fault"
+        THIRD_PARTY = "third_party", "Third party (TP) at fault"
         SHARED = "shared", "Shared / knock for knock"
+
+    class ReportType(models.TextChoices):
+        ETARS = "etars", "ETARS"
+        F2R = "f2r", "F2R (front to rear)"
+        RAR = "rar", "RAR (police report)"
+        OTHER = "other", "Other"
 
     reference = models.CharField(max_length=20, unique=True, editable=False)
     status = models.CharField(
@@ -122,21 +129,86 @@ class Claim(models.Model):
     accident_time = models.TimeField(null=True, blank=True)
     accident_location = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    police_report_number = models.CharField(max_length=50, blank=True)
-    fault = models.CharField(max_length=20, choices=Fault.choices, default=Fault.UNKNOWN)
+    report_type = models.CharField(
+        max_length=10, choices=ReportType.choices, blank=True
+    )
+    police_report_number = models.CharField(
+        "Report reference no", max_length=50, blank=True
+    )
+    fault = models.CharField(
+        "Fault (OI / TP)", max_length=20, choices=Fault.choices, default=Fault.UNKNOWN
+    )
 
     # Third party
-    third_party_name = models.CharField(max_length=100, blank=True)
-    third_party_phone = models.CharField(max_length=30, blank=True)
-    third_party_vehicle = models.CharField(max_length=100, blank=True)
-    third_party_insurer = models.CharField(max_length=100, blank=True)
+    third_party_registration = models.CharField("TP reg no", max_length=20, blank=True)
+    third_party_vehicle = models.CharField("TP vehicle make", max_length=100, blank=True)
+    third_party_name = models.CharField("TP driver name", max_length=100, blank=True)
+    third_party_phone = models.CharField("TP driver contact no", max_length=30, blank=True)
+    third_party_owner_name = models.CharField("TP owner name", max_length=100, blank=True)
+    third_party_owner_phone = models.CharField(
+        "TP owner contact no", max_length=30, blank=True
+    )
+    third_party_insurer = models.CharField("TP insurance", max_length=100, blank=True)
+    tp_claim_number = models.CharField("TP claim no", max_length=50, blank=True)
+
+    # Second third party (multi-vehicle accidents)
+    tp2_registration = models.CharField("TP2 reg no", max_length=20, blank=True)
+    tp2_owner_name = models.CharField("TP2 owner name", max_length=100, blank=True)
+    tp2_owner_phone = models.CharField("TP2 contact no", max_length=30, blank=True)
+    tp2_insurer = models.CharField("TP2 insurance", max_length=100, blank=True)
 
     # Insurance
-    insurer = models.CharField(max_length=100, blank=True)
+    insurer = models.CharField("Our insurer", max_length=100, blank=True)
     policy_number = models.CharField(max_length=50, blank=True)
+    insurer_claim_number = models.CharField(
+        "Our insurer claim no", max_length=50, blank=True
+    )
     excess_amount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True
     )
+
+    # Assessment
+    drivable = models.BooleanField("Drivable?", null=True, blank=True)
+    survey_in_hand = models.BooleanField("Survey in hand?", default=False)
+    estimate_amount = models.DecimalField(
+        "Estimate claim amt", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+
+    # Recovery financials (net amounts being recovered from the third party)
+    bills_sent_on = models.DateField("Bills sent", null=True, blank=True)
+    invoice_number = models.CharField("Invoice no", max_length=50, blank=True)
+    labour_amount = models.DecimalField(
+        "Labour (net)", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+    spray_material_amount = models.DecimalField(
+        "Spray + material (net)", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+    parts_amount = models.DecimalField(
+        "Parts", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+    loe_days = models.PositiveIntegerField("LOE days", null=True, blank=True)
+    loe_daily_rate = models.DecimalField(
+        "LOE daily amount", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+    others_amount = models.DecimalField(
+        "Others", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+    settlement_amount = models.DecimalField(
+        "Settlement", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+    amount_paid = models.DecimalField(
+        "Amount paid", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+    offset_amount = models.DecimalField(
+        "Offset", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+
+    # Workflow / chasing
+    next_action = models.CharField(
+        "Claim phase / next action", max_length=200, blank=True
+    )
+    chase_on = models.DateField("Chase on", null=True, blank=True)
+    urgent = models.BooleanField(default=False)
 
     # Google Drive folder for this claim (one folder per claim)
     drive_folder_id = models.CharField(max_length=100, blank=True)
@@ -198,6 +270,35 @@ class Claim(models.Model):
             self.status = self.Status.OPEN
             self.submitted_at = timezone.now()
             self.save()
+
+    # --- Recovery arithmetic (mirrors the Excel tracker's columns) ---------
+
+    @property
+    def loss_of_earnings(self):
+        if self.loe_days and self.loe_daily_rate:
+            return self.loe_days * self.loe_daily_rate
+        return Decimal("0")
+
+    @property
+    def total_claim_amount(self):
+        """Everything being recovered from the third party."""
+        parts = [
+            self.labour_amount,
+            self.spray_material_amount,
+            self.parts_amount,
+            self.loss_of_earnings,
+            self.others_amount,
+        ]
+        return sum((p or Decimal("0")) for p in parts)
+
+    @property
+    def outstanding_amount(self):
+        """Still owed: total claim minus what was paid and offset."""
+        return (
+            self.total_claim_amount
+            - (self.amount_paid or Decimal("0"))
+            - (self.offset_amount or Decimal("0"))
+        )
 
 
 class AccidentPhoto(models.Model):

@@ -1,7 +1,7 @@
 {% for c in claims %}
 <tr class="clickable" onclick="window.location='{{ c.get_absolute_url }}'">
   <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
-  <td><span class="badge {{ c.status }}">{{ c.get_status_display }}</span></td>
+  <td><span class="badge {{ c.status }}">{{ c.get_status_display }}</span>{% if c.urgent %} <span class="badge overdue">URGENT</span>{% endif %}</td>
   <td>{{ c.vehicle_registration|default:"—" }}{% if c.vehicle_make_model %} <span class="muted">({{ c.vehicle_make_model }})</span>{% endif %}</td>
   <td>{{ c.driver_name|default:"—" }}</td>
   <td>{{ c.accident_date|date:"d M Y"|default:"—" }}</td>

@@ -84,6 +84,40 @@ class ViewTests(TestCase):
         reminder.refresh_from_db()
         self.assertTrue(reminder.is_done)
 
+    def test_recovery_totals(self):
+        from decimal import Decimal
+
+        claim = Claim.objects.create(
+            labour_amount=Decimal("243.60"),
+            spray_material_amount=Decimal("429.53"),
+            parts_amount=Decimal("800.21"),
+            loe_days=4,
+            loe_daily_rate=Decimal("46.405"),
+            amount_paid=Decimal("1023.34"),
+            offset_amount=Decimal("240.00"),
+        )
+        self.assertEqual(claim.loss_of_earnings, Decimal("185.62"))
+        self.assertEqual(claim.total_claim_amount, Decimal("1658.96"))
+        self.assertEqual(claim.outstanding_amount, Decimal("395.62"))
+
+    def test_search_by_tp_claim_number(self):
+        Claim.objects.create(tp_claim_number="C34-277148", created_by=self.user)
+        response = self.client.get(
+            reverse("claim_list"), {"q": "C34-277148"}, headers={"HX-Request": "true"}
+        )
+        self.assertContains(response, "CLM-")
+
+    def test_urgent_claim_on_dashboard_chasers(self):
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN,
+            vehicle_registration="ECB-800",
+            urgent=True,
+            next_action="O/S payment from MSI",
+        )
+        response = self.client.get(reverse("dashboard"))
+        self.assertContains(response, claim.reference)
+        self.assertContains(response, "O/S payment from MSI")
+
     def test_vehicle_add_retire_delete(self):
         response = self.client.post(
             reverse("vehicle_add"),

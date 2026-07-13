@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "EQKKqs2nbRvFHuTBlk1D2qzNA3ITr6It6dTIH12zCKLtpPMQx5vox6Xd0o0Qfurz"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "zoUqRz9VxXYXCwazSid1wAIXYVNWEX4huPFFkV0tg4bV9PYr9vo5ycti3GWO4Fjy"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -43,10 +43,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0003</span>
+    
     <span class="muted">
-      ECB-330
-       · Karl Borg
-       · 23 Mar 2026
+      ECB-512
+       · Josef Camilleri
+       · 16 Apr 2026
     </span>
   </div>
   <div class="row">
@@ -54,18 +55,18 @@
       <form hx-post="/claims/3/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge open">Open</span>
+  <span class="badge settled">Settled</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
     
-      <option value="open" selected>Open</option>
+      <option value="open" >Open</option>
     
       <option value="awaiting_survey" >Awaiting survey</option>
     
       <option value="awaiting_insurer" >Awaiting insurer</option>
     
-      <option value="settled" >Settled</option>
+      <option value="settled" selected>Settled</option>
     
       <option value="closed" >Closed</option>
     
@@ -92,7 +93,7 @@
      class="" onclick="setTab(this)">Surveys<span class="tab-count">1</span></a>
   <a href="claim-3-emails.html"
      hx-get="/claims/3/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
   <a href="claim-3-reminders.html"
      hx-get="/claims/3/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
@@ -182,29 +183,29 @@
       
       <tr>
         <td>Survey fee</td>
-        <td>Towing</td>
+        <td>Excess</td>
         <td>—</td>
         <td>—</td>
         <td><span class="badge paid">Paid</span></td>
-        <td class="right">€1691.00</td>
+        <td class="right">€2487.00</td>
+      </tr>
+      
+      <tr>
+        <td>Towing to depot</td>
+        <td>Repair</td>
+        <td>—</td>
+        <td>—</td>
+        <td><span class="badge written_off">Written off</span></td>
+        <td class="right">€660.00</td>
       </tr>
       
       <tr>
         <td>Bumper repair</td>
-        <td>Legal</td>
-        <td>—</td>
-        <td>—</td>
-        <td><span class="badge paid">Paid</span></td>
-        <td class="right">€1279.00</td>
-      </tr>
-      
-      <tr>
-        <td>Survey fee</td>
-        <td>Towing</td>
+        <td>Excess</td>
         <td>—</td>
         <td>—</td>
         <td><span class="badge invoiced">Invoiced</span></td>
-        <td class="right">€383.00</td>
+        <td class="right">€1180.00</td>
       </tr>
       
     </tbody>
@@ -212,7 +213,7 @@
     <tfoot>
       <tr>
         <td colspan="5" class="right"><strong>Total</strong></td>
-        <td class="right"><strong>€3353</strong></td>
+        <td class="right"><strong>€4327</strong></td>
       </tr>
     </tfoot>
     

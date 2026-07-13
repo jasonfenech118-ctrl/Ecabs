@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "hOOwlkLBuYbqkZRXPjirTGmklO2yXnyoJbXuCTLNVRre2kKc14McomKKL9kvLLhu"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "IoDH437ZQhGkFxP1HgPlxAo2f5UwHQX1DPoWxpYxzoTicQDTYt0pzc9nkQ3o7yci"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -43,10 +43,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0006</span>
+    
     <span class="muted">
       ECB-407
-       · Karl Borg
-       · 17 Jun 2026
+       · Maria Vella
+       · 25 Apr 2026
     </span>
   </div>
   <div class="row">
@@ -54,12 +55,12 @@
       <form hx-post="/claims/6/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge open">Open</span>
+  <span class="badge draft">Draft</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
-      <option value="draft" >Draft</option>
+      <option value="draft" selected>Draft</option>
     
-      <option value="open" selected>Open</option>
+      <option value="open" >Open</option>
     
       <option value="awaiting_survey" >Awaiting survey</option>
     
@@ -95,10 +96,10 @@
      class="active" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
   <a href="claim-6-reminders.html"
      hx-get="/claims/6/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-6-billing.html"
      hx-get="/claims/6/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">1</span></a>
   <a href="claim-6-history.html"
      hx-get="/claims/6/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -125,7 +126,7 @@
 
       <div class="field ">
   <label for="id_sent_at">Sent at</label>
-  <input type="datetime-local" name="sent_at" value="2026-07-10 21:00:46" required id="id_sent_at"><input type="hidden" name="initial-sent_at" value="2026-07-10 21:00:46" id="initial-id_sent_at">
+  <input type="datetime-local" name="sent_at" value="2026-07-13 20:59:33" required id="id_sent_at"><input type="hidden" name="initial-sent_at" value="2026-07-13 20:59:33" id="initial-id_sent_at">
   
 </div>
 

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "ffQISEd1pgGN4LWBexxiGecHsEuMzGXKHCZG9dddQ9WBM6PQqi13bUA7SZMJn4GQ"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "Pt6pj9qSiL3a7JPJ33kxzMsNd5LYeFgvKUREMvhq1Sg8E2DBkgvBBod8iQUQEnvM"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -43,10 +43,11 @@
 <div class="detail-head">
   <div>
     <span class="ref">CLM-2026-0009</span>
+    
     <span class="muted">
-      ECB-407
-       · Amy Farrugia
-       · 27 Mar 2026
+      ECB-101
+       · Maria Vella
+       · 25 Apr 2026
     </span>
   </div>
   <div class="row">
@@ -54,12 +55,12 @@
       <form hx-post="/claims/9/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge open">Open</span>
+  <span class="badge draft">Draft</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
-      <option value="draft" >Draft</option>
+      <option value="draft" selected>Draft</option>
     
-      <option value="open" selected>Open</option>
+      <option value="open" >Open</option>
     
       <option value="awaiting_survey" >Awaiting survey</option>
     
@@ -92,13 +93,13 @@
      class="" onclick="setTab(this)">Surveys<span class="tab-count">0</span></a>
   <a href="claim-9-emails.html"
      hx-get="/claims/9/tab/emails/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Emails<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
   <a href="claim-9-reminders.html"
      hx-get="/claims/9/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+     class="" onclick="setTab(this)">Reminders<span class="tab-count">0</span></a>
   <a href="claim-9-billing.html"
      hx-get="/claims/9/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
-     class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
+     class="" onclick="setTab(this)">Billing<span class="tab-count">2</span></a>
   <a href="claim-9-history.html"
      hx-get="/claims/9/tab/history/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">History</a>
@@ -110,10 +111,10 @@
   <div class="card">
     <h3>Vehicle &amp; driver</h3>
     <dl class="kv">
-      <dt>Registration</dt><dd>ECB-407</dd>
-      <dt>Make / model</dt><dd>Toyota Prius+</dd>
-      <dt>Driver</dt><dd>Amy Farrugia</dd>
-      <dt>Phone</dt><dd>+356 7949484</dd>
+      <dt>Registration</dt><dd>ECB-101</dd>
+      <dt>Make / model</dt><dd>Toyota Corolla Hybrid</dd>
+      <dt>Driver</dt><dd>Maria Vella</dd>
+      <dt>Phone</dt><dd>+356 7962396</dd>
       <dt>Email</dt><dd>—</dd>
     </dl>
   </div>
@@ -122,33 +123,69 @@
     <h3>Accident</h3>
     <dl class="kv">
       <dt>Date &amp; time</dt>
-      <dd>27 Mar 2026 at 19:00</dd>
-      <dt>Location</dt><dd>Tower Road, Sliema</dd>
-      <dt>Police report</dt><dd>—</dd>
-      <dt>Fault</dt><dd>Shared / knock for knock</dd>
+      <dd>25 Apr 2026 at 18:59</dd>
+      <dt>Location</dt><dd>Aldo Moro Road, Marsa</dd>
+      <dt>Report type</dt><dd>RAR (police report)</dd>
+      <dt>Report ref</dt><dd>—</dd>
+      <dt>Fault (OI / TP)</dt><dd>Shared / knock for knock</dd>
+      <dt>Drivable?</dt>
+      <dd>Yes</dd>
     </dl>
   </div>
 
   <div class="card">
     <h3>Third party</h3>
     <dl class="kv">
-      <dt>Name</dt><dd>John Smith</dd>
-      <dt>Phone</dt><dd>—</dd>
-      <dt>Vehicle</dt><dd>BMW 320i — ABC-123</dd>
-      <dt>Insurer</dt><dd>Atlas Insurance</dd>
+      <dt>Reg no</dt><dd>BDX363</dd>
+      <dt>Vehicle make</dt><dd>Peugeot 208</dd>
+      <dt>Driver</dt><dd>John Smith · +356 9941811</dd>
+      <dt>Owner</dt><dd>—</dd>
+      <dt>Insurance</dt><dd>Atlas Insurance</dd>
+      <dt>TP claim no</dt><dd>—</dd>
     </dl>
   </div>
+
+  
 
   <div class="card">
     <h3>Insurance &amp; record</h3>
     <dl class="kv">
-      <dt>Insurer</dt><dd>Atlas Insurance</dd>
-      <dt>Policy number</dt><dd>POL-722985</dd>
-      <dt>Excess</dt><dd>€250.00</dd>
+      <dt>Our insurer</dt><dd>Atlas Insurance</dd>
+      <dt>Policy number</dt><dd>POL-675565</dd>
+      <dt>Insurer claim no</dt><dd>—</dd>
+      <dt>Excess</dt><dd>€500.00</dd>
+      <dt>Survey in hand?</dt><dd>Yes</dd>
+      <dt>Estimate</dt><dd>€714.00</dd>
       <dt>Created by</dt><dd>Demo Staff</dd>
-      <dt>Created</dt><dd>10 Jul 2026 21:00</dd>
-      <dt>Submitted</dt><dd>10 Jul 2026 21:00</dd>
+      <dt>Created</dt><dd>13 Jul 2026 20:59</dd>
+      <dt>Submitted</dt><dd>not yet submitted</dd>
       
+    </dl>
+  </div>
+</div>
+
+<div class="card mt">
+  <h3>Recovery — claim from third party</h3>
+  <div class="grid grid-2">
+    <dl class="kv">
+      <dt>Bills sent</dt><dd>—</dd>
+      <dt>Invoice no</dt><dd>—</dd>
+      <dt>Labour (net)</dt><dd>—</dd>
+      <dt>Spray + material</dt><dd>—</dd>
+      <dt>Parts</dt><dd>—</dd>
+      <dt>Loss of earnings</dt>
+      <dd>—</dd>
+      <dt>Others</dt><dd>—</dd>
+    </dl>
+    <dl class="kv">
+      <dt>Total claim</dt><dd><strong>€0.00</strong></dd>
+      <dt>Settlement</dt><dd>—</dd>
+      <dt>Amount paid</dt><dd>—</dd>
+      <dt>Offset</dt><dd>—</dd>
+      <dt>Outstanding</dt>
+      <dd><strong >€0.00</strong></dd>
+      <dt>Next action</dt><dd>—</dd>
+      <dt>Chase on</dt><dd>—</dd>
     </dl>
   </div>
 </div>

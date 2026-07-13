@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "FZwtK40XF7IY8utgVDUJN5Bh85D3v1UB7mFr1D0960YMQPmv7oouiLZHyqV0jpDH"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
+<body hx-headers='{"X-CSRFToken": "HbKL2DXvhmDtCrg2H6nmOauyo5iEiJruCCv0vZO30tQr9K4UYjyqQMfTtQrwIrGL"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview with demo data — search, auto-save and uploads need the Django server running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -52,7 +52,7 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="FZwtK40XF7IY8utgVDUJN5Bh85D3v1UB7mFr1D0960YMQPmv7oouiLZHyqV0jpDH">
+  <input type="hidden" name="csrfmiddlewaretoken" value="HbKL2DXvhmDtCrg2H6nmOauyo5iEiJruCCv0vZO30tQr9K4UYjyqQMfTtQrwIrGL">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
@@ -76,7 +76,7 @@
 
       <div class="field ">
   <label for="id_acquired_on">Acquired on</label>
-  <input type="date" name="acquired_on" value="01/05/2024" id="id_acquired_on">
+  <input type="date" name="acquired_on" value="04/05/2024" id="id_acquired_on">
   
 </div>
 
@@ -87,7 +87,7 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_insurance_due">Insurance renewal</label>
-  <input type="date" name="insurance_due" value="17/11/2026" id="id_insurance_due">
+  <input type="date" name="insurance_due" value="20/11/2026" id="id_insurance_due">
   
 </div>
 
@@ -120,17 +120,38 @@
         <tbody>
           
           <tr>
+            <td><a href="claim-11.html">CLM-2026-0011</a></td>
+            <td><span class="badge closed">Closed</span></td>
+            <td>01 Jun 2026</td>
+            <td>Luca Grech</td>
+          </tr>
+          
+          <tr>
             <td><a href="claim-10.html">CLM-2026-0010</a></td>
-            <td><span class="badge draft">Draft</span></td>
-            <td>10 May 2026</td>
-            <td>Josef Camilleri</td>
+            <td><span class="badge awaiting_insurer">Awaiting insurer</span></td>
+            <td>25 May 2026</td>
+            <td>Maria Vella</td>
           </tr>
           
           <tr>
             <td><a href="claim-4.html">CLM-2026-0004</a></td>
-            <td><span class="badge draft">Draft</span></td>
-            <td>04 May 2026</td>
-            <td>Amy Farrugia</td>
+            <td><span class="badge closed">Closed</span></td>
+            <td>10 Apr 2026</td>
+            <td>Luca Grech</td>
+          </tr>
+          
+          <tr>
+            <td><a href="claim-3.html">CLM-2026-0003</a></td>
+            <td><span class="badge settled">Settled</span></td>
+            <td>16 Apr 2026</td>
+            <td>Josef Camilleri</td>
+          </tr>
+          
+          <tr>
+            <td><a href="claim-2.html">CLM-2026-0002</a></td>
+            <td><span class="badge open">Open</span></td>
+            <td>01 Jul 2026</td>
+            <td>Karl Borg</td>
           </tr>
           
         </tbody>
@@ -143,14 +164,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/5/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="FZwtK40XF7IY8utgVDUJN5Bh85D3v1UB7mFr1D0960YMQPmv7oouiLZHyqV0jpDH">
+      <input type="hidden" name="csrfmiddlewaretoken" value="HbKL2DXvhmDtCrg2H6nmOauyo5iEiJruCCv0vZO30tQr9K4UYjyqQMfTtQrwIrGL">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
     <form method="post" action="/vehicles/5/delete/"
           onsubmit="return confirm('Delete ECB-512 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="FZwtK40XF7IY8utgVDUJN5Bh85D3v1UB7mFr1D0960YMQPmv7oouiLZHyqV0jpDH">
+      <input type="hidden" name="csrfmiddlewaretoken" value="HbKL2DXvhmDtCrg2H6nmOauyo5iEiJruCCv0vZO30tQr9K4UYjyqQMfTtQrwIrGL">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>

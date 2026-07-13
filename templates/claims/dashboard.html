@@ -35,7 +35,34 @@
     <div class="label">Billing outstanding</div>
     <div class="value">€{{ stats.billing_outstanding|floatformat:2|intcomma }}</div>
   </div>
+  <div class="stat">
+    <div class="label">O/S balance recovery</div>
+    <div class="value {% if stats.recovery_outstanding %}alert{% endif %}">€{{ stats.recovery_outstanding|floatformat:2|intcomma }}</div>
+  </div>
 </div>
+
+{% if chasers %}
+<div class="card" style="margin-bottom:1.25rem">
+  <h2>To chase — urgent &amp; due this week</h2>
+  <div class="table-wrap">
+    <table class="list">
+      <thead><tr><th>Chase on</th><th>Ref</th><th>Our reg</th><th>TP reg</th><th>Next action</th><th class="right">Outstanding</th></tr></thead>
+      <tbody>
+        {% for c in chasers %}
+        <tr>
+          <td>{{ c.chase_on|date:"d M Y"|default:"—" }}{% if c.urgent %} <span class="badge overdue">URGENT</span>{% endif %}</td>
+          <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
+          <td>{{ c.vehicle_registration|default:"—" }}</td>
+          <td>{{ c.third_party_registration|default:"—" }}</td>
+          <td>{{ c.next_action|default:"—" }}</td>
+          <td class="right">€{{ c.outstanding_amount|floatformat:2|intcomma }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
 
 <div class="grid grid-2">
   <div class="card">
