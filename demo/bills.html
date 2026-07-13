@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "szLopBS6qCYFhPdjk8XXeOH6ziyKqMBLZi1Pdglmryk4RrBkIbbxIgfURUuzibST"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "Ea9TQutoAZt23xm2JO71ThxPd2pb0xtPv8kMtHjbKk12DeHAHpU9gdpnxOmCa64v"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -62,6 +62,55 @@
   </div>
   <a href="/claims/bills/?month=2026-07&format=csv" class="btn btn-primary">⬇ Download CSV (Excel)</a>
 </div>
+
+
+<div class="card" style="margin-bottom:1rem">
+  <h2>Totals by insurer — July 2026</h2>
+  <div class="table-wrap">
+    <table class="list" style="max-width:640px">
+      <thead>
+        <tr><th>Insurer</th><th class="right">Bills</th><th class="right">Total claim</th><th class="right">Amount paid</th><th class="right">Outstanding</th></tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>Elmo Insurance</td>
+          <td class="right">1</td>
+          <td class="right">€1215.40</td>
+          <td class="right">€200.00</td>
+          <td class="right">€1015.40</td>
+        </tr>
+        
+        <tr>
+          <td>GasanMamo</td>
+          <td class="right">1</td>
+          <td class="right">€570.00</td>
+          <td class="right">€240.00</td>
+          <td class="right">€330.00</td>
+        </tr>
+        
+        <tr>
+          <td>Mapfre Middlesea</td>
+          <td class="right">1</td>
+          <td class="right">€1043.81</td>
+          <td class="right">€0.00</td>
+          <td class="right">€1043.81</td>
+        </tr>
+        
+      </tbody>
+      <tfoot>
+        <tr class="summary-total">
+          <td class="right"><strong>Grand total</strong></td>
+          <td class="right"><strong>3</strong></td>
+          <td class="right"><strong>€2829.21</strong></td>
+          <td class="right"><strong>€440.00</strong></td>
+          <td class="right"><strong>€2389.21</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
 
 <div class="card">
   <form class="toolbar" method="get">

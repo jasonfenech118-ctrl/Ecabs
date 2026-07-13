@@ -9,6 +9,39 @@
   <a href="{% url 'bills_report' %}?month={{ month_str }}&format=csv" class="btn btn-primary">⬇ Download CSV (Excel)</a>
 </div>
 
+{% if groups %}
+<div class="card" style="margin-bottom:1rem">
+  <h2>Totals by insurer — {{ label }}</h2>
+  <div class="table-wrap">
+    <table class="list" style="max-width:640px">
+      <thead>
+        <tr><th>Insurer</th><th class="right">Bills</th><th class="right">Total claim</th><th class="right">Amount paid</th><th class="right">Outstanding</th></tr>
+      </thead>
+      <tbody>
+        {% for g in groups %}
+        <tr>
+          <td>{{ g.insurer }}</td>
+          <td class="right">{{ g.rows|length }}</td>
+          <td class="right">€{{ g.total_claim|floatformat:2 }}</td>
+          <td class="right">€{{ g.total_paid|floatformat:2 }}</td>
+          <td class="right">€{{ g.total_out|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr class="summary-total">
+          <td class="right"><strong>Grand total</strong></td>
+          <td class="right"><strong>{{ claims|length }}</strong></td>
+          <td class="right"><strong>€{{ total_claim|floatformat:2 }}</strong></td>
+          <td class="right"><strong>€{{ total_paid|floatformat:2 }}</strong></td>
+          <td class="right"><strong>€{{ total_out|floatformat:2 }}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+{% endif %}
+
 <div class="card">
   <form class="toolbar" method="get">
     <label class="row" style="gap:.5rem">
