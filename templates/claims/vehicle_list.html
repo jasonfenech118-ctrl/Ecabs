@@ -6,7 +6,10 @@
     <h1>Vehicles</h1>
     <div class="sub">Fleet register with insurance renewal reminders</div>
   </div>
-  <a href="{% url 'vehicle_add' %}" class="btn btn-primary">+ Add vehicle</a>
+  <div class="row">
+    <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+    <a href="{% url 'vehicle_add' %}" class="btn btn-primary">+ Add vehicle</a>
+  </div>
 </div>
 
 {% if compliance_due %}

@@ -6,7 +6,10 @@
     <h1>Claims</h1>
     <div class="sub">Search by reference, vehicle, driver, third party, policy or location</div>
   </div>
-  <a href="{% url 'claim_new' %}" class="btn btn-primary">+ New claim</a>
+  <div class="row">
+    <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+    <a href="{% url 'claim_new' %}" class="btn btn-primary">+ New claim</a>
+  </div>
 </div>
 
 <div class="card">
