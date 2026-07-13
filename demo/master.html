@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Master sheet — Vai Drive Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css?v=2">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "yikQseZNqP9wouYVN5SeA6PBiNOvAVfAJuZFfneuXxMBaFe6qh7YvteCdblGl8hp"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive" class="brand-logo">
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a href="dashboard.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="master.html" class="active">
+        <span class="nav-icon">▥</span> Master sheet
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Vai Drive Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="page-head">
+  <div>
+    <h1>Master sheet</h1>
+    <div class="sub">Every claim, every column — like the old spreadsheet, but always up to date</div>
+  </div>
+  <a href="/claims/master/csv/?q=&status=" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+</div>
+
+<div class="card">
+  <form class="toolbar" method="get">
+    <input type="search" name="q" value="" placeholder="Search claims…" aria-label="Search claims">
+    <select name="status" aria-label="Filter by status" style="max-width:220px" onchange="this.form.submit()">
+      <option value="">All statuses</option>
+      
+        <option value="draft" >Draft</option>
+      
+        <option value="open" >Open</option>
+      
+        <option value="awaiting_survey" >Awaiting survey</option>
+      
+        <option value="awaiting_insurer" >Awaiting insurer</option>
+      
+        <option value="settled" >Settled</option>
+      
+        <option value="closed" >Closed</option>
+      
+        <option value="rejected" >Rejected</option>
+      
+    </select>
+    <button type="submit" class="btn">Search</button>
+  </form>
+
+  <div class="table-wrap master-wrap">
+    <table class="list master">
+      <thead>
+        <tr><th>Ref</th><th>Status</th><th>Urgent</th><th>Date of acc</th><th>Our reg</th><th>Driver name</th><th>TP reg</th><th>TP vehicle make</th><th>TP driver name</th><th>TP driver contact</th><th>TP owner name</th><th>TP owner contact</th><th>TP insurance</th><th>TP claim no</th><th>TP2 reg</th><th>TP2 owner</th><th>TP2 contact</th><th>TP2 insurance</th><th>Report type</th><th>Report ref</th><th>Fault (OI/TP)</th><th>Drivable</th><th>Survey in hand</th><th>Estimate</th><th>Our insurer</th><th>Policy no</th><th>Insurer claim no</th><th>Bills sent</th><th>Invoice no</th><th>Labour (net)</th><th>Spray + material</th><th>Parts</th><th>LOE days</th><th>LOE daily</th><th>Loss of earnings</th><th>Others</th><th>TOTAL claim</th><th>Settlement</th><th>Amount paid</th><th>Offset</th><th>Outstanding</th><th>Next action</th><th>Chase on</th><th>Created</th></tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          
+            
+              <td class="sticky-col"><a href="claim-1.html">CLM-2026-0001</a></td>
+            
+          
+            
+              <td>Draft</td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td>Not yet determined</td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td>No</td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td>0.00</td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td>0.00</td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td>0.00</td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td></td>
+            
+          
+            
+              <td>13/07/2026</td>
+            
+          
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">
+    Scroll sideways for all columns — the reference column stays put. The CSV download opens directly in Excel.
+  </p>
+</div>
+
+  </main>
+</div>
+
+</body>
+</html>

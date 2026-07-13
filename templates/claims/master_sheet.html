@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Master sheet — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Master sheet</h1>
+    <div class="sub">Every claim, every column — like the old spreadsheet, but always up to date</div>
+  </div>
+  <a href="{% url 'master_sheet_csv' %}?q={{ q|urlencode }}&status={{ status|urlencode }}" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+</div>
+
+<div class="card">
+  <form class="toolbar" method="get">
+    <input type="search" name="q" value="{{ q }}" placeholder="Search claims…" aria-label="Search claims">
+    <select name="status" aria-label="Filter by status" style="max-width:220px" onchange="this.form.submit()">
+      <option value="">All statuses</option>
+      {% for value, label in statuses %}
+        <option value="{{ value }}" {% if value == status %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn">Search</button>
+  </form>
+
+  <div class="table-wrap master-wrap">
+    <table class="list master">
+      <thead>
+        <tr>{% for h in headers %}<th>{{ h }}</th>{% endfor %}</tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          {% for cell in row.cells %}
+            {% if forloop.first %}
+              <td class="sticky-col"><a href="{% url 'claim_detail' row.pk %}">{{ cell }}</a></td>
+            {% else %}
+              <td>{{ cell|default:"" }}</td>
+            {% endif %}
+          {% endfor %}
+        </tr>
+        {% empty %}
+        <tr><td colspan="{{ headers|length }}" class="empty">No claims match.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">
+    Scroll sideways for all columns — the reference column stays put. The CSV download opens directly in Excel.
+  </p>
+</div>
+{% endblock %}

@@ -230,6 +230,16 @@ details.inline-form[open] summary::before { content: "− "; }
 .tile-alert { border-color: var(--danger); }
 .tile-alert .tile-sub { color: var(--danger); font-weight: 600; }
 
+/* --- Master sheet --------------------------------------------------------------- */
+.master-wrap { max-height: 70vh; overflow: auto; }
+table.master th, table.master td { white-space: nowrap; font-size: .82rem; padding: .45rem .6rem; }
+table.master thead th { position: sticky; top: 0; background: var(--surface); z-index: 2; }
+table.master .sticky-col, table.master thead th:first-child {
+  position: sticky; left: 0; background: var(--surface); z-index: 1;
+  border-right: 1px solid var(--border);
+}
+table.master thead th:first-child { z-index: 3; }
+
 .login-card { width: 360px; }
 .login-card h1 { text-align: center; margin-bottom: 1rem; }
 .login-logo { width: 100%; border-radius: 10px; margin-bottom: .75rem; display: block; }

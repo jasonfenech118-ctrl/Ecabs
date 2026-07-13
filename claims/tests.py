@@ -199,6 +199,52 @@ class ViewTests(TestCase):
         sync_auto_reminders()
         self.assertEqual(Reminder.objects.filter(is_auto=True).count(), 2)
 
+    def test_master_sheet_and_csv(self):
+        from decimal import Decimal
+
+        claim = Claim.objects.create(
+            vehicle_registration="ECB-850",
+            labour_amount=Decimal("100.00"),
+            parts_amount=Decimal("50.00"),
+            created_by=self.user,
+        )
+        response = self.client.get(reverse("master_sheet"))
+        self.assertContains(response, claim.reference)
+        self.assertContains(response, "150.00")  # computed total
+
+        response = self.client.get(reverse("master_sheet_csv"))
+        self.assertEqual(response["Content-Type"], "text/csv")
+        body = response.content.decode()
+        self.assertIn("TOTAL claim", body)
+        self.assertIn(claim.reference, body)
+        self.assertIn("150.00", body)
+
+    def test_standalone_entry_forms(self):
+        claim = Claim.objects.create(created_by=self.user)
+        for kind in ("photo", "survey", "email", "billing"):
+            response = self.client.get(reverse("record_add", args=[kind]))
+            self.assertEqual(response.status_code, 200, kind)
+
+        response = self.client.post(
+            reverse("record_add", args=["survey"]),
+            {"claim": claim.pk, "surveyor_name": "P. Attard", "status": "requested"},
+        )
+        self.assertRedirects(response, reverse("claim_tab", args=[claim.pk, "surveys"]))
+        self.assertEqual(claim.surveys.count(), 1)
+
+        response = self.client.post(
+            reverse("record_add", args=["billing"]),
+            {
+                "claim": claim.pk,
+                "description": "Towing",
+                "category": "towing",
+                "amount": "120.00",
+                "status": "pending",
+            },
+        )
+        self.assertRedirects(response, reverse("claim_tab", args=[claim.pk, "billing"]))
+        self.assertEqual(claim.billing_items.count(), 1)
+
     def test_login_required(self):
         self.client.logout()
         response = self.client.get(reverse("dashboard"))

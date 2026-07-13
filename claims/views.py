@@ -9,12 +9,16 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .forms import (
+    BillingEntryForm,
     BillingItemForm,
     ClaimForm,
+    EmailEntryForm,
     EmailLogForm,
     GlobalReminderForm,
+    PhotoEntryForm,
     PhotoUploadForm,
     ReminderForm,
+    SurveyEntryForm,
     SurveyForm,
     VehicleForm,
 )
@@ -501,3 +505,156 @@ def vehicle_delete(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk)
     vehicle.delete()
     return redirect("vehicle_list")
+
+
+# --- Standalone data entry forms -------------------------------------------------
+
+ENTRY_FORMS = {
+    "photo": {"form": PhotoEntryForm, "title": "Add photo / document", "tab": "photos"},
+    "survey": {"form": SurveyEntryForm, "title": "Add survey", "tab": "surveys"},
+    "email": {"form": EmailEntryForm, "title": "Log an email", "tab": "emails"},
+    "billing": {"form": BillingEntryForm, "title": "Add billing item", "tab": "billing"},
+}
+
+
+@login_required
+def record_add(request, kind):
+    """One full-page form per record type, with a claim picker."""
+    spec = ENTRY_FORMS.get(kind)
+    if spec is None:
+        return HttpResponseBadRequest("Unknown form")
+    form_class = spec["form"]
+    if request.method == "POST":
+        form = form_class(request.POST, request.FILES)
+        if form.is_valid():
+            if kind == "photo":
+                claim = form.cleaned_data["claim"]
+                f = form.cleaned_data["file"]
+                photo = AccidentPhoto(
+                    claim=claim,
+                    caption=form.cleaned_data["caption"],
+                    uploaded_by=request.user,
+                    file_name=f.name,
+                    mime_type=f.content_type or "",
+                    size_bytes=f.size,
+                )
+                if drive.drive_enabled():
+                    stored = drive.upload_file(claim, f)
+                    photo.drive_file_id = stored.drive_file_id
+                    photo.web_view_link = stored.web_view_link
+                else:
+                    photo.local_file = f
+                photo.save()
+            else:
+                obj = form.save(commit=False)
+                if kind == "email":
+                    obj.logged_by = request.user
+                obj.save()
+                claim = obj.claim
+            return redirect("claim_tab", pk=claim.pk, tab=spec["tab"])
+    else:
+        form = form_class(initial={"claim": request.GET.get("claim")})
+    return render(
+        request,
+        "claims/record_form.html",
+        {"form": form, "title": spec["title"], "kind": kind},
+    )
+
+
+# --- Master sheet -----------------------------------------------------------------
+
+def _fmt_date(d):
+    return d.strftime("%d/%m/%Y") if d else ""
+
+
+def _fmt_money(v):
+    return f"{v:.2f}" if v is not None else ""
+
+
+def _fmt_bool(v):
+    if v is None:
+        return ""
+    return "Yes" if v else "No"
+
+
+MASTER_COLUMNS = [
+    ("Ref", lambda c: c.reference),
+    ("Status", lambda c: c.get_status_display()),
+    ("Urgent", lambda c: "URGENT" if c.urgent else ""),
+    ("Date of acc", lambda c: _fmt_date(c.accident_date)),
+    ("Our reg", lambda c: c.vehicle_registration),
+    ("Driver name", lambda c: c.driver_name),
+    ("TP reg", lambda c: c.third_party_registration),
+    ("TP vehicle make", lambda c: c.third_party_vehicle),
+    ("TP driver name", lambda c: c.third_party_name),
+    ("TP driver contact", lambda c: c.third_party_phone),
+    ("TP owner name", lambda c: c.third_party_owner_name),
+    ("TP owner contact", lambda c: c.third_party_owner_phone),
+    ("TP insurance", lambda c: c.third_party_insurer),
+    ("TP claim no", lambda c: c.tp_claim_number),
+    ("TP2 reg", lambda c: c.tp2_registration),
+    ("TP2 owner", lambda c: c.tp2_owner_name),
+    ("TP2 contact", lambda c: c.tp2_owner_phone),
+    ("TP2 insurance", lambda c: c.tp2_insurer),
+    ("Report type", lambda c: c.get_report_type_display() if c.report_type else ""),
+    ("Report ref", lambda c: c.police_report_number),
+    ("Fault (OI/TP)", lambda c: c.get_fault_display()),
+    ("Drivable", lambda c: _fmt_bool(c.drivable)),
+    ("Survey in hand", lambda c: _fmt_bool(c.survey_in_hand)),
+    ("Estimate", lambda c: _fmt_money(c.estimate_amount)),
+    ("Our insurer", lambda c: c.insurer),
+    ("Policy no", lambda c: c.policy_number),
+    ("Insurer claim no", lambda c: c.insurer_claim_number),
+    ("Bills sent", lambda c: _fmt_date(c.bills_sent_on)),
+    ("Invoice no", lambda c: c.invoice_number),
+    ("Labour (net)", lambda c: _fmt_money(c.labour_amount)),
+    ("Spray + material", lambda c: _fmt_money(c.spray_material_amount)),
+    ("Parts", lambda c: _fmt_money(c.parts_amount)),
+    ("LOE days", lambda c: c.loe_days or ""),
+    ("LOE daily", lambda c: _fmt_money(c.loe_daily_rate)),
+    ("Loss of earnings", lambda c: _fmt_money(c.loss_of_earnings)),
+    ("Others", lambda c: _fmt_money(c.others_amount)),
+    ("TOTAL claim", lambda c: _fmt_money(c.total_claim_amount)),
+    ("Settlement", lambda c: _fmt_money(c.settlement_amount)),
+    ("Amount paid", lambda c: _fmt_money(c.amount_paid)),
+    ("Offset", lambda c: _fmt_money(c.offset_amount)),
+    ("Outstanding", lambda c: _fmt_money(c.outstanding_amount)),
+    ("Next action", lambda c: c.next_action),
+    ("Chase on", lambda c: _fmt_date(c.chase_on)),
+    ("Created", lambda c: _fmt_date(c.created_at.date())),
+]
+
+
+@login_required
+def master_sheet(request):
+    claims = _filtered_claims(request)
+    headers = [h for h, _ in MASTER_COLUMNS]
+    rows = [
+        {"pk": c.pk, "cells": [fn(c) for _, fn in MASTER_COLUMNS]} for c in claims
+    ]
+    return render(
+        request,
+        "claims/master_sheet.html",
+        {
+            "headers": headers,
+            "rows": rows,
+            "statuses": Claim.Status.choices,
+            "q": request.GET.get("q", ""),
+            "status": request.GET.get("status", ""),
+        },
+    )
+
+
+@login_required
+def master_sheet_csv(request):
+    import csv
+
+    from django.http import HttpResponse
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="master-sheet.csv"'
+    writer = csv.writer(response)
+    writer.writerow([h for h, _ in MASTER_COLUMNS])
+    for claim in _filtered_claims(request):
+        writer.writerow([fn(claim) for _, fn in MASTER_COLUMNS])
+    return response

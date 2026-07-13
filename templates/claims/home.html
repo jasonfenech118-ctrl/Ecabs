@@ -39,6 +39,12 @@
     <span class="tile-sub">Totals, chasers &amp; renewals</span>
   </a>
 
+  <a href="{% url 'master_sheet' %}" class="tile">
+    <span class="tile-icon">▥</span>
+    <span class="tile-title">Master sheet</span>
+    <span class="tile-sub">All claims, all columns — CSV export</span>
+  </a>
+
   {% if user.is_staff %}
   <a href="{% url 'admin:index' %}" class="tile">
     <span class="tile-icon">⚙</span>
@@ -46,5 +52,29 @@
     <span class="tile-sub">Users &amp; advanced settings</span>
   </a>
   {% endif %}
+</div>
+
+<h2 style="text-align:center; margin:2rem 0 1rem">Quick entry</h2>
+<div class="tile-grid">
+  <a href="{% url 'record_add' 'photo' %}" class="tile">
+    <span class="tile-icon">🖼</span>
+    <span class="tile-title">Add photo</span>
+    <span class="tile-sub">Accident photo or document</span>
+  </a>
+  <a href="{% url 'record_add' 'email' %}" class="tile">
+    <span class="tile-icon">✉</span>
+    <span class="tile-title">Log email</span>
+    <span class="tile-sub">Record correspondence</span>
+  </a>
+  <a href="{% url 'record_add' 'survey' %}" class="tile">
+    <span class="tile-icon">🔍</span>
+    <span class="tile-title">Add survey</span>
+    <span class="tile-sub">Surveyor visit or report</span>
+  </a>
+  <a href="{% url 'record_add' 'billing' %}" class="tile">
+    <span class="tile-icon">€</span>
+    <span class="tile-title">Add billing</span>
+    <span class="tile-sub">Repair, towing, fees…</span>
+  </a>
 </div>
 {% endblock %}

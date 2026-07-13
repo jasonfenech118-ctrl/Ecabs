@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ title }}</h1>
+    <div class="sub">Pick the claim it belongs to, fill in the details, save</div>
+  </div>
+  <a href="{% url 'home' %}" class="btn">← Home</a>
+</div>
+
+<form method="post" {% if kind == "photo" %}enctype="multipart/form-data"{% endif %} class="card" style="max-width:820px">
+  {% csrf_token %}
+  <div class="form-grid">
+    {% for field in form %}
+      {% include "claims/partials/field.html" with field=field %}
+    {% endfor %}
+  </div>
+  <button type="submit" class="btn btn-primary mt">Save</button>
+</form>
+{% endblock %}

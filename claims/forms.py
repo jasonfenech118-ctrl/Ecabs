@@ -104,6 +104,21 @@ class PhotoUploadForm(forms.Form):
     caption = forms.CharField(max_length=255, required=False)
 
 
+def _claim_field():
+    return forms.ModelChoiceField(
+        queryset=Claim.objects.order_by("-created_at"),
+        label="Claim",
+        help_text="Which claim does this belong to?",
+    )
+
+
+class PhotoEntryForm(PhotoUploadForm):
+    """Standalone photo upload with a claim picker."""
+
+    claim = _claim_field()
+    field_order = ["claim", "file", "caption"]
+
+
 class SurveyForm(forms.ModelForm):
     class Meta:
         model = Survey
@@ -159,3 +174,24 @@ class BillingItemForm(forms.ModelForm):
         widgets = {
             "invoice_date": forms.DateInput(attrs={"type": "date"}),
         }
+
+
+class SurveyEntryForm(SurveyForm):
+    """Standalone survey form with a claim picker."""
+
+    class Meta(SurveyForm.Meta):
+        fields = ["claim"] + SurveyForm.Meta.fields
+
+
+class EmailEntryForm(EmailLogForm):
+    """Standalone email log form with a claim picker."""
+
+    class Meta(EmailLogForm.Meta):
+        fields = ["claim"] + EmailLogForm.Meta.fields
+
+
+class BillingEntryForm(BillingItemForm):
+    """Standalone billing item form with a claim picker."""
+
+    class Meta(BillingItemForm.Meta):
+        fields = ["claim"] + BillingItemForm.Meta.fields
