@@ -102,8 +102,8 @@
             <td class="{% if r.is_overdue %}muted{% endif %}">
               {% if r.is_overdue %}<span class="badge overdue">overdue</span>{% else %}{{ r.due_at|naturaltime }}{% endif %}
             </td>
-            <td>{{ r.title }}</td>
-            <td><a href="{% url 'claim_detail' r.claim.pk %}">{{ r.claim.reference }}</a></td>
+            <td>{{ r.title }}{% if r.is_auto %} <span class="badge in">auto</span>{% endif %}</td>
+            <td>{% if r.claim %}<a href="{% url 'claim_detail' r.claim.pk %}">{{ r.claim.reference }}</a>{% else %}<span class="muted">—</span>{% endif %}</td>
             <td class="muted">{% if r.assigned_to %}{{ r.assigned_to.get_full_name|default:r.assigned_to.username }}{% else %}—{% endif %}</td>
           </tr>
           {% empty %}

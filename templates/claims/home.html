@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}eCabs Claims{% endblock %}
+{% block content %}
+<div class="home-hero">
+  <h1>eCabs Claims</h1>
+  <p class="sub">What would you like to do?</p>
+</div>
+
+<div class="tile-grid">
+  <a href="{% url 'claim_new' %}" class="tile tile-primary">
+    <span class="tile-icon">＋</span>
+    <span class="tile-title">New claim</span>
+    <span class="tile-sub">Record an accident — saves as you type</span>
+  </a>
+
+  <a href="{% url 'claim_list' %}" class="tile">
+    <span class="tile-icon">▤</span>
+    <span class="tile-title">Claims</span>
+    <span class="tile-sub">{{ counts.open_claims }} open — search &amp; manage</span>
+  </a>
+
+  <a href="{% url 'reminder_list' %}" class="tile {% if counts.reminders_due %}tile-alert{% endif %}">
+    <span class="tile-icon">◷</span>
+    <span class="tile-title">Reminders</span>
+    <span class="tile-sub">{% if counts.reminders_due %}{{ counts.reminders_due }} due now{% else %}nothing due{% endif %}</span>
+  </a>
+
+  <a href="{% url 'vehicle_list' %}" class="tile">
+    <span class="tile-icon">⬖</span>
+    <span class="tile-title">Vehicles</span>
+    <span class="tile-sub">{{ counts.vehicles }} active in fleet</span>
+  </a>
+
+  <a href="{% url 'dashboard' %}" class="tile">
+    <span class="tile-icon">▦</span>
+    <span class="tile-title">Dashboard</span>
+    <span class="tile-sub">Totals, chasers &amp; renewals</span>
+  </a>
+
+  {% if user.is_staff %}
+  <a href="{% url 'admin:index' %}" class="tile">
+    <span class="tile-icon">⚙</span>
+    <span class="tile-title">Admin</span>
+    <span class="tile-sub">Users &amp; advanced settings</span>
+  </a>
+  {% endif %}
+</div>
+{% endblock %}

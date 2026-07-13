@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "uQR2QecYoyJCHZVmUcybpQF4xmF9Vjn5xwszt2B75vuKGriWoZhzoH5q2NFXqLuz"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "ALjU24KeTZjvYQoEddkV0kYGLUa5TRRC3lFqkhIVxbkrA9d1VXxNllKZQ7uq6dS9"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -18,6 +18,9 @@
     </div>
     <nav>
       <a href="index.html" class="">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a href="dashboard.html" class="">
         <span class="nav-icon">▦</span> Dashboard
       </a>
       <a href="claims.html" class="">
@@ -41,9 +44,60 @@
 <div class="page-head">
   <div>
     <h1>Reminders</h1>
-    <div class="sub">Follow-ups across all claims</div>
+    <div class="sub">Your own reminders plus automatic ones for insurance renewals and chase dates</div>
   </div>
 </div>
+
+<details class="inline-form" >
+  <summary>Add reminder</summary>
+  <form method="post" action="/reminders/add/" class="card">
+    <input type="hidden" name="csrfmiddlewaretoken" value="ALjU24KeTZjvYQoEddkV0kYGLUa5TRRC3lFqkhIVxbkrA9d1VXxNllKZQ7uq6dS9">
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_title">Title</label>
+  <input type="text" name="title" maxlength="200" required id="id_title">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_due_at">Due at</label>
+  <input type="datetime-local" name="due_at" required id="id_due_at">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_claim">Claim</label>
+  <select name="claim" id="id_claim">
+  <option value="" selected>— not linked to a claim —</option>
+
+  <option value="1">CLM-2026-0001 — no vehicle</option>
+
+</select>
+  
+</div>
+
+      <div class="field ">
+  <label for="id_assigned_to">Assigned to</label>
+  <select name="assigned_to" id="id_assigned_to">
+  <option value="" selected>---------</option>
+
+  <option value="1">preview</option>
+
+</select>
+  
+</div>
+
+      <div class="field span-2">
+  <label for="id_notes">Notes</label>
+  <textarea name="notes" cols="40" rows="2" id="id_notes">
+</textarea>
+  
+</div>
+
+    </div>
+    <button type="submit" class="btn btn-primary mt">Save reminder</button>
+  </form>
+</details>
 
 <div class="card">
   <form class="toolbar"

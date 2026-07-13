@@ -4,9 +4,24 @@
 <div class="page-head">
   <div>
     <h1>Reminders</h1>
-    <div class="sub">Follow-ups across all claims</div>
+    <div class="sub">Your own reminders plus automatic ones for insurance renewals and chase dates</div>
   </div>
 </div>
+
+<details class="inline-form" {% if form_open %}open{% endif %}>
+  <summary>Add reminder</summary>
+  <form method="post" action="{% url 'reminder_create' %}" class="card">
+    {% csrf_token %}
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=reminder_form.title %}
+      {% include "claims/partials/field.html" with field=reminder_form.due_at %}
+      {% include "claims/partials/field.html" with field=reminder_form.claim %}
+      {% include "claims/partials/field.html" with field=reminder_form.assigned_to %}
+      {% include "claims/partials/field.html" with field=reminder_form.notes extra_class="span-2" %}
+    </div>
+    <button type="submit" class="btn btn-primary mt">Save reminder</button>
+  </form>
+</details>
 
 <div class="card">
   <form class="toolbar"

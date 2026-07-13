@@ -84,8 +84,8 @@ class EmailLogAdmin(admin.ModelAdmin):
 
 @admin.register(Reminder)
 class ReminderAdmin(admin.ModelAdmin):
-    list_display = ("title", "claim", "due_at", "assigned_to", "completed_at")
-    list_filter = ("assigned_to",)
+    list_display = ("title", "claim", "due_at", "assigned_to", "is_auto", "completed_at")
+    list_filter = ("assigned_to", "is_auto")
     search_fields = ("title", "claim__reference")
 
 

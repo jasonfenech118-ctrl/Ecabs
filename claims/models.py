@@ -378,10 +378,21 @@ class EmailLog(models.Model):
 
 
 class Reminder(models.Model):
-    claim = models.ForeignKey(Claim, on_delete=models.CASCADE, related_name="reminders")
+    # Optional: reminders can stand alone or be linked to a claim.
+    claim = models.ForeignKey(
+        Claim,
+        on_delete=models.CASCADE,
+        related_name="reminders",
+        null=True,
+        blank=True,
+    )
     title = models.CharField(max_length=200)
     notes = models.TextField(blank=True)
     due_at = models.DateTimeField(db_index=True)
+    # Set for reminders the system generates (insurance renewals, chase
+    # dates). auto_key identifies the source so syncing stays idempotent.
+    is_auto = models.BooleanField(default=False)
+    auto_key = models.CharField(max_length=100, blank=True, default="", db_index=True)
     assigned_to = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,

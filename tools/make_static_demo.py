@@ -41,6 +41,7 @@ BANNER = (
 def build_url_map():
     urls = {
         "/": "index.html",
+        "/dashboard/": "dashboard.html",
         "/claims/": "claims.html",
         "/vehicles/": "vehicles.html",
         "/reminders/": "reminders.html",

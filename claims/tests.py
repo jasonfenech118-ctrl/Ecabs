@@ -159,6 +159,46 @@ class ViewTests(TestCase):
         response = self.client.get(reverse("dashboard"))
         self.assertNotContains(response, "ECB-700")
 
+    def test_home_page_tiles(self):
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "New claim")
+        self.assertContains(response, "Reminders")
+
+    def test_standalone_reminder(self):
+        response = self.client.post(
+            reverse("reminder_create"),
+            {"title": "Call surveyor", "due_at": "2026-08-01T10:00"},
+        )
+        self.assertRedirects(response, reverse("reminder_list"))
+        reminder = Reminder.objects.get(title="Call surveyor")
+        self.assertIsNone(reminder.claim)
+        self.assertFalse(reminder.is_auto)
+
+    def test_auto_reminder_for_insurance_and_chase(self):
+        from .services.auto_reminders import sync_auto_reminders
+
+        today = timezone.localdate()
+        vehicle = Vehicle.objects.create(
+            registration="ECB-810", insurance_due=today + timedelta(days=10)
+        )
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN,
+            chase_on=today + timedelta(days=3),
+            next_action="O/S payment from MSI",
+        )
+        sync_auto_reminders()
+        sync_auto_reminders()  # idempotent — must not duplicate
+        autos = Reminder.objects.filter(is_auto=True)
+        self.assertEqual(autos.count(), 2)
+        self.assertTrue(autos.filter(title__contains="ECB-810", claim__isnull=True).exists())
+        self.assertTrue(autos.filter(claim=claim, title__contains="O/S payment").exists())
+
+        # Date moves on -> stale auto reminder replaced, not duplicated.
+        vehicle.insurance_due = today + timedelta(days=40)
+        vehicle.save()
+        sync_auto_reminders()
+        self.assertEqual(Reminder.objects.filter(is_auto=True).count(), 2)
+
     def test_login_required(self):
         self.client.logout()
         response = self.client.get(reverse("dashboard"))

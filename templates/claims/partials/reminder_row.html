@@ -7,8 +7,11 @@
              {% if r.is_done %}checked{% endif %} aria-label="Mark done">
     </form>
   </td>
-  <td class="{% if r.is_done %}done{% endif %}">{{ r.title }}{% if r.notes %} <span class="muted">— {{ r.notes|truncatechars:60 }}</span>{% endif %}</td>
-  <td><a href="{% url 'claim_detail' r.claim.pk %}">{{ r.claim.reference }}</a></td>
+  <td class="{% if r.is_done %}done{% endif %}">
+    {{ r.title }}{% if r.is_auto %} <span class="badge in">auto</span>{% endif %}
+    {% if r.notes %} <span class="muted">— {{ r.notes|truncatechars:60 }}</span>{% endif %}
+  </td>
+  <td>{% if r.claim %}<a href="{% url 'claim_detail' r.claim.pk %}">{{ r.claim.reference }}</a>{% else %}<span class="muted">—</span>{% endif %}</td>
   <td>
     {% if r.is_overdue %}<span class="badge overdue">overdue</span> {% endif %}
     {{ r.due_at|date:"d M Y H:i" }}

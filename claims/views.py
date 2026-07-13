@@ -12,6 +12,7 @@ from .forms import (
     BillingItemForm,
     ClaimForm,
     EmailLogForm,
+    GlobalReminderForm,
     PhotoUploadForm,
     ReminderForm,
     SurveyForm,
@@ -27,6 +28,7 @@ from .models import (
     Vehicle,
 )
 from .services import drive
+from .services.auto_reminders import sync_auto_reminders
 
 VALID_TABS = {"overview", "photos", "surveys", "emails", "reminders", "billing", "history"}
 
@@ -44,10 +46,32 @@ def _compliance_due(limit=None):
     return items[:limit] if limit else items
 
 
+# --- Home (front page) ---------------------------------------------------------
+
+@login_required
+def home(request):
+    sync_auto_reminders()
+    now = timezone.now()
+    open_statuses = [
+        Claim.Status.OPEN,
+        Claim.Status.AWAITING_SURVEY,
+        Claim.Status.AWAITING_INSURER,
+    ]
+    counts = {
+        "open_claims": Claim.objects.filter(status__in=open_statuses).count(),
+        "reminders_due": Reminder.objects.filter(
+            completed_at__isnull=True, due_at__lte=now + timedelta(days=1)
+        ).count(),
+        "vehicles": Vehicle.objects.filter(status=Vehicle.Status.ACTIVE).count(),
+    }
+    return render(request, "claims/home.html", {"counts": counts})
+
+
 # --- Dashboard ---------------------------------------------------------------
 
 @login_required
 def dashboard(request):
+    sync_auto_reminders()
     now = timezone.now()
     claims = Claim.objects.all()
     open_statuses = [
@@ -362,13 +386,38 @@ def reminder_toggle(request, pk):
 
 @login_required
 def reminder_list(request):
+    sync_auto_reminders()
     show = request.GET.get("show", "open")
     qs = Reminder.objects.select_related("claim", "assigned_to")
     if show == "open":
         qs = qs.filter(completed_at__isnull=True)
-    context = {"reminders": qs[:200], "show": show}
+    context = {
+        "reminders": qs[:200],
+        "show": show,
+        "reminder_form": GlobalReminderForm(),
+    }
     if request.headers.get("HX-Request"):
         return render(request, "claims/partials/reminder_rows.html", context)
+    return render(request, "claims/reminder_list.html", context)
+
+
+@login_required
+@require_POST
+def reminder_create(request):
+    """Standalone reminder from the Reminders page (claim link optional)."""
+    form = GlobalReminderForm(request.POST)
+    if form.is_valid():
+        form.save()
+        return redirect("reminder_list")
+    qs = Reminder.objects.select_related("claim", "assigned_to").filter(
+        completed_at__isnull=True
+    )
+    context = {
+        "reminders": qs[:200],
+        "show": "open",
+        "reminder_form": form,
+        "form_open": True,
+    }
     return render(request, "claims/reminder_list.html", context)
 
 

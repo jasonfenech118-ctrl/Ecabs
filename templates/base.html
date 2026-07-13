@@ -17,6 +17,9 @@
       <span class="brand-name">eCabs Claims</span>
     </div>
     <nav>
+      <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+        <span class="nav-icon">⌂</span> Home
+      </a>
       <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
         <span class="nav-icon">▦</span> Dashboard
       </a>

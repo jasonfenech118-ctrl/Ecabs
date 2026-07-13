@@ -134,6 +134,24 @@ class ReminderForm(forms.ModelForm):
         }
 
 
+class GlobalReminderForm(forms.ModelForm):
+    """Reminder from the Reminders page — optionally linked to a claim."""
+
+    class Meta:
+        model = Reminder
+        fields = ["title", "due_at", "claim", "assigned_to", "notes"]
+        widgets = {
+            "due_at": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "notes": forms.Textarea(attrs={"rows": 2}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["claim"].required = False
+        self.fields["claim"].empty_label = "— not linked to a claim —"
+        self.fields["claim"].queryset = Claim.objects.order_by("-created_at")
+
+
 class BillingItemForm(forms.ModelForm):
     class Meta:
         model = BillingItem

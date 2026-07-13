@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard — eCabs Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "2poGzfNwCCjHuhHC6TXwmrPreGEXSgv9vZKcRsLdgOkD6AwZODaoHsBKjTYi5CwG"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">eC</span>
+      <span class="brand-name">eCabs Claims</span>
+    </div>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a href="dashboard.html" class="active">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">eCabs Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="page-head">
+  <div>
+    <h1>Dashboard</h1>
+    <div class="sub">Claims overview and what needs attention</div>
+  </div>
+  <a href="claim-1-edit.html" class="btn btn-primary">+ New claim</a>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <div class="label">Open claims</div>
+    <div class="value">0</div>
+  </div>
+  <div class="stat">
+    <div class="label">Drafts</div>
+    <div class="value">1</div>
+  </div>
+  <div class="stat">
+    <div class="label">New this month</div>
+    <div class="value">1</div>
+  </div>
+  <div class="stat">
+    <div class="label">Overdue reminders</div>
+    <div class="value ">0</div>
+  </div>
+  <div class="stat">
+    <div class="label">Renewals due</div>
+    <div class="value ">0</div>
+  </div>
+  <div class="stat">
+    <div class="label">Billing outstanding</div>
+    <div class="value">€0.00</div>
+  </div>
+  <div class="stat">
+    <div class="label">O/S balance recovery</div>
+    <div class="value ">€0.00</div>
+  </div>
+</div>
+
+
+
+<div class="grid grid-2">
+  <div class="card">
+    <h2>Recent claims</h2>
+    <div class="table-wrap">
+      <table class="list">
+        <thead>
+          <tr><th>Ref</th><th>Vehicle</th><th>Driver</th><th>Status</th><th>Created</th></tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td><a href="claim-1.html">CLM-2026-0001</a></td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="badge draft">Draft</span></td>
+            <td class="muted">today</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Reminders due in the next 7 days</h2>
+    <div class="table-wrap">
+      <table class="list">
+        <thead>
+          <tr><th>Due</th><th>Reminder</th><th>Claim</th><th>Assigned</th></tr>
+        </thead>
+        <tbody>
+          
+          <tr><td colspan="4" class="empty">Nothing due — all clear.</td></tr>
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="card mt">
+  <h2>Claims by status</h2>
+  <div class="row">
+    
+      <span class="badge draft">Draft: 1</span>
+    
+  </div>
+</div>
+
+
+  </main>
+</div>
+
+</body>
+</html>
