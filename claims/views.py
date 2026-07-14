@@ -48,6 +48,22 @@ FINISHED_STATUSES = [
 ]
 
 
+# Sort options for the claim sheets. Each: key, label, DB ordering.
+CLAIM_SORTS = [
+    ("date_desc", "Accident date — newest first", ["-accident_date", "-created_at"]),
+    ("date_asc", "Accident date — oldest first", ["accident_date", "created_at"]),
+    ("case", "Case number", ["case_number"]),
+    ("reg", "Our reg (A–Z)", ["vehicle_registration"]),
+    ("status", "Status", ["status", "-accident_date"]),
+]
+
+
+def _apply_sort(qs, request):
+    key = request.GET.get("sort", "date_desc")
+    order = next((o for k, _, o in CLAIM_SORTS if k == key), CLAIM_SORTS[0][2])
+    return qs.order_by(*order), key
+
+
 def _compliance_due(limit=None):
     """Upcoming/overdue VRT, licence and insurance renewals for active vehicles,
     soonest first."""
@@ -178,10 +194,13 @@ def _filtered_claims(request):
 
 @login_required
 def claim_list(request):
-    claims = _filtered_claims(request)[:100]
+    qs, sort = _apply_sort(_filtered_claims(request), request)
+    claims = qs[:100]
     context = {
         "claims": claims,
         "statuses": Claim.Status.choices,
+        "sorts": CLAIM_SORTS,
+        "sort": sort,
         "q": request.GET.get("q", ""),
         "status": request.GET.get("status", ""),
     }
@@ -209,11 +228,18 @@ def claim_group(request, group):
         subtitle = "Open claims past their chase date"
     else:
         return HttpResponseBadRequest("Unknown group")
-    claims = qs.order_by("-accident_date", "-created_at")
+    claims, sort = _apply_sort(qs, request)
     return render(
         request,
         "claims/claim_group.html",
-        {"claims": claims, "title": title, "subtitle": subtitle, "group": group},
+        {
+            "claims": claims,
+            "title": title,
+            "subtitle": subtitle,
+            "group": group,
+            "sorts": CLAIM_SORTS,
+            "sort": sort,
+        },
     )
 
 

@@ -258,6 +258,30 @@ class ViewTests(TestCase):
             self.client.get(reverse("claim_group", args=["bogus"])).status_code, 400
         )
 
+    def test_claim_sheets_sort(self):
+        from datetime import date
+
+        old = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-OLD",
+            accident_date=date(2025, 1, 5), created_by=self.user,
+        )
+        new = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-NEW",
+            accident_date=date(2026, 6, 20), created_by=self.user,
+        )
+        body = self.client.get(
+            reverse("claim_group", args=["open"]), {"sort": "date_asc"}
+        ).content.decode()
+        self.assertLess(body.index("ECB-OLD"), body.index("ECB-NEW"))
+        body = self.client.get(
+            reverse("claim_group", args=["open"]), {"sort": "date_desc"}
+        ).content.decode()
+        self.assertLess(body.index("ECB-NEW"), body.index("ECB-OLD"))
+        # Claims list accepts the sort param too.
+        self.assertEqual(
+            self.client.get(reverse("claim_list"), {"sort": "case"}).status_code, 200
+        )
+
     def test_case_number_assigned_on_submit(self):
         a = Claim.objects.create()
         self.assertIsNone(a.case_number)

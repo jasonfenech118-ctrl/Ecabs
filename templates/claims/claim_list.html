@@ -25,6 +25,11 @@
         <option value="{{ value }}" {% if value == status %}selected{% endif %}>{{ label }}</option>
       {% endfor %}
     </select>
+    <select name="sort" aria-label="Sort by" style="max-width:240px" title="Sort by">
+      {% for key, label, _order in sorts %}
+        <option value="{{ key }}" {% if key == sort %}selected{% endif %}>Sort: {{ label }}</option>
+      {% endfor %}
+    </select>
   </form>
 
   <div class="table-wrap">
