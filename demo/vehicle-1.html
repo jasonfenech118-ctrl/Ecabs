@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ECB-101 — vehicle</title>
+  <title>ECB101 — vehicle</title>
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "eIr0H7wygsgKrN72EtuDLXoHc2gqCymL6hwVoHnyNv3pB1ikSLejSWihhl5647oS"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "UOfI15fqBGaasq0eFceefxYEV8Ph7VOwfQboRTe8TmrSk7WktEUZrf8Y837RXsdC"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -57,7 +57,7 @@
     
 <div class="page-head">
   <div>
-    <h1>ECB-101 <span class="muted">Toyota Corolla Hybrid</span></h1>
+    <h1>ECB101 <span class="muted">Toyota Corolla Hybrid</span></h1>
     <div class="sub">
       <span class="badge open">Active</span>
       
@@ -67,13 +67,13 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="eIr0H7wygsgKrN72EtuDLXoHc2gqCymL6hwVoHnyNv3pB1ikSLejSWihhl5647oS">
+  <input type="hidden" name="csrfmiddlewaretoken" value="UOfI15fqBGaasq0eFceefxYEV8Ph7VOwfQboRTe8TmrSk7WktEUZrf8Y837RXsdC">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
       <div class="field ">
   <label for="id_registration">Registration</label>
-  <input type="text" name="registration" value="ECB-101" maxlength="20" required id="id_registration">
+  <input type="text" name="registration" value="ECB101" maxlength="20" required id="id_registration">
   
 </div>
 
@@ -158,14 +158,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/1/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="eIr0H7wygsgKrN72EtuDLXoHc2gqCymL6hwVoHnyNv3pB1ikSLejSWihhl5647oS">
+      <input type="hidden" name="csrfmiddlewaretoken" value="UOfI15fqBGaasq0eFceefxYEV8Ph7VOwfQboRTe8TmrSk7WktEUZrf8Y837RXsdC">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
     <form method="post" action="/vehicles/1/delete/"
-          onsubmit="return confirm('Delete ECB-101 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="eIr0H7wygsgKrN72EtuDLXoHc2gqCymL6hwVoHnyNv3pB1ikSLejSWihhl5647oS">
+          onsubmit="return confirm('Delete ECB101 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
+      <input type="hidden" name="csrfmiddlewaretoken" value="UOfI15fqBGaasq0eFceefxYEV8Ph7VOwfQboRTe8TmrSk7WktEUZrf8Y837RXsdC">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>

@@ -106,7 +106,7 @@ def seed_samples(user):
         return
     today = timezone.localdate()
     Vehicle.objects.get_or_create(
-        registration="ECB-101",
+        registration="ECB101",
         defaults={"make_model": "Toyota Corolla Hybrid", "insurance_due": today + timedelta(days=18)},
     )
 
@@ -114,7 +114,7 @@ def seed_samples(user):
     F = Claim.Fault
     samples = [
         # Open
-        dict(status=S.OPEN, vehicle_registration="ECB-101",
+        dict(status=S.OPEN, vehicle_registration="ECB101",
              accident_date=date(2026, 6, 12), accident_location="Tower Road, Sliema",
              third_party_registration="ABC123", third_party_name="John Smith",
              third_party_insurer="Mapfre Middlesea", insurer="Atlas Insurance",
@@ -122,7 +122,7 @@ def seed_samples(user):
              next_action="Awaiting survey report",
              bills_sent_on=today, invoice_number="100050",
              labour_amount=Decimal("243.60"), parts_amount=Decimal("800.21")),
-        dict(status=S.AWAITING_INSURER, vehicle_registration="ECB-214",
+        dict(status=S.AWAITING_INSURER, vehicle_registration="ECB214",
              accident_date=date(2026, 6, 3), accident_location="Aldo Moro Road, Marsa",
              third_party_registration="DEF456", third_party_insurer="GasanMamo",
              insurer="Mapfre Middlesea", fault=F.THIRD_PARTY,
@@ -130,12 +130,12 @@ def seed_samples(user):
              bills_sent_on=today.replace(day=1), invoice_number="100052",
              amount_paid=Decimal("240.00"),
              labour_amount=Decimal("150.00"), parts_amount=Decimal("420.00")),
-        dict(status=S.AWAITING_SURVEY, vehicle_registration="ECB-330",
+        dict(status=S.AWAITING_SURVEY, vehicle_registration="ECB330",
              accident_date=date(2026, 5, 21), accident_location="Coast Road, Bahar ic-Caghaq",
              insurer="Atlas Insurance", fault=F.UNKNOWN,
              next_action="Book surveyor"),
         # Overdue (open, chase date passed)
-        dict(status=S.OPEN, vehicle_registration="ECB-407",
+        dict(status=S.OPEN, vehicle_registration="ECB407",
              accident_date=date(2026, 5, 8), accident_location="Valletta Road, Luqa",
              third_party_registration="GHI789", third_party_name="Peter Borg",
              third_party_insurer="Elmo Insurance", insurer="GasanMamo",
@@ -144,20 +144,20 @@ def seed_samples(user):
              bills_sent_on=today.replace(day=1) + timedelta(days=6), invoice_number="100055",
              labour_amount=Decimal("310.00"), parts_amount=Decimal("905.40"),
              amount_paid=Decimal("200.00")),
-        dict(status=S.AWAITING_INSURER, vehicle_registration="ECB-512",
+        dict(status=S.AWAITING_INSURER, vehicle_registration="ECB512",
              accident_date=date(2026, 4, 27), accident_location="St Anne Street, Floriana",
              third_party_registration="JKL012", insurer="Atlas Insurance",
              fault=F.THIRD_PARTY, chase_on=today - timedelta(days=11),
              next_action="O/S payment from Argus", parts_amount=Decimal("640.00")),
         # Closed / finished
-        dict(status=S.SETTLED, vehicle_registration="ECB-101",
+        dict(status=S.SETTLED, vehicle_registration="ECB101",
              accident_date=date(2026, 3, 14), insurer="Mapfre Middlesea",
              fault=F.THIRD_PARTY, settlement_amount=Decimal("1250.00"),
              amount_paid=Decimal("1250.00"), labour_amount=Decimal("500.00"),
              parts_amount=Decimal("750.00")),
-        dict(status=S.CLOSED, vehicle_registration="ECB-214",
+        dict(status=S.CLOSED, vehicle_registration="ECB214",
              accident_date=date(2026, 2, 2), insurer="Atlas Insurance", fault=F.OUR_DRIVER),
-        dict(status=S.REJECTED, vehicle_registration="ECB-330",
+        dict(status=S.REJECTED, vehicle_registration="ECB330",
              accident_date=date(2025, 12, 19), insurer="GasanMamo", fault=F.SHARED,
              next_action="Rejected — no third-party details"),
     ]
