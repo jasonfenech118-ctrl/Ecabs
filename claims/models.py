@@ -142,7 +142,7 @@ class Claim(models.Model):
     )
 
     # Third party
-    third_party_registration = models.CharField("TP reg no", max_length=20, blank=True)
+    third_party_registration = models.CharField("TP number plate", max_length=20, blank=True)
     third_party_vehicle = models.CharField("TP vehicle make", max_length=100, blank=True)
     third_party_name = models.CharField("TP driver name", max_length=100, blank=True)
     third_party_phone = models.CharField("TP driver contact no", max_length=30, blank=True)
@@ -154,7 +154,7 @@ class Claim(models.Model):
     tp_claim_number = models.CharField("TP claim no", max_length=50, blank=True)
 
     # Second third party (multi-vehicle accidents)
-    tp2_registration = models.CharField("TP2 reg no", max_length=20, blank=True)
+    tp2_registration = models.CharField("TP2 number plate", max_length=20, blank=True)
     tp2_owner_name = models.CharField("TP2 owner name", max_length=100, blank=True)
     tp2_owner_phone = models.CharField("TP2 contact no", max_length=30, blank=True)
     tp2_insurer = models.CharField("TP2 insurance", max_length=100, blank=True)
