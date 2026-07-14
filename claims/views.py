@@ -768,15 +768,28 @@ def master_sheet(request):
 def bills_report(request):
     """Bills sent in a chosen month (defaults to the current month), with totals
     and a CSV export — the monthly billing worksheet."""
+    import calendar
     from datetime import date
 
     today = timezone.localdate()
-    month_str = request.GET.get("month", today.strftime("%Y-%m"))
+    # Accept separate m + y from the dropdowns, or a legacy month=YYYY-MM
+    # (still used by the CSV download link).
+    sel_month = request.GET.get("m")
+    sel_year = request.GET.get("y")
+    raw_month = request.GET.get("month", "")
     try:
-        year, month = (int(x) for x in month_str.split("-"))
+        if sel_month and sel_year:
+            year, month = int(sel_year), int(sel_month)
+        elif raw_month:
+            year, month = (int(x) for x in raw_month.split("-"))
+        else:
+            year, month = today.year, today.month
         date(year, month, 1)
     except (ValueError, TypeError):
-        year, month, month_str = today.year, today.month, today.strftime("%Y-%m")
+        year, month = today.year, today.month
+    month_str = f"{year:04d}-{month:02d}"
+    months = [(i, calendar.month_name[i]) for i in range(1, 13)]
+    years = list(range(today.year - 6, today.year + 2))
 
     claims = list(
         Claim.objects.filter(
@@ -842,6 +855,10 @@ def bills_report(request):
             "claims": claims,
             "month_str": month_str,
             "label": label,
+            "months": months,
+            "years": years,
+            "sel_month": month,
+            "sel_year": year,
             "total_claim": total_claim,
             "total_paid": total_paid,
             "total_out": total_out,
