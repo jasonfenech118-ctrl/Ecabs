@@ -206,6 +206,9 @@ details.inline-form summary { cursor: pointer; font-weight: 600; color: var(--ac
 details.inline-form summary::before { content: "+ "; }
 details.inline-form[open] summary::before { content: "− "; }
 
+/* --- Charts -------------------------------------------------------------------- */
+.chart-box { position: relative; height: 260px; }
+
 /* --- Home page tiles ---------------------------------------------------------- */
 .home-hero { text-align: center; margin: 2rem 0 1.5rem; }
 .home-hero h1 { font-size: 1.8rem; }

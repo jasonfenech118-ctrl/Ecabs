@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "KFSryvXlnl0Ez1mYpTG5LNwSIMFtCJ12SvQiepnsJO3zzDIj191eo3dMUMx3Vssv"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "TtJxPx8LSIGGyqALU5x9VmO1973A2aeKMVFYSBhavCUt3DiY7CXfsPwSqB1n6nSf"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -39,6 +39,9 @@
       </a>
       <a href="bills.html" class="active">
         <span class="nav-icon">€</span> Bills this month
+      </a>
+      <a href="data.html" class="">
+        <span class="nav-icon">◔</span> Data
       </a>
       <a href="vehicles.html" class="">
         <span class="nav-icon">⬖</span> Vehicles
@@ -169,6 +172,7 @@
         
       </select>
     </label>
+    <input type="hidden" name="pending_insurer" value="">
     <button type="submit" class="btn btn-primary">Show</button>
   </form>
 
@@ -257,6 +261,91 @@
     </table>
   </div>
   <p class="muted" style="font-size:.8rem; margin-bottom:0">Grouped by the insurer the bill was sent to, with a subtotal each.</p>
+</div>
+
+<div class="card" style="margin-top:1.25rem">
+  <h2>Bills pending</h2>
+  <div class="sub muted" style="margin-bottom:.75rem">Bills already sent that are still outstanding, across all months</div>
+  <form class="toolbar" method="get">
+    <input type="hidden" name="m" value="7">
+    <input type="hidden" name="y" value="2026">
+    <label class="row" style="gap:.4rem">
+      <span class="muted">Insurance</span>
+      <select name="pending_insurer" style="max-width:260px" onchange="this.form.submit()">
+        <option value="">All insurers</option>
+        
+          <option value="Elmo Insurance" >Elmo Insurance</option>
+        
+          <option value="GasanMamo" >GasanMamo</option>
+        
+          <option value="Mapfre Middlesea" >Mapfre Middlesea</option>
+        
+      </select>
+    </label>
+    <noscript><button type="submit" class="btn">Show</button></noscript>
+  </form>
+
+  <div class="table-wrap">
+    <table class="list">
+      <thead>
+        <tr>
+          <th>Case no</th><th>Ref</th><th>Our reg</th><th>TP plate</th><th>Insurer</th>
+          <th>Bill sent</th><th>Invoice no</th>
+          <th class="right">Total claim</th><th class="right">Amount paid</th><th class="right">Outstanding</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr class="clickable" onclick="window.location='/claims/4/'">
+          <td>VD-00004</td>
+          <td><a href="claim-4.html">CLM-2026-0004</a></td>
+          <td>ECB407</td>
+          <td>GHI789</td>
+          <td>Elmo Insurance</td>
+          <td>07 Jul 2026</td>
+          <td>100055</td>
+          <td class="right">€1215.40</td>
+          <td class="right">€200.00</td>
+          <td class="right">€1015.40</td>
+        </tr>
+        
+        <tr class="clickable" onclick="window.location='/claims/2/'">
+          <td>VD-00002</td>
+          <td><a href="claim-2.html">CLM-2026-0002</a></td>
+          <td>ECB214</td>
+          <td>DEF456</td>
+          <td>GasanMamo</td>
+          <td>01 Jul 2026</td>
+          <td>100052</td>
+          <td class="right">€570.00</td>
+          <td class="right">€240.00</td>
+          <td class="right">€330.00</td>
+        </tr>
+        
+        <tr class="clickable" onclick="window.location='/claims/1/'">
+          <td>VD-00001</td>
+          <td><a href="claim-1.html">CLM-2026-0001</a></td>
+          <td>ECB101</td>
+          <td>ABC123</td>
+          <td>Mapfre Middlesea</td>
+          <td>14 Jul 2026</td>
+          <td>100050</td>
+          <td class="right">€1043.81</td>
+          <td class="right"></td>
+          <td class="right">€1043.81</td>
+        </tr>
+        
+      </tbody>
+      
+      <tfoot>
+        <tr class="summary-total">
+          <td colspan="9" class="right"><strong>3 pending — outstanding</strong></td>
+          <td class="right"><strong>€2389.21</strong></td>
+        </tr>
+      </tfoot>
+      
+    </table>
+  </div>
 </div>
 
   </main>

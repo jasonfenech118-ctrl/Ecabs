@@ -258,6 +258,39 @@ class ViewTests(TestCase):
             self.client.get(reverse("claim_group", args=["bogus"])).status_code, 400
         )
 
+    def test_data_dashboard(self):
+        Claim.objects.create(status=Claim.Status.OPEN, created_by=self.user)
+        r = self.client.get(reverse("data_dashboard"))
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "Claims by status")
+        self.assertContains(r, "chartData")
+
+    def test_bills_pending_by_insurer(self):
+        from datetime import date
+        from decimal import Decimal
+
+        # Billed, still outstanding
+        Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-PEND",
+            third_party_insurer="Elmo Insurance",
+            bills_sent_on=date(2026, 5, 1), parts_amount=Decimal("500.00"),
+            created_by=self.user,
+        )
+        # Billed but fully paid -> not pending
+        Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-PAID",
+            third_party_insurer="Atlas",
+            bills_sent_on=date(2026, 5, 1), parts_amount=Decimal("100.00"),
+            amount_paid=Decimal("100.00"), created_by=self.user,
+        )
+        r = self.client.get(reverse("bills_report"))
+        self.assertContains(r, "Bills pending")
+        self.assertContains(r, "ECB-PEND")
+        self.assertNotContains(r, "ECB-PAID")
+        # Filter by a different insurer hides it
+        r = self.client.get(reverse("bills_report"), {"pending_insurer": "GasanMamo"})
+        self.assertNotContains(r, "ECB-PEND")
+
     def test_claim_sheets_sort(self):
         from datetime import date
 

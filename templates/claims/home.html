@@ -45,6 +45,12 @@
     <span class="tile-sub">All claims, all columns — CSV export</span>
   </a>
 
+  <a href="{% url 'data_dashboard' %}" class="tile">
+    <span class="tile-icon">◔</span>
+    <span class="tile-title">Data</span>
+    <span class="tile-sub">Charts &amp; breakdowns</span>
+  </a>
+
   {% if user.is_staff %}
   <a href="{% url 'admin:index' %}" class="tile">
     <span class="tile-icon">⚙</span>

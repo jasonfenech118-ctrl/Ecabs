@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data — Vai Drive Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css?v=2">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "RbO38C9OTTMvccbYnvrq9FlOwtdW4XwGKDKubGidwN0iHpTbA2RwG83FNXbJ8aab"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" title="Home">
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
+    </a>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a href="dashboard.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="claims-open.html" class="nav-sub ">
+        <span class="nav-icon">●</span> Open claims
+      </a>
+      <a href="claims-closed.html" class="nav-sub ">
+        <span class="nav-icon">○</span> Closed claims
+      </a>
+      <a href="claims-overdue.html" class="nav-sub ">
+        <span class="nav-icon">▲</span> Overdue
+      </a>
+      <a href="master.html" class="">
+        <span class="nav-icon">▥</span> Master sheet
+      </a>
+      <a href="bills.html" class="">
+        <span class="nav-icon">€</span> Bills this month
+      </a>
+      <a href="data.html" class="active">
+        <span class="nav-icon">◔</span> Data
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Vai Drive Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="page-head">
+  <div>
+    <h1>Data</h1>
+    <div class="sub">Charts across all claims — status, recovery and insurers</div>
+  </div>
+  <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="label">Total claims</div><div class="value">9</div></div>
+  <div class="stat"><div class="label">Open</div><div class="value">5</div></div>
+  <div class="stat"><div class="label">Overdue</div><div class="value alert">2</div></div>
+  <div class="stat"><div class="label">Outstanding recovery</div><div class="value">€3,029.21</div></div>
+</div>
+
+<div class="grid grid-2">
+  <div class="card"><h2>Claims by status</h2><div class="chart-box"><canvas id="c-status"></canvas></div></div>
+  <div class="card"><h2>Open vs Closed vs Draft</h2><div class="chart-box"><canvas id="c-lifecycle"></canvas></div></div>
+  <div class="card"><h2>Needs attention</h2><div class="chart-box"><canvas id="c-attention"></canvas></div></div>
+  <div class="card"><h2>Claims by insurer</h2><div class="chart-box"><canvas id="c-insurer"></canvas></div></div>
+  <div class="card"><h2>Outstanding recovery by insurer (€)</h2><div class="chart-box"><canvas id="c-outstanding"></canvas></div></div>
+  <div class="card"><h2>Claims by accident month</h2><div class="chart-box"><canvas id="c-month"></canvas></div></div>
+</div>
+
+<script id="chartData" type="application/json">{"by_status": {"labels": ["Draft", "Open", "Awaiting survey", "Awaiting insurer", "Settled", "Closed", "Rejected"], "data": [1, 2, 1, 2, 1, 1, 1]}, "lifecycle": {"labels": ["Open", "Closed", "Draft"], "data": [5, 3, 1]}, "attention": {"labels": ["Open", "Overdue", "Urgent"], "data": [5, 2, 1]}, "by_insurer": {"labels": ["(none)", "Elmo Insurance", "GasanMamo", "Mapfre Middlesea"], "data": [6, 1, 1, 1]}, "outstanding_by_insurer": {"labels": ["Mapfre Middlesea", "Elmo Insurance", "(none)", "GasanMamo"], "data": [1043.81, 1015.4, 640.0, 330.0]}, "by_month": {"labels": ["Aug 25", "Sep 25", "Oct 25", "Nov 25", "Dec 25", "Jan 26", "Feb 26", "Mar 26", "Apr 26", "May 26", "Jun 26", "Jul 26"], "data": [0, 0, 0, 0, 1, 0, 1, 1, 1, 2, 2, 0]}}</script>
+<script src="../static/js/chart.min.js"></script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById('chartData').textContent);
+  // Validated categorical palette (light surface) — fixed order.
+  var CAT = ['#2a78d6','#1baf7a','#eda100','#008300','#4a3aa7','#e34948','#e87ba4','#eb6834'];
+  var BLUE = '#2a78d6';
+  var INK = '#52514e', GRID = '#e1e0d9';
+  if (typeof Chart === 'undefined') return;
+  Chart.defaults.font.family = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  Chart.defaults.color = INK;
+
+  function doughnut(id, d, colors) {
+    new Chart(document.getElementById(id), {
+      type: 'doughnut',
+      data: { labels: d.labels, datasets: [{ data: d.data, backgroundColor: colors,
+        borderColor: '#fff', borderWidth: 2 }] },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'right', labels: { boxWidth: 12 } } } }
+    });
+  }
+  function bar(id, d, opts) {
+    opts = opts || {};
+    new Chart(document.getElementById(id), {
+      type: 'bar',
+      data: { labels: d.labels, datasets: [{ data: d.data, label: opts.label || 'Claims',
+        backgroundColor: BLUE, borderRadius: 4, maxBarThickness: 46 }] },
+      options: { responsive: true, maintainAspectRatio: false,
+        indexAxis: opts.horizontal ? 'y' : 'x',
+        plugins: { legend: { display: false } },
+        scales: { x: { grid: { color: GRID }, ticks: { precision: opts.money ? undefined : 0 } },
+                  y: { grid: { color: GRID }, ticks: { precision: opts.money ? undefined : 0 } } } }
+    });
+  }
+
+  doughnut('c-status', D.by_status, CAT);
+  doughnut('c-lifecycle', D.lifecycle, ['#1baf7a', '#898781', '#2a78d6']);
+  bar('c-attention', D.attention);
+  bar('c-insurer', D.by_insurer, { horizontal: true });
+  bar('c-outstanding', D.outstanding_by_insurer, { horizontal: true, money: true, label: '€ outstanding' });
+  bar('c-month', D.by_month);
+})();
+</script>
+
+  </main>
+</div>
+
+</body>
+</html>

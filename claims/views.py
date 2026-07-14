@@ -765,6 +765,95 @@ def master_sheet(request):
 
 
 @login_required
+def data_dashboard(request):
+    """Charts: claims by status, lifecycle, by insurer, outstanding, by month."""
+    from calendar import month_abbr
+    from collections import Counter, defaultdict
+
+    claims = list(Claim.objects.all())
+    today = timezone.localdate()
+
+    # KPIs
+    open_n = sum(1 for c in claims if c.status in OPEN_STATUSES)
+    closed_n = sum(1 for c in claims if c.status in FINISHED_STATUSES)
+    draft_n = sum(1 for c in claims if c.status == Claim.Status.DRAFT)
+    overdue_n = sum(
+        1 for c in claims
+        if c.status in OPEN_STATUSES and c.chase_on and c.chase_on < today
+    )
+    urgent_n = sum(1 for c in claims if c.urgent)
+    outstanding = sum((c.outstanding_amount for c in claims), Decimal("0"))
+
+    # Claims by status
+    status_counts = Counter(c.status for c in claims)
+    by_status = {
+        "labels": [label for _v, label in Claim.Status.choices],
+        "data": [status_counts.get(v, 0) for v, _l in Claim.Status.choices],
+    }
+
+    # Lifecycle (mutually exclusive)
+    lifecycle = {
+        "labels": ["Open", "Closed", "Draft"],
+        "data": [open_n, closed_n, draft_n],
+    }
+
+    # Attention
+    attention = {
+        "labels": ["Open", "Overdue", "Urgent"],
+        "data": [open_n, overdue_n, urgent_n],
+    }
+
+    # By third-party insurer (count) and outstanding (€), top insurers
+    ins_count = Counter(c.third_party_insurer or "(none)" for c in claims)
+    ins_out = defaultdict(Decimal)
+    for c in claims:
+        ins_out[c.third_party_insurer or "(none)"] += c.outstanding_amount
+    top_ins = [name for name, _ in ins_count.most_common(8)]
+    by_insurer = {"labels": top_ins, "data": [ins_count[n] for n in top_ins]}
+    out_ins_sorted = sorted(ins_out.items(), key=lambda kv: kv[1], reverse=True)[:8]
+    outstanding_by_insurer = {
+        "labels": [n for n, _ in out_ins_sorted],
+        "data": [float(v) for _n, v in out_ins_sorted],
+    }
+
+    # Claims by accident month — last 12 months
+    months = []
+    y, m = today.year, today.month
+    seq = []
+    for _ in range(12):
+        seq.append((y, m))
+        m -= 1
+        if m == 0:
+            m, y = 12, y - 1
+    seq.reverse()
+    mcount = Counter(
+        (c.accident_date.year, c.accident_date.month) for c in claims if c.accident_date
+    )
+    by_month = {
+        "labels": [f"{month_abbr[mm]} {yy % 100:02d}" for yy, mm in seq],
+        "data": [mcount.get((yy, mm), 0) for yy, mm in seq],
+    }
+
+    chart_data = {
+        "by_status": by_status,
+        "lifecycle": lifecycle,
+        "attention": attention,
+        "by_insurer": by_insurer,
+        "outstanding_by_insurer": outstanding_by_insurer,
+        "by_month": by_month,
+    }
+    kpis = {
+        "total": len(claims),
+        "open": open_n,
+        "overdue": overdue_n,
+        "outstanding": outstanding,
+    }
+    return render(
+        request, "claims/data.html", {"chart_data": chart_data, "kpis": kpis}
+    )
+
+
+@login_required
 def bills_report(request):
     """Bills sent in a chosen month (defaults to the current month), with totals
     and a CSV export — the monthly billing worksheet."""
@@ -847,6 +936,27 @@ def bills_report(request):
         )
         return response
 
+    # --- Bills pending: billed claims still outstanding, choosable by insurer ---
+    pending_all = [
+        c for c in Claim.objects.filter(bills_sent_on__isnull=False)
+        if c.outstanding_amount > 0
+    ]
+    pending_insurers = sorted(
+        {c.third_party_insurer or "(no insurer recorded)" for c in pending_all}
+    )
+    pending_insurer = request.GET.get("pending_insurer", "")
+    if pending_insurer:
+        pending = [
+            c for c in pending_all
+            if (c.third_party_insurer or "(no insurer recorded)") == pending_insurer
+        ]
+    else:
+        pending = pending_all
+    pending.sort(
+        key=lambda c: (c.third_party_insurer or "", c.bills_sent_on or date.min)
+    )
+    pending_total = sum((c.outstanding_amount for c in pending), Decimal("0"))
+
     return render(
         request,
         "claims/bills_report.html",
@@ -862,6 +972,10 @@ def bills_report(request):
             "total_claim": total_claim,
             "total_paid": total_paid,
             "total_out": total_out,
+            "pending": pending,
+            "pending_insurers": pending_insurers,
+            "pending_insurer": pending_insurer,
+            "pending_total": pending_total,
         },
     )
 

@@ -48,6 +48,7 @@ def build_url_map():
         "/claims/group/overdue/": "claims-overdue.html",
         "/claims/master/": "master.html",
         "/claims/bills/": "bills.html",
+        "/data/": "data.html",
         "/vehicles/add/": "vehicle-add.html",
         "/add/photo/": "add-photo.html",
         "/add/email/": "add-email.html",
