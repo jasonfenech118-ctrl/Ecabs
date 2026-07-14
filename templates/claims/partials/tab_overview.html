@@ -2,7 +2,7 @@
   <div class="card">
     <h3>Vehicle</h3>
     <dl class="kv">
-      <dt>Registration</dt><dd>{{ claim.vehicle_registration|default:"—" }}</dd>
+      <dt>Registration</dt><dd>{{ claim.vehicle_registration }}</dd>
       <dt>Make / model</dt><dd>{{ claim.vehicle_make_model|default:"—" }}</dd>
     </dl>
   </div>
@@ -24,7 +24,7 @@
   <div class="card">
     <h3>Third party</h3>
     <dl class="kv">
-      <dt>Number plate</dt><dd>{{ claim.third_party_registration|default:"—" }}</dd>
+      <dt>Number plate</dt><dd>{{ claim.third_party_registration }}</dd>
       <dt>Vehicle make</dt><dd>{{ claim.third_party_vehicle|default:"—" }}</dd>
       <dt>Driver</dt><dd>{{ claim.third_party_name|default:"—" }}{% if claim.third_party_phone %} · {{ claim.third_party_phone }}{% endif %}</dd>
       <dt>Owner</dt><dd>{{ claim.third_party_owner_name|default:"—" }}{% if claim.third_party_owner_phone %} · {{ claim.third_party_owner_phone }}{% endif %}</dd>
@@ -37,7 +37,7 @@
   <div class="card">
     <h3>Second third party</h3>
     <dl class="kv">
-      <dt>Number plate</dt><dd>{{ claim.tp2_registration|default:"—" }}</dd>
+      <dt>Number plate</dt><dd>{{ claim.tp2_registration }}</dd>
       <dt>Owner</dt><dd>{{ claim.tp2_owner_name|default:"—" }}{% if claim.tp2_owner_phone %} · {{ claim.tp2_owner_phone }}{% endif %}</dd>
       <dt>Insurance</dt><dd>{{ claim.tp2_insurer|default:"—" }}</dd>
     </dl>

@@ -79,7 +79,7 @@
           {% for c in recent_claims %}
           <tr>
             <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
-            <td>{{ c.vehicle_registration|default:"—" }}</td>
+            <td>{{ c.vehicle_registration }}</td>
             <td><span class="badge {{ c.status }}">{{ c.get_status_display }}</span></td>
             <td class="muted">{{ c.created_at|naturalday }}</td>
           </tr>

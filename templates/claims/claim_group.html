@@ -29,8 +29,8 @@
           <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
           <td><span class="badge {{ c.status }}">{{ c.get_status_display }}</span>{% if c.urgent %} <span class="badge overdue">URGENT</span>{% endif %}</td>
           <td>{{ c.accident_date|date:"d M Y"|default:"—" }}</td>
-          <td>{{ c.vehicle_registration|default:"—" }}</td>
-          <td>{{ c.third_party_registration|default:"—" }}</td>
+          <td>{{ c.vehicle_registration }}</td>
+          <td>{{ c.third_party_registration }}</td>
           <td>{{ c.insurer|default:"—" }}</td>
           <td>
             {% if c.chase_on %}

@@ -70,7 +70,7 @@
           <tr class="clickable" onclick="window.location='{{ c.get_absolute_url }}'">
             <td>{{ c.case_ref|default:"—" }}</td>
             <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
-            <td>{{ c.vehicle_registration|default:"—" }}</td>
+            <td>{{ c.vehicle_registration }}</td>
             <td>{{ c.bills_sent_on|date:"d M Y" }}</td>
             <td>{{ c.invoice_number|default:"—" }}</td>
             <td class="right">€{{ c.total_claim_amount|floatformat:2 }}</td>
