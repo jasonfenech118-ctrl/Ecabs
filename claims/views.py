@@ -158,7 +158,6 @@ def _filtered_claims(request):
         qs = qs.filter(
             Q(reference__icontains=q)
             | Q(vehicle_registration__icontains=q)
-            | Q(driver_name__icontains=q)
             | Q(third_party_name__icontains=q)
             | Q(third_party_registration__icontains=q)
             | Q(third_party_owner_name__icontains=q)
@@ -620,7 +619,6 @@ MASTER_COLUMNS = [
     ("Urgent", lambda c: "URGENT" if c.urgent else ""),
     ("Date of acc", lambda c: _fmt_date(c.accident_date)),
     ("Our reg", lambda c: c.vehicle_registration),
-    ("Driver name", lambda c: c.driver_name),
     ("TP reg", lambda c: c.third_party_registration),
     ("TP vehicle make", lambda c: c.third_party_vehicle),
     ("TP driver name", lambda c: c.third_party_name),

@@ -18,7 +18,7 @@
       <thead>
         <tr>
           <th>Case no</th><th>Ref</th><th>Status</th><th>Accident date</th>
-          <th>Our reg</th><th>Driver</th><th>TP reg</th><th>Insurer</th>
+          <th>Our reg</th><th>TP reg</th><th>Insurer</th>
           <th>Chase on</th><th class="right">Outstanding</th><th>Next action</th>
         </tr>
       </thead>
@@ -30,7 +30,6 @@
           <td><span class="badge {{ c.status }}">{{ c.get_status_display }}</span>{% if c.urgent %} <span class="badge overdue">URGENT</span>{% endif %}</td>
           <td>{{ c.accident_date|date:"d M Y"|default:"—" }}</td>
           <td>{{ c.vehicle_registration|default:"—" }}</td>
-          <td>{{ c.driver_name|default:"—" }}</td>
           <td>{{ c.third_party_registration|default:"—" }}</td>
           <td>{{ c.insurer|default:"—" }}</td>
           <td>
@@ -42,7 +41,7 @@
           <td class="muted">{{ c.next_action|default:"—"|truncatechars:40 }}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="11" class="empty">No {{ title|lower }} right now.</td></tr>
+        <tr><td colspan="10" class="empty">No {{ title|lower }} right now.</td></tr>
         {% endfor %}
       </tbody>
     </table>

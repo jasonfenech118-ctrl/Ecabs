@@ -122,12 +122,9 @@ class Claim(models.Model):
         max_length=20, choices=Status.choices, default=Status.DRAFT, db_index=True
     )
 
-    # Vehicle & driver
+    # Vehicle
     vehicle_registration = models.CharField(max_length=20, blank=True)
     vehicle_make_model = models.CharField(max_length=100, blank=True)
-    driver_name = models.CharField(max_length=100, blank=True)
-    driver_phone = models.CharField(max_length=30, blank=True)
-    driver_email = models.EmailField(blank=True)
 
     # Accident details
     accident_date = models.DateField(null=True, blank=True)

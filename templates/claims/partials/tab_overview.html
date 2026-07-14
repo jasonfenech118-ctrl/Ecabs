@@ -1,12 +1,9 @@
 <div class="grid grid-2">
   <div class="card">
-    <h3>Vehicle &amp; driver</h3>
+    <h3>Vehicle</h3>
     <dl class="kv">
       <dt>Registration</dt><dd>{{ claim.vehicle_registration|default:"—" }}</dd>
       <dt>Make / model</dt><dd>{{ claim.vehicle_make_model|default:"—" }}</dd>
-      <dt>Driver</dt><dd>{{ claim.driver_name|default:"—" }}</dd>
-      <dt>Phone</dt><dd>{{ claim.driver_phone|default:"—" }}</dd>
-      <dt>Email</dt><dd>{{ claim.driver_email|default:"—" }}</dd>
     </dl>
   </div>
 

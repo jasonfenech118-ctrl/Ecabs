@@ -8,7 +8,6 @@
     {% if claim.urgent %}<span class="badge overdue">URGENT</span>{% endif %}
     <span class="muted">
       {{ claim.vehicle_registration|default:"no vehicle" }}
-      {% if claim.driver_name %} · {{ claim.driver_name }}{% endif %}
       {% if claim.accident_date %} · {{ claim.accident_date|date:"d M Y" }}{% endif %}
     </span>
   </div>

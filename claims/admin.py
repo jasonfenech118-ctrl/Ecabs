@@ -53,7 +53,6 @@ class ClaimAdmin(SimpleHistoryAdmin):
         "case_ref",
         "status",
         "vehicle_registration",
-        "driver_name",
         "accident_date",
         "insurer",
         "created_at",
@@ -62,7 +61,6 @@ class ClaimAdmin(SimpleHistoryAdmin):
     search_fields = (
         "reference",
         "vehicle_registration",
-        "driver_name",
         "third_party_name",
         "third_party_registration",
         "third_party_owner_name",

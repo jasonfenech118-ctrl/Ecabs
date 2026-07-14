@@ -30,9 +30,6 @@ class ClaimForm(forms.ModelForm):
         fields = [
             "vehicle_registration",
             "vehicle_make_model",
-            "driver_name",
-            "driver_phone",
-            "driver_email",
             "accident_date",
             "accident_time",
             "accident_location",

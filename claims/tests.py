@@ -28,7 +28,7 @@ class ClaimModelTests(TestCase):
 
     def test_history_recorded(self):
         claim = Claim.objects.create()
-        claim.driver_name = "Test Driver"
+        claim.vehicle_registration = "ECB-001"
         claim.save()
         self.assertEqual(claim.history.count(), 2)
 
@@ -52,11 +52,11 @@ class ViewTests(TestCase):
         claim = Claim.objects.create(created_by=self.user)
         response = self.client.post(
             reverse("claim_autosave", args=[claim.pk]),
-            {"driver_name": "Maria Vella", "fault": "unknown"},
+            {"vehicle_registration": "ECB-777", "fault": "unknown"},
         )
         self.assertEqual(response.status_code, 200)
         claim.refresh_from_db()
-        self.assertEqual(claim.driver_name, "Maria Vella")
+        self.assertEqual(claim.vehicle_registration, "ECB-777")
         self.assertTrue(claim.is_draft)
 
     def test_search_returns_partial_for_htmx(self):

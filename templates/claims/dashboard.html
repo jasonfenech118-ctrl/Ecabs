@@ -73,19 +73,18 @@
     <div class="table-wrap">
       <table class="list">
         <thead>
-          <tr><th>Ref</th><th>Vehicle</th><th>Driver</th><th>Status</th><th>Created</th></tr>
+          <tr><th>Ref</th><th>Vehicle</th><th>Status</th><th>Created</th></tr>
         </thead>
         <tbody>
           {% for c in recent_claims %}
           <tr>
             <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
             <td>{{ c.vehicle_registration|default:"—" }}</td>
-            <td>{{ c.driver_name|default:"—" }}</td>
             <td><span class="badge {{ c.status }}">{{ c.get_status_display }}</span></td>
             <td class="muted">{{ c.created_at|naturalday }}</td>
           </tr>
           {% empty %}
-          <tr><td colspan="5" class="empty">No claims yet — create the first one.</td></tr>
+          <tr><td colspan="4" class="empty">No claims yet — create the first one.</td></tr>
           {% endfor %}
         </tbody>
       </table>
