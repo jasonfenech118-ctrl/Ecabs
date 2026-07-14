@@ -68,13 +68,13 @@
         <tr class="month-group"><td colspan="8">{{ g.insurer }} · {{ g.rows|length }} bill{{ g.rows|length|pluralize }}</td></tr>
           {% for c in g.rows %}
           <tr class="clickable" onclick="window.location='{{ c.get_absolute_url }}'">
-            <td>{{ c.case_ref|default:"—" }}</td>
+            <td>{{ c.case_ref }}</td>
             <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
             <td>{{ c.vehicle_registration }}</td>
             <td>{{ c.bills_sent_on|date:"d M Y" }}</td>
-            <td>{{ c.invoice_number|default:"—" }}</td>
+            <td>{{ c.invoice_number }}</td>
             <td class="right">€{{ c.total_claim_amount|floatformat:2 }}</td>
-            <td class="right">{% if c.amount_paid %}€{{ c.amount_paid|floatformat:2 }}{% else %}—{% endif %}</td>
+            <td class="right">{% if c.amount_paid %}€{{ c.amount_paid|floatformat:2 }}{% endif %}</td>
             <td class="right">€{{ c.outstanding_amount|floatformat:2 }}</td>
           </tr>
           {% endfor %}
