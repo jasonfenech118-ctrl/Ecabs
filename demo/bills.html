@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "TtJxPx8LSIGGyqALU5x9VmO1973A2aeKMVFYSBhavCUt3DiY7CXfsPwSqB1n6nSf"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "ammPaV4orpKeqGnbYvVIHfSzDarB1MEbBHecNV2jxf1UjOgNPj92hG3Ib0A3E0J6"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -271,7 +271,7 @@
     <input type="hidden" name="y" value="2026">
     <label class="row" style="gap:.4rem">
       <span class="muted">Insurance</span>
-      <select name="pending_insurer" style="max-width:260px" onchange="this.form.submit()">
+      <select name="pending_insurer" style="max-width:260px" aria-label="Choose insurer">
         <option value="">All insurers</option>
         
           <option value="Elmo Insurance" >Elmo Insurance</option>
@@ -282,7 +282,7 @@
         
       </select>
     </label>
-    <noscript><button type="submit" class="btn">Show</button></noscript>
+    <button type="submit" class="btn btn-primary">Show</button>
   </form>
 
   <div class="table-wrap">
