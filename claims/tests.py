@@ -275,16 +275,16 @@ class ViewTests(TestCase):
             parts_amount=Decimal("250.00"), loe_days=3,
             loe_daily_rate=Decimal("35.00"), created_by=self.user,
         )
-        # No company chosen yet -> prompt, no statement.
-        r = self.client.get(reverse("claim_invoice", args=[claim.pk]))
-        self.assertContains(r, "select company")
+        # No company chosen yet -> prompt, no summary.
+        r = self.client.get(reverse("claim_documents", args=[claim.pk]), {"doc": "statement"})
+        self.assertContains(r, "Select a company")
         self.assertNotContains(r, "Total NET")
-        # Company chosen -> full statement with letterhead + line items + total.
-        r = self.client.get(reverse("claim_invoice", args=[claim.pk]), {"company": co.pk})
+        # Company chosen -> statement summary with letterhead + total.
+        r = self.client.get(
+            reverse("claim_documents", args=[claim.pk]),
+            {"doc": "statement", "company": co.pk},
+        )
         self.assertContains(r, "Vai Drive Co Ltd.")
-        self.assertContains(r, "Banif Bank")
-        self.assertContains(r, "Labour")
-        self.assertContains(r, "Loss of earnings")
         self.assertContains(r, "455.00")  # 100 + 250 + 3*35
         self.assertContains(r, "Total NET")
 
@@ -360,7 +360,10 @@ class ViewTests(TestCase):
         )
         # net = 368.02, vat @18% = 66.24, total = 434.26
         self.assertEqual(claim.repairs_total, Decimal("368.02"))
-        r = self.client.get(reverse("claim_repairs", args=[claim.pk]), {"company": co.pk})
+        r = self.client.get(
+            reverse("claim_documents", args=[claim.pk]),
+            {"doc": "repairs", "company": co.pk},
+        )
         self.assertContains(r, "VAT @18%")
         self.assertContains(r, "66.24")
         self.assertContains(r, "434.26")
@@ -383,8 +386,11 @@ class ViewTests(TestCase):
             tp_claim_number="M24109061", loe_days=3,
             loe_daily_rate=Decimal("159.58"), created_by=self.user,
         )
-        # Selector page
-        r = self.client.get(reverse("claim_lou", args=[claim.pk]), {"company": co.pk})
+        # Documents page (loss-of-earnings summary)
+        r = self.client.get(
+            reverse("claim_documents", args=[claim.pk]),
+            {"doc": "lossofuse", "company": co.pk},
+        )
         self.assertContains(r, "Loss of use")
         self.assertContains(r, "3 days")
         # PDF
@@ -567,7 +573,10 @@ class ViewTests(TestCase):
             status=Claim.Status.OPEN, bills_sent_on=date(2026, 5, 20),
             parts_amount=Decimal("100.00"), created_by=self.user,
         )
-        r = self.client.get(reverse("claim_invoice", args=[claim.pk]), {"company": co.pk})
+        r = self.client.get(
+            reverse("claim_documents", args=[claim.pk]),
+            {"doc": "statement", "company": co.pk},
+        )
         self.assertContains(r, "20/05/2026")
         self.assertContains(r, "Invoice date")
 

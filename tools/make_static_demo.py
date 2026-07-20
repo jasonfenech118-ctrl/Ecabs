@@ -66,19 +66,13 @@ def build_url_map():
         pk = claim.pk
         urls[f"/claims/{pk}/"] = f"claim-{pk}.html"
         urls[f"/claims/{pk}/edit/"] = f"claim-{pk}-edit.html"
-        urls[f"/claims/{pk}/invoice/"] = f"claim-{pk}-invoice.html"
-        urls[f"/claims/{pk}/lou/"] = f"claim-{pk}-lou.html"
-        urls[f"/claims/{pk}/repairs/"] = f"claim-{pk}-repairs.html"
-        # Rendered invoice under each company, for claims with recovery amounts.
-        if claim.invoice_lines():
+        # Unified documents page — one tile per document type, each per company.
+        for doc in ("statement", "lossofuse", "repairs"):
+            urls[f"/claims/{pk}/documents/?doc={doc}"] = f"claim-{pk}-doc-{doc}.html"
             for co in company_pks:
-                urls[f"/claims/{pk}/invoice/?company={co}"] = f"claim-{pk}-invoice-co{co}.html"
-        if claim.loe_days:
-            for co in company_pks:
-                urls[f"/claims/{pk}/lou/?company={co}"] = f"claim-{pk}-lou-co{co}.html"
-        if claim.repairs_total:
-            for co in company_pks:
-                urls[f"/claims/{pk}/repairs/?company={co}"] = f"claim-{pk}-repairs-co{co}.html"
+                urls[f"/claims/{pk}/documents/?doc={doc}&company={co}"] = (
+                    f"claim-{pk}-doc-{doc}-co{co}.html"
+                )
         for tab in TABS:
             urls[f"/claims/{pk}/tab/{tab}/"] = f"claim-{pk}-{tab}.html"
     # "New claim" can't create records statically — send it to a draft's form.
@@ -92,6 +86,9 @@ def rewrite(html, urls):
     # Longest URLs first so /claims/1/tab/x/ wins over /claims/1/.
     for url, target in sorted(urls.items(), key=lambda kv: -len(kv[0])):
         html = html.replace(f'href="{url}"', f'href="{target}"')
+        # Django autoescapes & to &amp; in rendered attributes.
+        if "&" in url:
+            html = html.replace(f'href="{url.replace("&", "&amp;")}"', f'href="{target}"')
     html = html.replace('href="/admin/"', 'href="#"')
     # Drop htmx so anchor hrefs navigate normally in the static preview.
     html = re.sub(r'<script src="[^"]*htmx\.min\.js" defer></script>', "", html)

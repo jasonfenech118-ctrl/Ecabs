@@ -16,9 +16,9 @@
       {% include "claims/partials/status_control.html" %}
     </span>
     <a href="{% url 'claim_edit' claim.pk %}" class="btn">Edit details</a>
-    <a href="{% url 'claim_invoice' claim.pk %}" class="btn btn-primary">Create invoice</a>
-    <a href="{% url 'claim_lou' claim.pk %}" class="btn">Loss of use letter</a>
-    <a href="{% url 'claim_repairs' claim.pk %}" class="btn">Repairs invoice</a>
+    <a href="{% url 'claim_documents' claim.pk %}?doc=statement" class="btn btn-primary">Statement</a>
+    <a href="{% url 'claim_documents' claim.pk %}?doc=lossofuse" class="btn">Loss of earnings</a>
+    <a href="{% url 'claim_documents' claim.pk %}?doc=repairs" class="btn">Repairs receipt</a>
     <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
   </div>
 </div>

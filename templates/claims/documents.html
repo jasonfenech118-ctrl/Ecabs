@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Documents {{ claim.reference }} — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head no-print">
+  <div>
+    <h1>Recovery documents</h1>
+    <div class="sub">Pick the document, then the company, then open the PDF</div>
+  </div>
+  <a href="{{ claim.get_absolute_url }}" class="btn">← Back to claim</a>
+</div>
+
+<div class="card no-print">
+  <span class="muted">Document</span>
+  <div class="doc-tiles">
+    {% for key, label, _ in document_types %}
+      <a href="{% url 'claim_documents' claim.pk %}?doc={{ key }}{% if company %}&company={{ company.pk }}{% endif %}"
+         class="doc-tile {% if doc == key %}active{% endif %}">
+        <span class="doc-tile-icon">{% if key == 'statement' %}🧾{% elif key == 'lossofuse' %}📅{% else %}🔧{% endif %}</span>
+        <span class="doc-tile-label">{{ label }}</span>
+      </a>
+    {% endfor %}
+  </div>
+
+  <hr style="border:none;border-top:1px solid #e5e7eb;margin:1rem 0">
+
+  <div class="row">
+    <span class="muted">Issue under company</span>
+    {% for co in companies %}
+      <a href="{% url 'claim_documents' claim.pk %}?doc={{ doc }}&company={{ co.pk }}"
+         class="btn btn-sm {% if company and company.pk == co.pk %}btn-primary{% endif %}">{{ co.name }}</a>
+    {% endfor %}
+  </div>
+  {% if company %}
+    <a href="{% url pdf_url claim.pk %}?company={{ company.pk }}" target="_blank" rel="noopener" class="btn btn-primary mt">📄 Open PDF</a>
+  {% else %}
+    <p class="muted" style="margin:.75rem 0 0">Select a company above to open the PDF.</p>
+  {% endif %}
+</div>
+
+{% if company %}
+<div class="card mt" style="max-width:640px">
+  <h3>Summary</h3>
+
+  {% if doc == 'statement' %}
+    <dl class="kv">
+      <dt>Company</dt><dd>{{ company.name }}</dd>
+      <dt>Statement No</dt><dd>{{ invoice_no }}</dd>
+      <dt>Invoice date</dt><dd>{{ invoice_date|date:"d/m/Y" }}</dd>
+      <dt>Claim No</dt><dd>{{ claim.tp_claim_number|default:claim.insurer_claim_number }}</dd>
+      <dt>Our Reg No</dt><dd>{{ claim.vehicle_registration }}</dd>
+      <dt>Total NET</dt><dd><strong>€{{ total|floatformat:2|intcomma }}</strong></dd>
+    </dl>
+    {% if not lines %}<p class="muted" style="margin:.5rem 0 0">No recovery amounts entered on this claim yet.</p>{% endif %}
+
+  {% elif doc == 'lossofuse' %}
+    <dl class="kv">
+      <dt>Company</dt><dd>{{ company.name }}</dd>
+      <dt>Statement No</dt><dd>{{ invoice_no }}</dd>
+      <dt>Claim No</dt><dd>{{ claim.tp_claim_number|default:claim.insurer_claim_number }}</dd>
+      <dt>Our Reg no</dt><dd>{{ claim.vehicle_registration }}</dd>
+      <dt>Make</dt><dd>{{ claim.vehicle_make_model }}</dd>
+      <dt>Loss of use</dt><dd>{{ claim.loe_days|default:0 }} days × €{{ claim.loe_daily_rate|default:"0.00" }}/day</dd>
+      <dt>Total (net of VAT)</dt><dd><strong>€{{ claim.loss_of_earnings|floatformat:2 }}</strong></dd>
+    </dl>
+    {% if not claim.loe_days %}<p class="muted" style="margin:.5rem 0 0">No loss-of-use days recorded on this claim yet.</p>{% endif %}
+
+  {% else %}
+    <dl class="kv">
+      <dt>Company</dt><dd>{{ company.name }}</dd>
+      <dt>Receipt No</dt><dd>{{ invoice_no }}</dd>
+      <dt>Claim Number</dt><dd>{{ claim.tp_claim_number|default:claim.insurer_claim_number }}</dd>
+      <dt>Reg. No</dt><dd>{{ claim.vehicle_registration }}</dd>
+      <dt>Description</dt><dd>{{ claim.repairs_description }}</dd>
+      <dt>Net</dt><dd>€{{ repairs_net|floatformat:2 }}</dd>
+      <dt>VAT @18%</dt><dd>€{{ repairs_vat|floatformat:2 }}</dd>
+      <dt>Total</dt><dd><strong>€{{ repairs_total|floatformat:2 }}</strong></dd>
+    </dl>
+    {% if not claim.repairs_total %}<p class="muted" style="margin:.5rem 0 0">No repair amounts on this claim yet — enter labour, spray, parts or others first.</p>{% endif %}
+  {% endif %}
+
+  <a href="{% url pdf_url claim.pk %}?company={{ company.pk }}" target="_blank" rel="noopener" class="btn btn-primary mt">📄 Open PDF</a>
+</div>
+{% endif %}
+{% endblock %}

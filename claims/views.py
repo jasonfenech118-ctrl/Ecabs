@@ -854,31 +854,47 @@ def master_sheet(request):
     )
 
 
+DOCUMENT_TYPES = [
+    ("statement", "Statement", "claim_invoice_pdf"),
+    ("lossofuse", "Loss of Earnings", "claim_lou_pdf"),
+    ("repairs", "Repairs receipt", "claim_repairs_pdf"),
+]
+
+
 @login_required
-def claim_invoice(request, pk):
-    """Automated statement/invoice for a claim. The company (letterhead) is
-    chosen here, at finalisation — not stored on the claim."""
+def claim_documents(request, pk):
+    """One page for all recovery documents. Pick the document type (quick-pick
+    tiles), then the company (letterhead), then open the PDF."""
+    from decimal import Decimal
+
     claim = get_object_or_404(Claim, pk=pk)
     companies = Company.objects.filter(is_active=True)
+    doc = request.GET.get("doc") or "statement"
+    if doc not in {key for key, _, _ in DOCUMENT_TYPES}:
+        doc = "statement"
     selected = request.GET.get("company")
-    company = None
-    if selected:
-        company = companies.filter(pk=selected).first()
-    lines = claim.invoice_lines()
-    total = claim.total_claim_amount
+    company = companies.filter(pk=selected).first() if selected else None
+
+    net = claim.repairs_total
+    vat = (net * Decimal("0.18")).quantize(Decimal("0.01"))
+    pdf_url = dict((key, name) for key, _, name in DOCUMENT_TYPES)[doc]
     return render(
         request,
-        "claims/invoice.html",
+        "claims/documents.html",
         {
             "claim": claim,
             "companies": companies,
             "company": company,
-            "lines": lines,
-            "total": total,
-            # Statement number is the automated company case number (VD-00001).
+            "doc": doc,
+            "document_types": DOCUMENT_TYPES,
+            "pdf_url": pdf_url,
             "invoice_no": claim.case_ref or claim.reference,
-            # Invoice date = the recovery/bill-sent date, not today.
             "invoice_date": claim.bills_sent_on or timezone.localdate(),
+            "lines": claim.invoice_lines(),
+            "total": claim.total_claim_amount,
+            "repairs_net": net,
+            "repairs_vat": vat,
+            "repairs_total": net + vat,
         },
     )
 
@@ -900,25 +916,6 @@ def claim_invoice_pdf(request, pk):
 
 
 @login_required
-def claim_repairs(request, pk):
-    """Repairs VAT receipt — third invoice type, for issuing to the insurer."""
-    claim = get_object_or_404(Claim, pk=pk)
-    companies = Company.objects.filter(is_active=True)
-    selected = request.GET.get("company")
-    company = companies.filter(pk=selected).first() if selected else None
-    from decimal import Decimal
-    net = claim.repairs_total
-    vat = (net * Decimal("0.18")).quantize(Decimal("0.01"))
-    return render(
-        request,
-        "claims/repairs.html",
-        {"claim": claim, "companies": companies, "company": company,
-         "invoice_no": claim.case_ref or claim.reference,
-         "net": net, "vat": vat, "total": net + vat},
-    )
-
-
-@login_required
 def claim_repairs_pdf(request, pk):
     from django.http import HttpResponse
 
@@ -931,21 +928,6 @@ def claim_repairs_pdf(request, pk):
     ref = (claim.case_ref or claim.reference).replace(" ", "")
     response["Content-Disposition"] = f'inline; filename="repairs-{ref}.pdf"'
     return response
-
-
-@login_required
-def claim_lou(request, pk):
-    """Loss-of-use letter — the second invoice type. Company chosen here."""
-    claim = get_object_or_404(Claim, pk=pk)
-    companies = Company.objects.filter(is_active=True)
-    selected = request.GET.get("company")
-    company = companies.filter(pk=selected).first() if selected else None
-    return render(
-        request,
-        "claims/lou.html",
-        {"claim": claim, "companies": companies, "company": company,
-         "invoice_no": claim.case_ref or claim.reference},
-    )
 
 
 @login_required
