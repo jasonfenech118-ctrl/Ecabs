@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "tIyYJKzEkwUtnoCIMMqdDz42nSwisf643XUghILaLchtd0XxaLqTcHVvBB6UJwQj"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "JlBIoBH7z6t7XvT7CvLueqMkGXLzemmn3TC3unGF8YWYX7Rczb7PlUefncaOxExI"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -76,7 +76,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="tIyYJKzEkwUtnoCIMMqdDz42nSwisf643XUghILaLchtd0XxaLqTcHVvBB6UJwQj">
+  <input type="hidden" name="csrfmiddlewaretoken" value="JlBIoBH7z6t7XvT7CvLueqMkGXLzemmn3TC3unGF8YWYX7Rczb7PlUefncaOxExI">
 
   <datalist id="vehicle-regs">
     <option value="ECB101">Toyota Corolla Hybrid</option>
@@ -384,6 +384,10 @@
 </div>
 
     </div>
+    <div class="recovery-totals" id="recovery-totals">
+      <div><span class="muted">Total claim</span><strong id="rt-total">€0.00</strong></div>
+      <div><span class="muted">Outstanding</span><strong id="rt-out">€0.00</strong></div>
+    </div>
   </fieldset>
 
   <fieldset>
@@ -417,6 +421,28 @@
     <span id="save-status" class="save-status" aria-live="polite"></span>
   </div>
 </form>
+
+<script>
+  // Live recovery totals — mirrors the server-side calculation as you type.
+  (function () {
+    function num(id) { var e = document.getElementById(id); return e ? parseFloat(e.value) || 0 : 0; }
+    function fmt(v) { return '€' + v.toLocaleString('en-MT', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+    function recalc() {
+      var loe = num('id_loe_days') * num('id_loe_daily_rate');
+      var total = num('id_labour_amount') + num('id_spray_material_amount')
+        + num('id_parts_amount') + loe + num('id_others_amount');
+      var out = total - num('id_amount_paid') - num('id_offset_amount');
+      document.getElementById('rt-total').textContent = fmt(total);
+      document.getElementById('rt-out').textContent = fmt(out);
+    }
+    ['labour_amount','spray_material_amount','parts_amount','loe_days','loe_daily_rate',
+     'others_amount','amount_paid','offset_amount'].forEach(function (n) {
+      var el = document.getElementById('id_' + n);
+      if (el) el.addEventListener('input', recalc);
+    });
+    recalc();
+  })();
+</script>
 
   </main>
 </div>

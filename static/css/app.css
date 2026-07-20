@@ -206,6 +206,15 @@ details.inline-form summary { cursor: pointer; font-weight: 600; color: var(--ac
 details.inline-form summary::before { content: "+ "; }
 details.inline-form[open] summary::before { content: "− "; }
 
+/* --- Live recovery totals on the claim form ------------------------------------ */
+.recovery-totals {
+  display: flex; gap: 2rem; margin-top: 1rem; padding-top: .75rem;
+  border-top: 1px dashed var(--border);
+}
+.recovery-totals > div { display: flex; flex-direction: column; }
+.recovery-totals .muted { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+.recovery-totals strong { font-size: 1.3rem; }
+
 /* --- Invoice / statement ------------------------------------------------------- */
 .invoice-sheet {
   background: #fff; border: 1px solid var(--border); border-radius: 8px;

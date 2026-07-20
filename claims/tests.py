@@ -288,6 +288,26 @@ class ViewTests(TestCase):
         self.assertContains(r, "455.00")  # 100 + 250 + 3*35
         self.assertContains(r, "Total NET")
 
+    def test_invoice_pdf(self):
+        from decimal import Decimal
+
+        from .models import Company
+
+        co = Company.objects.create(
+            name="Vai Drive Co Ltd.", address="Paceville, Malta",
+            bank_name="Banif Bank", logo_static="img/companies/vai.png",
+        )
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-PDF",
+            labour_amount=Decimal("100.00"), created_by=self.user,
+        )
+        r = self.client.get(
+            reverse("claim_invoice_pdf", args=[claim.pk]), {"company": co.pk}
+        )
+        self.assertEqual(r["Content-Type"], "application/pdf")
+        self.assertTrue(r["Content-Disposition"].startswith("inline"))
+        self.assertTrue(r.content[:5] == b"%PDF-")
+
     def test_data_dashboard(self):
         Claim.objects.create(status=Claim.Status.OPEN, created_by=self.user)
         r = self.client.get(reverse("data_dashboard"))

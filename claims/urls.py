@@ -20,6 +20,7 @@ urlpatterns = [
     path("claims/<int:pk>/submit/", views.claim_submit, name="claim_submit"),
     path("claims/<int:pk>/status/", views.claim_set_status, name="claim_set_status"),
     path("claims/<int:pk>/invoice/", views.claim_invoice, name="claim_invoice"),
+    path("claims/<int:pk>/invoice.pdf", views.claim_invoice_pdf, name="claim_invoice_pdf"),
     path("claims/<int:pk>/photos/upload/", views.photo_upload, name="photo_upload"),
     path("claims/<int:pk>/surveys/add/", views.survey_add, name="survey_add"),
     path("claims/<int:pk>/emails/add/", views.email_add, name="email_add"),

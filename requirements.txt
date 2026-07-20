@@ -1,6 +1,7 @@
 Django>=5.2,<6.0
 django-simple-history>=3.7
 Pillow>=10.0
+reportlab>=4.0
 
 # Uncomment when enabling the Google Drive / Gmail integrations:
 # google-api-python-client>=2.100
