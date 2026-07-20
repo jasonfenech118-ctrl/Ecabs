@@ -51,12 +51,6 @@
     <span class="tile-sub">Charts &amp; breakdowns</span>
   </a>
 
-  <a href="{% url 'maintenance' %}" class="tile">
-    <span class="tile-icon">🛠</span>
-    <span class="tile-title">Maintenance</span>
-    <span class="tile-sub">Set daily rates (LOE / loss of use)</span>
-  </a>
-
   {% if user.is_staff %}
   <a href="{% url 'admin:index' %}" class="tile">
     <span class="tile-icon">⚙</span>
