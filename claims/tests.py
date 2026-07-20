@@ -431,6 +431,97 @@ class ViewTests(TestCase):
         claim.refresh_from_db()
         self.assertEqual(claim.status, Claim.Status.CLOSED)
 
+    def test_full_automation_cycle(self):
+        """Walk one claim through the whole lifecycle end-to-end."""
+        from datetime import timedelta
+        from decimal import Decimal
+
+        from .services.auto_reminders import sync_auto_reminders
+
+        today = timezone.localdate()
+
+        def autos(text):
+            return Reminder.objects.filter(
+                is_auto=True, claim=claim, title__contains=text
+            ).exists()
+
+        # 1. Open the claim
+        claim = Claim.objects.create(created_by=self.user)
+        claim.submit()
+        self.assertEqual(claim.status, Claim.Status.OPEN)
+
+        # 2. Book a survey 2 days out -> day-before reminder
+        claim.survey_booked = True
+        claim.survey_date = today + timedelta(days=2)
+        claim.save()
+        sync_auto_reminders()
+        self.assertTrue(autos("Survey tomorrow"))
+
+        # 3. Survey date passes, still not received -> chase-survey reminder
+        claim.survey_date = today - timedelta(days=1)
+        claim.save()
+        sync_auto_reminders()
+        self.assertTrue(autos("Chase survey report"))
+        self.assertFalse(autos("Survey tomorrow"))  # old one cleared
+
+        # 4. Survey received but liability disputed -> monthly liability chase, still open
+        claim.survey_in_hand = True
+        claim.liability = Claim.Liability.DISPUTED
+        claim.save()
+        claim.run_workflow()
+        claim.refresh_from_db()
+        self.assertEqual(claim.status, Claim.Status.OPEN)
+        sync_auto_reminders()
+        self.assertTrue(autos("Chase liability"))
+
+        # 5. Liability accepted -> claim becomes a chasing claim
+        claim.liability = Claim.Liability.ACCEPTED
+        claim.save()
+        claim.run_workflow()
+        claim.refresh_from_db()
+        self.assertEqual(claim.status, Claim.Status.AWAITING_INSURER)
+        self.assertIsNotNone(claim.chase_on)
+
+        # 6. Bills sent with an amount outstanding -> monthly payment chase
+        claim.bills_sent_on = today
+        claim.parts_amount = Decimal("500.00")
+        claim.insurer_contact = "MSI claims — 2123 4567"
+        claim.save()
+        sync_auto_reminders()
+        self.assertTrue(autos("Chase payment"))
+
+        # 7. Partial payment -> every cent still open
+        claim.amount_paid = Decimal("200.00")
+        claim.save()
+        claim.run_workflow()
+        claim.refresh_from_db()
+        self.assertEqual(claim.status, Claim.Status.AWAITING_INSURER)
+
+        # 8. Fully paid -> auto-closed
+        claim.amount_paid = Decimal("500.00")
+        claim.save()
+        claim.run_workflow()
+        claim.refresh_from_db()
+        self.assertEqual(claim.status, Claim.Status.CLOSED)
+        self.assertEqual(claim.outstanding_amount, Decimal("0.00"))
+
+    def test_invoice_date_is_bill_date(self):
+        from datetime import date
+        from decimal import Decimal
+
+        from .models import Company
+
+        co = Company.objects.create(
+            name="Vai Drive Co Ltd.", address="Malta", logo_static="img/companies/vai.png"
+        )
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, bills_sent_on=date(2026, 5, 20),
+            parts_amount=Decimal("100.00"), created_by=self.user,
+        )
+        r = self.client.get(reverse("claim_invoice", args=[claim.pk]), {"company": co.pk})
+        self.assertContains(r, "20/05/2026")
+        self.assertContains(r, "Invoice date")
+
     def test_workflow_reminders(self):
         from datetime import timedelta
 
