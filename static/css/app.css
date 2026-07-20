@@ -210,6 +210,12 @@ details.inline-form[open] summary::before { content: "− "; }
 .rate-row { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; padding: .35rem 0; }
 .rate-row input[name="name"] { flex: 1; min-width: 180px; }
 
+/* --- Auto-calculated value (loss of earnings) ---------------------------------- */
+.calc-value {
+  padding: .5rem .65rem; border: 1px dashed var(--border); border-radius: 8px;
+  background: var(--accent-soft); font-weight: 700; color: var(--accent);
+}
+
 /* --- Repeatable "Others" lines ------------------------------------------------- */
 .other-line { display: flex; gap: .5rem; margin-bottom: .5rem; align-items: center; }
 .other-line input[name="other_desc"] { flex: 2; }

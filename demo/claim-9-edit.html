@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "3FESIkWMxn2Xsk47wUQ9ogbTE2Fx4vGQYKgobLg1xpot1M4Mv7Fc4bSDF3xCBJ88"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "qlYL79nwOOUNOND8GZMEjT7cQvTOWrf5yRAknSOUTrrhtGsjh1LINWxslRnGkyy8"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -76,7 +76,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="3FESIkWMxn2Xsk47wUQ9ogbTE2Fx4vGQYKgobLg1xpot1M4Mv7Fc4bSDF3xCBJ88">
+  <input type="hidden" name="csrfmiddlewaretoken" value="qlYL79nwOOUNOND8GZMEjT7cQvTOWrf5yRAknSOUTrrhtGsjh1LINWxslRnGkyy8">
 
   <datalist id="vehicle-regs">
     <option value="ECB101">Toyota Corolla Hybrid</option>
@@ -348,23 +348,29 @@
 </div>
 
       <div class="field ">
-  <label for="id_loe_days">LOE days</label>
-  <input type="number" name="loe_days" min="0" id="id_loe_days">
-  
-</div>
-
-      <div class="field ">
   <label for="id_loe_daily_rate">LOE daily amount</label>
   <input type="number" name="loe_daily_rate" step="0.01" id="id_loe_daily_rate">
   
 </div>
 
+      
       <div class="field">
-        <label for="loe-rate-picker">Use maintained rate</label>
+        <label for="loe-rate-picker">Or pick a saved rate</label>
         <select id="loe-rate-picker">
           <option value="">— choose rate —</option>
           <option value="35.00">Standard car — €35.00/day</option><option value="45.00">Van — €45.00/day</option><option value="20.00">Motorcycle — €20.00/day</option>
         </select>
+      </div>
+      
+      <div class="field ">
+  <label for="id_loe_days">LOE days</label>
+  <input type="number" name="loe_days" min="0" id="id_loe_days">
+  
+</div>
+
+      <div class="field">
+        <label>Loss of earnings (rate × days)</label>
+        <div id="loe-amount" class="calc-value">€0.00</div>
       </div>
       <div class="field ">
   <label for="id_settlement_amount">Settlement</label>
@@ -444,6 +450,8 @@
     }
     function recalc() {
       var loe = num('id_loe_days') * num('id_loe_daily_rate');
+      var loeEl = document.getElementById('loe-amount');
+      if (loeEl) loeEl.textContent = fmt(loe);
       var total = num('id_labour_amount') + num('id_spray_material_amount')
         + num('id_parts_amount') + loe + othersTotal();
       var out = total - num('id_amount_paid') - num('id_offset_amount');
