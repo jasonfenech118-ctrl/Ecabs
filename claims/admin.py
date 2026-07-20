@@ -6,12 +6,19 @@ from .models import (
     BillingItem,
     Claim,
     Company,
+    DailyRate,
     EmailLog,
     OtherCharge,
     Reminder,
     Survey,
     Vehicle,
 )
+
+
+@admin.register(DailyRate)
+class DailyRateAdmin(admin.ModelAdmin):
+    list_display = ("name", "amount", "is_active", "order")
+    list_editable = ("amount", "is_active", "order")
 
 
 class OtherChargeInline(admin.TabularInline):

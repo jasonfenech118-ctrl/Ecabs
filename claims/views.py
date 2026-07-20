@@ -27,6 +27,7 @@ from .models import (
     BillingItem,
     Claim,
     Company,
+    DailyRate,
     EmailLog,
     Reminder,
     Survey,
@@ -261,8 +262,53 @@ def claim_edit(request, pk):
     return render(
         request,
         "claims/claim_form.html",
-        {"claim": claim, "form": form, "active_vehicles": active_vehicles},
+        {
+            "claim": claim,
+            "form": form,
+            "active_vehicles": active_vehicles,
+            "daily_rates": DailyRate.objects.filter(is_active=True),
+        },
     )
+
+
+# --- Maintenance: daily rates --------------------------------------------------
+
+@login_required
+def maintenance(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        amount = request.POST.get("amount", "")
+        if name and amount:
+            try:
+                DailyRate.objects.create(
+                    name=name, amount=Decimal(amount),
+                    order=DailyRate.objects.count(),
+                )
+            except InvalidOperation:
+                pass
+        return redirect("maintenance")
+    return render(request, "claims/maintenance.html", {"rates": DailyRate.objects.all()})
+
+
+@login_required
+@require_POST
+def rate_edit(request, pk):
+    rate = get_object_or_404(DailyRate, pk=pk)
+    rate.name = request.POST.get("name", rate.name).strip() or rate.name
+    try:
+        rate.amount = Decimal(request.POST.get("amount"))
+    except (InvalidOperation, TypeError):
+        pass
+    rate.is_active = bool(request.POST.get("is_active"))
+    rate.save()
+    return redirect("maintenance")
+
+
+@login_required
+@require_POST
+def rate_delete(request, pk):
+    get_object_or_404(DailyRate, pk=pk).delete()
+    return redirect("maintenance")
 
 
 def _sync_other_charges(claim, request):

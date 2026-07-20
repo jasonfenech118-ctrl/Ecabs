@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "cIlnfbNm9a6gENdp47Z8idQLJJIy2Wt90DDg2XnNLGRHZorYh1X75Oiht5m9oGn4"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "QNS4bFzwwOtx8yIe1NRvNaNbHcsl6E04lBCGrv94BGF0oplOHHApc8ni3BCsWNHK"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -76,7 +76,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="cIlnfbNm9a6gENdp47Z8idQLJJIy2Wt90DDg2XnNLGRHZorYh1X75Oiht5m9oGn4">
+  <input type="hidden" name="csrfmiddlewaretoken" value="QNS4bFzwwOtx8yIe1NRvNaNbHcsl6E04lBCGrv94BGF0oplOHHApc8ni3BCsWNHK">
 
   <datalist id="vehicle-regs">
     <option value="ECB101">Toyota Corolla Hybrid</option>
@@ -359,6 +359,13 @@
   
 </div>
 
+      <div class="field">
+        <label for="loe-rate-picker">Use maintained rate</label>
+        <select id="loe-rate-picker">
+          <option value="">— choose rate —</option>
+          <option value="35.00">Standard car — €35.00/day</option><option value="45.00">Van — €45.00/day</option><option value="20.00">Motorcycle — €20.00/day</option>
+        </select>
+      </div>
       <div class="field ">
   <label for="id_settlement_amount">Settlement</label>
   <input type="number" name="settlement_amount" step="0.01" id="id_settlement_amount">
@@ -447,6 +454,16 @@
      'amount_paid','offset_amount'].forEach(function (n) {
       var el = document.getElementById('id_' + n);
       if (el) el.addEventListener('input', recalc);
+    });
+
+    // Maintained-rate picker fills the LOE daily amount.
+    var picker = document.getElementById('loe-rate-picker');
+    if (picker) picker.addEventListener('change', function () {
+      if (!this.value) return;
+      var rate = document.getElementById('id_loe_daily_rate');
+      rate.value = this.value;
+      rate.dispatchEvent(new Event('input', {bubbles: true}));
+      recalc();
     });
 
     var lines = document.getElementById('other-lines');

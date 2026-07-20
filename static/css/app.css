@@ -206,6 +206,10 @@ details.inline-form summary { cursor: pointer; font-weight: 600; color: var(--ac
 details.inline-form summary::before { content: "+ "; }
 details.inline-form[open] summary::before { content: "− "; }
 
+/* --- Maintenance rate rows ----------------------------------------------------- */
+.rate-row { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; padding: .35rem 0; }
+.rate-row input[name="name"] { flex: 1; min-width: 180px; }
+
 /* --- Repeatable "Others" lines ------------------------------------------------- */
 .other-line { display: flex; gap: .5rem; margin-bottom: .5rem; align-items: center; }
 .other-line input[name="other_desc"] { flex: 2; }

@@ -288,6 +288,32 @@ class ViewTests(TestCase):
         self.assertContains(r, "455.00")  # 100 + 250 + 3*35
         self.assertContains(r, "Total NET")
 
+    def test_maintenance_rates(self):
+        from decimal import Decimal
+
+        from .models import DailyRate
+
+        # Add via the maintenance page
+        self.client.post(reverse("maintenance"), {"name": "Van", "amount": "45.00"})
+        rate = DailyRate.objects.get(name="Van")
+        self.assertEqual(rate.amount, Decimal("45.00"))
+        # Edit
+        self.client.post(
+            reverse("rate_edit", args=[rate.pk]),
+            {"name": "Van (large)", "amount": "50.00", "is_active": "on"},
+        )
+        rate.refresh_from_db()
+        self.assertEqual(rate.name, "Van (large)")
+        self.assertEqual(rate.amount, Decimal("50.00"))
+        # The claim form offers the maintained rate
+        claim = Claim.objects.create(created_by=self.user)
+        r = self.client.get(reverse("claim_edit", args=[claim.pk]))
+        self.assertContains(r, "Use maintained rate")
+        self.assertContains(r, "Van (large)")
+        # Delete
+        self.client.post(reverse("rate_delete", args=[rate.pk]))
+        self.assertFalse(DailyRate.objects.filter(pk=rate.pk).exists())
+
     def test_other_charges_lines(self):
         from decimal import Decimal
 

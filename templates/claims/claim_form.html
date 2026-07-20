@@ -99,6 +99,13 @@
       {% include "claims/partials/field.html" with field=form.parts_amount %}
       {% include "claims/partials/field.html" with field=form.loe_days %}
       {% include "claims/partials/field.html" with field=form.loe_daily_rate %}
+      <div class="field">
+        <label for="loe-rate-picker">Use maintained rate</label>
+        <select id="loe-rate-picker">
+          <option value="">— choose rate —</option>
+          {% for r in daily_rates %}<option value="{{ r.amount }}">{{ r.name }} — €{{ r.amount }}/day</option>{% endfor %}
+        </select>
+      </div>
       {% include "claims/partials/field.html" with field=form.settlement_amount %}
       {% include "claims/partials/field.html" with field=form.amount_paid %}
       {% include "claims/partials/field.html" with field=form.offset_amount %}
@@ -165,6 +172,16 @@
      'amount_paid','offset_amount'].forEach(function (n) {
       var el = document.getElementById('id_' + n);
       if (el) el.addEventListener('input', recalc);
+    });
+
+    // Maintained-rate picker fills the LOE daily amount.
+    var picker = document.getElementById('loe-rate-picker');
+    if (picker) picker.addEventListener('change', function () {
+      if (!this.value) return;
+      var rate = document.getElementById('id_loe_daily_rate');
+      rate.value = this.value;
+      rate.dispatchEvent(new Event('input', {bubbles: true}));
+      recalc();
     });
 
     var lines = document.getElementById('other-lines');

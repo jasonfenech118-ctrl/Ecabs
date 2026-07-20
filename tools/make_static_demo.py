@@ -49,6 +49,7 @@ def build_url_map():
         "/claims/master/": "master.html",
         "/claims/bills/": "bills.html",
         "/data/": "data.html",
+        "/maintenance/": "maintenance.html",
         "/vehicles/add/": "vehicle-add.html",
         "/add/photo/": "add-photo.html",
         "/add/email/": "add-email.html",
@@ -182,6 +183,12 @@ def main():
     from django.core.management import call_command
 
     call_command("seed_companies")
+    from claims.models import DailyRate
+
+    if not DailyRate.objects.exists():
+        for i, (n, a) in enumerate([("Standard car", "35.00"), ("Van", "45.00"),
+                                    ("Motorcycle", "20.00")]):
+            DailyRate.objects.create(name=n, amount=a, order=i)
     seed_samples(user)
     if not Claim.objects.filter(status=Claim.Status.DRAFT).exists():
         Claim.objects.create(created_by=user)

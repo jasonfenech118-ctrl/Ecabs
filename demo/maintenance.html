@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maintenance — Vai Drive Claims</title>
+  <link rel="stylesheet" href="../static/css/app.css?v=2">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "okTlknqqMOB2Oyox1NVsPLkYB9jBqXy7T8DXAd0YRGNv4p17HHEmeJU5XytIg6fN"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" title="Home">
+      <img src="../static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
+    </a>
+    <nav>
+      <a href="index.html" class="">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a href="dashboard.html" class="">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="claims.html" class="">
+        <span class="nav-icon">▤</span> Claims
+      </a>
+      <a href="claims-open.html" class="nav-sub ">
+        <span class="nav-icon">●</span> Open claims
+      </a>
+      <a href="claims-closed.html" class="nav-sub ">
+        <span class="nav-icon">○</span> Closed claims
+      </a>
+      <a href="claims-overdue.html" class="nav-sub ">
+        <span class="nav-icon">▲</span> Overdue
+      </a>
+      <a href="master.html" class="">
+        <span class="nav-icon">▥</span> Master sheet
+      </a>
+      <a href="bills.html" class="">
+        <span class="nav-icon">€</span> Bills this month
+      </a>
+      <a href="data.html" class="">
+        <span class="nav-icon">◔</span> Data
+      </a>
+      <a href="vehicles.html" class="">
+        <span class="nav-icon">⬖</span> Vehicles
+      </a>
+      <a href="reminders.html" class="">
+        <span class="nav-icon">◷</span> Reminders
+      </a>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">Vai Drive Staff</span>
+      <a class="link-btn" href="login.html">Sign out</a>
+    </div>
+  </aside>
+  <main class="main">
+    
+<div class="page-head">
+  <div>
+    <h1>Maintenance</h1>
+    <div class="sub">Set and maintain the daily rates used for loss of earnings / loss of use</div>
+  </div>
+  <a href="index.html" class="btn">← Home</a>
+</div>
+
+<div class="card" style="max-width:720px">
+  <h2>Daily rates</h2>
+  <div class="table-wrap">
+    <table class="list">
+      <thead><tr><th>Name</th><th>Daily amount (€)</th><th>Active</th><th></th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td colspan="4" style="padding:0">
+            <form method="post" action="/maintenance/rate/1/edit/" class="rate-row">
+              <input type="hidden" name="csrfmiddlewaretoken" value="okTlknqqMOB2Oyox1NVsPLkYB9jBqXy7T8DXAd0YRGNv4p17HHEmeJU5XytIg6fN">
+              <input type="text" name="name" value="Standard car">
+              <input type="number" step="0.01" name="amount" value="35.00" style="max-width:140px">
+              <label class="row" style="gap:.3rem"><input type="checkbox" name="is_active" checked> active</label>
+              <button type="submit" class="btn btn-sm">Save</button>
+              <button type="submit" class="btn btn-sm" formaction="/maintenance/rate/1/delete/"
+                      style="color:var(--danger)" onclick="return confirm('Delete this rate?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+        
+        <tr>
+          <td colspan="4" style="padding:0">
+            <form method="post" action="/maintenance/rate/2/edit/" class="rate-row">
+              <input type="hidden" name="csrfmiddlewaretoken" value="okTlknqqMOB2Oyox1NVsPLkYB9jBqXy7T8DXAd0YRGNv4p17HHEmeJU5XytIg6fN">
+              <input type="text" name="name" value="Van">
+              <input type="number" step="0.01" name="amount" value="45.00" style="max-width:140px">
+              <label class="row" style="gap:.3rem"><input type="checkbox" name="is_active" checked> active</label>
+              <button type="submit" class="btn btn-sm">Save</button>
+              <button type="submit" class="btn btn-sm" formaction="/maintenance/rate/2/delete/"
+                      style="color:var(--danger)" onclick="return confirm('Delete this rate?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+        
+        <tr>
+          <td colspan="4" style="padding:0">
+            <form method="post" action="/maintenance/rate/3/edit/" class="rate-row">
+              <input type="hidden" name="csrfmiddlewaretoken" value="okTlknqqMOB2Oyox1NVsPLkYB9jBqXy7T8DXAd0YRGNv4p17HHEmeJU5XytIg6fN">
+              <input type="text" name="name" value="Motorcycle">
+              <input type="number" step="0.01" name="amount" value="20.00" style="max-width:140px">
+              <label class="row" style="gap:.3rem"><input type="checkbox" name="is_active" checked> active</label>
+              <button type="submit" class="btn btn-sm">Save</button>
+              <button type="submit" class="btn btn-sm" formaction="/maintenance/rate/3/delete/"
+                      style="color:var(--danger)" onclick="return confirm('Delete this rate?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <form method="post" class="rate-row" style="margin-top:1rem">
+    <input type="hidden" name="csrfmiddlewaretoken" value="okTlknqqMOB2Oyox1NVsPLkYB9jBqXy7T8DXAd0YRGNv4p17HHEmeJU5XytIg6fN">
+    <input type="text" name="name" placeholder="Rate name (e.g. Standard car)" required>
+    <input type="number" step="0.01" name="amount" placeholder="€ / day" style="max-width:140px" required>
+    <button type="submit" class="btn btn-primary">+ Add rate</button>
+  </form>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">
+    On a claim, pick a maintained rate from the LOE “Use maintained rate” dropdown to fill the daily amount.
+  </p>
+</div>
+
+  </main>
+</div>
+
+</body>
+</html>

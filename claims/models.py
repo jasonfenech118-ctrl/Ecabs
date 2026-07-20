@@ -545,3 +545,19 @@ class OtherCharge(models.Model):
 
     def __str__(self):
         return f"{self.description} — €{self.amount}"
+
+
+class DailyRate(models.Model):
+    """A maintained daily rate for loss of earnings / loss of use, editable by
+    staff on the Maintenance page and selectable on the claim form."""
+
+    name = models.CharField(max_length=100)
+    amount = models.DecimalField("Daily amount", max_digits=10, decimal_places=2)
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["order", "name"]
+
+    def __str__(self):
+        return f"{self.name} — €{self.amount}/day"
