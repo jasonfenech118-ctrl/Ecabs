@@ -877,6 +877,8 @@ def claim_invoice(request, pk):
             "total": total,
             # Statement number is the automated company case number (VD-00001).
             "invoice_no": claim.case_ref or claim.reference,
+            # Invoice date = the recovery/bill-sent date, not today.
+            "invoice_date": claim.bills_sent_on or timezone.localdate(),
         },
     )
 

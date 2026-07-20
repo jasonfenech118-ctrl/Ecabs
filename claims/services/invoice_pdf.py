@@ -97,8 +97,9 @@ def build_invoice_pdf(claim, company):
         Paragraph("Bill To:", muted),
         Paragraph(claim.third_party_insurer or "—", bold),
     ]
+    invoice_date = claim.bills_sent_on or timezone.localdate()
     summary = [
-        Paragraph(f'Date: <b>{timezone.localdate().strftime("%d/%m/%Y")}</b>', right),
+        Paragraph(f'Invoice date: <b>{invoice_date.strftime("%d/%m/%Y")}</b>', right),
         Spacer(1, 6 * mm),
         Paragraph(f"Balance Due: <b>{_euro(claim.total_claim_amount)}</b>", right),
     ]
