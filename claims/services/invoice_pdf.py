@@ -22,6 +22,24 @@ from reportlab.platypus import (
     TableStyle,
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.pdfgen.canvas import Canvas
+
+
+class _CleanCanvas(Canvas):
+    """Canvas that blanks all identifying PDF metadata (title/author/producer…)
+    so the file properties reveal nothing."""
+
+    def save(self):
+        for setter in ("setTitle", "setAuthor", "setSubject", "setCreator",
+                       "setProducer", "setKeywords"):
+            fn = getattr(self, setter, None)
+            if fn:
+                try:
+                    fn("")
+                except Exception:
+                    pass
+        super().save()
+
 
 INK = colors.HexColor("#1a1a1a")
 MUTED = colors.HexColor("#666666")
@@ -50,7 +68,7 @@ def build_invoice_pdf(claim, company):
     doc = SimpleDocTemplate(
         buf, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm,
         topMargin=16 * mm, bottomMargin=16 * mm,
-        title=f"Statement {claim.case_ref or claim.reference}",
+        title="", author="", subject="", creator="",
     )
     styles = getSampleStyleSheet()
     normal = ParagraphStyle("n", parent=styles["Normal"], fontName="Helvetica", fontSize=9, leading=12, textColor=INK)
@@ -155,7 +173,7 @@ def build_invoice_pdf(claim, company):
         if company.swift:
             story.append(Paragraph(f"Swift Code – {company.swift}", normal))
 
-    doc.build(story)
+    doc.build(story, canvasmaker=_CleanCanvas)
     return buf.getvalue()
 
 
@@ -166,13 +184,17 @@ def build_lou_pdf(claim, company):
     doc = SimpleDocTemplate(
         buf, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm,
         topMargin=16 * mm, bottomMargin=16 * mm,
-        title=f"Loss of use {claim.case_ref or claim.reference}",
+        title="", author="", subject="", creator="",
     )
     styles = getSampleStyleSheet()
     normal = ParagraphStyle("n", parent=styles["Normal"], fontName="Helvetica", fontSize=10, leading=15, textColor=INK)
     bold = ParagraphStyle("b", parent=normal, fontName="Helvetica-Bold")
     right = ParagraphStyle("r", parent=normal, alignment=2)
     right_bold = ParagraphStyle("rb", parent=right, fontName="Helvetica-Bold")
+    title_style = ParagraphStyle(
+        "lt", parent=normal, fontName="Helvetica-Bold", fontSize=24,
+        leading=28, alignment=2, spaceAfter=4,
+    )
     story = []
     stmt_no = claim.case_ref or claim.reference
 
@@ -195,8 +217,9 @@ def build_lou_pdf(claim, company):
         colWidths=[90 * mm, 80 * mm],
     )
     header.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP")]))
-    story += [header, Spacer(1, 12 * mm)]
+    story += [header, Spacer(1, 10 * mm)]
 
+    story.append(Paragraph("Loss of Earnings", title_style))
     story.append(Paragraph(f"Statement No: # <b>{stmt_no}</b>", right_bold))
     story.append(Spacer(1, 8 * mm))
 
@@ -222,7 +245,7 @@ def build_lou_pdf(claim, company):
 
     story.append(Paragraph(
         f"Further to the above accident and mentioned details, kindly issue a "
-        f"refund for {days} days loss of use at {_euro(rate)} daily (exc. VAT).",
+        f"refund for {days} days loss of use at {_euro(rate)} daily (exc. VAT)",
         normal))
     story.append(Spacer(1, 8 * mm))
     story.append(Paragraph(
@@ -232,13 +255,14 @@ def build_lou_pdf(claim, company):
     story.append(Paragraph(
         "*Kindly note that the amount quoted is net of 30% running expenses.", normal))
     story.append(Spacer(1, 8 * mm))
+    story.append(Paragraph(
+        "Should you require any additional information due not hesitate to contact us on:",
+        normal))
     contact = company.email or company.phone
     if contact:
-        story.append(Paragraph(
-            f"Should you require any additional information do not hesitate to "
-            f"contact us on: {contact}", normal))
-        story.append(Spacer(1, 8 * mm))
+        story.append(Paragraph(contact, normal))
+    story.append(Spacer(1, 8 * mm))
     story.append(Paragraph("Awaiting your remittance,", normal))
 
-    doc.build(story)
+    doc.build(story, canvasmaker=_CleanCanvas)
     return buf.getvalue()
