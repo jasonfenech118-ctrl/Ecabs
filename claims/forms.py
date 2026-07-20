@@ -63,7 +63,6 @@ class ClaimForm(forms.ModelForm):
             "parts_amount",
             "loe_days",
             "loe_daily_rate",
-            "others_amount",
             "settlement_amount",
             "amount_paid",
             "offset_amount",

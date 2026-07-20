@@ -1,5 +1,5 @@
 from datetime import timedelta
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, Sum
@@ -265,6 +265,25 @@ def claim_edit(request, pk):
     )
 
 
+def _sync_other_charges(claim, request):
+    """Rebuild the claim's manual 'other' recovery lines from posted rows."""
+    descs = request.POST.getlist("other_desc")
+    amts = request.POST.getlist("other_amt")
+    claim.other_charges.all().delete()
+    order = 0
+    for desc, amt in zip(descs, amts):
+        desc = desc.strip()
+        try:
+            value = Decimal(amt)
+        except (InvalidOperation, TypeError):
+            value = None
+        if desc or (value and value != 0):
+            claim.other_charges.create(
+                description=desc, amount=value or Decimal("0"), order=order
+            )
+            order += 1
+
+
 @login_required
 @require_POST
 def claim_autosave(request, pk):
@@ -273,6 +292,7 @@ def claim_autosave(request, pk):
     form = ClaimForm(request.POST, instance=claim)
     if form.is_valid():
         form.save()
+        _sync_other_charges(claim, request)
         return render(
             request,
             "claims/partials/save_status.html",
@@ -292,6 +312,7 @@ def claim_submit(request, pk):
     form = ClaimForm(request.POST, instance=claim)
     if form.is_valid():
         claim = form.save()
+    _sync_other_charges(claim, request)
     claim.submit()
     return redirect("claim_detail", pk=claim.pk)
 
@@ -675,7 +696,7 @@ MASTER_COLUMNS = [
     ("LOE days", lambda c: c.loe_days or ""),
     ("LOE daily", lambda c: _fmt_money(c.loe_daily_rate)),
     ("Loss of earnings", lambda c: _fmt_money(c.loss_of_earnings)),
-    ("Others", lambda c: _fmt_money(c.others_amount)),
+    ("Others", lambda c: _fmt_money(c.other_charges_total)),
     ("TOTAL claim", lambda c: _fmt_money(c.total_claim_amount)),
     ("Settlement", lambda c: _fmt_money(c.settlement_amount)),
     ("Amount paid", lambda c: _fmt_money(c.amount_paid)),

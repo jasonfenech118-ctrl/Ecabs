@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "HhvGggdir1JmsxZ60fSPCrMLEN2woYSE1Pw1m2cQ0Tcds9XbXVeaJVeGl2rLHg3Z"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "cIlnfbNm9a6gENdp47Z8idQLJJIy2Wt90DDg2XnNLGRHZorYh1X75Oiht5m9oGn4"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -76,7 +76,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="HhvGggdir1JmsxZ60fSPCrMLEN2woYSE1Pw1m2cQ0Tcds9XbXVeaJVeGl2rLHg3Z">
+  <input type="hidden" name="csrfmiddlewaretoken" value="cIlnfbNm9a6gENdp47Z8idQLJJIy2Wt90DDg2XnNLGRHZorYh1X75Oiht5m9oGn4">
 
   <datalist id="vehicle-regs">
     <option value="ECB101">Toyota Corolla Hybrid</option>
@@ -360,12 +360,6 @@
 </div>
 
       <div class="field ">
-  <label for="id_others_amount">Others</label>
-  <input type="number" name="others_amount" step="0.01" id="id_others_amount">
-  
-</div>
-
-      <div class="field ">
   <label for="id_settlement_amount">Settlement</label>
   <input type="number" name="settlement_amount" step="0.01" id="id_settlement_amount">
   
@@ -384,6 +378,15 @@
 </div>
 
     </div>
+
+    <div class="field span-2" style="margin-top:1rem">
+      <label>Others — add a line for each extra (wheel alignment, windscreen, etc.)</label>
+      <div id="other-lines">
+        
+      </div>
+      <button type="button" class="btn btn-sm" id="add-other-line">+ Add line</button>
+    </div>
+
     <div class="recovery-totals" id="recovery-totals">
       <div><span class="muted">Total claim</span><strong id="rt-total">€0.00</strong></div>
       <div><span class="muted">Outstanding</span><strong id="rt-out">€0.00</strong></div>
@@ -423,22 +426,53 @@
 </form>
 
 <script>
-  // Live recovery totals — mirrors the server-side calculation as you type.
+  // Live recovery totals + repeatable "Others" lines.
   (function () {
     function num(id) { var e = document.getElementById(id); return e ? parseFloat(e.value) || 0 : 0; }
     function fmt(v) { return '€' + v.toLocaleString('en-MT', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+    function othersTotal() {
+      var t = 0;
+      document.querySelectorAll('#other-lines .other-amt').forEach(function (i) { t += parseFloat(i.value) || 0; });
+      return t;
+    }
     function recalc() {
       var loe = num('id_loe_days') * num('id_loe_daily_rate');
       var total = num('id_labour_amount') + num('id_spray_material_amount')
-        + num('id_parts_amount') + loe + num('id_others_amount');
+        + num('id_parts_amount') + loe + othersTotal();
       var out = total - num('id_amount_paid') - num('id_offset_amount');
       document.getElementById('rt-total').textContent = fmt(total);
       document.getElementById('rt-out').textContent = fmt(out);
     }
     ['labour_amount','spray_material_amount','parts_amount','loe_days','loe_daily_rate',
-     'others_amount','amount_paid','offset_amount'].forEach(function (n) {
+     'amount_paid','offset_amount'].forEach(function (n) {
       var el = document.getElementById('id_' + n);
       if (el) el.addEventListener('input', recalc);
+    });
+
+    var lines = document.getElementById('other-lines');
+    function addLine(desc, amt) {
+      var row = document.createElement('div');
+      row.className = 'other-line';
+      row.innerHTML = '<input type="text" name="other_desc" placeholder="Description">'
+        + '<input type="number" step="0.01" name="other_amt" placeholder="Amount €" class="other-amt">'
+        + '<button type="button" class="btn btn-sm other-del" title="Remove line">✕</button>';
+      row.querySelector('[name=other_desc]').value = desc || '';
+      row.querySelector('[name=other_amt]').value = amt || '';
+      lines.appendChild(row);
+    }
+    document.getElementById('add-other-line').addEventListener('click', function () {
+      addLine();
+      lines.lastChild.querySelector('input').focus();
+    });
+    // Add/remove and edits within Others recalc the total; removal also
+    // fires a change so the form auto-saves.
+    lines.addEventListener('input', recalc);
+    lines.addEventListener('click', function (e) {
+      if (e.target.classList.contains('other-del')) {
+        e.target.closest('.other-line').remove();
+        recalc();
+        document.querySelector('form').dispatchEvent(new Event('change', {bubbles: true}));
+      }
     });
     recalc();
   })();

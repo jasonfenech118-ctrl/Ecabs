@@ -327,6 +327,13 @@ class Claim(models.Model):
         return Decimal("0")
 
     @property
+    def other_charges_total(self):
+        """Sum of the manual 'other' line items (wheel alignment, windscreen…)."""
+        if not self.pk:
+            return Decimal("0")
+        return sum((oc.amount or Decimal("0") for oc in self.other_charges.all()), Decimal("0"))
+
+    @property
     def total_claim_amount(self):
         """Everything being recovered from the third party."""
         parts = [
@@ -334,9 +341,8 @@ class Claim(models.Model):
             self.spray_material_amount,
             self.parts_amount,
             self.loss_of_earnings,
-            self.others_amount,
         ]
-        return sum((p or Decimal("0")) for p in parts)
+        return sum((p or Decimal("0")) for p in parts) + self.other_charges_total
 
     @property
     def outstanding_amount(self):
@@ -365,8 +371,9 @@ class Claim(models.Model):
                 ("Loss of earnings", self.loe_days, self.loe_daily_rate,
                  self.loss_of_earnings)
             )
-        if self.others_amount:
-            lines.append(("Others", 1, self.others_amount, self.others_amount))
+        for oc in self.other_charges.all():
+            if oc.amount:
+                lines.append((oc.description or "Other", 1, oc.amount, oc.amount))
         return lines
 
 
@@ -517,6 +524,24 @@ class BillingItem(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.description} — €{self.amount}"
+
+
+class OtherCharge(models.Model):
+    """A manual 'other' recovery line on a claim (wheel alignment, windscreen,
+    etc.). A claim can have none, one, or many."""
+
+    claim = models.ForeignKey(
+        Claim, on_delete=models.CASCADE, related_name="other_charges"
+    )
+    description = models.CharField(max_length=200)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
 
     def __str__(self):
         return f"{self.description} — €{self.amount}"

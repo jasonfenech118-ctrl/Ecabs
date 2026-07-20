@@ -7,10 +7,16 @@ from .models import (
     Claim,
     Company,
     EmailLog,
+    OtherCharge,
     Reminder,
     Survey,
     Vehicle,
 )
+
+
+class OtherChargeInline(admin.TabularInline):
+    model = OtherCharge
+    extra = 0
 
 
 @admin.register(Company)
@@ -78,7 +84,7 @@ class ClaimAdmin(SimpleHistoryAdmin):
     )
     date_hierarchy = "accident_date"
     readonly_fields = ("reference", "created_at", "updated_at", "submitted_at")
-    inlines = [AccidentPhotoInline, SurveyInline, ReminderInline, BillingItemInline]
+    inlines = [OtherChargeInline, AccidentPhotoInline, SurveyInline, ReminderInline, BillingItemInline]
 
 
 @admin.register(EmailLog)

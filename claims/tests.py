@@ -288,6 +288,35 @@ class ViewTests(TestCase):
         self.assertContains(r, "455.00")  # 100 + 250 + 3*35
         self.assertContains(r, "Total NET")
 
+    def test_other_charges_lines(self):
+        from decimal import Decimal
+
+        claim = Claim.objects.create(created_by=self.user)
+        # Autosave posts two "other" lines
+        self.client.post(
+            reverse("claim_autosave", args=[claim.pk]),
+            {
+                "fault": "unknown",
+                "other_desc": ["Wheel alignment", "Windscreen repair", ""],
+                "other_amt": ["45.00", "120.50", ""],
+            },
+        )
+        claim.refresh_from_db()
+        self.assertEqual(claim.other_charges.count(), 2)  # blank row ignored
+        self.assertEqual(claim.total_claim_amount, Decimal("165.50"))
+        # They appear as invoice lines with their descriptions
+        items = [line[0] for line in claim.invoice_lines()]
+        self.assertIn("Wheel alignment", items)
+        self.assertIn("Windscreen repair", items)
+        # Re-posting replaces, not appends
+        self.client.post(
+            reverse("claim_autosave", args=[claim.pk]),
+            {"fault": "unknown", "other_desc": ["Towing"], "other_amt": ["80.00"]},
+        )
+        claim.refresh_from_db()
+        self.assertEqual(claim.other_charges.count(), 1)
+        self.assertEqual(claim.total_claim_amount, Decimal("80.00"))
+
     def test_invoice_pdf(self):
         from decimal import Decimal
 

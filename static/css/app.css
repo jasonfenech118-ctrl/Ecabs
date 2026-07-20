@@ -206,6 +206,12 @@ details.inline-form summary { cursor: pointer; font-weight: 600; color: var(--ac
 details.inline-form summary::before { content: "+ "; }
 details.inline-form[open] summary::before { content: "− "; }
 
+/* --- Repeatable "Others" lines ------------------------------------------------- */
+.other-line { display: flex; gap: .5rem; margin-bottom: .5rem; align-items: center; }
+.other-line input[name="other_desc"] { flex: 2; }
+.other-line .other-amt { flex: 1; max-width: 160px; }
+.other-line .other-del { color: var(--danger); border-color: var(--border); }
+
 /* --- Live recovery totals on the claim form ------------------------------------ */
 .recovery-totals {
   display: flex; gap: 2rem; margin-top: 1rem; padding-top: .75rem;

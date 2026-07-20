@@ -76,7 +76,9 @@
       <dt>Parts</dt><dd>{% if claim.parts_amount %}€{{ claim.parts_amount }}{% else %}—{% endif %}</dd>
       <dt>Loss of earnings</dt>
       <dd>{% if claim.loe_days %}{{ claim.loe_days }} day{{ claim.loe_days|pluralize }} × €{{ claim.loe_daily_rate|default:"0" }} = €{{ claim.loss_of_earnings }}{% else %}—{% endif %}</dd>
-      <dt>Others</dt><dd>{% if claim.others_amount %}€{{ claim.others_amount }}{% else %}—{% endif %}</dd>
+      {% for oc in claim.other_charges.all %}
+      <dt>{{ oc.description|default:"Other" }}</dt><dd>€{{ oc.amount }}</dd>
+      {% endfor %}
     </dl>
     <dl class="kv">
       <dt>Total claim</dt><dd><strong>€{{ claim.total_claim_amount|floatformat:2 }}</strong></dd>
