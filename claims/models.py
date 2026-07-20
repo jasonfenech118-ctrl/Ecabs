@@ -28,6 +28,39 @@ def compliance_state(due_date, soon_days=30):
     return "ok"
 
 
+class Company(models.Model):
+    """A group company whose letterhead an invoice can be issued under.
+    Chosen at the point of finalising the invoice, not stored on the claim."""
+
+    name = models.CharField(max_length=120)
+    address = models.TextField(help_text="Full postal address, one line each")
+    phone = models.CharField(max_length=40, blank=True)
+    email = models.CharField(max_length=120, blank=True)
+    website = models.CharField(max_length=120, blank=True)
+    vat_no = models.CharField("VAT no", max_length=40, blank=True)
+    # Payment details shown on the invoice.
+    bank_name = models.CharField(max_length=80, blank=True)
+    iban = models.CharField(max_length=60, blank=True)
+    account_no = models.CharField(max_length=40, blank=True)
+    swift = models.CharField(max_length=20, blank=True)
+    # Static path (under static/img/companies/) or an uploaded logo.
+    logo_static = models.CharField(
+        max_length=120, blank=True,
+        help_text="Path under static/, e.g. img/companies/vai.png",
+    )
+    logo = models.ImageField(upload_to="company_logos/", blank=True)
+    footer_note = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "name"]
+        verbose_name_plural = "companies"
+
+    def __str__(self):
+        return self.name
+
+
 class Vehicle(models.Model):
     """A fleet vehicle. Retire (close) vehicles that leave the company rather
     than deleting them, so their claim history keeps its context."""
@@ -313,6 +346,28 @@ class Claim(models.Model):
             - (self.amount_paid or Decimal("0"))
             - (self.offset_amount or Decimal("0"))
         )
+
+    def invoice_lines(self):
+        """Line items for the statement/invoice, from the recovery figures.
+        Each: (item, qty, rate, amount). Zero lines are omitted."""
+        lines = []
+        if self.labour_amount:
+            lines.append(("Labour", 1, self.labour_amount, self.labour_amount))
+        if self.spray_material_amount:
+            lines.append(
+                ("Spray + Material", 1, self.spray_material_amount,
+                 self.spray_material_amount)
+            )
+        if self.parts_amount:
+            lines.append(("Parts", 1, self.parts_amount, self.parts_amount))
+        if self.loe_days and self.loe_daily_rate:
+            lines.append(
+                ("Loss of earnings", self.loe_days, self.loe_daily_rate,
+                 self.loss_of_earnings)
+            )
+        if self.others_amount:
+            lines.append(("Others", 1, self.others_amount, self.others_amount))
+        return lines
 
 
 class AccidentPhoto(models.Model):

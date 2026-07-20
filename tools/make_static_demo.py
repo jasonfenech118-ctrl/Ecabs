@@ -24,7 +24,7 @@ django.setup()
 from django.contrib.auth import get_user_model  # noqa: E402
 from django.test import Client  # noqa: E402
 
-from claims.models import Claim, Vehicle  # noqa: E402
+from claims.models import Claim, Company, Vehicle  # noqa: E402
 
 OUT = Path(__file__).resolve().parent.parent / "demo"
 OUT.mkdir(exist_ok=True)
@@ -60,9 +60,15 @@ def build_url_map():
     }
     for pk in Vehicle.objects.values_list("pk", flat=True):
         urls[f"/vehicles/{pk}/"] = f"vehicle-{pk}.html"
+    first_company = Company.objects.first()
     for pk in Claim.objects.values_list("pk", flat=True):
         urls[f"/claims/{pk}/"] = f"claim-{pk}.html"
         urls[f"/claims/{pk}/edit/"] = f"claim-{pk}-edit.html"
+        urls[f"/claims/{pk}/invoice/"] = f"claim-{pk}-invoice.html"
+        if first_company:
+            urls[f"/claims/{pk}/invoice/?company={first_company.pk}"] = (
+                f"claim-{pk}-invoice-co.html"
+            )
         for tab in TABS:
             urls[f"/claims/{pk}/tab/{tab}/"] = f"claim-{pk}-{tab}.html"
     # "New claim" can't create records statically — send it to a draft's form.
@@ -173,6 +179,9 @@ def main():
     if user.first_name != "Vai Drive":
         user.first_name, user.last_name = "Vai Drive", "Staff"
         user.save()
+    from django.core.management import call_command
+
+    call_command("seed_companies")
     seed_samples(user)
     if not Claim.objects.filter(status=Claim.Status.DRAFT).exists():
         Claim.objects.create(created_by=user)

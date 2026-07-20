@@ -5,11 +5,18 @@ from .models import (
     AccidentPhoto,
     BillingItem,
     Claim,
+    Company,
     EmailLog,
     Reminder,
     Survey,
     Vehicle,
 )
+
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ("name", "vat_no", "bank_name", "is_active", "order")
+    list_editable = ("order", "is_active")
 
 
 @admin.register(Vehicle)

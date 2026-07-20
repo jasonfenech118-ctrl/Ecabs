@@ -258,6 +258,36 @@ class ViewTests(TestCase):
             self.client.get(reverse("claim_group", args=["bogus"])).status_code, 400
         )
 
+    def test_invoice_company_selection(self):
+        from decimal import Decimal
+
+        from .models import Company
+
+        co = Company.objects.create(
+            name="Vai Drive Co Ltd.", address="Paceville, Malta",
+            bank_name="Banif Bank", iban="MT40BNIF...",
+            logo_static="img/companies/vai.png",
+        )
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-INV",
+            third_party_registration="ABC123", third_party_insurer="Mapfre",
+            tp_claim_number="C34-999", labour_amount=Decimal("100.00"),
+            parts_amount=Decimal("250.00"), loe_days=3,
+            loe_daily_rate=Decimal("35.00"), created_by=self.user,
+        )
+        # No company chosen yet -> prompt, no statement.
+        r = self.client.get(reverse("claim_invoice", args=[claim.pk]))
+        self.assertContains(r, "select company")
+        self.assertNotContains(r, "Total NET")
+        # Company chosen -> full statement with letterhead + line items + total.
+        r = self.client.get(reverse("claim_invoice", args=[claim.pk]), {"company": co.pk})
+        self.assertContains(r, "Vai Drive Co Ltd.")
+        self.assertContains(r, "Banif Bank")
+        self.assertContains(r, "Labour")
+        self.assertContains(r, "Loss of earnings")
+        self.assertContains(r, "455.00")  # 100 + 250 + 3*35
+        self.assertContains(r, "Total NET")
+
     def test_data_dashboard(self):
         Claim.objects.create(status=Claim.Status.OPEN, created_by=self.user)
         r = self.client.get(reverse("data_dashboard"))

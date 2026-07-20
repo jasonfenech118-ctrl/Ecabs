@@ -26,6 +26,7 @@ from .models import (
     AccidentPhoto,
     BillingItem,
     Claim,
+    Company,
     EmailLog,
     Reminder,
     Survey,
@@ -760,6 +761,33 @@ def master_sheet(request):
             "statuses": Claim.Status.choices,
             "q": request.GET.get("q", ""),
             "status": request.GET.get("status", ""),
+        },
+    )
+
+
+@login_required
+def claim_invoice(request, pk):
+    """Automated statement/invoice for a claim. The company (letterhead) is
+    chosen here, at finalisation — not stored on the claim."""
+    claim = get_object_or_404(Claim, pk=pk)
+    companies = Company.objects.filter(is_active=True)
+    selected = request.GET.get("company")
+    company = None
+    if selected:
+        company = companies.filter(pk=selected).first()
+    lines = claim.invoice_lines()
+    total = claim.total_claim_amount
+    return render(
+        request,
+        "claims/invoice.html",
+        {
+            "claim": claim,
+            "companies": companies,
+            "company": company,
+            "lines": lines,
+            "total": total,
+            # Statement number is the automated company case number (VD-00001).
+            "invoice_no": claim.case_ref or claim.reference,
         },
     )
 
