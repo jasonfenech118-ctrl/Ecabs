@@ -157,3 +157,88 @@ def build_invoice_pdf(claim, company):
 
     doc.build(story)
     return buf.getvalue()
+
+
+def build_lou_pdf(claim, company):
+    """Loss-of-use refund letter under a company letterhead — the second
+    invoice type. Days x daily rate, net of running expenses."""
+    buf = BytesIO()
+    doc = SimpleDocTemplate(
+        buf, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm,
+        topMargin=16 * mm, bottomMargin=16 * mm,
+        title=f"Loss of use {claim.case_ref or claim.reference}",
+    )
+    styles = getSampleStyleSheet()
+    normal = ParagraphStyle("n", parent=styles["Normal"], fontName="Helvetica", fontSize=10, leading=15, textColor=INK)
+    bold = ParagraphStyle("b", parent=normal, fontName="Helvetica-Bold")
+    right = ParagraphStyle("r", parent=normal, alignment=2)
+    right_bold = ParagraphStyle("rb", parent=right, fontName="Helvetica-Bold")
+    story = []
+    stmt_no = claim.case_ref or claim.reference
+
+    # Header: logo left, company address right
+    path = _logo_path(company)
+    if path:
+        img = Image(path)
+        ratio = img.imageHeight / float(img.imageWidth)
+        img.drawWidth = 50 * mm
+        img.drawHeight = 50 * mm * ratio
+        if img.drawHeight > 24 * mm:
+            img.drawHeight = 24 * mm
+            img.drawWidth = 24 * mm / ratio
+        logo = img
+    else:
+        logo = Paragraph(company.name, bold)
+    addr = company.address.replace("\n", "<br/>")
+    header = Table(
+        [[logo, Paragraph(f"<b>{company.name}</b><br/>{addr}", right)]],
+        colWidths=[90 * mm, 80 * mm],
+    )
+    header.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP")]))
+    story += [header, Spacer(1, 12 * mm)]
+
+    story.append(Paragraph(f"Statement No: # <b>{stmt_no}</b>", right_bold))
+    story.append(Spacer(1, 8 * mm))
+
+    days = claim.loe_days or 0
+    rate = claim.loe_daily_rate or Decimal("0")
+    total = claim.loss_of_earnings
+    details = [
+        ("Claim No:", claim.tp_claim_number or claim.insurer_claim_number),
+        ("Our Reg no:", claim.vehicle_registration),
+        ("TP Reg no:", claim.third_party_registration),
+        ("Make:", claim.vehicle_make_model),
+        ("Loss of Use:", f"{days} DAYS"),
+    ]
+    rows = [[Paragraph(f"<b>{lbl}</b>", normal), Paragraph(str(val or ""), bold)]
+            for lbl, val in details]
+    dt = Table(rows, colWidths=[32 * mm, 120 * mm])
+    dt.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("TOPPADDING", (0, 0), (-1, -1), 1),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
+    ]))
+    story += [dt, Spacer(1, 10 * mm)]
+
+    story.append(Paragraph(
+        f"Further to the above accident and mentioned details, kindly issue a "
+        f"refund for {days} days loss of use at {_euro(rate)} daily (exc. VAT).",
+        normal))
+    story.append(Spacer(1, 8 * mm))
+    story.append(Paragraph(
+        f"Total amount due Net of Vat &nbsp;&nbsp;&nbsp; <b><u>{_euro(total)}</u></b>",
+        normal))
+    story.append(Spacer(1, 8 * mm))
+    story.append(Paragraph(
+        "*Kindly note that the amount quoted is net of 30% running expenses.", normal))
+    story.append(Spacer(1, 8 * mm))
+    contact = company.email or company.phone
+    if contact:
+        story.append(Paragraph(
+            f"Should you require any additional information do not hesitate to "
+            f"contact us on: {contact}", normal))
+        story.append(Spacer(1, 8 * mm))
+    story.append(Paragraph("Awaiting your remittance,", normal))
+
+    doc.build(story)
+    return buf.getvalue()

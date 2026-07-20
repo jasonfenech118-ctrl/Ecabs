@@ -67,10 +67,14 @@ def build_url_map():
         urls[f"/claims/{pk}/"] = f"claim-{pk}.html"
         urls[f"/claims/{pk}/edit/"] = f"claim-{pk}-edit.html"
         urls[f"/claims/{pk}/invoice/"] = f"claim-{pk}-invoice.html"
+        urls[f"/claims/{pk}/lou/"] = f"claim-{pk}-lou.html"
         # Rendered invoice under each company, for claims with recovery amounts.
         if claim.invoice_lines():
             for co in company_pks:
                 urls[f"/claims/{pk}/invoice/?company={co}"] = f"claim-{pk}-invoice-co{co}.html"
+        if claim.loe_days:
+            for co in company_pks:
+                urls[f"/claims/{pk}/lou/?company={co}"] = f"claim-{pk}-lou-co{co}.html"
         for tab in TABS:
             urls[f"/claims/{pk}/tab/{tab}/"] = f"claim-{pk}-{tab}.html"
     # "New claim" can't create records statically — send it to a draft's form.

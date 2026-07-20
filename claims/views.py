@@ -900,6 +900,37 @@ def claim_invoice_pdf(request, pk):
 
 
 @login_required
+def claim_lou(request, pk):
+    """Loss-of-use letter — the second invoice type. Company chosen here."""
+    claim = get_object_or_404(Claim, pk=pk)
+    companies = Company.objects.filter(is_active=True)
+    selected = request.GET.get("company")
+    company = companies.filter(pk=selected).first() if selected else None
+    return render(
+        request,
+        "claims/lou.html",
+        {"claim": claim, "companies": companies, "company": company,
+         "invoice_no": claim.case_ref or claim.reference},
+    )
+
+
+@login_required
+def claim_lou_pdf(request, pk):
+    """Return the loss-of-use letter as an inline PDF."""
+    from django.http import HttpResponse
+
+    from .services.invoice_pdf import build_lou_pdf
+
+    claim = get_object_or_404(Claim, pk=pk)
+    company = get_object_or_404(Company, pk=request.GET.get("company"))
+    pdf = build_lou_pdf(claim, company)
+    response = HttpResponse(pdf, content_type="application/pdf")
+    ref = (claim.case_ref or claim.reference).replace(" ", "")
+    response["Content-Disposition"] = f'inline; filename="loss-of-use-{ref}.pdf"'
+    return response
+
+
+@login_required
 def data_dashboard(request):
     """Charts: claims by status, lifecycle, by insurer, outstanding, by month."""
     from calendar import month_abbr

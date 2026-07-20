@@ -17,6 +17,7 @@
     </span>
     <a href="{% url 'claim_edit' claim.pk %}" class="btn">Edit details</a>
     <a href="{% url 'claim_invoice' claim.pk %}" class="btn btn-primary">Create invoice</a>
+    <a href="{% url 'claim_lou' claim.pk %}" class="btn">Loss of use letter</a>
     <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
   </div>
 </div>
