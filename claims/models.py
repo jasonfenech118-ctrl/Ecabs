@@ -38,6 +38,7 @@ class Company(models.Model):
     email = models.CharField(max_length=120, blank=True)
     website = models.CharField(max_length=120, blank=True)
     vat_no = models.CharField("VAT no", max_length=40, blank=True)
+    exo_number = models.CharField("EXO number", max_length=40, blank=True)
     # Payment details shown on the invoice.
     bank_name = models.CharField(max_length=80, blank=True)
     iban = models.CharField(max_length=60, blank=True)
@@ -400,6 +401,27 @@ class Claim(models.Model):
             - (self.amount_paid or Decimal("0"))
             - (self.offset_amount or Decimal("0"))
         )
+
+    @property
+    def repairs_total(self):
+        """Repair costs only (labour, spray+material, parts, others) — no LOE.
+        Used net-of-VAT on the repairs receipt."""
+        parts = [self.labour_amount, self.spray_material_amount, self.parts_amount]
+        return sum((p or Decimal("0")) for p in parts) + self.other_charges_total
+
+    def repairs_description(self):
+        """Comma-joined list of the repair components present on the claim."""
+        bits = []
+        if self.labour_amount:
+            bits.append("Labour")
+        if self.spray_material_amount:
+            bits.append("Spray, Spray Material")
+        if self.parts_amount:
+            bits.append("Parts")
+        for oc in self.other_charges.all():
+            if oc.amount and oc.description:
+                bits.append(oc.description)
+        return ", ".join(bits) or "Repairs"
 
     def invoice_lines(self):
         """Line items for the statement/invoice, from the recovery figures.

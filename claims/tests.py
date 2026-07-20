@@ -343,6 +343,31 @@ class ViewTests(TestCase):
         self.assertEqual(claim.other_charges.count(), 1)
         self.assertEqual(claim.total_claim_amount, Decimal("80.00"))
 
+    def test_repairs_invoice_pdf(self):
+        from decimal import Decimal
+
+        from .models import Company
+
+        co = Company.objects.create(
+            name="eCabs Ltd", address="St Julians, Malta",
+            vat_no="MT21583611", exo_number="4270",
+            logo_static="img/companies/ecabs.png",
+        )
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="BLY438",
+            tp_claim_number="M24109061", labour_amount=Decimal("200.00"),
+            spray_material_amount=Decimal("168.02"), created_by=self.user,
+        )
+        # net = 368.02, vat @18% = 66.24, total = 434.26
+        self.assertEqual(claim.repairs_total, Decimal("368.02"))
+        r = self.client.get(reverse("claim_repairs", args=[claim.pk]), {"company": co.pk})
+        self.assertContains(r, "VAT @18%")
+        self.assertContains(r, "66.24")
+        self.assertContains(r, "434.26")
+        pdf = self.client.get(reverse("claim_repairs_pdf", args=[claim.pk]), {"company": co.pk})
+        self.assertEqual(pdf["Content-Type"], "application/pdf")
+        self.assertTrue(pdf.content[:5] == b"%PDF-")
+
     def test_loss_of_use_letter_pdf(self):
         from decimal import Decimal
 

@@ -177,6 +177,115 @@ def build_invoice_pdf(claim, company):
     return buf.getvalue()
 
 
+REPAIR_VAT_RATE = Decimal("0.18")
+BLUE = colors.HexColor("#2f6db5")
+
+
+def build_repairs_pdf(claim, company):
+    """Repairs VAT receipt (Labour/Spray/Parts/Others, net + VAT @18%),
+    for issuing to the insurer — the third invoice type."""
+    buf = BytesIO()
+    doc = SimpleDocTemplate(
+        buf, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm,
+        topMargin=16 * mm, bottomMargin=16 * mm,
+        title="", author="", subject="", creator="",
+    )
+    styles = getSampleStyleSheet()
+    normal = ParagraphStyle("n", parent=styles["Normal"], fontName="Helvetica", fontSize=9, leading=13, textColor=INK)
+    muted = ParagraphStyle("m", parent=normal, textColor=MUTED)
+    bold = ParagraphStyle("b", parent=normal, fontName="Helvetica-Bold")
+    right = ParagraphStyle("r", parent=normal, alignment=2)
+    title = ParagraphStyle("t", parent=normal, fontName="Helvetica-Bold", fontSize=26, alignment=2, textColor=BLUE, leading=30)
+    blue_h = ParagraphStyle("bh", parent=bold, textColor=BLUE, fontSize=14, leading=18)
+
+    net = claim.repairs_total
+    vat = (net * REPAIR_VAT_RATE).quantize(Decimal("0.01"))
+    total = net + vat
+    inv_date = claim.bills_sent_on or timezone.localdate()
+    receipt_no = claim.case_ref or claim.reference
+
+    story = []
+    path = _logo_path(company)
+    if path:
+        img = Image(path)
+        ratio = img.imageHeight / float(img.imageWidth)
+        img.drawWidth = 50 * mm
+        img.drawHeight = 50 * mm * ratio
+        if img.drawHeight > 24 * mm:
+            img.drawHeight, img.drawWidth = 24 * mm, 24 * mm / ratio
+        logo = img
+    else:
+        logo = Paragraph(company.name, bold)
+    story.append(Table([[logo, Paragraph("Receipt", title)]], colWidths=[95 * mm, 79 * mm],
+                       style=TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP")])))
+    story.append(Spacer(1, 6 * mm))
+
+    left = [
+        Paragraph("Receipt No.", muted), Paragraph(receipt_no, bold),
+        Spacer(1, 3 * mm),
+        Paragraph("Document Date", muted),
+        Paragraph(inv_date.strftime("%d %B %Y"), bold),
+    ]
+    addr = company.address.replace("\n", "<br/>")
+    co_block = [Paragraph(company.name, bold), Paragraph(addr, muted)]
+    for lbl, val in [("Email", company.email), ("Phone No.", company.phone),
+                     ("VAT Registration No", company.vat_no),
+                     ("EXO Number", company.exo_number)]:
+        if val:
+            co_block.append(Paragraph(f"{lbl}: {val}", normal))
+    story.append(Table([[left, co_block]], colWidths=[95 * mm, 79 * mm],
+                       style=TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP")])))
+    story.append(Spacer(1, 8 * mm))
+
+    story.append(Paragraph(f"Thanks for choosing {company.name}!", blue_h))
+    story.append(Paragraph("Here is your receipt.", muted))
+    story.append(Spacer(1, 6 * mm))
+    story.append(Paragraph("Claim Number", muted))
+    story.append(Paragraph(claim.tp_claim_number or claim.insurer_claim_number or "—", bold))
+    story.append(Spacer(1, 6 * mm))
+
+    head = ["Booking ID", "Date", "Description", "Reg. No", "Amount Net", "Amount incl. VAT"]
+    row = [
+        claim.invoice_number or receipt_no,
+        inv_date.strftime("%d/%m/%Y"),
+        claim.repairs_description(),
+        claim.vehicle_registration,
+        _euro(net), _euro(total),
+    ]
+    t = Table([head, row], colWidths=[24 * mm, 22 * mm, 52 * mm, 20 * mm, 28 * mm, 28 * mm])
+    t.setStyle(TableStyle([
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("TEXTCOLOR", (0, 0), (-1, 0), BLUE),
+        ("FONTSIZE", (0, 0), (-1, -1), 8.5),
+        ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.HexColor("#cccccc")),
+        ("LINEBELOW", (0, 1), (-1, 1), 0.5, colors.HexColor("#cccccc")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+        ("ALIGN", (4, 0), (-1, -1), "RIGHT"),
+    ]))
+    story.append(t)
+    story.append(Spacer(1, 8 * mm))
+
+    totals = Table(
+        [["Net", _euro(net)], ["VAT @18%", _euro(vat)], ["Total", _euro(total)]],
+        colWidths=[40 * mm, 40 * mm], hAlign="RIGHT",
+    )
+    totals.setStyle(TableStyle([
+        ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#999999")),
+        ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#cccccc")),
+        ("FONTSIZE", (0, 0), (-1, -1), 9),
+        ("ALIGN", (1, 0), (1, -1), "RIGHT"),
+        ("FONTNAME", (0, 2), (-1, 2), "Helvetica-Bold"),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+    ]))
+    story.append(totals)
+
+    doc.build(story, canvasmaker=_CleanCanvas)
+    return buf.getvalue()
+
+
 def build_lou_pdf(claim, company):
     """Loss-of-use refund letter under a company letterhead — the second
     invoice type. Days x daily rate, net of running expenses."""

@@ -900,6 +900,40 @@ def claim_invoice_pdf(request, pk):
 
 
 @login_required
+def claim_repairs(request, pk):
+    """Repairs VAT receipt — third invoice type, for issuing to the insurer."""
+    claim = get_object_or_404(Claim, pk=pk)
+    companies = Company.objects.filter(is_active=True)
+    selected = request.GET.get("company")
+    company = companies.filter(pk=selected).first() if selected else None
+    from decimal import Decimal
+    net = claim.repairs_total
+    vat = (net * Decimal("0.18")).quantize(Decimal("0.01"))
+    return render(
+        request,
+        "claims/repairs.html",
+        {"claim": claim, "companies": companies, "company": company,
+         "invoice_no": claim.case_ref or claim.reference,
+         "net": net, "vat": vat, "total": net + vat},
+    )
+
+
+@login_required
+def claim_repairs_pdf(request, pk):
+    from django.http import HttpResponse
+
+    from .services.invoice_pdf import build_repairs_pdf
+
+    claim = get_object_or_404(Claim, pk=pk)
+    company = get_object_or_404(Company, pk=request.GET.get("company"))
+    pdf = build_repairs_pdf(claim, company)
+    response = HttpResponse(pdf, content_type="application/pdf")
+    ref = (claim.case_ref or claim.reference).replace(" ", "")
+    response["Content-Disposition"] = f'inline; filename="repairs-{ref}.pdf"'
+    return response
+
+
+@login_required
 def claim_lou(request, pk):
     """Loss-of-use letter — the second invoice type. Company chosen here."""
     claim = get_object_or_404(Claim, pk=pk)

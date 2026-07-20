@@ -31,6 +31,7 @@ COMPANIES = [
         "email": "motorclaims@ecabs.com.mt",
         "website": "ecabs.com.mt",
         "vat_no": "MT 23602405",
+        "exo_number": "4270",
         "bank_name": "APS Bank",
         "iban": "MT55APSB77013000000039180120017",
         "account_no": "3918012001-7",
