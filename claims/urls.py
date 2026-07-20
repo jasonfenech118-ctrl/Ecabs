@@ -7,6 +7,7 @@ urlpatterns = [
     path("dashboard/", views.dashboard, name="dashboard"),
     path("claims/", views.claim_list, name="claim_list"),
     path("claims/group/<slug:group>/", views.claim_group, name="claim_group"),
+    path("claims/<int:pk>/estimate/", views.claim_set_estimate, name="claim_set_estimate"),
     path("claims/master/", views.master_sheet, name="master_sheet"),
     path("claims/master/csv/", views.master_sheet_csv, name="master_sheet_csv"),
     path("claims/bills/", views.bills_report, name="bills_report"),

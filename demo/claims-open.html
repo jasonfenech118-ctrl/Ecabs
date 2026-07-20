@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "46Swnqor5BzHhQbniPes8zIwWO2eRh4bcCu5D9PPae6bWJ0yTRdwCC8Mraw6fone"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "FIfG4bcigiiS4AYbRKRPYwLzMNWU3ywowCNDxAsHwS3Gp5cKLPfCf1yojYpsenDm"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -69,6 +69,11 @@
   </div>
 </div>
 
+<div class="stats" style="margin-bottom:1rem">
+  <div class="stat"><div class="label">Estimated total bill</div><div class="value">€2100.00</div></div>
+  <div class="stat"><div class="label">Total outstanding</div><div class="value alert">€4143.04</div></div>
+</div>
+
 <div class="card">
   <form class="toolbar" method="get">
     <label class="row" style="gap:.4rem">
@@ -96,7 +101,7 @@
         <tr>
           <th>Case no</th><th>Ref</th><th>Status</th><th>Accident date</th>
           <th>Our reg</th><th>TP plate</th><th>Insurer</th>
-          <th>Chase on</th><th class="right">Outstanding</th><th>Next action</th>
+          <th>Chase on</th><th class="right">Estimate €</th><th class="right">Outstanding</th><th>Next action</th>
         </tr>
       </thead>
       <tbody>
@@ -114,7 +119,16 @@
               26 Jul 2026
             
           </td>
-          <td class="right">€1043.81</td>
+          <td class="right" onclick="event.stopPropagation()">
+            <form method="post" action="/claims/1/estimate/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="FIfG4bcigiiS4AYbRKRPYwLzMNWU3ywowCNDxAsHwS3Gp5cKLPfCf1yojYpsenDm">
+              <input type="hidden" name="next" value="/claims/group/open/">
+              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
+                     value="1400.00" placeholder="€"
+                     onchange="this.form.submit()" aria-label="Estimate">
+            </form>
+          </td>
+          <td class="right">€2037.64</td>
           <td class="muted">Awaiting survey report</td>
         </tr>
         
@@ -131,7 +145,16 @@
               23 Jul 2026
             
           </td>
-          <td class="right">€330.00</td>
+          <td class="right" onclick="event.stopPropagation()">
+            <form method="post" action="/claims/2/estimate/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="FIfG4bcigiiS4AYbRKRPYwLzMNWU3ywowCNDxAsHwS3Gp5cKLPfCf1yojYpsenDm">
+              <input type="hidden" name="next" value="/claims/group/open/">
+              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
+                     value="700.00" placeholder="€"
+                     onchange="this.form.submit()" aria-label="Estimate">
+            </form>
+          </td>
+          <td class="right">€450.00</td>
           <td class="muted">O/S payment from MSI</td>
         </tr>
         
@@ -145,6 +168,15 @@
           <td>Atlas Insurance</td>
           <td>
             
+          </td>
+          <td class="right" onclick="event.stopPropagation()">
+            <form method="post" action="/claims/3/estimate/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="FIfG4bcigiiS4AYbRKRPYwLzMNWU3ywowCNDxAsHwS3Gp5cKLPfCf1yojYpsenDm">
+              <input type="hidden" name="next" value="/claims/group/open/">
+              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
+                     value="" placeholder="€"
+                     onchange="this.form.submit()" aria-label="Estimate">
+            </form>
           </td>
           <td class="right"></td>
           <td class="muted">Book surveyor</td>
@@ -163,6 +195,15 @@
               16 Jul 2026
             
           </td>
+          <td class="right" onclick="event.stopPropagation()">
+            <form method="post" action="/claims/4/estimate/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="FIfG4bcigiiS4AYbRKRPYwLzMNWU3ywowCNDxAsHwS3Gp5cKLPfCf1yojYpsenDm">
+              <input type="hidden" name="next" value="/claims/group/open/">
+              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
+                     value="" placeholder="€"
+                     onchange="this.form.submit()" aria-label="Estimate">
+            </form>
+          </td>
           <td class="right">€1015.40</td>
           <td class="muted">Chase Elmo — no response</td>
         </tr>
@@ -180,13 +221,33 @@
               09 Jul 2026
             
           </td>
+          <td class="right" onclick="event.stopPropagation()">
+            <form method="post" action="/claims/5/estimate/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="FIfG4bcigiiS4AYbRKRPYwLzMNWU3ywowCNDxAsHwS3Gp5cKLPfCf1yojYpsenDm">
+              <input type="hidden" name="next" value="/claims/group/open/">
+              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
+                     value="" placeholder="€"
+                     onchange="this.form.submit()" aria-label="Estimate">
+            </form>
+          </td>
           <td class="right">€640.00</td>
           <td class="muted">O/S payment from Argus</td>
         </tr>
         
       </tbody>
+      
+      <tfoot>
+        <tr class="summary-total">
+          <td colspan="8" class="right"><strong>Totals</strong></td>
+          <td class="right"><strong>€2100.00</strong></td>
+          <td class="right"><strong>€4143.04</strong></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      
     </table>
   </div>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">Type an estimate in the Estimate column and it saves automatically.</p>
 </div>
 
   </main>

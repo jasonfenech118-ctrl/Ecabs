@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "IFx0BdnC2zrw0eWARJw5jSfwdMVj06i5Qb9zRWO07cY0F7LLsLv9NVFMI8pbodB8"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "3ut1lx1AEjIDB13SvSIFGnjTDrKfETjMUo1YOWhZUTtrWwhrpX6sXS6IaCdNPIqK"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -70,7 +70,7 @@
   <div class="stat"><div class="label">Total claims</div><div class="value">9</div></div>
   <div class="stat"><div class="label">Open</div><div class="value">5</div></div>
   <div class="stat"><div class="label">Overdue</div><div class="value alert">2</div></div>
-  <div class="stat"><div class="label">Outstanding recovery</div><div class="value">€3,029.21</div></div>
+  <div class="stat"><div class="label">Outstanding recovery</div><div class="value">€4,143.04</div></div>
 </div>
 
 <div class="grid grid-2">
@@ -82,7 +82,7 @@
   <div class="card"><h2>Claims by accident month</h2><div class="chart-box"><canvas id="c-month"></canvas></div></div>
 </div>
 
-<script id="chartData" type="application/json">{"by_status": {"labels": ["Draft", "Open", "Awaiting survey", "Awaiting insurer", "Settled", "Closed", "Rejected"], "data": [1, 2, 1, 2, 1, 1, 1]}, "lifecycle": {"labels": ["Open", "Closed", "Draft"], "data": [5, 3, 1]}, "attention": {"labels": ["Open", "Overdue", "Urgent"], "data": [5, 2, 1]}, "by_insurer": {"labels": ["(none)", "Elmo Insurance", "GasanMamo", "Mapfre Middlesea"], "data": [6, 1, 1, 1]}, "outstanding_by_insurer": {"labels": ["Mapfre Middlesea", "Elmo Insurance", "(none)", "GasanMamo"], "data": [1043.81, 1015.4, 640.0, 330.0]}, "by_month": {"labels": ["Aug 25", "Sep 25", "Oct 25", "Nov 25", "Dec 25", "Jan 26", "Feb 26", "Mar 26", "Apr 26", "May 26", "Jun 26", "Jul 26"], "data": [0, 0, 0, 0, 1, 0, 1, 1, 1, 2, 2, 0]}}</script>
+<script id="chartData" type="application/json">{"by_status": {"labels": ["Draft", "Open", "Awaiting survey", "Awaiting insurer", "Settled", "Closed", "Rejected"], "data": [1, 2, 1, 2, 1, 1, 1]}, "lifecycle": {"labels": ["Open", "Closed", "Draft"], "data": [5, 3, 1]}, "attention": {"labels": ["Open", "Overdue", "Urgent"], "data": [5, 2, 1]}, "by_insurer": {"labels": ["(none)", "Elmo Insurance", "GasanMamo", "Mapfre Middlesea"], "data": [6, 1, 1, 1]}, "outstanding_by_insurer": {"labels": ["Mapfre Middlesea", "Elmo Insurance", "(none)", "GasanMamo"], "data": [2037.64, 1015.4, 640.0, 450.0]}, "by_month": {"labels": ["Aug 25", "Sep 25", "Oct 25", "Nov 25", "Dec 25", "Jan 26", "Feb 26", "Mar 26", "Apr 26", "May 26", "Jun 26", "Jul 26"], "data": [0, 0, 0, 0, 1, 0, 1, 1, 1, 2, 2, 0]}}</script>
 <script src="../static/js/chart.min.js"></script>
 <script>
 (function () {

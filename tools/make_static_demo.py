@@ -61,15 +61,16 @@ def build_url_map():
     }
     for pk in Vehicle.objects.values_list("pk", flat=True):
         urls[f"/vehicles/{pk}/"] = f"vehicle-{pk}.html"
-    first_company = Company.objects.first()
-    for pk in Claim.objects.values_list("pk", flat=True):
+    company_pks = list(Company.objects.values_list("pk", flat=True))
+    for claim in Claim.objects.all():
+        pk = claim.pk
         urls[f"/claims/{pk}/"] = f"claim-{pk}.html"
         urls[f"/claims/{pk}/edit/"] = f"claim-{pk}-edit.html"
         urls[f"/claims/{pk}/invoice/"] = f"claim-{pk}-invoice.html"
-        if first_company:
-            urls[f"/claims/{pk}/invoice/?company={first_company.pk}"] = (
-                f"claim-{pk}-invoice-co.html"
-            )
+        # Rendered invoice under each company, for claims with recovery amounts.
+        if claim.invoice_lines():
+            for co in company_pks:
+                urls[f"/claims/{pk}/invoice/?company={co}"] = f"claim-{pk}-invoice-co{co}.html"
         for tab in TABS:
             urls[f"/claims/{pk}/tab/{tab}/"] = f"claim-{pk}-{tab}.html"
     # "New claim" can't create records statically — send it to a draft's form.
@@ -127,16 +128,20 @@ def seed_samples(user):
              third_party_registration="ABC123", third_party_name="John Smith",
              third_party_insurer="Mapfre Middlesea", insurer="Atlas Insurance",
              fault=F.THIRD_PARTY, chase_on=today + timedelta(days=6),
-             next_action="Awaiting survey report",
+             next_action="Awaiting survey report", tp_claim_number="C34-277147",
+             estimate_amount=Decimal("1400.00"),
              bills_sent_on=today, invoice_number="100050",
-             labour_amount=Decimal("243.60"), parts_amount=Decimal("800.21")),
+             labour_amount=Decimal("288.90"), spray_material_amount=Decimal("218.70"),
+             parts_amount=Decimal("874.54"), loe_days=14, loe_daily_rate=Decimal("35.00"),
+             _others=[("Wheel alignment", "45.00"), ("Windscreen repair", "120.50")]),
         dict(status=S.AWAITING_INSURER, vehicle_registration="ECB214",
              accident_date=date(2026, 6, 3), accident_location="Aldo Moro Road, Marsa",
              third_party_registration="DEF456", third_party_insurer="GasanMamo",
              insurer="Mapfre Middlesea", fault=F.THIRD_PARTY,
              chase_on=today + timedelta(days=3), next_action="O/S payment from MSI",
+             tp_claim_number="C34-262527", estimate_amount=Decimal("700.00"),
              bills_sent_on=today.replace(day=1), invoice_number="100052",
-             amount_paid=Decimal("240.00"),
+             amount_paid=Decimal("240.00"), loe_days=3, loe_daily_rate=Decimal("40.00"),
              labour_amount=Decimal("150.00"), parts_amount=Decimal("420.00")),
         dict(status=S.AWAITING_SURVEY, vehicle_registration="ECB330",
              accident_date=date(2026, 5, 21), accident_location="Coast Road, Bahar ic-Caghaq",
@@ -169,8 +174,13 @@ def seed_samples(user):
              accident_date=date(2025, 12, 19), insurer="GasanMamo", fault=F.SHARED,
              next_action="Rejected — no third-party details"),
     ]
+    from claims.models import OtherCharge
+
     for data in samples:
-        Claim.objects.create(created_by=user, submitted_at=timezone.now(), **data)
+        others = data.pop("_others", [])
+        claim = Claim.objects.create(created_by=user, submitted_at=timezone.now(), **data)
+        for i, (desc, amt) in enumerate(others):
+            OtherCharge.objects.create(claim=claim, description=desc, amount=Decimal(amt), order=i)
 
 
 def main():

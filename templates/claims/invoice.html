@@ -24,6 +24,12 @@
     <button type="submit" class="btn">Preview</button>
     {% if company %}<a href="{% url 'claim_invoice_pdf' claim.pk %}?company={{ company.pk }}" target="_blank" rel="noopener" class="btn btn-primary">📄 Open invoice PDF</a>{% endif %}
   </form>
+  <div class="row" style="margin-top:.5rem">
+    <span class="muted">Quick pick:</span>
+    {% for co in companies %}
+      <a href="{% url 'claim_invoice' claim.pk %}?company={{ co.pk }}" class="btn btn-sm {% if company and company.pk == co.pk %}btn-primary{% endif %}">{{ co.name }}</a>
+    {% endfor %}
+  </div>
 </div>
 
 {% if not company %}

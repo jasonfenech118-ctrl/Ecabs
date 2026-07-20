@@ -308,7 +308,7 @@ class ViewTests(TestCase):
         # The claim form offers the maintained rate
         claim = Claim.objects.create(created_by=self.user)
         r = self.client.get(reverse("claim_edit", args=[claim.pk]))
-        self.assertContains(r, "Use maintained rate")
+        self.assertContains(r, "Or pick a saved rate")
         self.assertContains(r, "Van (large)")
         # Delete
         self.client.post(reverse("rate_delete", args=[rate.pk]))
@@ -395,6 +395,23 @@ class ViewTests(TestCase):
         # Filter by a different insurer hides it
         r = self.client.get(reverse("bills_report"), {"pending_insurer": "GasanMamo"})
         self.assertNotContains(r, "ECB-PEND")
+
+    def test_open_claims_estimate(self):
+        from decimal import Decimal
+
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-EST", created_by=self.user
+        )
+        r = self.client.get(reverse("claim_group", args=["open"]))
+        self.assertContains(r, "Estimated total bill")
+        self.assertContains(r, "Estimate")
+        # Inline-save an estimate
+        self.client.post(
+            reverse("claim_set_estimate", args=[claim.pk]),
+            {"estimate_amount": "1500.00", "next": reverse("claim_group", args=["open"])},
+        )
+        claim.refresh_from_db()
+        self.assertEqual(claim.estimate_amount, Decimal("1500.00"))
 
     def test_claim_sheets_sort(self):
         from datetime import date

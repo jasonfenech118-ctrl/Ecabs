@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, Sum
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
@@ -230,7 +231,10 @@ def claim_group(request, group):
         subtitle = "Open claims past their chase date"
     else:
         return HttpResponseBadRequest("Unknown group")
-    claims, sort = _apply_sort(qs, request)
+    qs, sort = _apply_sort(qs, request)
+    claims = list(qs)
+    estimate_total = sum((c.estimate_amount or Decimal("0") for c in claims), Decimal("0"))
+    outstanding_total = sum((c.outstanding_amount for c in claims), Decimal("0"))
     return render(
         request,
         "claims/claim_group.html",
@@ -241,8 +245,24 @@ def claim_group(request, group):
             "group": group,
             "sorts": CLAIM_SORTS,
             "sort": sort,
+            "estimate_total": estimate_total,
+            "outstanding_total": outstanding_total,
         },
     )
+
+
+@login_required
+@require_POST
+def claim_set_estimate(request, pk):
+    """Inline-edit the estimated total bill for a claim from a group table."""
+    claim = get_object_or_404(Claim, pk=pk)
+    val = request.POST.get("estimate_amount", "").strip()
+    try:
+        claim.estimate_amount = Decimal(val) if val else None
+    except InvalidOperation:
+        pass
+    claim.save(update_fields=["estimate_amount"])
+    return redirect(request.POST.get("next") or reverse("claim_group", args=["open"]))
 
 
 # --- Intake form with auto-save ------------------------------------------------

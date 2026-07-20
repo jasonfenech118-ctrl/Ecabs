@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "4cx6fDuxHvzstplPwKQrg1kYvknRlaiUcI9FvmVVM86W8ia07MPvK4Ke0GRJJhBX"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "uuWToSjwe3IYoKCf9FEfDG4H4xBkc2RGlouQRhzVuDtMJfQO3K22UbRwBI4SnRYE"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -76,7 +76,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="4cx6fDuxHvzstplPwKQrg1kYvknRlaiUcI9FvmVVM86W8ia07MPvK4Ke0GRJJhBX">
+  <input type="hidden" name="csrfmiddlewaretoken" value="uuWToSjwe3IYoKCf9FEfDG4H4xBkc2RGlouQRhzVuDtMJfQO3K22UbRwBI4SnRYE">
 
   <datalist id="vehicle-regs">
     <option value="ECB101">Toyota Corolla Hybrid</option>
@@ -229,7 +229,7 @@
 
       <div class="field ">
   <label for="id_tp_claim_number">TP claim no</label>
-  <input type="text" name="tp_claim_number" maxlength="50" id="id_tp_claim_number">
+  <input type="text" name="tp_claim_number" value="C34-262527" maxlength="50" id="id_tp_claim_number">
   
 </div>
 
@@ -307,7 +307,7 @@
 
       <div class="field ">
   <label for="id_estimate_amount">Estimate claim amt</label>
-  <input type="number" name="estimate_amount" step="0.01" id="id_estimate_amount">
+  <input type="number" name="estimate_amount" value="700.00" step="0.01" id="id_estimate_amount">
   
 </div>
 
@@ -349,7 +349,7 @@
 
       <div class="field ">
   <label for="id_loe_daily_rate">LOE daily amount</label>
-  <input type="number" name="loe_daily_rate" step="0.01" id="id_loe_daily_rate">
+  <input type="number" name="loe_daily_rate" value="40.00" step="0.01" id="id_loe_daily_rate">
   
 </div>
 
@@ -364,7 +364,7 @@
       
       <div class="field ">
   <label for="id_loe_days">LOE days</label>
-  <input type="number" name="loe_days" min="0" id="id_loe_days">
+  <input type="number" name="loe_days" value="3" min="0" id="id_loe_days">
   
 </div>
 

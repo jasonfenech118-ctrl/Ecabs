@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Invoice CLM-2026-0008 — Vai Drive Claims</title>
+  <title>Invoice CLM-2026-0005 — Vai Drive Claims</title>
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "NwzvIDRFga9XeazeRn6SibVkxX1HyO5XV2b4Ymi3lNGrT3opsp5WMelA2jvzWVo0"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "FqJkB0s7XzxO2Urodj3rgzF28vBZUwoPwkhh4pIwd9iCnpFX7orex4sRFG4x5lvN"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -63,7 +63,7 @@
     <h1>Statement / Invoice</h1>
     <div class="sub">Choose the company, then print or save as PDF to finalise</div>
   </div>
-  <a href="claim-8.html" class="btn">← Back to claim</a>
+  <a href="claim-5.html" class="btn">← Back to claim</a>
 </div>
 
 <div class="card no-print" style="margin-bottom:1rem">
@@ -73,9 +73,9 @@
       <select name="company" style="min-width:240px" aria-label="Company">
         <option value="">— select company —</option>
         
-          <option value="1" selected>Vai Drive Co Ltd.</option>
+          <option value="1" >Vai Drive Co Ltd.</option>
         
-          <option value="2" >eCabs Ltd</option>
+          <option value="2" selected>eCabs Ltd</option>
         
           <option value="3" >Fast Drop</option>
         
@@ -84,37 +84,49 @@
       </select>
     </label>
     <button type="submit" class="btn">Preview</button>
-    <a href="/claims/8/invoice.pdf?company=1" target="_blank" rel="noopener" class="btn btn-primary">📄 Open invoice PDF</a>
+    <a href="/claims/5/invoice.pdf?company=2" target="_blank" rel="noopener" class="btn btn-primary">📄 Open invoice PDF</a>
   </form>
+  <div class="row" style="margin-top:.5rem">
+    <span class="muted">Quick pick:</span>
+    
+      <a href="claim-5-invoice-co1.html" class="btn btn-sm ">Vai Drive Co Ltd.</a>
+    
+      <a href="claim-5-invoice-co2.html" class="btn btn-sm btn-primary">eCabs Ltd</a>
+    
+      <a href="claim-5-invoice-co3.html" class="btn btn-sm ">Fast Drop</a>
+    
+      <a href="claim-5-invoice-co4.html" class="btn btn-sm ">Fastdrop International Ltd</a>
+    
+  </div>
 </div>
 
 
 <div class="invoice-sheet">
   <div class="inv-head">
     <div class="inv-logo">
-      <img src="../static/img/companies/vai.png" alt="Vai Drive Co Ltd.">
+      <img src="../static/img/companies/ecabs.png" alt="eCabs Ltd">
       
     </div>
     <div class="inv-title">
       <div class="inv-word">STATEMENT</div>
-      <div class="inv-no">Statement No #: <strong>VD-00008</strong></div>
+      <div class="inv-no">Statement No #: <strong>VD-00005</strong></div>
     </div>
   </div>
 
   <div class="inv-meta">
     <div class="inv-from">
-      <strong>Vai Drive Co Ltd.</strong>
-      <div class="muted" style="white-space:pre-line">Triq Santu Wistin,
-Paceville, St Julians, Malta</div>
-      <div>(356) 21 38 38 38</div>
+      <strong>eCabs Ltd</strong>
+      <div class="muted" style="white-space:pre-line">Triq Santu Wistin, Paceville,
+St Julians STJ 3180, Malta</div>
+      <div>(356) 2138 3838</div>
       <div>motorclaims@ecabs.com.mt</div>
-      <div>www.ecabs.com.mt</div>
+      <div>ecabs.com.mt</div>
       <div>VAT No: MT 23602405</div>
       <div class="inv-billto"><span class="muted">Bill To:</span><br><strong>—</strong></div>
     </div>
     <div class="inv-summary">
       <div><span class="muted">Date:</span> <strong>20/07/2026</strong></div>
-      <div class="inv-due"><span class="muted">Balance Due:</span> <strong>€ 0.00</strong></div>
+      <div class="inv-due"><span class="muted">Balance Due:</span> <strong>€ 640.00</strong></div>
     </div>
   </div>
 
@@ -124,12 +136,17 @@ Paceville, St Julians, Malta</div>
     </thead>
     <tbody>
       
-      <tr><td colspan="4" class="muted">No recovery amounts entered on this claim yet.</td></tr>
+      <tr>
+        <td>Parts</td>
+        <td class="right">1</td>
+        <td class="right">€ 640.00</td>
+        <td class="right">€ 640.00</td>
+      </tr>
       
     </tbody>
     <tfoot>
-      <tr><td colspan="3" class="right">Subtotal:</td><td class="right">€ 0.00</td></tr>
-      <tr class="inv-net"><td colspan="3" class="right"><strong>Total NET:</strong></td><td class="right"><strong>€ 0.00</strong></td></tr>
+      <tr><td colspan="3" class="right">Subtotal:</td><td class="right">€ 640.00</td></tr>
+      <tr class="inv-net"><td colspan="3" class="right"><strong>Total NET:</strong></td><td class="right"><strong>€ 640.00</strong></td></tr>
     </tfoot>
   </table>
 
@@ -137,8 +154,8 @@ Paceville, St Julians, Malta</div>
     <div class="inv-refs">
       <strong>Notes:</strong>
       <div><span class="muted">Claim No:</span> <strong></strong></div>
-      <div><span class="muted">Our Reg No:</span> <strong>ECB330</strong></div>
-      <div><span class="muted">TP Reg No:</span> <strong></strong></div>
+      <div><span class="muted">Our Reg No:</span> <strong>ECB512</strong></div>
+      <div><span class="muted">TP Reg No:</span> <strong>JKL012</strong></div>
     </div>
     
     <div class="inv-bank">

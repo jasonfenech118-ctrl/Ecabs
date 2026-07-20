@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "2ahJdAhJ0DZ2R2cMN3QSKX49OD3CWUVOaGTitjI75gwwwV1Xo5PWe0upjZxuk1eR"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "unMrmAYaLIGBqKLestdQ82kQ5C3J9tQWlhkoPZez1irpLfZNmyBDpx7FCNwhkiXU"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -76,7 +76,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="2ahJdAhJ0DZ2R2cMN3QSKX49OD3CWUVOaGTitjI75gwwwV1Xo5PWe0upjZxuk1eR">
+  <input type="hidden" name="csrfmiddlewaretoken" value="unMrmAYaLIGBqKLestdQ82kQ5C3J9tQWlhkoPZez1irpLfZNmyBDpx7FCNwhkiXU">
 
   <datalist id="vehicle-regs">
     <option value="ECB101">Toyota Corolla Hybrid</option>
@@ -229,7 +229,7 @@
 
       <div class="field ">
   <label for="id_tp_claim_number">TP claim no</label>
-  <input type="text" name="tp_claim_number" maxlength="50" id="id_tp_claim_number">
+  <input type="text" name="tp_claim_number" value="C34-277147" maxlength="50" id="id_tp_claim_number">
   
 </div>
 
@@ -307,7 +307,7 @@
 
       <div class="field ">
   <label for="id_estimate_amount">Estimate claim amt</label>
-  <input type="number" name="estimate_amount" step="0.01" id="id_estimate_amount">
+  <input type="number" name="estimate_amount" value="1400.00" step="0.01" id="id_estimate_amount">
   
 </div>
 
@@ -331,25 +331,25 @@
 
       <div class="field ">
   <label for="id_labour_amount">Labour (net)</label>
-  <input type="number" name="labour_amount" value="243.60" step="0.01" id="id_labour_amount">
+  <input type="number" name="labour_amount" value="288.90" step="0.01" id="id_labour_amount">
   
 </div>
 
       <div class="field ">
   <label for="id_spray_material_amount">Spray + material (net)</label>
-  <input type="number" name="spray_material_amount" step="0.01" id="id_spray_material_amount">
+  <input type="number" name="spray_material_amount" value="218.70" step="0.01" id="id_spray_material_amount">
   
 </div>
 
       <div class="field ">
   <label for="id_parts_amount">Parts</label>
-  <input type="number" name="parts_amount" value="800.21" step="0.01" id="id_parts_amount">
+  <input type="number" name="parts_amount" value="874.54" step="0.01" id="id_parts_amount">
   
 </div>
 
       <div class="field ">
   <label for="id_loe_daily_rate">LOE daily amount</label>
-  <input type="number" name="loe_daily_rate" step="0.01" id="id_loe_daily_rate">
+  <input type="number" name="loe_daily_rate" value="35.00" step="0.01" id="id_loe_daily_rate">
   
 </div>
 
@@ -364,7 +364,7 @@
       
       <div class="field ">
   <label for="id_loe_days">LOE days</label>
-  <input type="number" name="loe_days" min="0" id="id_loe_days">
+  <input type="number" name="loe_days" value="14" min="0" id="id_loe_days">
   
 </div>
 
@@ -395,6 +395,18 @@
     <div class="field span-2" style="margin-top:1rem">
       <label>Others — add a line for each extra (wheel alignment, windscreen, etc.)</label>
       <div id="other-lines">
+        
+        <div class="other-line">
+          <input type="text" name="other_desc" value="Wheel alignment" placeholder="Description">
+          <input type="number" step="0.01" name="other_amt" value="45.00" placeholder="Amount €" class="other-amt">
+          <button type="button" class="btn btn-sm other-del" title="Remove line">✕</button>
+        </div>
+        
+        <div class="other-line">
+          <input type="text" name="other_desc" value="Windscreen repair" placeholder="Description">
+          <input type="number" step="0.01" name="other_amt" value="120.50" placeholder="Amount €" class="other-amt">
+          <button type="button" class="btn btn-sm other-del" title="Remove line">✕</button>
+        </div>
         
       </div>
       <button type="button" class="btn btn-sm" id="add-other-line">+ Add line</button>

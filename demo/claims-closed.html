@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "ssCByFg2NZtSDzLD730klyzFbcoK0ZEEAYeaOoHqSC0misAOI5ZoPBZVGySCo6XH"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "tnoqWBAOh1QJIV5XIe0eSSN9WGFYZgpmkhWnp0QdxBBx3qjwCjo19nAYtR8wa5wk"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -69,6 +69,11 @@
   </div>
 </div>
 
+<div class="stats" style="margin-bottom:1rem">
+  <div class="stat"><div class="label">Estimated total bill</div><div class="value">€0.00</div></div>
+  <div class="stat"><div class="label">Total outstanding</div><div class="value ">€0.00</div></div>
+</div>
+
 <div class="card">
   <form class="toolbar" method="get">
     <label class="row" style="gap:.4rem">
@@ -96,7 +101,7 @@
         <tr>
           <th>Case no</th><th>Ref</th><th>Status</th><th>Accident date</th>
           <th>Our reg</th><th>TP plate</th><th>Insurer</th>
-          <th>Chase on</th><th class="right">Outstanding</th><th>Next action</th>
+          <th>Chase on</th><th class="right">Estimate €</th><th class="right">Outstanding</th><th>Next action</th>
         </tr>
       </thead>
       <tbody>
@@ -111,6 +116,15 @@
           <td>Mapfre Middlesea</td>
           <td>
             
+          </td>
+          <td class="right" onclick="event.stopPropagation()">
+            <form method="post" action="/claims/6/estimate/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="tnoqWBAOh1QJIV5XIe0eSSN9WGFYZgpmkhWnp0QdxBBx3qjwCjo19nAYtR8wa5wk">
+              <input type="hidden" name="next" value="/claims/group/closed/">
+              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
+                     value="" placeholder="€"
+                     onchange="this.form.submit()" aria-label="Estimate">
+            </form>
           </td>
           <td class="right"></td>
           <td class="muted"></td>
@@ -127,6 +141,15 @@
           <td>
             
           </td>
+          <td class="right" onclick="event.stopPropagation()">
+            <form method="post" action="/claims/7/estimate/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="tnoqWBAOh1QJIV5XIe0eSSN9WGFYZgpmkhWnp0QdxBBx3qjwCjo19nAYtR8wa5wk">
+              <input type="hidden" name="next" value="/claims/group/closed/">
+              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
+                     value="" placeholder="€"
+                     onchange="this.form.submit()" aria-label="Estimate">
+            </form>
+          </td>
           <td class="right"></td>
           <td class="muted"></td>
         </tr>
@@ -142,13 +165,33 @@
           <td>
             
           </td>
+          <td class="right" onclick="event.stopPropagation()">
+            <form method="post" action="/claims/8/estimate/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="tnoqWBAOh1QJIV5XIe0eSSN9WGFYZgpmkhWnp0QdxBBx3qjwCjo19nAYtR8wa5wk">
+              <input type="hidden" name="next" value="/claims/group/closed/">
+              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
+                     value="" placeholder="€"
+                     onchange="this.form.submit()" aria-label="Estimate">
+            </form>
+          </td>
           <td class="right"></td>
           <td class="muted">Rejected — no third-party details</td>
         </tr>
         
       </tbody>
+      
+      <tfoot>
+        <tr class="summary-total">
+          <td colspan="8" class="right"><strong>Totals</strong></td>
+          <td class="right"><strong>€0.00</strong></td>
+          <td class="right"><strong>€0.00</strong></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      
     </table>
   </div>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">Type an estimate in the Estimate column and it saves automatically.</p>
 </div>
 
   </main>
