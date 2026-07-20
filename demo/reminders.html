@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "vmKwKl5j9TIVYStR4Va9qlDavNFuI52kmgitdKlIpttJjnHqY0yWHQqZ2Y82TU9i"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "tZWU3LJqL10nIN7au2bT7w6OHiMPuB4pOfV354kVpdklx7ooEauG4LDcCwWpmdz9"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -69,7 +69,7 @@
 <details class="inline-form" >
   <summary>Add reminder</summary>
   <form method="post" action="/reminders/add/" class="card">
-    <input type="hidden" name="csrfmiddlewaretoken" value="vmKwKl5j9TIVYStR4Va9qlDavNFuI52kmgitdKlIpttJjnHqY0yWHQqZ2Y82TU9i">
+    <input type="hidden" name="csrfmiddlewaretoken" value="tZWU3LJqL10nIN7au2bT7w6OHiMPuB4pOfV354kVpdklx7ooEauG4LDcCwWpmdz9">
     <div class="form-grid">
       <div class="field ">
   <label for="id_title">Title</label>
@@ -196,6 +196,28 @@
 </tr>
 
 
+  <tr id="reminder-5">
+  <td>
+    <form hx-post="/reminders/5/toggle/"
+          hx-target="#reminder-5" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">
+    Chase payment — CLM-2026-0002 <span class="badge in">auto</span>
+     <span class="muted">— €450.00 outstanding. Chase GasanMamo.</span>
+  </td>
+  <td><a href="claim-2.html">CLM-2026-0002</a></td>
+  <td>
+    <span class="badge overdue">overdue</span> 
+    20 Jul 2026 09:00
+  </td>
+  <td class="muted">—</td>
+</tr>
+
+
   <tr id="reminder-4">
   <td>
     <form hx-post="/reminders/4/toggle/"
@@ -218,10 +240,10 @@
 </tr>
 
 
-  <tr id="reminder-5">
+  <tr id="reminder-6">
   <td>
-    <form hx-post="/reminders/5/toggle/"
-          hx-target="#reminder-5" hx-swap="outerHTML">
+    <form hx-post="/reminders/6/toggle/"
+          hx-target="#reminder-6" hx-swap="outerHTML">
       <input type="hidden" name="scope" value="global">
       <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
               aria-label="Mark done">

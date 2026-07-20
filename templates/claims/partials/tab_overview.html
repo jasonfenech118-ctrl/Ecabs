@@ -52,7 +52,9 @@
       <dt>Policy number</dt><dd>{{ claim.policy_number|default:"—" }}</dd>
       <dt>Insurer claim no</dt><dd>{{ claim.insurer_claim_number|default:"—" }}</dd>
       <dt>Excess</dt><dd>{% if claim.excess_amount %}€{{ claim.excess_amount }}{% else %}—{% endif %}</dd>
-      <dt>Survey in hand?</dt><dd>{{ claim.survey_in_hand|yesno:"Yes,No" }}</dd>
+      <dt>Survey booked?</dt><dd>{{ claim.survey_booked|yesno:"Yes,No" }}{% if claim.survey_date %} · {{ claim.survey_date|date:"d M Y" }}{% endif %}</dd>
+      <dt>Survey received?</dt><dd>{{ claim.survey_in_hand|yesno:"Yes,No" }}</dd>
+      <dt>Liability</dt><dd>{{ claim.get_liability_display }}</dd>
       <dt>Estimate</dt><dd>{% if claim.estimate_amount %}€{{ claim.estimate_amount }}{% else %}—{% endif %}</dd>
       <dt>Created by</dt><dd>{% if claim.created_by %}{{ claim.created_by.get_full_name|default:claim.created_by.username }}{% else %}—{% endif %}</dd>
       <dt>Created</dt><dd>{{ claim.created_at|date:"d M Y H:i" }}</dd>

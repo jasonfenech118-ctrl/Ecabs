@@ -396,6 +396,66 @@ class ViewTests(TestCase):
         r = self.client.get(reverse("bills_report"), {"pending_insurer": "GasanMamo"})
         self.assertNotContains(r, "ECB-PEND")
 
+    def test_workflow_survey_liability_to_chasing(self):
+        from datetime import date
+
+        claim = Claim.objects.create(
+            status=Claim.Status.AWAITING_SURVEY, created_by=self.user
+        )
+        # Not yet: survey received but liability not accepted
+        claim.survey_in_hand = True
+        claim.run_workflow()
+        self.assertEqual(claim.status, Claim.Status.AWAITING_SURVEY)
+        # Survey received + liability accepted -> chasing (awaiting insurer)
+        claim.liability = Claim.Liability.ACCEPTED
+        claim.run_workflow()
+        claim.refresh_from_db()
+        self.assertEqual(claim.status, Claim.Status.AWAITING_INSURER)
+        self.assertIsNotNone(claim.chase_on)
+
+    def test_workflow_closes_when_fully_paid(self):
+        from decimal import Decimal
+
+        claim = Claim.objects.create(
+            status=Claim.Status.AWAITING_INSURER,
+            parts_amount=Decimal("500.00"), created_by=self.user,
+        )
+        claim.run_workflow()  # outstanding 500 -> stays open
+        self.assertEqual(claim.status, Claim.Status.AWAITING_INSURER)
+        claim.amount_paid = Decimal("200.00")
+        claim.run_workflow()  # still 300 outstanding -> stays open
+        claim.refresh_from_db()
+        self.assertEqual(claim.status, Claim.Status.AWAITING_INSURER)
+        claim.amount_paid = Decimal("500.00")
+        claim.run_workflow()  # fully paid -> closed
+        claim.refresh_from_db()
+        self.assertEqual(claim.status, Claim.Status.CLOSED)
+
+    def test_workflow_reminders(self):
+        from datetime import timedelta
+
+        from .services.auto_reminders import sync_auto_reminders
+
+        today = timezone.localdate()
+        # Survey booked in 3 days -> day-before reminder
+        c1 = Claim.objects.create(
+            status=Claim.Status.AWAITING_SURVEY, survey_booked=True,
+            survey_date=today + timedelta(days=3), created_by=self.user,
+        )
+        # Liability disputed -> monthly chase
+        c2 = Claim.objects.create(
+            status=Claim.Status.OPEN, liability=Claim.Liability.DISPUTED,
+            third_party_insurer="Elmo", created_by=self.user,
+        )
+        sync_auto_reminders()
+        sync_auto_reminders()  # idempotent
+        titles = list(Reminder.objects.filter(is_auto=True).values_list("title", flat=True))
+        self.assertTrue(any("Survey tomorrow" in t for t in titles))
+        self.assertTrue(any("Chase liability" in t for t in titles))
+        self.assertEqual(
+            Reminder.objects.filter(is_auto=True, title__contains="Survey tomorrow").count(), 1
+        )
+
     def test_open_claims_estimate(self):
         from decimal import Decimal
 

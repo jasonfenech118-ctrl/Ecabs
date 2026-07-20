@@ -77,16 +77,28 @@
       {% include "claims/partials/field.html" with field=form.insurer %}
       {% include "claims/partials/field.html" with field=form.policy_number %}
       {% include "claims/partials/field.html" with field=form.insurer_claim_number %}
+      {% include "claims/partials/field.html" with field=form.insurer_contact %}
       {% include "claims/partials/field.html" with field=form.excess_amount %}
     </div>
   </fieldset>
 
   <fieldset>
-    <legend>Survey &amp; estimate</legend>
+    <legend>Survey &amp; liability — drives the automated workflow</legend>
     <div class="form-grid">
+      {% include "claims/partials/field.html" with field=form.survey_booked %}
+      <div class="field" id="survey-date-field">
+        {% include "claims/partials/field.html" with field=form.survey_date %}
+      </div>
       {% include "claims/partials/field.html" with field=form.survey_in_hand %}
+      {% include "claims/partials/field.html" with field=form.liability %}
+      {% include "claims/partials/field.html" with field=form.liability_chase_date %}
       {% include "claims/partials/field.html" with field=form.estimate_amount %}
     </div>
+    <p class="muted" style="font-size:.8rem; margin-bottom:0">
+      Reminders auto-generate: the day before a booked survey, a chase a week after
+      if not received, and a monthly liability chase if disputed. Once the survey is
+      received and liability accepted, the claim becomes a chasing claim.
+    </p>
   </fieldset>
 
   <fieldset>
@@ -181,6 +193,15 @@
       var el = document.getElementById('id_' + n);
       if (el) el.addEventListener('input', recalc);
     });
+
+    // Show the survey date only when the survey is booked.
+    var booked = document.getElementById('id_survey_booked');
+    var dateField = document.getElementById('survey-date-field');
+    function toggleSurveyDate() {
+      if (dateField) dateField.style.display = (booked && booked.checked) ? '' : 'none';
+    }
+    if (booked) booked.addEventListener('change', toggleSurveyDate);
+    toggleSurveyDate();
 
     // Maintained-rate picker fills the LOE daily amount.
     var picker = document.getElementById('loe-rate-picker');

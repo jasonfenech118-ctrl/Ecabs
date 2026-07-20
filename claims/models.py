@@ -145,6 +145,11 @@ class Claim(models.Model):
         RAR = "rar", "RAR (police report)"
         OTHER = "other", "Other"
 
+    class Liability(models.TextChoices):
+        UNKNOWN = "unknown", "Not yet decided"
+        ACCEPTED = "accepted", "Accepted (Yes)"
+        DISPUTED = "disputed", "Disputed (No)"
+
     reference = models.CharField(max_length=20, unique=True, editable=False)
     # Internal company case number — a running count that never resets, assigned
     # once a draft becomes a real claim. Shown as "VD-00001".
@@ -202,9 +207,22 @@ class Claim(models.Model):
         max_digits=10, decimal_places=2, null=True, blank=True
     )
 
-    # Assessment
+    # Assessment & workflow
     drivable = models.BooleanField("Drivable?", null=True, blank=True)
-    survey_in_hand = models.BooleanField("Survey in hand?", default=False)
+    survey_booked = models.BooleanField("Survey booked?", default=False)
+    survey_date = models.DateField(null=True, blank=True)
+    survey_in_hand = models.BooleanField("Survey received?", default=False)
+    liability = models.CharField(
+        "Liability accepted?", max_length=10,
+        choices=Liability.choices, default=Liability.UNKNOWN,
+    )
+    liability_chase_date = models.DateField(
+        "Liability chase date", null=True, blank=True,
+        help_text="Optional manual date; otherwise chased monthly",
+    )
+    insurer_contact = models.CharField(
+        "Chase — who & contact details", max_length=200, blank=True
+    )
     estimate_amount = models.DecimalField(
         "Estimate claim amt", max_digits=10, decimal_places=2, null=True, blank=True
     )
@@ -317,6 +335,36 @@ class Claim(models.Model):
             self.status = self.Status.OPEN
             self.submitted_at = timezone.now()
             self.save()
+
+    def run_workflow(self):
+        """Auto-advance the claim's status:
+        - survey received + liability accepted -> chasing (awaiting insurer)
+        - fully paid (outstanding zero) -> closed
+        A claim with any outstanding balance stays open/chasing.
+        Returns True if anything changed."""
+        if self.status == self.Status.DRAFT:
+            return False
+        changed = False
+        if (
+            self.survey_in_hand
+            and self.liability == self.Liability.ACCEPTED
+            and self.status in (self.Status.OPEN, self.Status.AWAITING_SURVEY)
+        ):
+            self.status = self.Status.AWAITING_INSURER
+            if not self.chase_on:
+                self.chase_on = timezone.localdate()
+            changed = True
+        if (
+            self.total_claim_amount > 0
+            and self.outstanding_amount <= 0
+            and self.status
+            not in (self.Status.DRAFT, self.Status.CLOSED, self.Status.REJECTED)
+        ):
+            self.status = self.Status.CLOSED
+            changed = True
+        if changed:
+            self.save()
+        return changed
 
     # --- Recovery arithmetic (mirrors the Excel tracker's columns) ---------
 

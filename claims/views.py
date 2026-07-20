@@ -359,6 +359,7 @@ def claim_autosave(request, pk):
     if form.is_valid():
         form.save()
         _sync_other_charges(claim, request)
+        claim.run_workflow()
         return render(
             request,
             "claims/partials/save_status.html",
@@ -380,6 +381,7 @@ def claim_submit(request, pk):
         claim = form.save()
     _sync_other_charges(claim, request)
     claim.submit()
+    claim.run_workflow()
     return redirect("claim_detail", pk=claim.pk)
 
 

@@ -32,7 +32,8 @@ def _due_at(date):
 
 def sync_auto_reminders():
     """Create/refresh automated reminders. Returns (created, removed)."""
-    horizon = timezone.localdate() + timedelta(days=INSURANCE_HORIZON_DAYS)
+    today = timezone.localdate()
+    horizon = today + timedelta(days=INSURANCE_HORIZON_DAYS)
     expected = {}
 
     vehicles = Vehicle.objects.filter(
@@ -57,20 +58,71 @@ def sync_auto_reminders():
         Claim.Status.AWAITING_SURVEY,
         Claim.Status.AWAITING_INSURER,
     ]
-    chase_claims = Claim.objects.filter(
-        status__in=open_statuses, chase_on__isnull=False
-    )
-    for claim in chase_claims:
-        key = f"claim-chase-{claim.pk}-{claim.chase_on.isoformat()}"
-        title = f"Chase {claim.reference}"
-        if claim.next_action:
-            title += f": {claim.next_action}"
-        expected[key] = {
-            "claim": claim,
-            "title": title[:200],
-            "notes": "",
-            "due": claim.chase_on,
-        }
+
+    # First advance every non-draft claim's status (survey+liability -> chasing,
+    # fully paid -> closed) so reminders reflect the current state.
+    for claim in Claim.objects.exclude(status=Claim.Status.DRAFT):
+        claim.run_workflow()
+
+    month_tag = f"{today.year}-{today.month:02d}"
+    for claim in Claim.objects.filter(status__in=open_statuses):
+        ref = claim.reference
+
+        # Chase-on date reminder (manual/next-action)
+        if claim.chase_on:
+            key = f"claim-chase-{claim.pk}-{claim.chase_on.isoformat()}"
+            title = f"Chase {ref}"
+            if claim.next_action:
+                title += f": {claim.next_action}"
+            expected[key] = {"claim": claim, "title": title[:200], "notes": "",
+                             "due": claim.chase_on}
+
+        # Survey booked: reminder the day before; chase a week after if not received
+        if claim.survey_booked and claim.survey_date and not claim.survey_in_hand:
+            if claim.survey_date >= today:
+                key = f"claim-surveyday-{claim.pk}-{claim.survey_date.isoformat()}"
+                expected[key] = {
+                    "claim": claim,
+                    "title": f"Survey tomorrow — {ref}",
+                    "notes": f"Survey booked for {claim.survey_date:%d %b %Y}.",
+                    "due": claim.survey_date - timedelta(days=1),
+                }
+            else:
+                key = f"claim-surveychase-{claim.pk}-{claim.survey_date.isoformat()}"
+                expected[key] = {
+                    "claim": claim,
+                    "title": f"Chase survey report — {ref}",
+                    "notes": f"Survey was on {claim.survey_date:%d %b %Y}; report still awaited.",
+                    "due": claim.survey_date + timedelta(days=7),
+                }
+
+        # Liability disputed (No): monthly chase (or a manually set date)
+        if claim.liability == Claim.Liability.DISPUTED:
+            due = claim.liability_chase_date or today
+            key = f"claim-liability-{claim.pk}-{month_tag}"
+            expected[key] = {
+                "claim": claim,
+                "title": f"Chase liability — {ref}",
+                "notes": f"Liability disputed by {claim.third_party_insurer}. {claim.insurer_contact}".strip(),
+                "due": due,
+            }
+
+        # Payment outstanding after billing: monthly chase to the insurer
+        if (
+            claim.status == Claim.Status.AWAITING_INSURER
+            and claim.bills_sent_on
+            and claim.outstanding_amount > 0
+        ):
+            key = f"claim-paychase-{claim.pk}-{month_tag}"
+            whom = claim.insurer_contact or claim.third_party_insurer or "insurer"
+            expected[key] = {
+                "claim": claim,
+                "title": f"Chase payment — {ref}",
+                "notes": (
+                    f"€{claim.outstanding_amount} outstanding. Chase {whom}."
+                ),
+                "due": today,
+            }
 
     existing = set(
         Reminder.objects.filter(is_auto=True).values_list("auto_key", flat=True)
@@ -88,8 +140,10 @@ def sync_auto_reminders():
             )
             created += 1
 
+    # Remove auto reminders that are no longer expected — but keep overdue,
+    # uncompleted ones so an unactioned chase never silently disappears.
     stale = Reminder.objects.filter(
-        is_auto=True, completed_at__isnull=True
+        is_auto=True, completed_at__isnull=True, due_at__gte=timezone.now()
     ).exclude(auto_key__in=expected.keys())
     removed = stale.count()
     stale.delete()

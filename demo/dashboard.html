@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "CTL4dg4YcHXEZYbwl2mkiERgzhtyD5IutNj1GFknshIsktp5f7K7z9E56sW6OUPs"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "iVKn9pgLDvhTTz1bnmxZlY1V0gPq7uZvDbJwbIRghHBRITipxuQMidyjVuZ0Z6uf"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -84,7 +84,7 @@
   </div>
   <div class="stat">
     <div class="label">Overdue reminders</div>
-    <div class="value alert">2</div>
+    <div class="value alert">3</div>
   </div>
   <div class="stat">
     <div class="label">Renewals due</div>
@@ -184,7 +184,7 @@
           <tr>
             <td><a href="claim-6.html">CLM-2026-0006</a></td>
             <td>ECB101</td>
-            <td><span class="badge settled">Settled</span></td>
+            <td><span class="badge closed">Closed</span></td>
             <td class="muted">today</td>
           </tr>
           
@@ -249,8 +249,17 @@
           </tr>
           
           <tr>
+            <td class="muted">
+              <span class="badge overdue">overdue</span>
+            </td>
+            <td>Chase payment — CLM-2026-0002 <span class="badge in">auto</span></td>
+            <td><a href="claim-2.html">CLM-2026-0002</a></td>
+            <td class="muted">—</td>
+          </tr>
+          
+          <tr>
             <td class="">
-              2 days, 11 hours from now
+              2 days, 10 hours from now
             </td>
             <td>Chase CLM-2026-0002: O/S payment from MSI <span class="badge in">auto</span></td>
             <td><a href="claim-2.html">CLM-2026-0002</a></td>
@@ -259,7 +268,7 @@
           
           <tr>
             <td class="">
-              5 days, 11 hours from now
+              5 days, 10 hours from now
             </td>
             <td>Chase CLM-2026-0001: Awaiting survey report <span class="badge in">auto</span></td>
             <td><a href="claim-1.html">CLM-2026-0001</a></td>
@@ -303,17 +312,15 @@
     
       <span class="badge awaiting_insurer">Awaiting insurer: 2</span>
     
+      <span class="badge closed">Closed: 2</span>
+    
       <span class="badge open">Open: 2</span>
     
       <span class="badge awaiting_survey">Awaiting survey: 1</span>
     
-      <span class="badge closed">Closed: 1</span>
-    
       <span class="badge draft">Draft: 1</span>
     
       <span class="badge rejected">Rejected: 1</span>
-    
-      <span class="badge settled">Settled: 1</span>
     
   </div>
 </div>

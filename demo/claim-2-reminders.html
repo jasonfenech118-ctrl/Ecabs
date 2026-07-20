@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "u6iVSZvAihuwMfM4RPRfQWYoNIUVH2sal0QSloLZyRfk7K0DLUf27rLdkTntSRz8"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "FlrvhTPvo70ZQ5PkxKUgUGwaFe7YAQ7N0BqEjcq02jkXFp6yHSd3RV3yAshyssCx"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -116,7 +116,7 @@
      class="" onclick="setTab(this)">Emails<span class="tab-count">0</span></a>
   <a href="claim-2-reminders.html"
      hx-get="/claims/2/tab/reminders/" hx-target="#tab-panel" hx-push-url="true"
-     class="active" onclick="setTab(this)">Reminders<span class="tab-count">1</span></a>
+     class="active" onclick="setTab(this)">Reminders<span class="tab-count">2</span></a>
   <a href="claim-2-billing.html"
      hx-get="/claims/2/tab/billing/" hx-target="#tab-panel" hx-push-url="true"
      class="" onclick="setTab(this)">Billing<span class="tab-count">0</span></a>
@@ -172,6 +172,22 @@
       <tr><th style="width:2.5rem"></th><th>Reminder</th><th>Due</th><th>Assigned</th><th>Notes</th></tr>
     </thead>
     <tbody>
+      
+      <tr>
+        <td>
+          <form hx-post="/reminders/5/toggle/" hx-target="#tab-panel">
+            <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+                    aria-label="Mark done">
+          </form>
+        </td>
+        <td class="">Chase payment — CLM-2026-0002</td>
+        <td>
+          <span class="badge overdue">overdue</span> 
+          20 Jul 2026 09:00
+        </td>
+        <td class="muted">—</td>
+        <td class="muted">€450.00 outstanding. Chase GasanMamo.</td>
+      </tr>
       
       <tr>
         <td>

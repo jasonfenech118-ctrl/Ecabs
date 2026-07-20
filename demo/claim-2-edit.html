@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "uuWToSjwe3IYoKCf9FEfDG4H4xBkc2RGlouQRhzVuDtMJfQO3K22UbRwBI4SnRYE"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "MruEYUCvii0rJwYAqNsMyQTDzIwKPGQd7HtN0dd0WukpyQfOAVLzv5q1uWGkHilX"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -76,7 +76,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="uuWToSjwe3IYoKCf9FEfDG4H4xBkc2RGlouQRhzVuDtMJfQO3K22UbRwBI4SnRYE">
+  <input type="hidden" name="csrfmiddlewaretoken" value="MruEYUCvii0rJwYAqNsMyQTDzIwKPGQd7HtN0dd0WukpyQfOAVLzv5q1uWGkHilX">
 
   <datalist id="vehicle-regs">
     <option value="ECB101">Toyota Corolla Hybrid</option>
@@ -288,6 +288,12 @@
 </div>
 
       <div class="field ">
+  <label for="id_insurer_contact">Chase — who &amp; contact details</label>
+  <input type="text" name="insurer_contact" maxlength="200" id="id_insurer_contact">
+  
+</div>
+
+      <div class="field ">
   <label for="id_excess_amount">Excess amount</label>
   <input type="number" name="excess_amount" step="0.01" id="id_excess_amount">
   
@@ -297,11 +303,44 @@
   </fieldset>
 
   <fieldset>
-    <legend>Survey &amp; estimate</legend>
+    <legend>Survey &amp; liability — drives the automated workflow</legend>
     <div class="form-grid">
       <div class="field ">
-  <label for="id_survey_in_hand">Survey in hand?</label>
+  <label for="id_survey_booked">Survey booked?</label>
+  <input type="checkbox" name="survey_booked" id="id_survey_booked">
+  
+</div>
+
+      <div class="field" id="survey-date-field">
+        <div class="field ">
+  <label for="id_survey_date">Survey date</label>
+  <input type="date" name="survey_date" id="id_survey_date">
+  
+</div>
+
+      </div>
+      <div class="field ">
+  <label for="id_survey_in_hand">Survey received?</label>
   <input type="checkbox" name="survey_in_hand" id="id_survey_in_hand">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_liability">Liability accepted?</label>
+  <select name="liability" id="id_liability">
+  <option value="unknown" selected>Not yet decided</option>
+
+  <option value="accepted">Accepted (Yes)</option>
+
+  <option value="disputed">Disputed (No)</option>
+
+</select>
+  
+</div>
+
+      <div class="field ">
+  <label for="id_liability_chase_date">Liability chase date</label>
+  <input type="date" name="liability_chase_date" aria-describedby="id_liability_chase_date_helptext" id="id_liability_chase_date">
   
 </div>
 
@@ -312,6 +351,11 @@
 </div>
 
     </div>
+    <p class="muted" style="font-size:.8rem; margin-bottom:0">
+      Reminders auto-generate: the day before a booked survey, a chase a week after
+      if not received, and a monthly liability chase if disputed. Once the survey is
+      received and liability accepted, the claim becomes a chasing claim.
+    </p>
   </fieldset>
 
   <fieldset>
@@ -463,6 +507,15 @@
       var el = document.getElementById('id_' + n);
       if (el) el.addEventListener('input', recalc);
     });
+
+    // Show the survey date only when the survey is booked.
+    var booked = document.getElementById('id_survey_booked');
+    var dateField = document.getElementById('survey-date-field');
+    function toggleSurveyDate() {
+      if (dateField) dateField.style.display = (booked && booked.checked) ? '' : 'none';
+    }
+    if (booked) booked.addEventListener('change', toggleSurveyDate);
+    toggleSurveyDate();
 
     // Maintained-rate picker fills the LOE daily amount.
     var picker = document.getElementById('loe-rate-picker');

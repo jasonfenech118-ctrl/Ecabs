@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "vHC4wVmA5gBs0iEFG3mkvaT2BTbAWLzEmBa1ZkCZlQmglNSeA8K7MFGR84E87AGC"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "pJBUoYcFNlt9I1b9gPDJlW4TkOeGJ2LGKZA3qhNarxN7xlsnqXWwibBhf2ogBEgq"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -73,7 +73,7 @@
       <form hx-post="/claims/6/status/"
       hx-target="#status-control" hx-swap="innerHTML"
       hx-trigger="change" class="row" style="gap:.4rem">
-  <span class="badge settled">Settled</span>
+  <span class="badge closed">Closed</span>
   <select name="status" aria-label="Change status" style="width:auto">
     
       <option value="draft" >Draft</option>
@@ -84,9 +84,9 @@
     
       <option value="awaiting_insurer" >Awaiting insurer</option>
     
-      <option value="settled" selected>Settled</option>
+      <option value="settled" >Settled</option>
     
-      <option value="closed" >Closed</option>
+      <option value="closed" selected>Closed</option>
     
       <option value="rejected" >Rejected</option>
     
