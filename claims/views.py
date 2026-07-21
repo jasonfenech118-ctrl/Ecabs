@@ -906,6 +906,72 @@ def master_sheet(request):
     )
 
 
+@login_required
+def audit_trail(request):
+    """System-wide audit trail: every change to claims and vehicles, newest
+    first — who did it, when, and which fields changed. Backed by
+    django-simple-history, so it's a faithful record, not a re-derivation."""
+    from itertools import chain
+
+    LIMIT = 200
+    ACTIONS = {"+": "created", "~": "updated", "-": "deleted"}
+
+    who = request.GET.get("user", "").strip()
+    kind = request.GET.get("kind", "").strip()  # 'claim' | 'vehicle' | ''
+
+    claim_qs = Claim.history.select_related("history_user")
+    veh_qs = Vehicle.history.select_related("history_user")
+    if who:
+        claim_qs = claim_qs.filter(history_user__username=who)
+        veh_qs = veh_qs.filter(history_user__username=who)
+
+    sources = []
+    if kind in ("", "claim"):
+        sources.append(list(claim_qs[:LIMIT]))
+    if kind in ("", "vehicle"):
+        sources.append(list(veh_qs[:LIMIT]))
+    records = sorted(chain(*sources), key=lambda r: r.history_date, reverse=True)[:LIMIT]
+
+    live_claims = set(Claim.objects.values_list("pk", flat=True))
+    live_vehicles = set(Vehicle.objects.values_list("pk", flat=True))
+
+    entries = []
+    for rec in records:
+        if rec.instance_type is Claim:
+            label = rec.reference or f"Claim #{rec.id}"
+            url = reverse("claim_detail", args=[rec.id]) if rec.id in live_claims else None
+            kind_label = "Claim"
+        else:
+            label = rec.registration or f"Vehicle #{rec.id}"
+            url = reverse("vehicle_edit", args=[rec.id]) if rec.id in live_vehicles else None
+            kind_label = "Vehicle"
+        changed = []
+        if rec.history_type == "~" and rec.prev_record is not None:
+            try:
+                changed = [c.field for c in rec.diff_against(rec.prev_record).changes]
+            except Exception:
+                changed = []
+        entries.append({
+            "record": rec,
+            "kind": kind_label,
+            "label": label,
+            "url": url,
+            "action": ACTIONS.get(rec.history_type, rec.history_type),
+            "changed": changed,
+        })
+
+    from django.contrib.auth import get_user_model
+
+    context = {
+        "entries": entries,
+        "users": get_user_model().objects.order_by("username"),
+        "who": who,
+        "kind": kind,
+        "limit": LIMIT,
+    }
+    return render(request, "claims/audit_trail.html", context)
+
+
 DOCUMENT_TYPES = [
     ("statement", "Statement", "claim_invoice_pdf"),
     ("lossofuse", "Loss of Earnings", "claim_lou_pdf"),

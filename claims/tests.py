@@ -893,3 +893,42 @@ class PasswordAndBackupTests(TestCase):
             made = list((Path(tmp) / "backups").glob("db-*.sqlite3"))
             self.assertEqual(len(made), 1)
             self.assertEqual(made[0].read_bytes(), dbfile.read_bytes())
+
+
+class AuditTrailTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user("auditor", password="pw")
+        self.client.force_login(self.user)
+
+    def test_audit_trail_shows_changes(self):
+        from decimal import Decimal
+
+        # A create and an update should both appear.
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="AUD-1", created_by=self.user,
+        )
+        claim.parts_amount = Decimal("100.00")
+        claim.save()
+        Vehicle.objects.create(registration="AUD-VEH", make_model="Test")
+
+        r = self.client.get(reverse("audit_trail"))
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "Audit trail")
+        self.assertContains(r, claim.reference)   # claim listed
+        self.assertContains(r, "AUD-VEH")          # vehicle listed
+        self.assertContains(r, "created")
+        self.assertContains(r, "updated")
+        self.assertContains(r, "parts_amount")     # changed field named
+
+    def test_audit_trail_filter_by_kind(self):
+        Claim.objects.create(status=Claim.Status.OPEN, vehicle_registration="AUD-2", created_by=self.user)
+        Vehicle.objects.create(registration="ONLYVEH", make_model="Test")
+        r = self.client.get(reverse("audit_trail"), {"kind": "vehicle"})
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "ONLYVEH")
+        self.assertNotContains(r, "AUD-2")
+
+    def test_audit_trail_requires_login(self):
+        self.client.logout()
+        r = self.client.get(reverse("audit_trail"))
+        self.assertEqual(r.status_code, 302)

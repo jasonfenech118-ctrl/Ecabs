@@ -12,6 +12,7 @@ urlpatterns = [
     path("claims/master/csv/", views.master_sheet_csv, name="master_sheet_csv"),
     path("claims/bills/", views.bills_report, name="bills_report"),
     path("data/", views.data_dashboard, name="data_dashboard"),
+    path("audit/", views.audit_trail, name="audit_trail"),
     path("maintenance/", views.maintenance, name="maintenance"),
     path("maintenance/rate/<int:pk>/edit/", views.rate_edit, name="rate_edit"),
     path("maintenance/rate/<int:pk>/delete/", views.rate_delete, name="rate_delete"),

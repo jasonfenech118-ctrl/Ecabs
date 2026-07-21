@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Audit trail — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Audit trail</h1>
+    <div class="sub">Every change to claims and vehicles — who, when and what</div>
+  </div>
+  <a href="{% url 'home' %}" class="btn">← Back to home</a>
+</div>
+
+<div class="card no-print">
+  <form method="get" class="toolbar">
+    <label class="row" style="gap:.4rem">
+      <span class="muted">Record type</span>
+      <select name="kind" onchange="this.form.submit()">
+        <option value="" {% if not kind %}selected{% endif %}>All</option>
+        <option value="claim" {% if kind == 'claim' %}selected{% endif %}>Claims</option>
+        <option value="vehicle" {% if kind == 'vehicle' %}selected{% endif %}>Vehicles</option>
+      </select>
+    </label>
+    <label class="row" style="gap:.4rem">
+      <span class="muted">User</span>
+      <select name="user" onchange="this.form.submit()">
+        <option value="">Anyone</option>
+        {% for u in users %}
+          <option value="{{ u.username }}" {% if who == u.username %}selected{% endif %}>{{ u.get_full_name|default:u.username }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    {% if kind or who %}<a href="{% url 'audit_trail' %}" class="btn btn-sm">Clear</a>{% endif %}
+    <noscript><button type="submit" class="btn btn-sm">Apply</button></noscript>
+  </form>
+</div>
+
+<div class="card table-wrap mt">
+  <table class="list">
+    <thead>
+      <tr><th>When</th><th>Who</th><th>Record</th><th>Action</th><th>Changed fields</th></tr>
+    </thead>
+    <tbody>
+      {% for e in entries %}
+      <tr>
+        <td class="muted" style="white-space:nowrap">{{ e.record.history_date|date:"d M Y H:i" }}</td>
+        <td>{% if e.record.history_user %}{{ e.record.history_user.get_full_name|default:e.record.history_user.username }}{% else %}system{% endif %}</td>
+        <td>
+          <span class="muted">{{ e.kind }}</span>
+          {% if e.url %}<a href="{{ e.url }}">{{ e.label }}</a>{% else %}{{ e.label }}{% endif %}
+        </td>
+        <td>
+          {% if e.action == "created" %}<span class="badge ok">created</span>
+          {% elif e.action == "deleted" %}<span class="badge rejected">deleted</span>
+          {% else %}<span class="badge open">updated</span>{% endif %}
+        </td>
+        <td class="muted">
+          {% if e.changed %}{{ e.changed|join:", " }}{% else %}—{% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="empty">No changes recorded yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="muted" style="font-size:.8rem">Showing the most recent {{ limit }} changes. Open a claim's <strong>History</strong> tab to see the full before/after detail of each field.</p>
+{% endblock %}
