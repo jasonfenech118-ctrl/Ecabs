@@ -50,7 +50,7 @@ COMPANIES = [
         "iban": "MT55APSB77013000000039180120017",
         "account_no": "3918012001-7",
         "swift": "APSBMTMT",
-        "logo_static": "img/companies/ecabs.png",
+        "logo_static": "img/companies/fastdrop.png",
         "order": 3,
     },
     {
