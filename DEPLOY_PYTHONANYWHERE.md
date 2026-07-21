@@ -8,16 +8,27 @@ Replace `USERNAME` everywhere below with your PythonAnywhere username.
 
 ---
 
-## 0. Before you start — two things to have ready
+## 0. Before you start — choosing a plan
 
-1. **A PythonAnywhere plan.** The free plan works for *everything except
-   sending email* (free accounts can't reach Gmail's mail server). To send the
-   chase/recovery emails you need the **"Hacker" plan (~US$5/month)**. You can
-   start free and upgrade later.
-2. **A Gmail app password** (only needed for sending email). On the Gmail
-   account you'll send from: turn on 2-Step Verification, then Google Account →
-   Security → App passwords → create one for "Mail". You'll get a 16-character
-   password — keep it handy.
+Two sensible options:
+
+- **Beginner — free.** Runs the whole app (claims, PDFs, workflow, reminders,
+  two logins) at no cost. The **one** thing it can't do is *send email*: free
+  accounts can only reach a fixed whitelist of sites, which doesn't include
+  Gmail's mail server. Fine caveats: the web app needs a click to renew every
+  3 months, and there's a modest daily CPU allowance.
+- **Developer — US$10/month.** Same app, plus full internet access so it can
+  **send the chase/recovery emails itself**, more CPU and storage, and no
+  3-monthly renewal click.
+
+**Recommended:** start on the **free Beginner plan** to get everything running
+at zero cost, and upgrade to **Developer** only when you want the app to email
+insurers automatically. Upgrading is instant — no reinstall.
+
+**Gmail app password** (only needed once you're sending email): on the Gmail
+account you'll send from, turn on 2-Step Verification, then Google Account →
+Security → App passwords → create one for "Mail". You'll get a 16-character
+password — keep it handy for the `.env` file.
 
 ---
 
