@@ -2,10 +2,14 @@ Django>=5.2,<6.0
 django-simple-history>=3.7
 Pillow>=10.0
 reportlab>=4.0
+whitenoise>=6.6
 
 # Uncomment when enabling the Google Drive / Gmail integrations:
 # google-api-python-client>=2.100
 # google-auth>=2.23
 
-# Uncomment when switching to PostgreSQL:
+# Uncomment when switching to PostgreSQL (set DB_NAME to activate):
 # psycopg[binary]>=3.1
+
+# For production process serving (e.g. `gunicorn ecabs.wsgi`):
+# gunicorn>=21.2

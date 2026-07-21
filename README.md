@@ -55,14 +55,61 @@ Uploads go to local `media/` until Drive is configured:
 
 Each claim gets its own subfolder named after its reference.
 
+## Email
+
+Automated reminders and chase letters are sent from the claim's **Emails** tab
+(a recovery document — statement, loss-of-earnings or repairs receipt — can be
+attached as a PDF). In development emails print to the console; to send for
+real, set the SMTP variables below (for Gmail use an *app password*, not your
+account password).
+
 ## Moving to PostgreSQL
 
-The `DATABASES` block in `ecabs/settings.py` contains a ready-made PostgreSQL
-configuration in a comment — swap it in, `pip install psycopg[binary]`, set the
-`DB_*` environment variables and run `migrate`.
+The database is SQLite by default and switches to PostgreSQL automatically as
+soon as `DB_NAME` is set — no code change. Just `pip install psycopg[binary]`,
+set the `DB_*` variables (below) and run `migrate`.
 
-## Tests
+## Production deployment
 
-```bat
-python manage.py test
+The app hardens itself automatically when `DJANGO_DEBUG=0`: HTTPS redirect,
+HSTS, secure/HTTP-only cookies, and it refuses to boot with the throwaway dev
+`SECRET_KEY`. Static files are served by WhiteNoise (compressed, cache-hashed).
+
+Deploy steps:
+
+```bash
+pip install -r requirements.txt
+export DJANGO_DEBUG=0
+export DJANGO_SECRET_KEY="$(python -c 'from django.core.management.utils import get_random_secret_key as k; print(k())')"
+export DJANGO_ALLOWED_HOSTS="yourdomain.example.com"
+python manage.py migrate
+python manage.py collectstatic --noinput
+gunicorn ecabs.wsgi        # or your host's WSGI runner
+```
+
+### Environment variables
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `DJANGO_DEBUG` | `0` in production, `1` in dev | `1` |
+| `DJANGO_SECRET_KEY` | **required in production** — long random string | dev-only key |
+| `DJANGO_ALLOWED_HOSTS` | comma-separated hostnames | `localhost,127.0.0.1` |
+| `DJANGO_SECURE_SSL_REDIRECT` | set `0` if a proxy already forces HTTPS | `1` (prod) |
+| `DJANGO_HSTS_SECONDS` | HSTS max-age | `3600` (prod) |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | comma-separated `https://…` origins | — |
+| `DB_NAME` / `DB_USER` / `DB_PASSWORD` / `DB_HOST` / `DB_PORT` | PostgreSQL (activates when `DB_NAME` set) | SQLite |
+| `EMAIL_HOST` / `EMAIL_PORT` / `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` | SMTP for outbound email | Gmail host, empty creds |
+| `EMAIL_USE_TLS` / `EMAIL_USE_SSL` | SMTP transport security | TLS on |
+| `DEFAULT_FROM_EMAIL` | from-address for sent mail | `motorclaims@ecabs.com.mt` |
+| `DJANGO_EMAIL_BACKEND` | override the auto-selected backend | console in dev, SMTP in prod |
+| `GOOGLE_DRIVE_CREDENTIALS_FILE` / `GOOGLE_DRIVE_ROOT_FOLDER_ID` | Google Drive uploads | local `media/` |
+
+A copy of these lives in `.env.example`.
+
+## Tests & checks
+
+```bash
+python manage.py test              # unit/integration tests
+python tools/system_check.py       # route/template/link wiring audit (seed first)
+python manage.py check --deploy    # production security review
 ```
