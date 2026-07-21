@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Vai Drive Claims{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+  <a href="/" title="Back to Vai Drive Claims home">
+    <img src="{% static 'img/vai-drive.jpg' %}" alt=""
+         style="height:26px; vertical-align:middle; border-radius:4px; margin-right:.5rem">
+    Claims Administration
+  </a>
+</div>
+{% endblock %}
