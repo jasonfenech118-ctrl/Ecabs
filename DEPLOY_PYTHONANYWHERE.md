@@ -73,6 +73,21 @@ cd ~/Ecabs
 .venv/bin/python manage.py seed_companies       # loads the group companies
 ```
 
+### Two staff = two logins (same app)
+
+Both staff use the **same** web address and just sign in with their own
+username/password — you don't need a second server or account. The app records
+who changed what, so give each person their own login rather than sharing one.
+
+Create the second login now (or later) — run again and enter their details:
+
+```bash
+.venv/bin/python manage.py createsuperuser
+```
+
+(Or, once the app is running, add more people from `/admin/` → **Users** →
+**Add user**.)
+
 ## 4. Create the web app
 
 1. **Web** tab → **Add a new web app** → **Manual configuration** → pick the
