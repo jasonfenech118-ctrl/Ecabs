@@ -1007,7 +1007,7 @@ def claim_documents(request, pk):
             "document_types": DOCUMENT_TYPES,
             "pdf_url": pdf_url,
             "invoice_no": claim.case_ref or claim.reference,
-            "invoice_date": claim.bills_sent_on or timezone.localdate(),
+            "invoice_date": claim.bills_sent_on,
             "lines": claim.invoice_lines(),
             "total": claim.total_claim_amount,
             "repairs_net": net,

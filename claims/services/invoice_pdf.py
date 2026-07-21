@@ -9,7 +9,6 @@ from io import BytesIO
 from pathlib import Path
 
 from django.conf import settings
-from django.utils import timezone
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
@@ -115,9 +114,10 @@ def build_invoice_pdf(claim, company):
         Paragraph("Bill To:", muted),
         Paragraph(claim.third_party_insurer or "—", bold),
     ]
-    invoice_date = claim.bills_sent_on or timezone.localdate()
+    # Invoice date is the date bills were sent, not today. Blank until set.
+    invoice_date = claim.bills_sent_on.strftime("%d/%m/%Y") if claim.bills_sent_on else "—"
     summary = [
-        Paragraph(f'Invoice date: <b>{invoice_date.strftime("%d/%m/%Y")}</b>', right),
+        Paragraph(f'Invoice date: <b>{invoice_date}</b>', right),
         Spacer(1, 6 * mm),
         Paragraph(f"Balance Due: <b>{_euro(claim.total_claim_amount)}</b>", right),
     ]
@@ -201,7 +201,9 @@ def build_repairs_pdf(claim, company):
     net = claim.repairs_total
     vat = (net * REPAIR_VAT_RATE).quantize(Decimal("0.01"))
     total = net + vat
-    inv_date = claim.bills_sent_on or timezone.localdate()
+    # Document date is the date bills were sent, not today. Blank until set.
+    doc_date_long = claim.bills_sent_on.strftime("%d %B %Y") if claim.bills_sent_on else "—"
+    doc_date_short = claim.bills_sent_on.strftime("%d/%m/%Y") if claim.bills_sent_on else "—"
     receipt_no = claim.case_ref or claim.reference
 
     story = []
@@ -224,7 +226,7 @@ def build_repairs_pdf(claim, company):
         Paragraph("Receipt No.", muted), Paragraph(receipt_no, bold),
         Spacer(1, 3 * mm),
         Paragraph("Document Date", muted),
-        Paragraph(inv_date.strftime("%d %B %Y"), bold),
+        Paragraph(doc_date_long, bold),
     ]
     addr = company.address.replace("\n", "<br/>")
     co_block = [Paragraph(company.name, bold), Paragraph(addr, muted)]
@@ -247,7 +249,7 @@ def build_repairs_pdf(claim, company):
     head = ["Booking ID", "Date", "Description", "Reg. No", "Amount Net", "Amount incl. VAT"]
     row = [
         claim.invoice_number or receipt_no,
-        inv_date.strftime("%d/%m/%Y"),
+        doc_date_short,
         claim.repairs_description(),
         claim.vehicle_registration,
         _euro(net), _euro(total),
@@ -361,9 +363,11 @@ def build_lou_pdf(claim, company):
         f"Total amount due Net of Vat &nbsp;&nbsp;&nbsp; <b><u>{_euro(total)}</u></b>",
         normal))
     story.append(Spacer(1, 8 * mm))
-    story.append(Paragraph(
-        "*Kindly note that the amount quoted is net of 30% running expenses.", normal))
-    story.append(Spacer(1, 8 * mm))
+    # The 30% running-expenses note applies to eCabs only.
+    if "ecabs" in (company.name or "").lower():
+        story.append(Paragraph(
+            "*Kindly note that the amount quoted is net of 30% running expenses.", normal))
+        story.append(Spacer(1, 8 * mm))
     story.append(Paragraph(
         "Should you require any additional information due not hesitate to contact us on:",
         normal))

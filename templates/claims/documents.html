@@ -46,7 +46,7 @@
     <dl class="kv">
       <dt>Company</dt><dd>{{ company.name }}</dd>
       <dt>Statement No</dt><dd>{{ invoice_no }}</dd>
-      <dt>Invoice date</dt><dd>{{ invoice_date|date:"d/m/Y" }}</dd>
+      <dt>Invoice date</dt><dd>{{ invoice_date|date:"d/m/Y"|default:"—" }}</dd>
       <dt>Claim No</dt><dd>{{ claim.tp_claim_number|default:claim.insurer_claim_number }}</dd>
       <dt>Our Reg No</dt><dd>{{ claim.vehicle_registration }}</dd>
       <dt>Total NET</dt><dd><strong>€{{ total|floatformat:2|intcomma }}</strong></dd>

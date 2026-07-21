@@ -961,3 +961,44 @@ class ReminderPopupTests(TestCase):
         )
         r = self.client.get(reverse("home"))
         self.assertNotContains(r, "Reminders due")
+
+
+class InvoiceDateAndNoteTests(TestCase):
+    def _company(self, name):
+        from .models import Company
+        return Company.objects.create(name=name, address="Malta", logo_static="img/companies/vai.png")
+
+    def test_invoice_date_blank_without_bill_date(self):
+        from decimal import Decimal
+
+        from .services.invoice_pdf import build_invoice_pdf
+        co = self._company("Vai Drive Co Ltd.")
+        claim = Claim.objects.create(status=Claim.Status.OPEN, parts_amount=Decimal("100.00"))
+        # No bills_sent_on -> the PDF must not stamp today's date.
+        import datetime, fitz, tempfile, os
+        pdf = build_invoice_pdf(claim, co)
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
+            f.write(pdf); path = f.name
+        text = fitz.open(path).load_page(0).get_text().replace("\n", " ")
+        os.unlink(path)
+        self.assertIn("Invoice date: —", text)
+        self.assertNotIn(datetime.date.today().strftime("%d/%m/%Y"), text)
+
+    def test_30pct_note_ecabs_only(self):
+        from .services.invoice_pdf import build_lou_pdf
+        import fitz, tempfile, os
+        vai = self._company("Vai Drive Co Ltd.")
+        ecabs = self._company("eCabs Ltd")
+        from decimal import Decimal
+        claim = Claim.objects.create(status=Claim.Status.OPEN, loe_days=8, loe_daily_rate=Decimal("50.00"))
+
+        def note_present(company):
+            pdf = build_lou_pdf(claim, company)
+            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
+                f.write(pdf); path = f.name
+            text = fitz.open(path).load_page(0).get_text()
+            os.unlink(path)
+            return "30% running expenses" in text
+
+        self.assertTrue(note_present(ecabs))
+        self.assertFalse(note_present(vai))
