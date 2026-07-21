@@ -560,9 +560,13 @@ class ViewTests(TestCase):
         self.assertEqual(claim.status, Claim.Status.CLOSED)
         self.assertEqual(claim.outstanding_amount, Decimal("0.00"))
 
-    def test_invoice_date_is_bill_date(self):
+    def test_invoice_date_is_manual(self):
+        import os
+        import tempfile
         from datetime import date
         from decimal import Decimal
+
+        import fitz
 
         from .models import Company
 
@@ -573,12 +577,28 @@ class ViewTests(TestCase):
             status=Claim.Status.OPEN, bills_sent_on=date(2026, 5, 20),
             parts_amount=Decimal("100.00"), created_by=self.user,
         )
+        # The documents page offers a manual date input and does NOT auto-fill
+        # the invoice date from bills_sent_on.
         r = self.client.get(
             reverse("claim_documents", args=[claim.pk]),
             {"doc": "statement", "company": co.pk},
         )
-        self.assertContains(r, "20/05/2026")
         self.assertContains(r, "Invoice date")
+        self.assertContains(r, 'name="date"')
+        self.assertNotContains(r, "20/05/2026")
+
+        def pdf_text(params):
+            resp = self.client.get(reverse("claim_invoice_pdf", args=[claim.pk]), params)
+            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
+                f.write(resp.content)
+                path = f.name
+            t = fitz.open(path).load_page(0).get_text().replace("\n", " ")
+            os.unlink(path)
+            return t
+
+        # Typed date appears; no date -> dash, never today.
+        self.assertIn("Invoice date: 07/06/2026", pdf_text({"company": co.pk, "date": "2026-06-07"}))
+        self.assertIn("Invoice date: —", pdf_text({"company": co.pk}))
 
     def test_workflow_reminders(self):
         from datetime import timedelta

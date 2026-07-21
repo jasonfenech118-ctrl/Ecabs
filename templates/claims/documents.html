@@ -32,7 +32,16 @@
     {% endfor %}
   </div>
   {% if company %}
-    <a href="{% url pdf_url claim.pk %}?company={{ company.pk }}" target="_blank" rel="noopener" class="btn btn-primary mt">📄 Open PDF</a>
+    <form action="{% url pdf_url claim.pk %}" method="get" target="_blank" rel="noopener"
+          class="row mt" style="align-items:flex-end; gap:.6rem">
+      <input type="hidden" name="company" value="{{ company.pk }}">
+      <label class="field" style="margin:0">
+        <span>Invoice date <span class="muted">(type it in)</span></span>
+        <input type="date" name="date">
+      </label>
+      <button type="submit" class="btn btn-primary">📄 Open PDF</button>
+    </form>
+    <p class="muted" style="margin:.5rem 0 0; font-size:.8rem">Leave the date blank to omit it; it is never filled in automatically.</p>
   {% else %}
     <p class="muted" style="margin:.75rem 0 0">Select a company above to open the PDF.</p>
   {% endif %}
@@ -46,7 +55,6 @@
     <dl class="kv">
       <dt>Company</dt><dd>{{ company.name }}</dd>
       <dt>Statement No</dt><dd>{{ invoice_no }}</dd>
-      <dt>Invoice date</dt><dd>{{ invoice_date|date:"d/m/Y"|default:"—" }}</dd>
       <dt>Claim No</dt><dd>{{ claim.tp_claim_number|default:claim.insurer_claim_number }}</dd>
       <dt>Our Reg No</dt><dd>{{ claim.vehicle_registration }}</dd>
       <dt>Total NET</dt><dd><strong>€{{ total|floatformat:2|intcomma }}</strong></dd>
@@ -79,7 +87,7 @@
     {% if not claim.repairs_total %}<p class="muted" style="margin:.5rem 0 0">No repair amounts on this claim yet — enter labour, spray, parts or others first.</p>{% endif %}
   {% endif %}
 
-  <a href="{% url pdf_url claim.pk %}?company={{ company.pk }}" target="_blank" rel="noopener" class="btn btn-primary mt">📄 Open PDF</a>
+  <p class="muted" style="margin:.75rem 0 0; font-size:.85rem">Set the invoice date and open the PDF from the box above.</p>
 </div>
 {% endif %}
 {% endblock %}

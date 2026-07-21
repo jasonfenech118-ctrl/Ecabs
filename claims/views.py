@@ -1007,7 +1007,6 @@ def claim_documents(request, pk):
             "document_types": DOCUMENT_TYPES,
             "pdf_url": pdf_url,
             "invoice_no": claim.case_ref or claim.reference,
-            "invoice_date": claim.bills_sent_on,
             "lines": claim.invoice_lines(),
             "total": claim.total_claim_amount,
             "repairs_net": net,
@@ -1015,6 +1014,20 @@ def claim_documents(request, pk):
             "repairs_total": net + vat,
         },
     )
+
+
+def _manual_invoice_date(request):
+    """The invoice/document date is typed in by the user (?date=YYYY-MM-DD);
+    it is never auto-filled. Returns a date or None."""
+    from datetime import date
+
+    raw = (request.GET.get("date") or "").strip()
+    if not raw:
+        return None
+    try:
+        return date.fromisoformat(raw)
+    except ValueError:
+        return None
 
 
 @login_required
@@ -1026,7 +1039,7 @@ def claim_invoice_pdf(request, pk):
 
     claim = get_object_or_404(Claim, pk=pk)
     company = get_object_or_404(Company, pk=request.GET.get("company"))
-    pdf = build_invoice_pdf(claim, company)
+    pdf = build_invoice_pdf(claim, company, invoice_date=_manual_invoice_date(request))
     response = HttpResponse(pdf, content_type="application/pdf")
     ref = (claim.case_ref or claim.reference).replace(" ", "")
     response["Content-Disposition"] = f'inline; filename="statement-{ref}.pdf"'
@@ -1041,7 +1054,7 @@ def claim_repairs_pdf(request, pk):
 
     claim = get_object_or_404(Claim, pk=pk)
     company = get_object_or_404(Company, pk=request.GET.get("company"))
-    pdf = build_repairs_pdf(claim, company)
+    pdf = build_repairs_pdf(claim, company, invoice_date=_manual_invoice_date(request))
     response = HttpResponse(pdf, content_type="application/pdf")
     ref = (claim.case_ref or claim.reference).replace(" ", "")
     response["Content-Disposition"] = f'inline; filename="repairs-{ref}.pdf"'
@@ -1057,7 +1070,7 @@ def claim_lou_pdf(request, pk):
 
     claim = get_object_or_404(Claim, pk=pk)
     company = get_object_or_404(Company, pk=request.GET.get("company"))
-    pdf = build_lou_pdf(claim, company)
+    pdf = build_lou_pdf(claim, company, invoice_date=_manual_invoice_date(request))
     response = HttpResponse(pdf, content_type="application/pdf")
     ref = (claim.case_ref or claim.reference).replace(" ", "")
     response["Content-Disposition"] = f'inline; filename="loss-of-use-{ref}.pdf"'

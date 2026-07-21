@@ -62,7 +62,7 @@ def _euro(v):
     return f"€ {Decimal(v or 0):,.2f}"
 
 
-def build_invoice_pdf(claim, company):
+def build_invoice_pdf(claim, company, invoice_date=None):
     buf = BytesIO()
     doc = SimpleDocTemplate(
         buf, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm,
@@ -114,10 +114,11 @@ def build_invoice_pdf(claim, company):
         Paragraph("Bill To:", muted),
         Paragraph(claim.third_party_insurer or "—", bold),
     ]
-    # Invoice date is the date bills were sent, not today. Blank until set.
-    invoice_date = claim.bills_sent_on.strftime("%d/%m/%Y") if claim.bills_sent_on else "—"
+    # Invoice date is entered manually when generating the document; never
+    # auto-filled. Blank (—) until the user types one.
+    invoice_date_str = invoice_date.strftime("%d/%m/%Y") if invoice_date else "—"
     summary = [
-        Paragraph(f'Invoice date: <b>{invoice_date}</b>', right),
+        Paragraph(f'Invoice date: <b>{invoice_date_str}</b>', right),
         Spacer(1, 6 * mm),
         Paragraph(f"Balance Due: <b>{_euro(claim.total_claim_amount)}</b>", right),
     ]
@@ -181,7 +182,7 @@ REPAIR_VAT_RATE = Decimal("0.18")
 BLUE = colors.HexColor("#2f6db5")
 
 
-def build_repairs_pdf(claim, company):
+def build_repairs_pdf(claim, company, invoice_date=None):
     """Repairs VAT receipt (Labour/Spray/Parts/Others, net + VAT @18%),
     for issuing to the insurer — the third invoice type."""
     buf = BytesIO()
@@ -201,9 +202,9 @@ def build_repairs_pdf(claim, company):
     net = claim.repairs_total
     vat = (net * REPAIR_VAT_RATE).quantize(Decimal("0.01"))
     total = net + vat
-    # Document date is the date bills were sent, not today. Blank until set.
-    doc_date_long = claim.bills_sent_on.strftime("%d %B %Y") if claim.bills_sent_on else "—"
-    doc_date_short = claim.bills_sent_on.strftime("%d/%m/%Y") if claim.bills_sent_on else "—"
+    # Document date is entered manually when generating; never auto-filled.
+    doc_date_long = invoice_date.strftime("%d %B %Y") if invoice_date else "—"
+    doc_date_short = invoice_date.strftime("%d/%m/%Y") if invoice_date else "—"
     receipt_no = claim.case_ref or claim.reference
 
     story = []
@@ -288,7 +289,7 @@ def build_repairs_pdf(claim, company):
     return buf.getvalue()
 
 
-def build_lou_pdf(claim, company):
+def build_lou_pdf(claim, company, invoice_date=None):
     """Loss-of-use refund letter under a company letterhead — the second
     invoice type. Days x daily rate, net of running expenses."""
     buf = BytesIO()
