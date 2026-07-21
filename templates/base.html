@@ -55,6 +55,7 @@
     </nav>
     <div class="sidebar-footer">
       <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
+      <a href="{% url 'password_change' %}" class="link-btn">Change password</a>
       <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit" class="link-btn">Sign out</button>

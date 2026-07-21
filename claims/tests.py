@@ -839,3 +839,57 @@ class EmailSendTests(TestCase):
         self.assertIn("Elmo", body)
         self.assertIn("500.00", body)
         self.assertTrue(subject.startswith("Payment reminder"))
+
+
+class PasswordAndBackupTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user("staff", password="oldpw12345")
+
+    def test_change_password_requires_login(self):
+        r = self.client.get(reverse("password_change"))
+        self.assertEqual(r.status_code, 302)
+        self.assertIn("/accounts/login/", r.url)
+
+    def test_change_password_works(self):
+        self.client.force_login(self.user)
+        r = self.client.get(reverse("password_change"))
+        self.assertEqual(r.status_code, 200)
+        r = self.client.post(reverse("password_change"), {
+            "old_password": "oldpw12345",
+            "new_password1": "brandNew99xy",
+            "new_password2": "brandNew99xy",
+        })
+        self.assertRedirects(r, reverse("password_change_done"))
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password("brandNew99xy"))
+
+    def test_password_reset_page_loads(self):
+        r = self.client.get(reverse("password_reset"))
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "Reset password")
+
+    def test_password_reset_never_500s_without_email(self):
+        # Submitting still redirects to the neutral done page even if sending
+        # is not possible (SafePasswordResetView swallows send failures).
+        r = self.client.post(reverse("password_reset"), {"email": "staff@example.com"})
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(r.url, reverse("password_reset_done"))
+
+    def test_backup_db_command(self):
+        import os
+        import tempfile
+        from pathlib import Path
+
+        from django.conf import settings
+        from django.core.management import call_command
+        from django.test import override_settings
+
+        with tempfile.TemporaryDirectory() as tmp:
+            dbfile = Path(tmp) / "db.sqlite3"
+            dbfile.write_bytes(b"SQLite format 3\x00sample")
+            dbs = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": str(dbfile)}}
+            with override_settings(DATABASES=dbs, BASE_DIR=Path(tmp)):
+                call_command("backup_db")
+            made = list((Path(tmp) / "backups").glob("db-*.sqlite3"))
+            self.assertEqual(len(made), 1)
+            self.assertEqual(made[0].read_bytes(), dbfile.read_bytes())

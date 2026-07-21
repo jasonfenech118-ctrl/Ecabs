@@ -106,6 +106,27 @@ gunicorn ecabs.wsgi        # or your host's WSGI runner
 
 A copy of these lives in `.env.example`.
 
+## Passwords
+
+- **Change your own password:** the "Change password" link in the sidebar
+  (bottom-left), or `/accounts/password_change/`.
+- **Forgot a password:** the "Forgot your password?" link on the sign-in page
+  emails a reset link — this only works once email/SMTP is configured. Where
+  there's no email (e.g. the free host), an admin resets it instead:
+  `/admin/` → **Users** → pick the person → set a new password. No email needed.
+- **From the command line:** `python manage.py changepassword <username>`.
+
+## Backups
+
+The database is a single file. Two ways to keep it safe:
+
+- **On-server snapshot:** `python manage.py backup_db` copies it to
+  `backups/db-<timestamp>.sqlite3` (keeps the last 10). Handy before risky
+  changes.
+- **Off-site (the real safety net):** download the file to your own computer
+  now and then — on PythonAnywhere, **Files** tab → `db.sqlite3` (or any file
+  under `backups/`) → **Download**.
+
 ## Tests & checks
 
 ```bash
