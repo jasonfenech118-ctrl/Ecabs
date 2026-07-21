@@ -19,6 +19,7 @@ from .forms import (
     PhotoEntryForm,
     PhotoUploadForm,
     ReminderForm,
+    SendEmailForm,
     SurveyEntryForm,
     SurveyForm,
     VehicleForm,
@@ -35,6 +36,7 @@ from .models import (
     Vehicle,
 )
 from .services import drive
+from .services import email as email_service
 from .services.auto_reminders import sync_auto_reminders
 
 VALID_TABS = {"overview", "photos", "surveys", "emails", "reminders", "billing", "history"}
@@ -399,6 +401,15 @@ def _tab_context(request, claim, tab):
     elif tab == "emails":
         context["emails"] = claim.emails.all()
         context["email_form"] = EmailLogForm()
+        subject, body = email_service.default_chase_message(claim)
+        context.setdefault(
+            "send_form",
+            SendEmailForm(initial={
+                "to": claim.insurer_email,
+                "subject": subject,
+                "body": body,
+            }),
+        )
     elif tab == "reminders":
         context["claim_reminders"] = claim.reminders.select_related("assigned_to")
         context["reminder_form"] = ReminderForm()
@@ -512,6 +523,47 @@ def email_add(request, pk):
         request, pk, EmailLogForm, "emails",
         save_hook=lambda obj: setattr(obj, "logged_by", request.user),
     )
+
+
+@login_required
+@require_POST
+def email_send(request, pk):
+    """Compose-and-send an email for a claim, optionally attaching a recovery
+    document PDF. The sent message is recorded in EmailLog either way."""
+    claim = get_object_or_404(Claim, pk=pk)
+    form = SendEmailForm(request.POST)
+    send_error = None
+    if form.is_valid():
+        cd = form.cleaned_data
+        company = cd.get("company")
+        attachments = []
+        if cd.get("attach") and company:
+            built = email_service.document_pdf(claim, company, cd["attach"])
+            if built:
+                name, content = built
+                attachments.append((name, content, "application/pdf"))
+        from_email = company.email if company and company.email else None
+        try:
+            email_service.send_claim_email(
+                claim,
+                to=cd["to"],
+                subject=cd["subject"],
+                body=cd["body"],
+                from_email=from_email,
+                user=request.user,
+                attachments=attachments,
+            )
+            # Success: fall through to a fresh emails tab showing the new entry.
+            context = _tab_context(request, claim, "emails")
+            return render(request, "claims/partials/tab_emails.html", context)
+        except Exception as exc:  # SMTP/backend failure — keep the draft open
+            send_error = f"Could not send email: {exc}"
+
+    context = _tab_context(request, claim, "emails")
+    context["send_form"] = form
+    context["send_open"] = True
+    context["send_error"] = send_error
+    return render(request, "claims/partials/tab_emails.html", context)
 
 
 @login_required

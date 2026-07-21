@@ -1,5 +1,20 @@
+<details class="inline-form" {% if send_open %}open{% endif %}>
+  <summary>Send an email</summary>
+  <form hx-post="{% url 'email_send' claim.pk %}" hx-target="#tab-panel" class="card">
+    {% if send_error %}<p class="form-error">{{ send_error }}</p>{% endif %}
+    <div class="form-grid">
+      {% include "claims/partials/field.html" with field=send_form.company %}
+      {% include "claims/partials/field.html" with field=send_form.to %}
+      {% include "claims/partials/field.html" with field=send_form.attach %}
+      {% include "claims/partials/field.html" with field=send_form.subject extra_class="span-2" %}
+      {% include "claims/partials/field.html" with field=send_form.body extra_class="span-2" %}
+    </div>
+    <button type="submit" class="btn btn-primary mt">✉ Send email</button>
+  </form>
+</details>
+
 <details class="inline-form" {% if form_open %}open{% endif %}>
-  <summary>Log an email</summary>
+  <summary>Log an email (already sent elsewhere)</summary>
   <form hx-post="{% url 'email_add' claim.pk %}" hx-target="#tab-panel" class="card">
     <div class="form-grid">
       {% include "claims/partials/field.html" with field=email_form.direction %}

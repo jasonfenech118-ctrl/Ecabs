@@ -30,6 +30,7 @@ urlpatterns = [
     path("claims/<int:pk>/photos/upload/", views.photo_upload, name="photo_upload"),
     path("claims/<int:pk>/surveys/add/", views.survey_add, name="survey_add"),
     path("claims/<int:pk>/emails/add/", views.email_add, name="email_add"),
+    path("claims/<int:pk>/emails/send/", views.email_send, name="email_send"),
     path("claims/<int:pk>/reminders/add/", views.reminder_add, name="reminder_add"),
     path("claims/<int:pk>/billing/add/", views.billing_add, name="billing_add"),
     path("vehicles/", views.vehicle_list, name="vehicle_list"),

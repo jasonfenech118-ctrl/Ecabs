@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import BillingItem, Claim, EmailLog, Reminder, Survey, Vehicle
+from .models import BillingItem, Claim, Company, EmailLog, Reminder, Survey, Vehicle
 
 
 class VehicleForm(forms.ModelForm):
@@ -53,6 +53,7 @@ class ClaimForm(forms.ModelForm):
             "policy_number",
             "insurer_claim_number",
             "insurer_contact",
+            "insurer_email",
             "excess_amount",
             "drivable",
             "survey_booked",
@@ -140,6 +141,37 @@ class EmailLogForm(forms.ModelForm):
             "sent_at": forms.DateTimeInput(attrs={"type": "datetime-local"}),
             "body": forms.Textarea(attrs={"rows": 4}),
         }
+
+
+class SendEmailForm(forms.Form):
+    """Compose-and-send an email for a claim, optionally attaching a recovery
+    document as a PDF under one of the group companies."""
+
+    ATTACH_CHOICES = [
+        ("", "No attachment"),
+        ("statement", "Statement"),
+        ("lossofuse", "Loss of earnings"),
+        ("repairs", "Repairs receipt"),
+    ]
+
+    company = forms.ModelChoiceField(
+        queryset=Company.objects.filter(is_active=True),
+        required=False,
+        label="Send under company",
+        help_text="Sets the from-address and is required to attach a document",
+    )
+    to = forms.EmailField(label="To")
+    subject = forms.CharField(max_length=255)
+    body = forms.CharField(widget=forms.Textarea(attrs={"rows": 6}))
+    attach = forms.ChoiceField(
+        choices=ATTACH_CHOICES, required=False, label="Attach document"
+    )
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get("attach") and not cleaned.get("company"):
+            self.add_error("company", "Choose a company to attach a document.")
+        return cleaned
 
 
 class ReminderForm(forms.ModelForm):

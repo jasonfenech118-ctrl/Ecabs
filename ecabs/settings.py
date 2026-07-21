@@ -109,6 +109,27 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"
 
+# --- Email --------------------------------------------------------------------
+# Development prints emails to the console; production sends over SMTP once the
+# host credentials below are supplied via environment variables. Set
+# DJANGO_EMAIL_BACKEND explicitly to override (e.g. to force real sending
+# while DEBUG is on for a test).
+EMAIL_BACKEND = os.environ.get(
+    "DJANGO_EMAIL_BACKEND",
+    "django.core.mail.backends.console.EmailBackend"
+    if DEBUG
+    else "django.core.mail.backends.smtp.EmailBackend",
+)
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "1") == "1"
+EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "0") == "1"
+EMAIL_TIMEOUT = 20
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "motorclaims@ecabs.com.mt")
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
 # --- Google Drive integration -------------------------------------------------
 # Path to a service-account JSON key. When unset, uploads fall back to
 # MEDIA_ROOT so the app works in development without Drive access.

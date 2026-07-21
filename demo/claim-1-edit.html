@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "V1oz6NZY7rOuJlgBrgg6oDjJMk77JZJPIbrXw34rv9RJCB9dapR5kC94EZ5sHNL6"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "MmK4C7ybG792Vy2fTf1QXB6B88yNUcKJdTBSIFL495r67Gd7aE4dqucHv7eGh1dJ"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -76,7 +76,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="V1oz6NZY7rOuJlgBrgg6oDjJMk77JZJPIbrXw34rv9RJCB9dapR5kC94EZ5sHNL6">
+  <input type="hidden" name="csrfmiddlewaretoken" value="MmK4C7ybG792Vy2fTf1QXB6B88yNUcKJdTBSIFL495r67Gd7aE4dqucHv7eGh1dJ">
 
   <datalist id="vehicle-regs">
     <option value="ECB101">Toyota Corolla Hybrid</option>
@@ -294,6 +294,12 @@
 </div>
 
       <div class="field ">
+  <label for="id_insurer_email">Insurer email</label>
+  <input type="email" name="insurer_email" maxlength="254" aria-describedby="id_insurer_email_helptext" id="id_insurer_email">
+  
+</div>
+
+      <div class="field ">
   <label for="id_excess_amount">Excess amount</label>
   <input type="number" name="excess_amount" step="0.01" id="id_excess_amount">
   
@@ -363,7 +369,7 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_bills_sent_on">Bills sent</label>
-  <input type="date" name="bills_sent_on" value="20/07/2026" id="id_bills_sent_on">
+  <input type="date" name="bills_sent_on" value="21/07/2026" id="id_bills_sent_on">
   
 </div>
 
@@ -473,7 +479,7 @@
 
       <div class="field ">
   <label for="id_chase_on">Chase on</label>
-  <input type="date" name="chase_on" value="26/07/2026" id="id_chase_on">
+  <input type="date" name="chase_on" value="27/07/2026" id="id_chase_on">
   
 </div>
 

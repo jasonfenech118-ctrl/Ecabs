@@ -224,6 +224,10 @@ class Claim(models.Model):
     insurer_contact = models.CharField(
         "Chase — who & contact details", max_length=200, blank=True
     )
+    insurer_email = models.EmailField(
+        "Insurer email", max_length=254, blank=True,
+        help_text="Where chase/recovery emails are sent for this claim",
+    )
     estimate_amount = models.DecimalField(
         "Estimate claim amt", max_digits=10, decimal_places=2, null=True, blank=True
     )

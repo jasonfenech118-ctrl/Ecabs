@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "fEIUIuihEnkswewbqOQyMFqqQS8BeGLj2OLi8KnK25nHpupN9XrxIEgLIx6WcuNA"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "exqagDzHsGJBawjm3xfBNEj93XxxcRcEF4hYmbMAVE1FmEuekWiYgxpfqWdqzGFE"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -130,7 +130,74 @@
 
 <div id="tab-panel">
   <details class="inline-form" >
-  <summary>Log an email</summary>
+  <summary>Send an email</summary>
+  <form hx-post="/claims/5/emails/send/" hx-target="#tab-panel" class="card">
+    
+    <div class="form-grid">
+      <div class="field ">
+  <label for="id_company">Send under company</label>
+  <select name="company" aria-describedby="id_company_helptext" id="id_company">
+  <option value="" selected>---------</option>
+
+  <option value="1">Vai Drive Co Ltd.</option>
+
+  <option value="2">eCabs Ltd</option>
+
+  <option value="3">Fast Drop</option>
+
+  <option value="4">Fastdrop International Ltd</option>
+
+</select>
+  
+</div>
+
+      <div class="field ">
+  <label for="id_to">To</label>
+  <input type="email" name="to" maxlength="320" required id="id_to">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_attach">Attach document</label>
+  <select name="attach" id="id_attach">
+  <option value="" selected>No attachment</option>
+
+  <option value="statement">Statement</option>
+
+  <option value="lossofuse">Loss of earnings</option>
+
+  <option value="repairs">Repairs receipt</option>
+
+</select>
+  
+</div>
+
+      <div class="field span-2">
+  <label for="id_subject">Subject</label>
+  <input type="text" name="subject" value="Payment reminder — claim VD-00005" maxlength="255" required id="id_subject">
+  
+</div>
+
+      <div class="field span-2">
+  <label for="id_body">Body</label>
+  <textarea name="body" cols="40" rows="6" required id="id_body">
+Dear Sir/Madam,
+
+We refer to the above claim (our ref VD-00005).
+An amount of €640.00 remains outstanding.
+Kindly arrange settlement at your earliest convenience.
+
+Awaiting your remittance,</textarea>
+  
+</div>
+
+    </div>
+    <button type="submit" class="btn btn-primary mt">✉ Send email</button>
+  </form>
+</details>
+
+<details class="inline-form" >
+  <summary>Log an email (already sent elsewhere)</summary>
   <form hx-post="/claims/5/emails/add/" hx-target="#tab-panel" class="card">
     <div class="form-grid">
       <div class="field ">
@@ -148,7 +215,7 @@
 
       <div class="field ">
   <label for="id_sent_at">Sent at</label>
-  <input type="datetime-local" name="sent_at" value="2026-07-20 22:41:34" required id="id_sent_at"><input type="hidden" name="initial-sent_at" value="2026-07-20 22:41:34" id="initial-id_sent_at">
+  <input type="datetime-local" name="sent_at" value="2026-07-21 06:29:38" required id="id_sent_at"><input type="hidden" name="initial-sent_at" value="2026-07-21 06:29:38" id="initial-id_sent_at">
   
 </div>
 

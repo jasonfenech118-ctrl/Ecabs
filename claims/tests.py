@@ -754,3 +754,88 @@ class ViewTests(TestCase):
         response = self.client.get(reverse("dashboard"))
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login/", response.url)
+
+
+from django.core import mail  # noqa: E402
+from django.test import override_settings  # noqa: E402
+
+
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+class EmailSendTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user("staff", password="pw")
+        self.client.force_login(self.user)
+
+    def test_send_email_delivers_and_logs(self):
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, third_party_insurer="Mapfre",
+            insurer_email="claims@mapfre.com.mt", created_by=self.user,
+        )
+        r = self.client.post(
+            reverse("email_send", args=[claim.pk]),
+            {"to": "claims@mapfre.com.mt", "subject": "Reminder",
+             "body": "Please settle.", "attach": ""},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["claims@mapfre.com.mt"])
+        log = claim.emails.get()
+        self.assertEqual(log.direction, "out")
+        self.assertEqual(log.to_address, "claims@mapfre.com.mt")
+        self.assertEqual(log.logged_by, self.user)
+
+    def test_send_email_with_pdf_attachment(self):
+        from decimal import Decimal
+
+        from .models import Company
+
+        co = Company.objects.create(
+            name="eCabs Ltd", address="St Julians, Malta",
+            email="motorclaims@ecabs.com.mt", logo_static="img/companies/ecabs.png",
+        )
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="BLY438",
+            tp_claim_number="M24109061", labour_amount=Decimal("200.00"),
+            created_by=self.user,
+        )
+        r = self.client.post(
+            reverse("email_send", args=[claim.pk]),
+            {"company": co.pk, "to": "claims@mapfre.com.mt",
+             "subject": "Repairs receipt", "body": "See attached.",
+             "attach": "repairs"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        msg = mail.outbox[0]
+        self.assertEqual(msg.from_email, "motorclaims@ecabs.com.mt")
+        self.assertEqual(len(msg.attachments), 1)
+        name, content, mimetype = msg.attachments[0]
+        self.assertTrue(name.endswith(".pdf"))
+        self.assertEqual(mimetype, "application/pdf")
+        self.assertTrue(content[:5] == b"%PDF-")
+        self.assertEqual(claim.emails.count(), 1)
+
+    def test_attachment_requires_company(self):
+        claim = Claim.objects.create(status=Claim.Status.OPEN, created_by=self.user)
+        r = self.client.post(
+            reverse("email_send", args=[claim.pk]),
+            {"to": "x@y.com", "subject": "Hi", "body": "Body", "attach": "statement"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "Choose a company to attach a document.")
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(claim.emails.count(), 0)
+
+    def test_default_chase_message(self):
+        from decimal import Decimal
+
+        from .services.email import default_chase_message
+
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, third_party_insurer="Elmo",
+            parts_amount=Decimal("500.00"), created_by=self.user,
+        )
+        subject, body = default_chase_message(claim)
+        self.assertIn("Elmo", body)
+        self.assertIn("500.00", body)
+        self.assertTrue(subject.startswith("Payment reminder"))

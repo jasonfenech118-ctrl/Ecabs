@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "wQlK2EXWJEqxIg8cIdC4YiRAR3XQzGG1j0o8sU2p7mtMBw1Ormd3UhHVJIVbxuIi"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "OSPfazW8fas2YOC6BOluDcdnDzFCC3lMfpG3g791I8K6aWNYSdoR65jt0ylvZSOM"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -76,7 +76,7 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="wQlK2EXWJEqxIg8cIdC4YiRAR3XQzGG1j0o8sU2p7mtMBw1Ormd3UhHVJIVbxuIi">
+  <input type="hidden" name="csrfmiddlewaretoken" value="OSPfazW8fas2YOC6BOluDcdnDzFCC3lMfpG3g791I8K6aWNYSdoR65jt0ylvZSOM">
 
   <datalist id="vehicle-regs">
     <option value="ECB101">Toyota Corolla Hybrid</option>
@@ -290,6 +290,12 @@
       <div class="field ">
   <label for="id_insurer_contact">Chase — who &amp; contact details</label>
   <input type="text" name="insurer_contact" maxlength="200" id="id_insurer_contact">
+  
+</div>
+
+      <div class="field ">
+  <label for="id_insurer_email">Insurer email</label>
+  <input type="email" name="insurer_email" maxlength="254" aria-describedby="id_insurer_email_helptext" id="id_insurer_email">
   
 </div>
 

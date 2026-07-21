@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "qd9rPSE18zlBklAmxLPhfofIupOVOeePdncPf8JuwhoQdBtYgUqgbn53m4MgM2g6"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "0An0Wie936JlFsF1qIM9zlQ0SAMnIAxJr7eO2Qr2w41pRAQTH7Pw2eW6fzsg5p0J"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -70,7 +70,7 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="qd9rPSE18zlBklAmxLPhfofIupOVOeePdncPf8JuwhoQdBtYgUqgbn53m4MgM2g6">
+  <input type="hidden" name="csrfmiddlewaretoken" value="0An0Wie936JlFsF1qIM9zlQ0SAMnIAxJr7eO2Qr2w41pRAQTH7Pw2eW6fzsg5p0J">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
@@ -105,7 +105,7 @@
     <div class="form-grid">
       <div class="field ">
   <label for="id_insurance_due">Insurance renewal</label>
-  <input type="date" name="insurance_due" value="07/08/2026" id="id_insurance_due">
+  <input type="date" name="insurance_due" value="08/08/2026" id="id_insurance_due">
   
 </div>
 
@@ -161,14 +161,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/1/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="qd9rPSE18zlBklAmxLPhfofIupOVOeePdncPf8JuwhoQdBtYgUqgbn53m4MgM2g6">
+      <input type="hidden" name="csrfmiddlewaretoken" value="0An0Wie936JlFsF1qIM9zlQ0SAMnIAxJr7eO2Qr2w41pRAQTH7Pw2eW6fzsg5p0J">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
     <form method="post" action="/vehicles/1/delete/"
           onsubmit="return confirm('Delete ECB101 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="qd9rPSE18zlBklAmxLPhfofIupOVOeePdncPf8JuwhoQdBtYgUqgbn53m4MgM2g6">
+      <input type="hidden" name="csrfmiddlewaretoken" value="0An0Wie936JlFsF1qIM9zlQ0SAMnIAxJr7eO2Qr2w41pRAQTH7Pw2eW6fzsg5p0J">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>
