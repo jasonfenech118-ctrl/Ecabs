@@ -10,6 +10,17 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load a local .env file if one exists (handy on hosts like PythonAnywhere where
+# setting real environment variables is awkward). Values already set in the real
+# environment win, so cloud dashboards keep working. No-op if python-dotenv or
+# the file is absent — nothing here is required for local development.
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(BASE_DIR / ".env")
+except ImportError:
+    pass
+
 # SECURITY: read from environment in production; the fallback is for local dev only.
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
