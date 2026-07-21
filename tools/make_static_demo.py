@@ -11,10 +11,12 @@ Usage:  python tools/make_static_demo.py
 
 import os
 import re
+import shutil
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecabs.settings")
 
 import django
@@ -26,8 +28,9 @@ from django.test import Client  # noqa: E402
 
 from claims.models import Claim, Company, Vehicle  # noqa: E402
 
-OUT = Path(__file__).resolve().parent.parent / "demo"
+OUT = ROOT / "demo"
 OUT.mkdir(exist_ok=True)
+SRC_STATIC = ROOT / "static"
 
 TABS = ["photos", "surveys", "emails", "reminders", "billing", "history"]
 
@@ -75,11 +78,57 @@ def build_url_map():
                 )
         for tab in TABS:
             urls[f"/claims/{pk}/tab/{tab}/"] = f"claim-{pk}-{tab}.html"
+    # Recovery-document PDFs: link the "Open PDF" buttons to real files.
+    for t in pdf_targets():
+        urls[t["url"]] = t["filename"]
     # "New claim" can't create records statically — send it to a draft's form.
     draft = Claim.objects.filter(status=Claim.Status.DRAFT).first()
     if draft:
         urls["/claims/new/"] = f"claim-{draft.pk}-edit.html"
     return urls
+
+
+def pdf_targets():
+    """Every recovery-document PDF the preview should render as a static file:
+    each applicable document, under each active company."""
+    from claims.services.invoice_pdf import (
+        build_invoice_pdf,
+        build_lou_pdf,
+        build_repairs_pdf,
+    )
+
+    specs = [
+        ("invoice", build_invoice_pdf, lambda c: bool(c.invoice_lines())),
+        ("lou", build_lou_pdf, lambda c: bool(c.loe_days)),
+        ("repairs", build_repairs_pdf, lambda c: bool(c.repairs_total)),
+    ]
+    companies = list(Company.objects.filter(is_active=True))
+    targets = []
+    for claim in Claim.objects.all():
+        for endpoint, builder, applies in specs:
+            if not applies(claim):
+                continue
+            for co in companies:
+                targets.append({
+                    "url": f"/claims/{claim.pk}/{endpoint}.pdf?company={co.pk}",
+                    "filename": f"claim-{claim.pk}-{endpoint}-co{co.pk}.pdf",
+                    "builder": builder,
+                    "claim": claim,
+                    "company": co,
+                })
+    return targets
+
+
+def bundle_static():
+    """Copy the app's CSS/JS/images into demo/static so the folder is fully
+    self-contained and works at any URL (project or user Pages site)."""
+    dest = OUT / "static"
+    if dest.exists():
+        shutil.rmtree(dest)
+    for sub in ("css", "js", "img"):
+        src = SRC_STATIC / sub
+        if src.exists():
+            shutil.copytree(src, dest / sub)
 
 
 def rewrite(html, urls):
@@ -92,8 +141,8 @@ def rewrite(html, urls):
     html = html.replace('href="/admin/"', 'href="#"')
     # Drop htmx so anchor hrefs navigate normally in the static preview.
     html = re.sub(r'<script src="[^"]*htmx\.min\.js" defer></script>', "", html)
-    # Static assets live one level up from demo/.
-    html = html.replace('"/static/', '"../static/')
+    # Bundle references: assets live in demo/static, beside the flat html files.
+    html = html.replace('"/static/', '"static/')
     # The logout POST has no server to hit — make it a plain link.
     html = re.sub(
         r'<form method="post" action="/accounts/logout/".*?</form>',
@@ -101,6 +150,9 @@ def rewrite(html, urls):
         html,
         flags=re.S,
     )
+    # Any remaining server-absolute href is a dynamic endpoint with no static
+    # equivalent (e.g. an autosave/POST target) — neutralise it so nothing 404s.
+    html = re.sub(r'href="/[^"]*"', 'href="#"', html)
     # Insert the banner right after the opening body tag.
     html = re.sub(r"(<body[^>]*>)", r"\1" + BANNER, html, count=1)
     return html
@@ -216,6 +268,8 @@ def main():
     client = Client()
     client.force_login(user)
     for url, filename in urls.items():
+        if not filename.endswith(".html"):
+            continue  # PDFs are written separately below
         if filename == "login.html" or url == "/claims/new/":
             continue
         response = client.get(url)
@@ -224,7 +278,15 @@ def main():
             continue
         (OUT / filename).write_text(rewrite(response.content.decode(), urls))
         print(f"{url} -> demo/{filename}")
-    print(f"\nWrote {len(list(OUT.glob('*.html')))} pages to demo/")
+
+    # Render the recovery-document PDFs as real files.
+    pdfs = 0
+    for t in pdf_targets():
+        (OUT / t["filename"]).write_bytes(t["builder"](t["claim"], t["company"]))
+        pdfs += 1
+
+    bundle_static()
+    print(f"\nWrote {len(list(OUT.glob('*.html')))} pages + {pdfs} PDFs to demo/")
 
 
 if __name__ == "__main__":

@@ -5,15 +5,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ECB101 — vehicle</title>
-  <link rel="stylesheet" href="../static/css/app.css?v=2">
+  <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "0An0Wie936JlFsF1qIM9zlQ0SAMnIAxJr7eO2Qr2w41pRAQTH7Pw2eW6fzsg5p0J"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "DzPsbbsR0oHo07UGqPsNKXpO3c5i98OzME2b7rALoidG3Hb0hrnNRwd7BUm8hqK5"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
     <a href="index.html" class="brand" title="Home">
-      <img src="../static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
+      <img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
     </a>
     <nav>
       <a href="index.html" class="">
@@ -70,7 +70,7 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="0An0Wie936JlFsF1qIM9zlQ0SAMnIAxJr7eO2Qr2w41pRAQTH7Pw2eW6fzsg5p0J">
+  <input type="hidden" name="csrfmiddlewaretoken" value="DzPsbbsR0oHo07UGqPsNKXpO3c5i98OzME2b7rALoidG3Hb0hrnNRwd7BUm8hqK5">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
@@ -161,14 +161,14 @@
   <h3>Fleet status</h3>
   <div class="row">
     <form method="post" action="/vehicles/1/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="0An0Wie936JlFsF1qIM9zlQ0SAMnIAxJr7eO2Qr2w41pRAQTH7Pw2eW6fzsg5p0J">
+      <input type="hidden" name="csrfmiddlewaretoken" value="DzPsbbsR0oHo07UGqPsNKXpO3c5i98OzME2b7rALoidG3Hb0hrnNRwd7BUm8hqK5">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
     <form method="post" action="/vehicles/1/delete/"
           onsubmit="return confirm('Delete ECB101 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="0An0Wie936JlFsF1qIM9zlQ0SAMnIAxJr7eO2Qr2w41pRAQTH7Pw2eW6fzsg5p0J">
+      <input type="hidden" name="csrfmiddlewaretoken" value="DzPsbbsR0oHo07UGqPsNKXpO3c5i98OzME2b7rALoidG3Hb0hrnNRwd7BUm8hqK5">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>

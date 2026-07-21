@@ -5,15 +5,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Master sheet — Vai Drive Claims</title>
-  <link rel="stylesheet" href="../static/css/app.css?v=2">
+  <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "mKDu4e2h4mPfQIo7qeX54X1sNd07XseBNhuiaMfaxk7j2QzZHD0sxQ7yacG0khHB"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "qHEGy72oXI7bQFNlDHXfjWm1zEzYkPodzMRpunailCDtTf4FujSfqvak7mQOs7kJ"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
   <aside class="sidebar">
     <a href="index.html" class="brand" title="Home">
-      <img src="../static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
+      <img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
     </a>
     <nav>
       <a href="index.html" class="">
@@ -65,7 +65,7 @@
   </div>
   <div class="row">
     <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
-    <a href="/claims/master/csv/?q=&status=" class="btn btn-primary">⬇ Download CSV (Excel)</a>
+    <a href="#" class="btn btn-primary">⬇ Download CSV (Excel)</a>
   </div>
 </div>
 
@@ -78,7 +78,7 @@
         
         <tr class="">
           <td>
-            <a href="/claims/master/?status=draft">
+            <a href="#">
               Draft
             </a>
           </td>
@@ -88,7 +88,7 @@
         
         <tr class="">
           <td>
-            <a href="/claims/master/?status=open">
+            <a href="#">
               Open
             </a>
           </td>
@@ -98,7 +98,7 @@
         
         <tr class="">
           <td>
-            <a href="/claims/master/?status=awaiting_survey">
+            <a href="#">
               Awaiting survey
             </a>
           </td>
@@ -108,7 +108,7 @@
         
         <tr class="">
           <td>
-            <a href="/claims/master/?status=awaiting_insurer">
+            <a href="#">
               Awaiting insurer
             </a>
           </td>
@@ -118,7 +118,7 @@
         
         <tr class="">
           <td>
-            <a href="/claims/master/?status=settled">
+            <a href="#">
               Settled
             </a>
           </td>
@@ -128,7 +128,7 @@
         
         <tr class="">
           <td>
-            <a href="/claims/master/?status=closed">
+            <a href="#">
               Closed
             </a>
           </td>
@@ -138,7 +138,7 @@
         
         <tr class="">
           <td>
-            <a href="/claims/master/?status=rejected">
+            <a href="#">
               Rejected
             </a>
           </td>
@@ -148,7 +148,7 @@
         
         <tr class="">
           <td>
-            <a href="/claims/master/?flag=overdue">
+            <a href="#">
               <span class="badge overdue">Overdue (chase date passed)</span>
             </a>
           </td>
@@ -158,7 +158,7 @@
         
         <tr class="">
           <td>
-            <a href="/claims/master/?flag=urgent">
+            <a href="#">
               <span class="badge overdue">Urgent</span>
             </a>
           </td>

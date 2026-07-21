@@ -1,0 +1,60 @@
+name: Deploy preview to GitHub Pages
+
+# Rebuilds the static front-end preview from the Django app and publishes it,
+# so the live preview is always in step with the code — no manual copying.
+#
+# One-time setup: in the repo, Settings → Pages → Build and deployment →
+# Source: "GitHub Actions". The published URL is shown on this workflow's runs
+# and under Settings → Pages (https://<owner>.github.io/<repo>/).
+
+on:
+  push:
+    branches: ["claude/insurance-claim-system-setup-jor9q9"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a newer publish supersede an in-flight one, but never cancel it midway.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build the static preview
+        run: |
+          python manage.py migrate --noinput
+          python tools/make_static_demo.py
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: demo
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
