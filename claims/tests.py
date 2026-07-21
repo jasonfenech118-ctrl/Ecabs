@@ -932,3 +932,32 @@ class AuditTrailTests(TestCase):
         self.client.logout()
         r = self.client.get(reverse("audit_trail"))
         self.assertEqual(r.status_code, 302)
+
+
+class ReminderPopupTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user("staff", password="pw")
+        self.client.force_login(self.user)
+
+    def test_popup_shows_when_reminder_due(self):
+        Reminder.objects.create(
+            title="Chase Elmo payment",
+            due_at=timezone.now() - timedelta(hours=1),  # overdue
+        )
+        r = self.client.get(reverse("home"))
+        self.assertContains(r, "Reminders due")
+        self.assertContains(r, "Chase Elmo payment")
+
+    def test_no_popup_when_nothing_due(self):
+        # A future reminder is not "due" yet.
+        Reminder.objects.create(title="Later", due_at=timezone.now() + timedelta(days=3))
+        r = self.client.get(reverse("home"))
+        self.assertNotContains(r, "Reminders due")
+
+    def test_completed_reminder_no_popup(self):
+        Reminder.objects.create(
+            title="Done one", due_at=timezone.now() - timedelta(hours=2),
+            completed_at=timezone.now(),
+        )
+        r = self.client.get(reverse("home"))
+        self.assertNotContains(r, "Reminders due")

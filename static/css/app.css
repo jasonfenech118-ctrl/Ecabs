@@ -38,8 +38,16 @@ h3 { font-size: .95rem; margin: 0 0 .5rem; }
   width: 220px; flex-shrink: 0; background: #56718c; color: #dbe5ee;
   display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh;
 }
-.brand { display: block; padding: .9rem .9rem .6rem; }
+.sidebar-top { display: flex; align-items: center; }
+.brand { display: block; padding: .9rem .9rem .6rem; flex: 1; }
 .brand:hover { text-decoration: none; }
+.nav-toggle {
+  display: none; margin: 0 .6rem 0 0; cursor: pointer;
+  background: transparent; border: 1px solid rgba(255,255,255,.35);
+  color: #dbe5ee; font-size: 1.25rem; line-height: 1;
+  padding: .25rem .6rem; border-radius: 8px;
+}
+.nav-toggle:hover { background: rgba(255,255,255,.12); color: #fff; }
 .brand-logo { width: 100%; border-radius: 10px; display: block; }
 .sidebar nav { display: flex; flex-direction: column; padding: .5rem; gap: 2px; flex: 1; }
 .sidebar nav a {
@@ -149,6 +157,25 @@ input:focus, select:focus, textarea:focus {
 }
 .errorlist { color: var(--danger); font-size: .8rem; margin: .2rem 0 0; padding-left: 1rem; }
 .form-error { color: var(--danger); background: var(--danger-soft); border-radius: 6px; padding: .5rem .7rem; margin: 0 0 .6rem; font-size: .85rem; }
+
+/* --- Modal / pop-up -------------------------------------------------------- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(15, 23, 42, .5); padding: 1rem;
+}
+.modal-overlay[hidden] { display: none; }
+.modal-card {
+  background: var(--card, #fff); border-radius: 12px; padding: 1.25rem 1.4rem;
+  width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,.3);
+  max-height: 85vh; overflow-y: auto;
+}
+.modal-title { margin: 0 0 .75rem; font-size: 1.15rem; }
+.popup-list { list-style: none; margin: 0; padding: 0; }
+.popup-list li { padding: .55rem 0; border-top: 1px solid var(--border, #e5e7eb); }
+.popup-list li:first-child { border-top: none; }
+.popup-meta { font-size: .8rem; }
+.modal-actions { display: flex; gap: .5rem; margin-top: 1rem; }
 
 fieldset {
   border: 1px solid var(--border); border-radius: var(--radius);
@@ -346,10 +373,19 @@ tr.subtotal-row td { background: var(--bg); color: var(--text-muted); border-bot
 
 @media (max-width: 800px) {
   .layout { flex-direction: column; }
-  .sidebar { width: 100%; height: auto; position: static; flex-direction: row; align-items: center; flex-wrap: wrap; }
-  .sidebar nav { flex-direction: row; flex-wrap: wrap; }
-  .brand { padding: .6rem .75rem; }
-  .brand-logo { width: 110px; }
+  .sidebar {
+    width: 100%; height: auto; position: sticky; top: 0; z-index: 50;
+    flex-direction: column;
+  }
+  .sidebar-top { padding: .15rem .4rem; }
+  .brand { padding: .5rem .6rem; }
+  .brand-logo { width: 92px; }
+  .nav-toggle { display: inline-flex; }
+  /* Nav and account row are collapsed until the ☰ button is tapped. */
+  .sidebar nav { display: none; padding: .25rem .5rem .5rem; }
+  .sidebar.open nav { display: flex; }
+  .sidebar-footer { display: none; }
+  .sidebar.open .sidebar-footer { display: flex; }
   .home-logo { width: 200px; }
   .main { padding: 1rem; }
   .form-footer { margin: 0 -1rem; padding: .8rem 1rem; }

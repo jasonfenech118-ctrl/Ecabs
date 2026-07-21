@@ -12,9 +12,13 @@
 {% if user.is_authenticated %}
 <div class="layout">
   <aside class="sidebar">
-    <a href="{% url 'home' %}" class="brand" title="Home">
-      <img src="{% static 'img/vai-drive.jpg' %}" alt="Vai Drive — home" class="brand-logo">
-    </a>
+    <div class="sidebar-top">
+      <a href="{% url 'home' %}" class="brand" title="Home">
+        <img src="{% static 'img/vai-drive.jpg' %}" alt="Vai Drive — home" class="brand-logo">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Toggle menu"
+              onclick="this.closest('.sidebar').classList.toggle('open')">☰</button>
+    </div>
     <nav>
       <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
         <span class="nav-icon">⌂</span> Home
@@ -69,6 +73,42 @@
     {% block content %}{% endblock %}
   </main>
 </div>
+
+{% if due_reminders %}
+<div id="reminder-popup" class="modal-overlay no-print" hidden>
+  <div class="modal-card">
+    <h2 class="modal-title"><span class="nav-icon">◷</span> Reminders due</h2>
+    <ul class="popup-list">
+      {% for r in due_reminders %}
+      <li>
+        <div class="popup-line"><strong>{{ r.title }}</strong></div>
+        <div class="muted popup-meta">Due {{ r.due_at|date:"d M Y" }}{% if r.claim %} · {{ r.claim.reference }}{% endif %}</div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% if due_reminders_more %}<p class="muted" style="margin:.25rem 0 0">…and {{ due_reminders_more }} more</p>{% endif %}
+    <div class="modal-actions">
+      <a href="{% url 'reminder_list' %}" class="btn btn-primary">View all reminders</a>
+      <button type="button" class="btn" onclick="dismissReminderPopup()">Dismiss</button>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    // Show once per browser session so it doesn't nag on every page.
+    var seenKey = 'reminderPopupSeen';
+    var el = document.getElementById('reminder-popup');
+    if (el && !sessionStorage.getItem(seenKey)) {
+      el.hidden = false;
+      sessionStorage.setItem(seenKey, '1');
+    }
+  })();
+  function dismissReminderPopup() {
+    var el = document.getElementById('reminder-popup');
+    if (el) el.hidden = true;
+  }
+</script>
+{% endif %}
 {% else %}
 <main class="main main-anon">
   {% block anon_content %}{% endblock %}
