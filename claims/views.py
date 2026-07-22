@@ -32,6 +32,7 @@ from .models import (
     DailyRate,
     EmailLog,
     Reminder,
+    RepairType,
     Survey,
     Vehicle,
 )
@@ -1074,8 +1075,43 @@ def claim_documents(request, pk):
             "repairs_net": net,
             "repairs_vat": vat,
             "repairs_total": net + vat,
+            "repair_types": RepairType.objects.filter(is_active=True),
         },
     )
+
+
+def _repairs_redirect(request, claim):
+    """Back to the repairs document, keeping the chosen company."""
+    url = reverse("claim_documents", args=[claim.pk]) + "?doc=repairs"
+    company = request.POST.get("company", "")
+    if company:
+        url += f"&company={company}"
+    return redirect(url)
+
+
+@login_required
+@require_POST
+def claim_set_repair_type(request, pk):
+    """Set the manually chosen repair type for the claim (radio selection)."""
+    claim = get_object_or_404(Claim, pk=pk)
+    rt = request.POST.get("repair_type", "")
+    claim.repair_type = RepairType.objects.filter(pk=rt).first() if rt else None
+    claim.save(update_fields=["repair_type"])
+    return _repairs_redirect(request, claim)
+
+
+@login_required
+@require_POST
+def repair_type_add(request, pk):
+    """Add a new repair type to the maintained list (for future selection) and
+    select it for this claim."""
+    claim = get_object_or_404(Claim, pk=pk)
+    name = (request.POST.get("name") or "").strip()
+    if name:
+        rt, _ = RepairType.objects.get_or_create(name=name, defaults={"order": 100})
+        claim.repair_type = rt
+        claim.save(update_fields=["repair_type"])
+    return _repairs_redirect(request, claim)
 
 
 def _manual_invoice_date(request):

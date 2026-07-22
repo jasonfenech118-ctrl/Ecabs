@@ -1082,3 +1082,55 @@ class ClaimsAtFaultTests(TestCase):
         c.run_workflow()
         c.refresh_from_db()
         self.assertEqual(c.status, Claim.Status.OPEN)
+
+
+class RepairTypeTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user("staff", password="pw")
+        self.client.force_login(self.user)
+
+    def test_add_and_select_repair_type_used_on_receipt(self):
+        from decimal import Decimal
+
+        from .models import Company, RepairType
+
+        co = Company.objects.create(name="eCabs Ltd", address="Malta",
+                                    logo_static="img/companies/ecabs.png")
+        claim = Claim.objects.create(status=Claim.Status.OPEN, labour_amount=Decimal("200.00"),
+                                     created_by=self.user)
+        # auto description before any type chosen
+        self.assertEqual(claim.repairs_label(), "Labour")
+
+        # add a new type (also selects it) — not automated, staff-chosen
+        self.client.post(reverse("repair_type_add", args=[claim.pk]),
+                         {"name": "Windscreen replacement"})
+        rt = RepairType.objects.get(name="Windscreen replacement")
+        claim.refresh_from_db()
+        self.assertEqual(claim.repair_type, rt)
+        self.assertEqual(claim.repairs_label(), "Windscreen replacement")
+
+        # switch selection back to none
+        self.client.post(reverse("claim_set_repair_type", args=[claim.pk]),
+                         {"repair_type": ""})
+        claim.refresh_from_db()
+        self.assertIsNone(claim.repair_type)
+
+        # select an existing type
+        self.client.post(reverse("claim_set_repair_type", args=[claim.pk]),
+                         {"repair_type": rt.pk})
+        claim.refresh_from_db()
+        self.assertEqual(claim.repair_type, rt)
+
+        # receipt PDF renders with the chosen type
+        r = self.client.get(reverse("claim_repairs_pdf", args=[claim.pk]), {"company": co.pk})
+        self.assertEqual(r["Content-Type"], "application/pdf")
+
+    def test_starter_types_seeded(self):
+        from .models import RepairType
+        self.assertTrue(RepairType.objects.filter(name="Bodywork").exists())
+
+    def test_repair_type_selector_on_documents_page(self):
+        claim = Claim.objects.create(status=Claim.Status.OPEN, created_by=self.user)
+        r = self.client.get(reverse("claim_documents", args=[claim.pk]), {"doc": "repairs"})
+        self.assertContains(r, "Type of repair")
+        self.assertContains(r, "Add a new repair type")

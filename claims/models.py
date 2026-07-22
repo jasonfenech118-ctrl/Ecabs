@@ -247,6 +247,12 @@ class Claim(models.Model):
     parts_amount = models.DecimalField(
         "Parts", max_digits=10, decimal_places=2, null=True, blank=True
     )
+    # Manually chosen from a maintained list — used as the repairs-receipt
+    # description instead of the auto-built component list.
+    repair_type = models.ForeignKey(
+        "RepairType", on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="claims", verbose_name="Type of repair",
+    )
     loe_days = models.PositiveIntegerField("LOE days", null=True, blank=True)
     loe_daily_rate = models.DecimalField(
         "LOE daily amount", max_digits=10, decimal_places=2, null=True, blank=True
@@ -419,6 +425,13 @@ class Claim(models.Model):
         Used net-of-VAT on the repairs receipt."""
         parts = [self.labour_amount, self.spray_material_amount, self.parts_amount]
         return sum((p or Decimal("0")) for p in parts) + self.other_charges_total
+
+    def repairs_label(self):
+        """Description shown on the repairs receipt: the manually chosen repair
+        type when set, otherwise the auto-built component list."""
+        if self.repair_type_id:
+            return self.repair_type.name
+        return self.repairs_description()
 
     def repairs_description(self):
         """Comma-joined list of the repair components present on the claim."""
@@ -642,3 +655,18 @@ class DailyRate(models.Model):
 
     def __str__(self):
         return f"{self.name} — €{self.amount}/day"
+
+
+class RepairType(models.Model):
+    """A maintained type of repair, chosen (not auto-derived) for a claim's
+    repairs receipt. Staff add their own for future selection."""
+
+    name = models.CharField(max_length=100, unique=True)
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["order", "name"]
+
+    def __str__(self):
+        return self.name

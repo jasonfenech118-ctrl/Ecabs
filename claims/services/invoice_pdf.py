@@ -251,7 +251,7 @@ def build_repairs_pdf(claim, company, invoice_date=None):
     row = [
         claim.invoice_number or receipt_no,
         doc_date_short,
-        claim.repairs_description(),
+        claim.repairs_label(),
         claim.vehicle_registration,
         _euro(net), _euro(total),
     ]

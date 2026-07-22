@@ -10,6 +10,7 @@ from .models import (
     EmailLog,
     OtherCharge,
     Reminder,
+    RepairType,
     Survey,
     Vehicle,
 )
@@ -19,6 +20,12 @@ from .models import (
 class DailyRateAdmin(admin.ModelAdmin):
     list_display = ("name", "amount", "is_active", "order")
     list_editable = ("amount", "is_active", "order")
+
+
+@admin.register(RepairType)
+class RepairTypeAdmin(admin.ModelAdmin):
+    list_display = ("name", "is_active", "order")
+    list_editable = ("is_active", "order")
 
 
 class OtherChargeInline(admin.TabularInline):

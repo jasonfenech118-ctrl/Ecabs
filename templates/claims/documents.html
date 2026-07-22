@@ -47,6 +47,36 @@
   {% endif %}
 </div>
 
+{% if doc == 'repairs' %}
+<div class="card mt" style="max-width:640px">
+  <h3>Type of repair</h3>
+  <p class="muted" style="margin:.2rem 0 .9rem; font-size:.85rem">Choose the repair type for the receipt — it replaces the auto description. Add your own for future use.</p>
+  <form method="post" action="{% url 'claim_set_repair_type' claim.pk %}">
+    {% csrf_token %}
+    {% if company %}<input type="hidden" name="company" value="{{ company.pk }}">{% endif %}
+    <label class="radio-row">
+      <input type="radio" name="repair_type" value="" {% if not claim.repair_type_id %}checked{% endif %}>
+      <span class="muted">None — use auto description ({{ claim.repairs_description }})</span>
+    </label>
+    {% for rt in repair_types %}
+    <label class="radio-row">
+      <input type="radio" name="repair_type" value="{{ rt.pk }}" {% if claim.repair_type_id == rt.pk %}checked{% endif %}>
+      <span>{{ rt.name }}</span>
+    </label>
+    {% empty %}
+    <p class="muted" style="font-size:.85rem">No repair types yet — add one below.</p>
+    {% endfor %}
+    <button type="submit" class="btn btn-sm btn-primary mt">Set type</button>
+  </form>
+  <form method="post" action="{% url 'repair_type_add' claim.pk %}" class="row" style="margin-top:.9rem; gap:.4rem">
+    {% csrf_token %}
+    {% if company %}<input type="hidden" name="company" value="{{ company.pk }}">{% endif %}
+    <input name="name" placeholder="Add a new repair type…" maxlength="100" style="min-width:220px" required>
+    <button type="submit" class="btn btn-sm">Add type</button>
+  </form>
+</div>
+{% endif %}
+
 {% if company %}
 <div class="card mt" style="max-width:640px">
   <h3>Summary</h3>
@@ -79,7 +109,7 @@
       <dt>Receipt No</dt><dd>{{ invoice_no }}</dd>
       <dt>Claim Number</dt><dd>{{ claim.tp_claim_number|default:claim.insurer_claim_number }}</dd>
       <dt>Reg. No</dt><dd>{{ claim.vehicle_registration }}</dd>
-      <dt>Description</dt><dd>{{ claim.repairs_description }}</dd>
+      <dt>Description</dt><dd>{{ claim.repairs_label }}</dd>
       <dt>Net</dt><dd>€{{ repairs_net|floatformat:2 }}</dd>
       <dt>VAT @18%</dt><dd>€{{ repairs_vat|floatformat:2 }}</dd>
       <dt>Total</dt><dd><strong>€{{ repairs_total|floatformat:2 }}</strong></dd>
