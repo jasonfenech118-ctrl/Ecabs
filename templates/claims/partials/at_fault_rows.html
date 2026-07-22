@@ -1,0 +1,23 @@
+{% for c in rows %}
+<tr>
+  <td style="white-space:nowrap">
+    <a href="{{ c.get_absolute_url }}">{{ c.vehicle_registration|default:"—" }}</a>
+    <form id="atf-{{ c.pk }}" method="post" action="{% url 'at_fault_update' c.pk %}">{% csrf_token %}</form>
+    <form id="atfa-{{ c.pk }}" method="post" action="{% url 'at_fault_update' c.pk %}">{% csrf_token %}<input type="hidden" name="action" value="{% if is_closed %}reopen{% else %}close{% endif %}"></form>
+  </td>
+  <td>{{ c.third_party_registration|default:"—" }}</td>
+  <td style="white-space:nowrap">{{ c.accident_date|date:"d/m/Y"|default:"—" }}</td>
+  <td>{{ c.insurer_claim_number|default:"—" }}</td>
+  <td>{{ c.tp_claim_number|default:"—" }}</td>
+  <td>{{ c.third_party_insurer|default:"—" }}</td>
+  <td><input form="atf-{{ c.pk }}" name="details" value="{{ c.details }}" class="atf-input"></td>
+  <td><input form="atf-{{ c.pk }}" name="awaiting_from" value="{{ c.awaiting_from }}" class="atf-input atf-wide"></td>
+  <td><input form="atf-{{ c.pk }}" name="estimate_amount" type="number" step="0.01" min="0" value="{{ c.estimate_amount|default_if_none:'' }}" class="atf-input atf-num" placeholder="€"></td>
+  <td style="white-space:nowrap">
+    <button form="atf-{{ c.pk }}" type="submit" class="btn btn-sm btn-primary">Save</button>
+    <button form="atfa-{{ c.pk }}" type="submit" class="btn btn-sm">{% if is_closed %}Reopen{% else %}Close{% endif %}</button>
+  </td>
+</tr>
+{% empty %}
+<tr><td colspan="10" class="empty">None.</td></tr>
+{% endfor %}

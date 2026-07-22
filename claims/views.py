@@ -112,6 +112,59 @@ def overview(request):
     return render(request, "claims/overview.html", {"companies": companies})
 
 
+@login_required
+def claims_at_fault(request):
+    """Register of at-fault claims — where our insured is liable. Not a
+    recovery: these close by decision, not when a balance reaches zero."""
+    qs = (
+        Claim.objects.filter(fault=Claim.Fault.OUR_DRIVER)
+        .exclude(status=Claim.Status.DRAFT)
+        .order_by("-accident_date", "-id")
+    )
+    open_claims = [c for c in qs if c.status != Claim.Status.CLOSED]
+    closed_claims = [c for c in qs if c.status == Claim.Status.CLOSED]
+
+    def est_total(items):
+        return sum((c.estimate_amount or Decimal("0")) for c in items)
+
+    return render(
+        request,
+        "claims/claims_at_fault.html",
+        {
+            "open_claims": open_claims,
+            "closed_claims": closed_claims,
+            "open_estimate": est_total(open_claims),
+            "closed_estimate": est_total(closed_claims),
+        },
+    )
+
+
+@login_required
+@require_POST
+def at_fault_update(request, pk):
+    """Inline save for an at-fault row: the free-text columns and the estimate,
+    plus close/reopen (the manual decision that finalises the claim)."""
+    claim = get_object_or_404(Claim, pk=pk)
+    action = request.POST.get("action")
+    if action == "close":
+        claim.status = Claim.Status.CLOSED
+    elif action == "reopen":
+        claim.status = Claim.Status.OPEN
+    else:
+        raw = (request.POST.get("estimate_amount") or "").strip()
+        if raw:
+            try:
+                claim.estimate_amount = Decimal(raw)
+            except InvalidOperation:
+                pass
+        else:
+            claim.estimate_amount = None
+        claim.details = request.POST.get("details", claim.details)
+        claim.awaiting_from = request.POST.get("awaiting_from", claim.awaiting_from)
+    claim.save()
+    return redirect("claims_at_fault")
+
+
 # --- Dashboard ---------------------------------------------------------------
 
 @login_required

@@ -231,6 +231,9 @@ class Claim(models.Model):
     estimate_amount = models.DecimalField(
         "Estimate claim amt", max_digits=10, decimal_places=2, null=True, blank=True
     )
+    # At-fault register (where our insured is liable): free-text columns.
+    details = models.CharField("Details", max_length=255, blank=True)
+    awaiting_from = models.CharField("Awaiting from", max_length=255, blank=True)
 
     # Recovery financials (net amounts being recovered from the third party)
     bills_sent_on = models.DateField("Bills sent", null=True, blank=True)
@@ -348,6 +351,10 @@ class Claim(models.Model):
         A claim with any outstanding balance stays open/chasing.
         Returns True if anything changed."""
         if self.status == self.Status.DRAFT:
+            return False
+        # At-fault claims (our insured liable) are not a recovery — they are
+        # never auto-advanced or auto-closed; they close only by decision.
+        if self.fault == self.Fault.OUR_DRIVER:
             return False
         changed = False
         if (

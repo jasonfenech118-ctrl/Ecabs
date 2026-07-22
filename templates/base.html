@@ -41,6 +41,9 @@
       <a href="{% url 'claim_group' 'overdue' %}" class="nav-sub {% if request.resolver_match.url_name == 'claim_group' and request.resolver_match.kwargs.group == 'overdue' %}active{% endif %}">
         <span class="nav-icon">▲</span> Overdue
       </a>
+      <a href="{% url 'claims_at_fault' %}" class="nav-sub {% if request.resolver_match.url_name == 'claims_at_fault' %}active{% endif %}">
+        <span class="nav-icon">⚠</span> At fault
+      </a>
       <a href="{% url 'master_sheet' %}" class="{% if 'master' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">▥</span> Master sheet
       </a>

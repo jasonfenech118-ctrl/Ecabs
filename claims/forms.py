@@ -55,6 +55,8 @@ class ClaimForm(forms.ModelForm):
             "insurer_contact",
             "insurer_email",
             "excess_amount",
+            "details",
+            "awaiting_from",
             "drivable",
             "survey_booked",
             "survey_date",

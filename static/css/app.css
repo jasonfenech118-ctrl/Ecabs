@@ -177,6 +177,17 @@ input:focus, select:focus, textarea:focus {
 .popup-meta { font-size: .8rem; }
 .modal-actions { display: flex; gap: .5rem; margin-top: 1rem; }
 
+/* --- Claims at fault ------------------------------------------------------- */
+.atf-heading { font-size: 1.05rem; margin: .2rem 0 .6rem; }
+.atf-heading .muted { font-weight: 400; font-size: .85rem; }
+.table-wrap .at-fault input.atf-input {
+  width: 100%; min-width: 92px; padding: .3rem .45rem; font-size: .85rem;
+  border: 1px solid var(--border); border-radius: 6px;
+}
+.at-fault .atf-wide { min-width: 170px; }
+.at-fault .atf-num { max-width: 96px; text-align: right; }
+.at-fault td, .at-fault th { vertical-align: middle; }
+
 /* --- Ecosystem / Overview page --------------------------------------------- */
 .eco {
   max-width: 1040px; margin: 0 auto;

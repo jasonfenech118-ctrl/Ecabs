@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Claims at fault — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Claims at fault</h1>
+    <div class="sub">Where our insured is liable — these close by decision, not when a balance reaches zero</div>
+  </div>
+  <a href="{% url 'claim_new' %}" class="btn btn-primary">＋ New claim</a>
+</div>
+
+<h2 class="atf-heading">Open <span class="muted">· {{ open_claims|length }} claim{{ open_claims|length|pluralize }} · est. €{{ open_estimate|floatformat:2|intcomma }}</span></h2>
+<div class="card table-wrap">
+  <table class="list at-fault">
+    <thead>
+      <tr>
+        <th>Our Reg No</th><th>TP Reg No</th><th>DOA</th><th>MSI Claim No</th><th>TP Claim No</th>
+        <th>TP Insurance</th><th>Details</th><th>Awaiting from</th><th class="right">Est. damages</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include "claims/partials/at_fault_rows.html" with rows=open_claims is_closed=False %}
+    </tbody>
+  </table>
+</div>
+
+<h2 class="atf-heading mt">Closed <span class="muted">· {{ closed_claims|length }} claim{{ closed_claims|length|pluralize }} · est. €{{ closed_estimate|floatformat:2|intcomma }}</span></h2>
+<div class="card table-wrap">
+  <table class="list at-fault">
+    <thead>
+      <tr>
+        <th>Our Reg No</th><th>TP Reg No</th><th>DOA</th><th>MSI Claim No</th><th>TP Claim No</th>
+        <th>TP Insurance</th><th>Details</th><th>Awaiting from</th><th class="right">Est. damages</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include "claims/partials/at_fault_rows.html" with rows=closed_claims is_closed=True %}
+    </tbody>
+  </table>
+</div>
+
+<p class="muted" style="font-size:.8rem; margin-top:1rem">A claim appears here when its <strong>Fault</strong> is set to “Our insured (OI) at fault”. Type the Details, who you’re awaiting, and the estimate of damages inline, then <strong>Save</strong>. Use <strong>Close</strong> when it’s decided to be closed.</p>
+{% endblock %}

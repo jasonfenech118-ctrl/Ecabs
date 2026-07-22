@@ -1041,3 +1041,44 @@ class OverviewPageTests(TestCase):
     def test_overview_requires_login(self):
         self.client.logout()
         self.assertEqual(self.client.get(reverse("overview")).status_code, 302)
+
+
+class ClaimsAtFaultTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user("staff", password="pw")
+        self.client.force_login(self.user)
+
+    def test_only_at_fault_claims_listed(self):
+        ours = Claim.objects.create(status=Claim.Status.OPEN, fault=Claim.Fault.OUR_DRIVER,
+                                    vehicle_registration="OI-1", created_by=self.user)
+        tp = Claim.objects.create(status=Claim.Status.OPEN, fault=Claim.Fault.THIRD_PARTY,
+                                  vehicle_registration="TP-9", created_by=self.user)
+        r = self.client.get(reverse("claims_at_fault"))
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "OI-1")
+        self.assertNotContains(r, "TP-9")
+
+    def test_inline_save_and_close(self):
+        from decimal import Decimal
+        c = Claim.objects.create(status=Claim.Status.OPEN, fault=Claim.Fault.OUR_DRIVER,
+                                 created_by=self.user)
+        # inline save of details / awaiting / estimate
+        self.client.post(reverse("at_fault_update", args=[c.pk]),
+                         {"details": "Rear-ended", "awaiting_from": "Mario",
+                          "estimate_amount": "1250.50"})
+        c.refresh_from_db()
+        self.assertEqual(c.details, "Rear-ended")
+        self.assertEqual(c.awaiting_from, "Mario")
+        self.assertEqual(c.estimate_amount, Decimal("1250.50"))
+        # close by decision
+        self.client.post(reverse("at_fault_update", args=[c.pk]), {"action": "close"})
+        c.refresh_from_db()
+        self.assertEqual(c.status, Claim.Status.CLOSED)
+
+    def test_at_fault_not_auto_closed_at_zero(self):
+        # An at-fault claim with no outstanding must NOT auto-close.
+        c = Claim.objects.create(status=Claim.Status.OPEN, fault=Claim.Fault.OUR_DRIVER,
+                                 created_by=self.user)
+        c.run_workflow()
+        c.refresh_from_db()
+        self.assertEqual(c.status, Claim.Status.OPEN)

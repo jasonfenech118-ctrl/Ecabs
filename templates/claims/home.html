@@ -21,6 +21,12 @@
     <span class="tile-sub">{{ counts.open_claims }} open — search &amp; manage</span>
   </a>
 
+  <a href="{% url 'claims_at_fault' %}" class="tile">
+    <span class="tile-icon">⚠</span>
+    <span class="tile-title">Claims at fault</span>
+    <span class="tile-sub">Where our insured is liable</span>
+  </a>
+
   <a href="{% url 'reminder_list' %}" class="tile {% if counts.reminders_due %}tile-alert{% endif %}">
     <span class="tile-icon">◷</span>
     <span class="tile-title">Reminders</span>
