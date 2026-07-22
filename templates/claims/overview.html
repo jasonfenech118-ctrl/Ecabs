@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Overview — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="eco">
+
+  <header class="eco-hero">
+    <h1>The claims ecosystem</h1>
+    <p>One platform that runs every recovery, end to end — across the whole group.</p>
+  </header>
+
+  <!-- 1. The group ------------------------------------------------------- -->
+  <section class="eco-section">
+    <div class="eco-section-head"><span class="eco-num">1</span><h2>One system, every company</h2></div>
+    <p class="eco-lead">Each claim can be issued under any group company — the right letterhead, logo and bank details are applied automatically at finalisation.</p>
+    <div class="eco-companies">
+      {% for co in companies %}
+      <div class="eco-company">
+        {% if co.logo_static %}<img src="{% static co.logo_static %}" alt="{{ co.name }}">{% else %}<strong>{{ co.name }}</strong>{% endif %}
+        <span class="eco-company-name">{{ co.name }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- 2. Claim lifecycle ------------------------------------------------- -->
+  <section class="eco-section">
+    <div class="eco-section-head"><span class="eco-num">2</span><h2>The claim lifecycle</h2></div>
+    <p class="eco-lead">From the moment an accident is logged, the system moves each claim through the workflow — and chases the next step for you.</p>
+    <div class="eco-flow">
+      <div class="eco-stage"><span class="eco-stage-icon">✎</span><span class="eco-stage-title">Intake</span><span class="eco-stage-sub">Accident logged — auto-saves as you type</span></div>
+      <span class="eco-arrow">→</span>
+      <div class="eco-stage"><span class="eco-stage-icon">⌕</span><span class="eco-stage-title">Survey</span><span class="eco-stage-sub">Booked &amp; chased automatically</span></div>
+      <span class="eco-arrow">→</span>
+      <div class="eco-stage"><span class="eco-stage-icon">⚖</span><span class="eco-stage-title">Liability</span><span class="eco-stage-sub">Accepted or disputed</span></div>
+      <span class="eco-arrow">→</span>
+      <div class="eco-stage"><span class="eco-stage-icon">€</span><span class="eco-stage-title">Recovery</span><span class="eco-stage-sub">Chased monthly until paid</span></div>
+      <span class="eco-arrow">→</span>
+      <div class="eco-stage eco-stage-done"><span class="eco-stage-icon">✓</span><span class="eco-stage-title">Closed</span><span class="eco-stage-sub">Settled when €0 outstanding</span></div>
+    </div>
+  </section>
+
+  <!-- 3. Documents to insurers ------------------------------------------- -->
+  <section class="eco-section">
+    <div class="eco-section-head"><span class="eco-num">3</span><h2>Recovery documents → insurers</h2></div>
+    <p class="eco-lead">Three professionally branded documents are generated on demand and sent to the third-party insurer.</p>
+    <div class="eco-docs-flow">
+      <div class="eco-docs">
+        <div class="eco-doc"><span class="eco-doc-icon">🧾</span><strong>Statement</strong><span>Itemised recovery invoice</span></div>
+        <div class="eco-doc"><span class="eco-doc-icon">📅</span><strong>Loss of earnings</strong><span>Days off the road</span></div>
+        <div class="eco-doc"><span class="eco-doc-icon">🔧</span><strong>Repairs receipt</strong><span>VAT receipt for repairs</span></div>
+      </div>
+      <span class="eco-arrow eco-arrow-lg">→</span>
+      <div class="eco-target">
+        <span class="eco-target-icon">🏢</span>
+        <strong>Third-party insurers</strong>
+        <span>Mapfre · Elmo · Atlas · GasanMamo …</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Background engine ----------------------------------------------- -->
+  <section class="eco-section">
+    <div class="eco-section-head"><span class="eco-num">4</span><h2>Always working in the background</h2></div>
+    <div class="eco-features">
+      <div class="eco-feature"><span class="eco-feat-icon">◷</span><strong>Automated reminders</strong><span>Renewals, survey &amp; payment chases — with a pop-up when due</span></div>
+      <div class="eco-feature"><span class="eco-feat-icon">☰</span><strong>Full audit trail</strong><span>Every change recorded — who, what and when</span></div>
+      <div class="eco-feature"><span class="eco-feat-icon">▤</span><strong>Master sheet &amp; data</strong><span>Every claim, all columns, charts and CSV export</span></div>
+      <div class="eco-feature"><span class="eco-feat-icon">⬖</span><strong>Fleet register</strong><span>Vehicles and insurance-renewal tracking</span></div>
+      <div class="eco-feature"><span class="eco-feat-icon">✉︎</span><strong>Correspondence log</strong><span>Emails recorded against each claim</span></div>
+      <div class="eco-feature"><span class="eco-feat-icon">↺</span><strong>Backups</strong><span>Your data snapshotted and downloadable</span></div>
+    </div>
+  </section>
+
+  <div class="eco-cta no-print">
+    <a href="{% url 'claim_new' %}" class="btn btn-primary">＋ New claim</a>
+    <a href="{% url 'dashboard' %}" class="btn">Go to dashboard</a>
+    <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+  </div>
+</div>
+{% endblock %}

@@ -1022,3 +1022,22 @@ class InvoiceDateAndNoteTests(TestCase):
 
         self.assertTrue(note_present(ecabs))
         self.assertFalse(note_present(vai))
+
+
+class OverviewPageTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user("staff", password="pw")
+        self.client.force_login(self.user)
+
+    def test_overview_loads_with_companies(self):
+        from .models import Company
+        Company.objects.create(name="eCabs Ltd", logo_static="img/companies/ecabs.png")
+        r = self.client.get(reverse("overview"))
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "The claims ecosystem")
+        self.assertContains(r, "The claim lifecycle")
+        self.assertContains(r, "eCabs Ltd")
+
+    def test_overview_requires_login(self):
+        self.client.logout()
+        self.assertEqual(self.client.get(reverse("overview")).status_code, 302)

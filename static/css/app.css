@@ -177,6 +177,92 @@ input:focus, select:focus, textarea:focus {
 .popup-meta { font-size: .8rem; }
 .modal-actions { display: flex; gap: .5rem; margin-top: 1rem; }
 
+/* --- Ecosystem / Overview page --------------------------------------------- */
+.eco { max-width: 1040px; margin: 0 auto; }
+.eco-hero { text-align: center; padding: 1.5rem 1rem 2rem; }
+.eco-hero h1 { font-size: 2rem; margin: 0 0 .4rem; }
+.eco-hero p { color: var(--text-muted); font-size: 1.05rem; margin: 0; }
+.eco-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; box-shadow: var(--shadow); padding: 1.6rem 1.6rem 1.8rem;
+  margin-bottom: 1.4rem;
+}
+.eco-section-head { display: flex; align-items: center; gap: .7rem; margin-bottom: .3rem; }
+.eco-section-head h2 { font-size: 1.15rem; margin: 0; }
+.eco-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.9rem; height: 1.9rem; border-radius: 50%;
+  background: #56718c; color: #fff; font-weight: 700; font-size: .95rem; flex-shrink: 0;
+}
+.eco-lead { color: var(--text-muted); margin: 0 0 1.2rem; max-width: 70ch; }
+
+/* companies */
+.eco-companies { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+.eco-company {
+  display: flex; flex-direction: column; align-items: center; gap: .6rem;
+  padding: 1.2rem 1rem; border: 1px solid var(--border); border-radius: 12px;
+  background: linear-gradient(180deg, #fff, #f7f9fb);
+}
+.eco-company img { max-height: 46px; max-width: 130px; object-fit: contain; }
+.eco-company-name { font-size: .82rem; color: var(--text-muted); text-align: center; font-weight: 600; }
+
+/* lifecycle flow */
+.eco-flow { display: flex; align-items: stretch; gap: .4rem; flex-wrap: wrap; }
+.eco-stage {
+  flex: 1; min-width: 118px; display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: .35rem; padding: 1.1rem .8rem; border-radius: 12px;
+  border: 1px solid var(--border); background: #f7f9fb;
+}
+.eco-stage-done { background: #eaf5ee; border-color: #bfe3cd; }
+.eco-stage-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.4rem; height: 2.4rem; border-radius: 50%;
+  background: #56718c; color: #fff; font-size: 1.15rem;
+}
+.eco-stage-done .eco-stage-icon { background: #2e9e5b; }
+.eco-stage-title { font-weight: 700; font-size: .95rem; }
+.eco-stage-sub { font-size: .78rem; color: var(--text-muted); }
+.eco-arrow { align-self: center; color: #9fb0c0; font-size: 1.4rem; font-weight: 700; }
+.eco-arrow-lg { font-size: 2rem; }
+
+/* documents -> insurer */
+.eco-docs-flow { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.eco-docs { display: flex; gap: .8rem; flex: 1; flex-wrap: wrap; }
+.eco-doc {
+  flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: .2rem;
+  padding: 1rem; border: 1px solid var(--border); border-radius: 12px; background: #f7f9fb;
+}
+.eco-doc-icon, .eco-target-icon, .eco-feat-icon { font-size: 1.5rem; }
+.eco-doc strong { font-size: .92rem; }
+.eco-doc span { font-size: .76rem; color: var(--text-muted); }
+.eco-target {
+  display: flex; flex-direction: column; gap: .2rem; min-width: 180px;
+  padding: 1.1rem 1.3rem; border-radius: 12px; background: #56718c; color: #fff;
+}
+.eco-target span { font-size: .78rem; color: #d7e3ee; }
+
+/* features */
+.eco-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }
+.eco-feature {
+  display: flex; flex-direction: column; gap: .25rem;
+  padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: 12px; background: #f7f9fb;
+}
+.eco-feature strong { font-size: .92rem; }
+.eco-feature span { font-size: .8rem; color: var(--text-muted); }
+.eco-feat-icon {
+  width: 2rem; height: 2rem; border-radius: 8px; background: #eaeef3; color: #3c536b;
+  display: inline-flex; align-items: center; justify-content: center; margin-bottom: .2rem;
+}
+.eco-cta { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; margin: 1.6rem 0 1rem; }
+
+@media (max-width: 700px) {
+  .eco-flow { flex-direction: column; }
+  .eco-arrow { transform: rotate(90deg); }
+  .eco-docs-flow { flex-direction: column; align-items: stretch; }
+  .eco-arrow-lg { transform: rotate(90deg); align-self: center; }
+  .eco-target { align-items: center; text-align: center; }
+}
+
 fieldset {
   border: 1px solid var(--border); border-radius: var(--radius);
   padding: 1rem 1.25rem 1.25rem; margin: 0 0 1.25rem; background: var(--surface);

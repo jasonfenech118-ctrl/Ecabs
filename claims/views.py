@@ -103,6 +103,15 @@ def home(request):
     return render(request, "claims/home.html", {"counts": counts})
 
 
+@login_required
+def overview(request):
+    """A professional one-page picture of the whole ecosystem: the group
+    companies, the claim lifecycle, the recovery documents and the background
+    engine."""
+    companies = Company.objects.filter(is_active=True).order_by("order", "name")
+    return render(request, "claims/overview.html", {"companies": companies})
+
+
 # --- Dashboard ---------------------------------------------------------------
 
 @login_required
