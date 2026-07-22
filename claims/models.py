@@ -164,6 +164,7 @@ class Claim(models.Model):
     # Vehicle
     vehicle_registration = models.CharField(max_length=20, blank=True)
     vehicle_make_model = models.CharField(max_length=100, blank=True)
+    driver_name = models.CharField("Our driver name", max_length=100, blank=True)
 
     # Accident details
     accident_date = models.DateField(null=True, blank=True)

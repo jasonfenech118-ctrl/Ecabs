@@ -1134,3 +1134,53 @@ class RepairTypeTests(TestCase):
         r = self.client.get(reverse("claim_documents", args=[claim.pk]), {"doc": "repairs"})
         self.assertContains(r, "Type of repair")
         self.assertContains(r, "Add a new repair type")
+
+
+class ImportAccidentsTests(TestCase):
+    def _make_xlsx(self, path):
+        import openpyxl
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.append(["Date of Acc", "Our Reg", "Driver Name", "TP Reg", "Vehicle Make",
+                   "TP Insurance", "Report Type", "Fault (OI / TP)"])
+        import datetime
+        ws.append([datetime.datetime(2021, 1, 1), "CLY142", "Isaac Zammit", "BBX937",
+                   "Nissan Qashqai", "MSI", "F 2 R", "TP"])
+        ws.append([datetime.datetime(2021, 2, 3), "FLY098", "Sam", "JBH412",
+                   "Peugeot 206", "MSI", "Etars - 307250", "OI"])
+        ws.append([None, "", "", "", "", "", "", ""])  # empty -> skipped
+        wb.save(path)
+
+    def test_import_maps_and_creates(self):
+        import tempfile
+        from django.core.management import call_command
+        from .models import Claim
+
+        with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as f:
+            path = f.name
+        self._make_xlsx(path)
+        call_command("import_accidents", path, status="closed")
+
+        self.assertEqual(Claim.objects.count(), 2)  # empty row skipped
+        a = Claim.objects.get(vehicle_registration="CLY142")
+        self.assertEqual(a.driver_name, "Isaac Zammit")
+        self.assertEqual(a.third_party_registration, "BBX937")
+        self.assertEqual(a.third_party_insurer, "MSI")
+        self.assertEqual(a.fault, Claim.Fault.THIRD_PARTY)
+        self.assertEqual(a.report_type, Claim.ReportType.F2R)
+        self.assertEqual(a.status, Claim.Status.CLOSED)
+        b = Claim.objects.get(vehicle_registration="FLY098")
+        self.assertEqual(b.fault, Claim.Fault.OUR_DRIVER)          # OI
+        self.assertEqual(b.report_type, Claim.ReportType.ETARS)
+        self.assertEqual(b.police_report_number, "Etars - 307250")  # original kept
+
+    def test_dry_run_saves_nothing(self):
+        import tempfile
+        from django.core.management import call_command
+        from .models import Claim
+
+        with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as f:
+            path = f.name
+        self._make_xlsx(path)
+        call_command("import_accidents", path, "--dry-run")
+        self.assertEqual(Claim.objects.count(), 0)
