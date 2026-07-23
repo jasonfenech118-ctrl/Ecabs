@@ -51,18 +51,18 @@ h3 { font-size: .95rem; margin: 0 0 .5rem; }
 .brand-logo { width: 100%; border-radius: 10px; display: block; }
 .sidebar nav { display: flex; flex-direction: column; padding: .5rem; gap: 2px; flex: 1; }
 .sidebar nav a {
-  color: #c9d7e4; padding: .55rem .75rem; border-radius: 8px;
+  color: #eaf1f8; padding: .55rem .75rem; border-radius: 8px;
   display: flex; align-items: center; gap: .6rem; font-weight: 500;
 }
-.sidebar nav a:hover { background: rgba(255,255,255,.1); color: #fff; text-decoration: none; }
-.sidebar nav a.active { background: rgba(174, 227, 236, .25); color: #fff; }
-.sidebar nav a.nav-sub { padding-left: 1.6rem; font-size: .88rem; }
+.sidebar nav a:hover { background: rgba(255,255,255,.14); color: #fff; text-decoration: none; }
+.sidebar nav a.active { background: rgba(174, 227, 236, .3); color: #fff; }
+.sidebar nav a.nav-sub { padding-left: 1.6rem; font-size: .88rem; color: #d3deea; }
 .sidebar nav a.nav-sub .nav-icon { font-size: .6rem; }
 .nav-group {
-  font-size: .68rem; text-transform: uppercase; letter-spacing: .08em;
-  color: rgba(255,255,255,.5); font-weight: 700;
-  padding: .7rem .6rem .2rem; margin-top: .2rem;
-  border-top: 1px solid rgba(255,255,255,.12);
+  font-size: .74rem; text-transform: uppercase; letter-spacing: .07em;
+  color: rgba(255,255,255,.85); font-weight: 700;
+  padding: .7rem .6rem .25rem; margin-top: .2rem;
+  border-top: 1px solid rgba(255,255,255,.2);
 }
 .sidebar nav > .nav-group:first-child { border-top: none; margin-top: 0; padding-top: .2rem; }
 .nav-icon { width: 1.1em; text-align: center; }
