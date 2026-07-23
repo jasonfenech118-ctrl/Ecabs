@@ -202,6 +202,10 @@ input:focus, select:focus, textarea:focus {
 .garage-theme .btn-primary { background: var(--garage); border-color: var(--garage); }
 .garage-theme .btn-primary:hover { background: var(--garage-dark); border-color: var(--garage-dark); }
 .garage-theme .list thead th { background: var(--garage); color: #fff; }
+/* Items & labour tables on the job form use a slate header so they stand out
+   from the orange theme. */
+.garage-theme #items-table thead th,
+.garage-theme #labour-table thead th { background: #334155; color: #fff; }
 .garage-theme .at-fault td.atf-yes { background: #16a34a; }
 .garage-theme a { color: var(--garage-dark); }
 .garage-theme .card h3 { color: var(--garage-dark); }
