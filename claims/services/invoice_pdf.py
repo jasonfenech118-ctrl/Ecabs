@@ -199,7 +199,7 @@ def build_repairs_pdf(claim, company, invoice_date=None):
     title = ParagraphStyle("t", parent=normal, fontName="Helvetica-Bold", fontSize=26, alignment=2, textColor=BLUE, leading=30)
     blue_h = ParagraphStyle("bh", parent=bold, textColor=BLUE, fontSize=14, leading=18)
 
-    net = claim.repairs_total
+    net = claim.repairs_receipt_net
     vat = (net * REPAIR_VAT_RATE).quantize(Decimal("0.01"))
     total = net + vat
     # Document date is entered manually when generating; never auto-filled.
@@ -248,20 +248,34 @@ def build_repairs_pdf(claim, company, invoice_date=None):
     story.append(Spacer(1, 6 * mm))
 
     head = ["Booking ID", "Date", "Description", "Reg. No", "Amount Net", "Amount incl. VAT"]
-    row = [
-        claim.invoice_number or receipt_no,
-        doc_date_short,
-        claim.repairs_label(),
-        claim.vehicle_registration,
-        _euro(net), _euro(total),
-    ]
-    t = Table([head, row], colWidths=[24 * mm, 22 * mm, 52 * mm, 20 * mm, 28 * mm, 28 * mm])
+    lines = list(claim.repair_lines.select_related("repair_type").all())
+    body = []
+    if lines:
+        # One itemised row per repair type + its net cost (VAT added below).
+        for i, rl in enumerate(lines):
+            line_net = rl.cost or Decimal("0")
+            line_gross = (line_net * (1 + REPAIR_VAT_RATE)).quantize(Decimal("0.01"))
+            body.append([
+                claim.invoice_number or receipt_no if i == 0 else "",
+                doc_date_short if i == 0 else "",
+                rl.label,
+                claim.vehicle_registration if i == 0 else "",
+                _euro(line_net), _euro(line_gross),
+            ])
+    else:
+        body.append([
+            claim.invoice_number or receipt_no,
+            doc_date_short,
+            claim.repairs_label(),
+            claim.vehicle_registration,
+            _euro(net), _euro(total),
+        ])
+    t = Table([head, *body], colWidths=[24 * mm, 22 * mm, 52 * mm, 20 * mm, 28 * mm, 28 * mm])
     t.setStyle(TableStyle([
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("TEXTCOLOR", (0, 0), (-1, 0), BLUE),
         ("FONTSIZE", (0, 0), (-1, -1), 8.5),
-        ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.HexColor("#cccccc")),
-        ("LINEBELOW", (0, 1), (-1, 1), 0.5, colors.HexColor("#cccccc")),
+        ("LINEBELOW", (0, 0), (-1, -1), 0.5, colors.HexColor("#cccccc")),
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ("TOPPADDING", (0, 0), (-1, -1), 6),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 6),

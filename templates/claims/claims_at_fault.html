@@ -10,6 +10,17 @@
   <a href="{% url 'claim_new' %}" class="btn btn-primary">＋ New claim</a>
 </div>
 
+<datalist id="awaiting-options">
+  <option value="Liability pending"></option>
+  <option value="O/S bills"></option>
+  <option value="O/S payment"></option>
+  <option value="Awaiting RGM"></option>
+  <option value="Awaiting Andrew"></option>
+  <option value="Awaiting survey"></option>
+  <option value="Awaiting TP insurer"></option>
+  <option value="Awaiting estimate"></option>
+</datalist>
+
 <h2 class="atf-heading">Open <span class="muted">· {{ open_claims|length }} claim{{ open_claims|length|pluralize }} · est. €{{ open_estimate|floatformat:2|intcomma }}</span></h2>
 <div class="card table-wrap">
   <table class="list at-fault">

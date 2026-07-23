@@ -49,24 +49,29 @@
 
 {% if doc == 'repairs' %}
 <div class="card mt" style="max-width:640px">
-  <h3>Type of repair</h3>
-  <p class="muted" style="margin:.2rem 0 .9rem; font-size:.85rem">Choose the repair type for the receipt — it replaces the auto description. Add your own for future use.</p>
-  <form method="post" action="{% url 'claim_set_repair_type' claim.pk %}">
+  <h3>Types of repair &amp; cost</h3>
+  <p class="muted" style="margin:.2rem 0 .9rem; font-size:.85rem">Tick each repair carried out and enter its cost (net, ex-VAT). VAT @18% is added automatically on the receipt. Each ticked line appears separately on the statement.</p>
+  <form method="post" action="{% url 'claim_set_repair_lines' claim.pk %}">
     {% csrf_token %}
     {% if company %}<input type="hidden" name="company" value="{{ company.pk }}">{% endif %}
-    <label class="radio-row">
-      <input type="radio" name="repair_type" value="" {% if not claim.repair_type_id %}checked{% endif %}>
-      <span class="muted">None — use auto description ({{ claim.repairs_description }})</span>
-    </label>
-    {% for rt in repair_types %}
-    <label class="radio-row">
-      <input type="radio" name="repair_type" value="{{ rt.pk }}" {% if claim.repair_type_id == rt.pk %}checked{% endif %}>
-      <span>{{ rt.name }}</span>
-    </label>
-    {% empty %}
-    <p class="muted" style="font-size:.85rem">No repair types yet — add one below.</p>
-    {% endfor %}
-    <button type="submit" class="btn btn-sm btn-primary mt">Set type</button>
+    <div class="repair-lines">
+      {% for r in repair_rows %}
+      <div class="repair-line-row">
+        <label class="repair-line-pick">
+          <input type="checkbox" name="line_{{ r.rt.pk }}" {% if r.checked %}checked{% endif %}>
+          <span>{{ r.rt.name }}</span>
+        </label>
+        <span class="repair-line-cost">
+          <span class="muted">€</span>
+          <input type="number" name="cost_{{ r.rt.pk }}" step="0.01" min="0"
+                 value="{% if r.cost is not None %}{{ r.cost }}{% endif %}" placeholder="0.00">
+        </span>
+      </div>
+      {% empty %}
+      <p class="muted" style="font-size:.85rem">No repair types yet — add one below.</p>
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-sm btn-primary mt">Save repairs</button>
   </form>
   <form method="post" action="{% url 'repair_type_add' claim.pk %}" class="row" style="margin-top:.9rem; gap:.4rem">
     {% csrf_token %}
@@ -109,7 +114,14 @@
       <dt>Receipt No</dt><dd>{{ invoice_no }}</dd>
       <dt>Claim Number</dt><dd>{{ claim.tp_claim_number|default:claim.insurer_claim_number }}</dd>
       <dt>Reg. No</dt><dd>{{ claim.vehicle_registration }}</dd>
-      <dt>Description</dt><dd>{{ claim.repairs_label }}</dd>
+      {% if repair_lines %}
+        <dt>Repairs</dt>
+        <dd>
+          {% for rl in repair_lines %}<div>{{ rl.label }} — €{{ rl.cost|floatformat:2 }}</div>{% endfor %}
+        </dd>
+      {% else %}
+        <dt>Description</dt><dd>{{ claim.repairs_label }}</dd>
+      {% endif %}
       <dt>Net</dt><dd>€{{ repairs_net|floatformat:2 }}</dd>
       <dt>VAT @18%</dt><dd>€{{ repairs_vat|floatformat:2 }}</dd>
       <dt>Total</dt><dd><strong>€{{ repairs_total|floatformat:2 }}</strong></dd>

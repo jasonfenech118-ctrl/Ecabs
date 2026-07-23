@@ -192,6 +192,18 @@ input:focus, select:focus, textarea:focus {
 .radio-row { display: flex; align-items: center; gap: .55rem; padding: .28rem 0; cursor: pointer; }
 .radio-row input { width: 1rem; height: 1rem; }
 
+/* --- Repair line rows (multi-select + per-line cost) ----------------------- */
+.repair-lines { display: flex; flex-direction: column; }
+.repair-line-row {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  padding: .35rem 0; border-top: 1px solid var(--border);
+}
+.repair-line-row:first-child { border-top: none; }
+.repair-line-pick { display: flex; align-items: center; gap: .55rem; cursor: pointer; }
+.repair-line-pick input { width: 1rem; height: 1rem; }
+.repair-line-cost { display: flex; align-items: center; gap: .3rem; white-space: nowrap; }
+.repair-line-cost input { width: 100px; text-align: right; padding: .3rem .45rem; }
+
 /* --- Ecosystem / Overview page --------------------------------------------- */
 .eco {
   max-width: 1040px; margin: 0 auto;

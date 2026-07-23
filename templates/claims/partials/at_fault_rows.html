@@ -11,7 +11,7 @@
   <td>{{ c.tp_claim_number|default:"—" }}</td>
   <td>{{ c.third_party_insurer|default:"—" }}</td>
   <td><input form="atf-{{ c.pk }}" name="details" value="{{ c.details }}" class="atf-input"></td>
-  <td><input form="atf-{{ c.pk }}" name="awaiting_from" value="{{ c.awaiting_from }}" class="atf-input atf-wide"></td>
+  <td><input form="atf-{{ c.pk }}" name="awaiting_from" value="{{ c.awaiting_from }}" list="awaiting-options" class="atf-input atf-wide" placeholder="Pick or type…"></td>
   <td><input form="atf-{{ c.pk }}" name="estimate_amount" type="number" step="0.01" min="0" value="{{ c.estimate_amount|default_if_none:'' }}" class="atf-input atf-num" placeholder="€"></td>
   <td style="white-space:nowrap">
     <button form="atf-{{ c.pk }}" type="submit" class="btn btn-sm btn-primary">Save</button>

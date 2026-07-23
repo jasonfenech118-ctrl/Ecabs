@@ -32,6 +32,7 @@ from .models import (
     DailyRate,
     EmailLog,
     Reminder,
+    RepairLine,
     RepairType,
     Survey,
     Vehicle,
@@ -1056,9 +1057,15 @@ def claim_documents(request, pk):
     selected = request.GET.get("company")
     company = companies.filter(pk=selected).first() if selected else None
 
-    net = claim.repairs_total
+    net = claim.repairs_receipt_net
     vat = (net * Decimal("0.18")).quantize(Decimal("0.01"))
     pdf_url = dict((key, name) for key, _, name in DOCUMENT_TYPES)[doc]
+    # Existing repair-line costs, keyed by repair-type id, to pre-fill the form.
+    line_costs = {rl.repair_type_id: rl.cost for rl in claim.repair_lines.all()}
+    repair_rows = [
+        {"rt": rt, "checked": rt.pk in line_costs, "cost": line_costs.get(rt.pk)}
+        for rt in RepairType.objects.filter(is_active=True)
+    ]
     return render(
         request,
         "claims/documents.html",
@@ -1075,7 +1082,8 @@ def claim_documents(request, pk):
             "repairs_net": net,
             "repairs_vat": vat,
             "repairs_total": net + vat,
-            "repair_types": RepairType.objects.filter(is_active=True),
+            "repair_rows": repair_rows,
+            "repair_lines": claim.repair_lines.select_related("repair_type").all(),
         },
     )
 
@@ -1091,26 +1099,32 @@ def _repairs_redirect(request, claim):
 
 @login_required
 @require_POST
-def claim_set_repair_type(request, pk):
-    """Set the manually chosen repair type for the claim (radio selection)."""
+def claim_set_repair_lines(request, pk):
+    """Save the itemised repair lines: for each ticked repair type, a line with
+    its net cost. Multiple types allowed; VAT is added on the receipt."""
     claim = get_object_or_404(Claim, pk=pk)
-    rt = request.POST.get("repair_type", "")
-    claim.repair_type = RepairType.objects.filter(pk=rt).first() if rt else None
-    claim.save(update_fields=["repair_type"])
+    claim.repair_lines.all().delete()
+    order = 0
+    for rt in RepairType.objects.filter(is_active=True):
+        if request.POST.get(f"line_{rt.pk}"):
+            raw = (request.POST.get(f"cost_{rt.pk}") or "").strip()
+            try:
+                cost = Decimal(raw) if raw else Decimal("0")
+            except InvalidOperation:
+                cost = Decimal("0")
+            RepairLine.objects.create(claim=claim, repair_type=rt, cost=cost, order=order)
+            order += 1
     return _repairs_redirect(request, claim)
 
 
 @login_required
 @require_POST
 def repair_type_add(request, pk):
-    """Add a new repair type to the maintained list (for future selection) and
-    select it for this claim."""
+    """Add a new repair type to the maintained list (for future selection)."""
     claim = get_object_or_404(Claim, pk=pk)
     name = (request.POST.get("name") or "").strip()
     if name:
-        rt, _ = RepairType.objects.get_or_create(name=name, defaults={"order": 100})
-        claim.repair_type = rt
-        claim.save(update_fields=["repair_type"])
+        RepairType.objects.get_or_create(name=name, defaults={"order": 100})
     return _repairs_redirect(request, claim)
 
 

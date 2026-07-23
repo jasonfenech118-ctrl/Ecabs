@@ -427,6 +427,19 @@ class Claim(models.Model):
         parts = [self.labour_amount, self.spray_material_amount, self.parts_amount]
         return sum((p or Decimal("0")) for p in parts) + self.other_charges_total
 
+    @property
+    def repair_lines_total(self):
+        """Net total of the itemised repair lines (type + cost), ex-VAT."""
+        return sum((rl.cost or Decimal("0")) for rl in self.repair_lines.all())
+
+    @property
+    def repairs_receipt_net(self):
+        """Net for the repairs receipt: the itemised repair lines when any are
+        set, otherwise the labour/spray/parts figures."""
+        if self.repair_lines.exists():
+            return self.repair_lines_total
+        return self.repairs_total
+
     def repairs_label(self):
         """Description shown on the repairs receipt: the manually chosen repair
         type when set, otherwise the auto-built component list."""
@@ -671,3 +684,25 @@ class RepairType(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RepairLine(models.Model):
+    """One itemised repair on a claim's receipt: a chosen repair type and its
+    net (ex-VAT) cost. VAT @18% is added automatically on the receipt."""
+
+    claim = models.ForeignKey(Claim, on_delete=models.CASCADE, related_name="repair_lines")
+    repair_type = models.ForeignKey(
+        RepairType, on_delete=models.PROTECT, related_name="lines"
+    )
+    cost = models.DecimalField("Cost (net)", max_digits=10, decimal_places=2, default=0)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    @property
+    def label(self):
+        return self.repair_type.name
+
+    def __str__(self):
+        return f"{self.repair_type.name} — €{self.cost}"

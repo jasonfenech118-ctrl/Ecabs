@@ -1089,39 +1089,43 @@ class RepairTypeTests(TestCase):
         self.user = get_user_model().objects.create_user("staff", password="pw")
         self.client.force_login(self.user)
 
-    def test_add_and_select_repair_type_used_on_receipt(self):
+    def test_add_type_then_itemise_lines_with_vat(self):
         from decimal import Decimal
 
-        from .models import Company, RepairType
+        from .models import Company, RepairLine, RepairType
 
         co = Company.objects.create(name="eCabs Ltd", address="Malta",
                                     logo_static="img/companies/ecabs.png")
-        claim = Claim.objects.create(status=Claim.Status.OPEN, labour_amount=Decimal("200.00"),
-                                     created_by=self.user)
-        # auto description before any type chosen
-        self.assertEqual(claim.repairs_label(), "Labour")
+        claim = Claim.objects.create(status=Claim.Status.OPEN, created_by=self.user)
 
-        # add a new type (also selects it) — not automated, staff-chosen
+        # add a new type — maintained list, not automated, no auto-select
         self.client.post(reverse("repair_type_add", args=[claim.pk]),
                          {"name": "Windscreen replacement"})
         rt = RepairType.objects.get(name="Windscreen replacement")
-        claim.refresh_from_db()
-        self.assertEqual(claim.repair_type, rt)
-        self.assertEqual(claim.repairs_label(), "Windscreen replacement")
+        self.assertFalse(claim.repair_lines.exists())
 
-        # switch selection back to none
-        self.client.post(reverse("claim_set_repair_type", args=[claim.pk]),
-                         {"repair_type": ""})
-        claim.refresh_from_db()
-        self.assertIsNone(claim.repair_type)
+        body = RepairType.objects.get(name="Bodywork")
 
-        # select an existing type
-        self.client.post(reverse("claim_set_repair_type", args=[claim.pk]),
-                         {"repair_type": rt.pk})
+        # tick two types with per-line net costs
+        self.client.post(reverse("claim_set_repair_lines", args=[claim.pk]), {
+            f"line_{rt.pk}": "on", f"cost_{rt.pk}": "150.00",
+            f"line_{body.pk}": "on", f"cost_{body.pk}": "50.00",
+        })
         claim.refresh_from_db()
-        self.assertEqual(claim.repair_type, rt)
+        self.assertEqual(claim.repair_lines.count(), 2)
+        # net total is the sum of the ticked lines
+        self.assertEqual(claim.repair_lines_total, Decimal("200.00"))
+        self.assertEqual(claim.repairs_receipt_net, Decimal("200.00"))
 
-        # receipt PDF renders with the chosen type
+        # unticking removes a line, keeps the other
+        self.client.post(reverse("claim_set_repair_lines", args=[claim.pk]), {
+            f"line_{rt.pk}": "on", f"cost_{rt.pk}": "150.00",
+        })
+        claim.refresh_from_db()
+        self.assertEqual(claim.repair_lines.count(), 1)
+        self.assertEqual(claim.repairs_receipt_net, Decimal("150.00"))
+
+        # receipt PDF renders the itemised lines
         r = self.client.get(reverse("claim_repairs_pdf", args=[claim.pk]), {"company": co.pk})
         self.assertEqual(r["Content-Type"], "application/pdf")
 
@@ -1129,10 +1133,10 @@ class RepairTypeTests(TestCase):
         from .models import RepairType
         self.assertTrue(RepairType.objects.filter(name="Bodywork").exists())
 
-    def test_repair_type_selector_on_documents_page(self):
+    def test_repair_line_selector_on_documents_page(self):
         claim = Claim.objects.create(status=Claim.Status.OPEN, created_by=self.user)
         r = self.client.get(reverse("claim_documents", args=[claim.pk]), {"doc": "repairs"})
-        self.assertContains(r, "Type of repair")
+        self.assertContains(r, "Types of repair &amp; cost")
         self.assertContains(r, "Add a new repair type")
 
 
