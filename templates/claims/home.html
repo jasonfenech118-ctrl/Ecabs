@@ -8,67 +8,115 @@
   <p class="sub">What would you like to do?</p>
 </div>
 
+<h2 class="tile-heading">Claims</h2>
 <div class="tile-grid">
   <a href="{% url 'claim_new' %}" class="tile tile-primary">
     <span class="tile-icon">＋</span>
     <span class="tile-title">New claim</span>
     <span class="tile-sub">Record an accident — saves as you type</span>
   </a>
-
   <a href="{% url 'claim_list' %}" class="tile">
     <span class="tile-icon">▤</span>
-    <span class="tile-title">Claims</span>
+    <span class="tile-title">All claims</span>
     <span class="tile-sub">{{ counts.open_claims }} open — search &amp; manage</span>
   </a>
-
+  <a href="{% url 'claim_group' 'open' %}" class="tile">
+    <span class="tile-icon">●</span>
+    <span class="tile-title">Open claims</span>
+    <span class="tile-sub">Currently in progress</span>
+  </a>
+  <a href="{% url 'claim_group' 'overdue' %}" class="tile">
+    <span class="tile-icon">▲</span>
+    <span class="tile-title">Overdue</span>
+    <span class="tile-sub">Past their chase date</span>
+  </a>
   <a href="{% url 'claims_at_fault' %}" class="tile">
     <span class="tile-icon">⚠</span>
-    <span class="tile-title">Claims at fault</span>
+    <span class="tile-title">At fault</span>
     <span class="tile-sub">Where our insured is liable</span>
   </a>
-
-  <a href="{% url 'reminder_list' %}" class="tile {% if counts.reminders_due %}tile-alert{% endif %}">
-    <span class="tile-icon">◷</span>
-    <span class="tile-title">Reminders</span>
-    <span class="tile-sub">{% if counts.reminders_due %}{{ counts.reminders_due }} due now{% else %}nothing due{% endif %}</span>
+  <a href="{% url 'general_claims' %}" class="tile">
+    <span class="tile-icon">✦</span>
+    <span class="tile-title">General claims</span>
+    <span class="tile-sub">Firefly listing register</span>
   </a>
+</div>
 
-  <a href="{% url 'vehicle_list' %}" class="tile">
-    <span class="tile-icon">⬖</span>
-    <span class="tile-title">Vehicles</span>
-    <span class="tile-sub">{{ counts.vehicles }} active in fleet</span>
+<h2 class="tile-heading tile-heading-garage">🔧 ACR Garage</h2>
+<div class="tile-grid">
+  <a href="{% url 'garage_jobs' %}" class="tile tile-garage">
+    <span class="tile-icon">🔧</span>
+    <span class="tile-title">Worklist</span>
+    <span class="tile-sub">Panel-beater jobs &amp; go-ahead</span>
   </a>
-
-  <a href="{% url 'dashboard' %}" class="tile">
-    <span class="tile-icon">▦</span>
-    <span class="tile-title">Dashboard</span>
-    <span class="tile-sub">Totals, chasers &amp; renewals</span>
+  <a href="{% url 'garage_invoices' %}" class="tile tile-garage">
+    <span class="tile-icon">🧾</span>
+    <span class="tile-title">Garage invoices</span>
+    <span class="tile-sub">Bill repairs (items + labour)</span>
   </a>
+  <a href="{% url 'garage_metrics' %}" class="tile tile-garage">
+    <span class="tile-icon">📊</span>
+    <span class="tile-title">Garage metrics</span>
+    <span class="tile-sub">Invoiced, outstanding &amp; jobs</span>
+  </a>
+</div>
 
+<h2 class="tile-heading">Records &amp; reports</h2>
+<div class="tile-grid">
+  <a href="{% url 'accident_list' %}" class="tile">
+    <span class="tile-icon">▤</span>
+    <span class="tile-title">Accident list</span>
+    <span class="tile-sub">Full accident register</span>
+  </a>
   <a href="{% url 'master_sheet' %}" class="tile">
     <span class="tile-icon">▥</span>
     <span class="tile-title">Master sheet</span>
-    <span class="tile-sub">All claims, all columns — CSV export</span>
+    <span class="tile-sub">All claims, all columns — CSV</span>
   </a>
-
+  <a href="{% url 'bills_report' %}" class="tile">
+    <span class="tile-icon">€</span>
+    <span class="tile-title">Bills this month</span>
+    <span class="tile-sub">Sent &amp; pending bills</span>
+  </a>
+  <a href="{% url 'metrics' %}" class="tile">
+    <span class="tile-icon">📈</span>
+    <span class="tile-title">Metrics</span>
+    <span class="tile-sub">System-wide KPIs</span>
+  </a>
   <a href="{% url 'data_dashboard' %}" class="tile">
     <span class="tile-icon">◔</span>
     <span class="tile-title">Data</span>
     <span class="tile-sub">Charts &amp; breakdowns</span>
   </a>
-
+  <a href="{% url 'dashboard' %}" class="tile">
+    <span class="tile-icon">▦</span>
+    <span class="tile-title">Dashboard</span>
+    <span class="tile-sub">Totals, chasers &amp; renewals</span>
+  </a>
   <a href="{% url 'overview' %}" class="tile">
     <span class="tile-icon">◈</span>
     <span class="tile-title">Overview</span>
     <span class="tile-sub">How the whole system works</span>
   </a>
+</div>
 
+<h2 class="tile-heading">Manage</h2>
+<div class="tile-grid">
+  <a href="{% url 'reminder_list' %}" class="tile {% if counts.reminders_due %}tile-alert{% endif %}">
+    <span class="tile-icon">◷</span>
+    <span class="tile-title">Reminders</span>
+    <span class="tile-sub">{% if counts.reminders_due %}{{ counts.reminders_due }} due now{% else %}nothing due{% endif %}</span>
+  </a>
+  <a href="{% url 'vehicle_list' %}" class="tile">
+    <span class="tile-icon">⬖</span>
+    <span class="tile-title">Vehicles</span>
+    <span class="tile-sub">{{ counts.vehicles }} active in fleet</span>
+  </a>
   <a href="{% url 'audit_trail' %}" class="tile">
     <span class="tile-icon">☰</span>
     <span class="tile-title">Audit trail</span>
     <span class="tile-sub">Who changed what, and when</span>
   </a>
-
   {% if user.is_staff %}
   <a href="{% url 'admin:index' %}" class="tile">
     <span class="tile-icon">⚙</span>
@@ -78,7 +126,7 @@
   {% endif %}
 </div>
 
-<h2 style="text-align:center; margin:2rem 0 1rem">Quick entry</h2>
+<h2 class="tile-heading">Quick entry</h2>
 <div class="tile-grid">
   <a href="{% url 'record_add' 'email' %}" class="tile">
     <span class="tile-icon">✉︎</span>

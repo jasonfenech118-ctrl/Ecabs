@@ -38,6 +38,7 @@
         <span class="nav-icon">📊</span> My metrics
       </a>
       {% else %}
+      <span class="nav-group">Main</span>
       <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
         <span class="nav-icon">⌂</span> Home
       </a>
@@ -47,8 +48,10 @@
       <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
         <span class="nav-icon">▦</span> Dashboard
       </a>
+
+      <span class="nav-group">Claims</span>
       <a href="{% url 'claim_list' %}" class="{% if request.resolver_match.url_name == 'claim_list' %}active{% endif %}">
-        <span class="nav-icon">▤</span> Claims
+        <span class="nav-icon">▤</span> All claims
       </a>
       <a href="{% url 'claim_group' 'open' %}" class="nav-sub {% if request.resolver_match.url_name == 'claim_group' and request.resolver_match.kwargs.group == 'open' %}active{% endif %}">
         <span class="nav-icon">●</span> Open claims
@@ -59,36 +62,42 @@
       <a href="{% url 'claim_group' 'overdue' %}" class="nav-sub {% if request.resolver_match.url_name == 'claim_group' and request.resolver_match.kwargs.group == 'overdue' %}active{% endif %}">
         <span class="nav-icon">▲</span> Overdue
       </a>
-      <a href="{% url 'claims_at_fault' %}" class="nav-sub {% if request.resolver_match.url_name == 'claims_at_fault' %}active{% endif %}">
+      <a href="{% url 'claims_at_fault' %}" class="{% if request.resolver_match.url_name == 'claims_at_fault' %}active{% endif %}">
         <span class="nav-icon">⚠</span> At fault
       </a>
-      <a href="{% url 'general_claims' %}" class="nav-sub {% if 'general' in request.resolver_match.url_name %}active{% endif %}">
-        <span class="nav-icon">✦</span> General claims
+      <a href="{% url 'general_claims' %}" class="{% if 'general' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">✦</span> General claims (Firefly)
       </a>
-      <a href="{% url 'garage_jobs' %}" class="nav-sub {% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
-        <span class="nav-icon">🔧</span> ACR Garage
+
+      <span class="nav-group">ACR Garage</span>
+      <a href="{% url 'garage_jobs' %}" class="{% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
+        <span class="nav-icon">🔧</span> Worklist
       </a>
-      <a href="{% url 'garage_invoices' %}" class="nav-sub {% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
-        <span class="nav-icon">🧾</span> Garage invoices
+      <a href="{% url 'garage_invoices' %}" class="{% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">🧾</span> Invoices
       </a>
-      <a href="{% url 'garage_metrics' %}" class="nav-sub {% if request.resolver_match.url_name == 'garage_metrics' %}active{% endif %}">
+      <a href="{% url 'garage_metrics' %}" class="{% if request.resolver_match.url_name == 'garage_metrics' %}active{% endif %}">
         <span class="nav-icon">📊</span> Garage metrics
+      </a>
+
+      <span class="nav-group">Records &amp; reports</span>
+      <a href="{% url 'accident_list' %}" class="{% if 'accident' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">▤</span> Accident list
       </a>
       <a href="{% url 'master_sheet' %}" class="{% if 'master' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">▥</span> Master sheet
-      </a>
-      <a href="{% url 'accident_list' %}" class="{% if 'accident' in request.resolver_match.url_name %}active{% endif %}">
-        <span class="nav-icon">▤</span> Accident list
       </a>
       <a href="{% url 'bills_report' %}" class="{% if request.resolver_match.url_name == 'bills_report' %}active{% endif %}">
         <span class="nav-icon">€</span> Bills this month
       </a>
       <a href="{% url 'metrics' %}" class="{% if request.resolver_match.url_name == 'metrics' %}active{% endif %}">
-        <span class="nav-icon">📊</span> Metrics
+        <span class="nav-icon">📈</span> Metrics
       </a>
       <a href="{% url 'data_dashboard' %}" class="{% if request.resolver_match.url_name == 'data_dashboard' %}active{% endif %}">
         <span class="nav-icon">◔</span> Data
       </a>
+
+      <span class="nav-group">Manage</span>
       <a href="{% url 'vehicle_list' %}" class="{% if 'vehicle' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">⬖</span> Vehicles
       </a>
