@@ -719,6 +719,15 @@ class GarageJob(models.Model):
     garage = models.CharField(
         max_length=20, choices=Garage.choices, default=Garage.ACL, db_index=True
     )
+
+    class ForKind(models.TextChoices):
+        GROUP = "group", "Vai Drive (Francis)"
+        PERSONAL = "personal", "My own garage"
+
+    for_kind = models.CharField(
+        "Job for", max_length=10, choices=ForKind.choices,
+        default=ForKind.GROUP, db_index=True,
+    )
     accident_date = models.DateField("Accident date", null=True, blank=True)
     survey_date = models.DateField("Survey date", null=True, blank=True)
     plate_no = models.CharField("No plate", max_length=20, blank=True)

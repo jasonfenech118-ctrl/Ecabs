@@ -14,10 +14,18 @@
 </div>
 
 <div class="card no-print">
-  <form method="get" class="row" style="gap:.5rem; align-items:center">
-    <input name="q" value="{{ q }}" placeholder="Search plate, client, make, claim, surveyor, insurer…" style="min-width:300px; padding:.45rem .6rem; border:1px solid #d1d5db; border-radius:6px">
-    <button type="submit" class="btn btn-primary">Search</button>
-    {% if q %}<a href="{% url 'garage_jobs' %}" class="btn btn-sm">Clear</a>{% endif %}
+  <form method="get" class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap">
+    <label class="field" style="margin:0; flex:1; min-width:260px"><span>Search</span>
+      <input name="q" value="{{ q }}" placeholder="Plate, client, make, claim, surveyor, insurer…">
+    </label>
+    <label class="field" style="margin:0"><span>For</span>
+      <select name="for">
+        <option value="all" {% if for_kind == 'all' %}selected{% endif %}>All</option>
+        {% for val, lbl in for_kinds %}<option value="{{ val }}" {% if for_kind == val %}selected{% endif %}>{{ lbl }}</option>{% endfor %}
+      </select>
+    </label>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    {% if q or for_kind != 'all' %}<a href="{% url 'garage_jobs' %}" class="btn btn-sm">Clear</a>{% endif %}
   </form>
 </div>
 
@@ -26,7 +34,7 @@
   <table class="list at-fault">
     <thead>
       <tr>
-        <th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th>
+        <th>For</th><th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th>
         <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th>
         <th class="right">Total €</th><th></th>
       </tr>
@@ -42,7 +50,7 @@
   <table class="list at-fault">
     <thead>
       <tr>
-        <th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th>
+        <th>For</th><th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th>
         <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th>
         <th class="right">Total €</th><th></th>
       </tr>

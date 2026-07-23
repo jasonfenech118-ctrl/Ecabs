@@ -203,6 +203,10 @@ def garage_jobs(request):
             | Q(make__icontains=q) | Q(claim_no__icontains=q)
             | Q(surveyor__icontains=q) | Q(insurance__icontains=q)
         )
+    # For Vai Drive (Francis) vs the garage's own customers.
+    for_kind = (request.GET.get("for") or "all").strip()
+    if for_kind in dict(GarageJob.ForKind.choices):
+        qs = qs.filter(for_kind=for_kind)
     open_jobs = [j for j in qs if not j.is_closed]
     closed_jobs = [j for j in qs if j.is_closed]
 
@@ -219,6 +223,8 @@ def garage_jobs(request):
             "closed_total": sum_total(closed_jobs),
             "garage_name": "ACR Garage",
             "q": q,
+            "for_kind": for_kind,
+            "for_kinds": GarageJob.ForKind.choices,
         },
     )
 
@@ -256,6 +262,9 @@ def garage_job_form(request, pk=None):
         else:
             job.total = None
         job.is_closed = request.POST.get("is_closed") == "on"
+        for_kind = request.POST.get("for_kind")
+        if for_kind in dict(GarageJob.ForKind.choices):
+            job.for_kind = for_kind
         job.updated_by = request.user
         job.save()
         _sync_job_items(request, job)
@@ -551,6 +560,7 @@ def garage_job_to_invoice(request, pk):
     inv = GarageInvoice.objects.create(
         invoice_no=_next_invoice_no(),
         bill_to=job.client,
+        for_kind=job.for_kind,
         created_by=request.user,
         updated_by=request.user,
     )
