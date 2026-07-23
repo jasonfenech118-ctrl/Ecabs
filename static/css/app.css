@@ -60,19 +60,32 @@ h3 { font-size: .95rem; margin: 0 0 .5rem; }
 .sidebar nav a.nav-sub .nav-icon { font-size: .6rem; }
 .nav-group {
   font-size: .74rem; text-transform: uppercase; letter-spacing: .07em;
-  color: rgba(255,255,255,.85); font-weight: 700;
-  padding: .7rem .6rem .25rem; margin-top: .2rem;
-  border-top: 1px solid rgba(255,255,255,.2);
+  font-weight: 700; padding: .5rem .6rem .25rem;
 }
-.sidebar nav > .nav-group:first-child { border-top: none; margin-top: 0; padding-top: .2rem; }
+/* Per-section colour accents. Each section gets its own --sec colour used on
+   its heading, icons, left bar and active state. ACR Garage is orange. */
+.nav-sec {
+  border-left: 3px solid var(--sec); padding-left: 5px;
+  margin: .1rem 0 .35rem;
+}
+.nav-sec .nav-group { color: var(--sec); }
+.nav-sec .nav-icon { color: var(--sec); }
+.sidebar nav .nav-sec a.active { background: var(--sec); color: #fff; }
+.sidebar nav .nav-sec a.active .nav-icon { color: #fff; }
+.nav-sec--main   { --sec: #74d0dd; }
+.nav-sec--claims { --sec: #8fb0ff; }
+.nav-sec--garage { --sec: #ff8a4d; }
+.nav-sec--reports{ --sec: #5fce93; }
+.nav-sec--manage { --sec: #c49bff; }
 .nav-icon { width: 1.1em; text-align: center; }
 .sidebar-footer {
-  padding: .9rem 1rem; border-top: 1px solid rgba(255,255,255,.15);
-  display: flex; justify-content: space-between; align-items: center; gap: .5rem;
+  padding: .8rem 1rem 1rem; border-top: 1px solid rgba(255,255,255,.2);
+  display: flex; flex-direction: column; gap: .5rem;
 }
-.user-name { font-size: .85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.link-btn { background: none; border: none; color: #b8cddd; cursor: pointer; font: inherit; font-size: .85rem; padding: 0; }
-.link-btn:hover { color: #fff; text-decoration: underline; }
+.user-name { font-size: .9rem; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar-footer-actions { display: flex; align-items: center; gap: .75rem; }
+.link-btn { background: none; border: none; color: #fff; cursor: pointer; font: inherit; font-size: .82rem; font-weight: 500; padding: 0; text-decoration: underline; text-underline-offset: 2px; }
+.link-btn:hover { color: #ffe0cf; }
 
 .main { flex: 1; min-width: 0; padding: 1.5rem 2rem 3rem; }
 .main-anon { display: grid; place-items: center; min-height: 100vh; }
