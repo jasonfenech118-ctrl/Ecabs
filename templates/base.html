@@ -44,6 +44,9 @@
       <a href="{% url 'claims_at_fault' %}" class="nav-sub {% if request.resolver_match.url_name == 'claims_at_fault' %}active{% endif %}">
         <span class="nav-icon">⚠</span> At fault
       </a>
+      <a href="{% url 'garage_jobs' %}" class="nav-sub {% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
+        <span class="nav-icon">🔧</span> ACL Garage
+      </a>
       <a href="{% url 'master_sheet' %}" class="{% if 'master' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">▥</span> Master sheet
       </a>

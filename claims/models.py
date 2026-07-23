@@ -706,3 +706,41 @@ class RepairLine(models.Model):
 
     def __str__(self):
         return f"{self.repair_type.name} — €{self.cost}"
+
+
+class GarageJob(models.Model):
+    """A vehicle sent to a panel-beater garage (e.g. ACL Garage) for repair.
+    A simple tracking register mirroring the garage's worksheet: survey, when
+    the report came back, and whether we have the insurer's go-ahead."""
+
+    class Garage(models.TextChoices):
+        ACL = "acl", "ACL Garage"
+
+    garage = models.CharField(
+        max_length=20, choices=Garage.choices, default=Garage.ACL, db_index=True
+    )
+    accident_date = models.DateField("Accident date", null=True, blank=True)
+    survey_date = models.DateField("Survey date", null=True, blank=True)
+    plate_no = models.CharField("No plate", max_length=20, blank=True)
+    client = models.CharField("Client", max_length=200, blank=True)
+    make = models.CharField("Make", max_length=120, blank=True)
+    claim_no = models.CharField("Claim No", max_length=60, blank=True)
+    surveyor = models.CharField("Surveyor", max_length=120, blank=True)
+    insurance = models.CharField("Insurance", max_length=120, blank=True)
+    # Free text so it can hold a date or a note like "Pending part".
+    report_received = models.CharField("Report received", max_length=120, blank=True)
+    go_ahead = models.CharField("Go ahead?", max_length=200, blank=True)
+
+    is_closed = models.BooleanField(default=False, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-accident_date", "-id"]
+
+    @property
+    def go_ahead_yes(self):
+        return self.go_ahead.strip().lower().startswith("yes")
+
+    def __str__(self):
+        return f"{self.plate_no or '—'} · {self.client or '—'}"

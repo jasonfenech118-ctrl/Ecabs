@@ -187,6 +187,11 @@ input:focus, select:focus, textarea:focus {
 .at-fault .atf-wide { min-width: 170px; }
 .at-fault .atf-num { max-width: 96px; text-align: right; }
 .at-fault td, .at-fault th { vertical-align: middle; }
+.at-fault td.atf-yes { background: #16a34a; }
+.at-fault td.atf-yes input.atf-input { background: transparent; border-color: rgba(255,255,255,.5); color: #fff; font-weight: 600; }
+.at-fault td.atf-yes input.atf-input::placeholder { color: rgba(255,255,255,.7); }
+.btn-danger { color: #b91c1c; border-color: #fca5a5; }
+.btn-danger:hover { background: #fef2f2; }
 
 /* --- Radio rows (repair type etc.) ----------------------------------------- */
 .radio-row { display: flex; align-items: center; gap: .55rem; padding: .28rem 0; cursor: pointer; }

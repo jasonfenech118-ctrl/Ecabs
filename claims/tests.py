@@ -1140,6 +1140,49 @@ class RepairTypeTests(TestCase):
         self.assertContains(r, "Add a new repair type")
 
 
+class GarageJobTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user("garage", password="pw")
+        self.client.force_login(self.user)
+
+    def test_seeded_rows_show_on_page(self):
+        r = self.client.get(reverse("garage_jobs"))
+        self.assertContains(r, "ACL Garage")
+        self.assertContains(r, "Mohammed Asif Khaled")
+
+    def test_add_edit_close_reopen_delete_row(self):
+        from datetime import date
+
+        from .models import GarageJob
+
+        before = GarageJob.objects.count()
+        self.client.post(reverse("garage_job_add"))
+        job = GarageJob.objects.order_by("-id").first()
+        self.assertEqual(GarageJob.objects.count(), before + 1)
+
+        # inline edit
+        self.client.post(reverse("garage_job_update", args=[job.pk]), {
+            "accident_date": "2026-06-01", "survey_date": "2026-06-05",
+            "plate_no": "ZZZ999", "client": "Test Client", "make": "Toyota",
+            "claim_no": "CL123", "surveyor": "Jo", "insurance": "Elmo",
+            "report_received": "2026-06-10", "go_ahead": "Yes, go",
+        })
+        job.refresh_from_db()
+        self.assertEqual(job.plate_no, "ZZZ999")
+        self.assertEqual(job.accident_date, date(2026, 6, 1))
+        self.assertTrue(job.go_ahead_yes)
+
+        # close then reopen
+        self.client.post(reverse("garage_job_update", args=[job.pk]), {"action": "close"})
+        job.refresh_from_db(); self.assertTrue(job.is_closed)
+        self.client.post(reverse("garage_job_update", args=[job.pk]), {"action": "reopen"})
+        job.refresh_from_db(); self.assertFalse(job.is_closed)
+
+        # delete
+        self.client.post(reverse("garage_job_update", args=[job.pk]), {"action": "delete"})
+        self.assertFalse(GarageJob.objects.filter(pk=job.pk).exists())
+
+
 class ImportAccidentsTests(TestCase):
     def _make_xlsx(self, path):
         import openpyxl

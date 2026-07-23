@@ -8,6 +8,7 @@ from .models import (
     Company,
     DailyRate,
     EmailLog,
+    GarageJob,
     OtherCharge,
     Reminder,
     RepairType,
@@ -26,6 +27,14 @@ class DailyRateAdmin(admin.ModelAdmin):
 class RepairTypeAdmin(admin.ModelAdmin):
     list_display = ("name", "is_active", "order")
     list_editable = ("is_active", "order")
+
+
+@admin.register(GarageJob)
+class GarageJobAdmin(admin.ModelAdmin):
+    list_display = ("plate_no", "client", "make", "claim_no", "surveyor",
+                    "insurance", "go_ahead", "is_closed")
+    list_filter = ("garage", "is_closed", "insurance")
+    search_fields = ("plate_no", "client", "claim_no", "surveyor")
 
 
 class OtherChargeInline(admin.TabularInline):

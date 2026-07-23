@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}{{ garage_name }} — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ garage_name }}</h1>
+    <div class="sub">Panel-beater worklist — vehicles sent for repair, survey and go-ahead tracking</div>
+  </div>
+  <form method="post" action="{% url 'garage_job_add' %}">{% csrf_token %}
+    <button type="submit" class="btn btn-primary">＋ Add row</button>
+  </form>
+</div>
+
+<h2 class="atf-heading">Open <span class="muted">· {{ open_jobs|length }} job{{ open_jobs|length|pluralize }}</span></h2>
+<div class="card table-wrap">
+  <table class="list at-fault">
+    <thead>
+      <tr>
+        <th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th>
+        <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include "claims/partials/garage_rows.html" with rows=open_jobs is_closed=False %}
+    </tbody>
+  </table>
+</div>
+
+<h2 class="atf-heading mt">Closed <span class="muted">· {{ closed_jobs|length }} job{{ closed_jobs|length|pluralize }}</span></h2>
+<div class="card table-wrap">
+  <table class="list at-fault">
+    <thead>
+      <tr>
+        <th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th>
+        <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include "claims/partials/garage_rows.html" with rows=closed_jobs is_closed=True %}
+    </tbody>
+  </table>
+</div>
+
+<p class="muted" style="font-size:.8rem; margin-top:1rem">Add a row, then fill in each cell inline and press <strong>Save</strong>. A green <strong>Go ahead?</strong> means the insurer has approved the repair (type it starting with “Yes”). Use <strong>Close</strong> once the job is finished.</p>
+{% endblock %}

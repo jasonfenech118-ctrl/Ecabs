@@ -31,6 +31,7 @@ from .models import (
     Company,
     DailyRate,
     EmailLog,
+    GarageJob,
     Reminder,
     RepairLine,
     RepairType,
@@ -165,6 +166,77 @@ def at_fault_update(request, pk):
         claim.awaiting_from = request.POST.get("awaiting_from", claim.awaiting_from)
     claim.save()
     return redirect("claims_at_fault")
+
+
+# --- Panel-beater garage register (ACL Garage) -------------------------------
+
+def _parse_date(raw):
+    """Parse a yyyy-mm-dd date from an inline input; blank -> None."""
+    raw = (raw or "").strip()
+    if not raw:
+        return None
+    from datetime import datetime
+
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y"):
+        try:
+            return datetime.strptime(raw, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+@login_required
+def garage_jobs(request):
+    """ACL Garage worklist — vehicles sent to the panel beater for repair."""
+    qs = GarageJob.objects.filter(garage=GarageJob.Garage.ACL)
+    open_jobs = [j for j in qs if not j.is_closed]
+    closed_jobs = [j for j in qs if j.is_closed]
+    return render(
+        request,
+        "claims/garage_jobs.html",
+        {
+            "open_jobs": open_jobs,
+            "closed_jobs": closed_jobs,
+            "garage_name": "ACL Garage",
+        },
+    )
+
+
+@login_required
+@require_POST
+def garage_job_add(request):
+    """Add a blank row to the ACL Garage register (fill it in inline)."""
+    GarageJob.objects.create(garage=GarageJob.Garage.ACL)
+    return redirect("garage_jobs")
+
+
+@login_required
+@require_POST
+def garage_job_update(request, pk):
+    """Inline save / close / reopen / delete for one garage row."""
+    job = get_object_or_404(GarageJob, pk=pk)
+    action = request.POST.get("action")
+    if action == "close":
+        job.is_closed = True
+        job.save(update_fields=["is_closed", "updated_at"])
+    elif action == "reopen":
+        job.is_closed = False
+        job.save(update_fields=["is_closed", "updated_at"])
+    elif action == "delete":
+        job.delete()
+    else:
+        job.accident_date = _parse_date(request.POST.get("accident_date"))
+        job.survey_date = _parse_date(request.POST.get("survey_date"))
+        job.plate_no = request.POST.get("plate_no", job.plate_no)
+        job.client = request.POST.get("client", job.client)
+        job.make = request.POST.get("make", job.make)
+        job.claim_no = request.POST.get("claim_no", job.claim_no)
+        job.surveyor = request.POST.get("surveyor", job.surveyor)
+        job.insurance = request.POST.get("insurance", job.insurance)
+        job.report_received = request.POST.get("report_received", job.report_received)
+        job.go_ahead = request.POST.get("go_ahead", job.go_ahead)
+        job.save()
+    return redirect("garage_jobs")
 
 
 # --- Dashboard ---------------------------------------------------------------

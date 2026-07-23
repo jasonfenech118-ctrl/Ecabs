@@ -1,0 +1,26 @@
+{% for j in rows %}
+<tr>
+  <td>
+    <form id="g-{{ j.pk }}" method="post" action="{% url 'garage_job_update' j.pk %}">{% csrf_token %}</form>
+    <form id="ga-{{ j.pk }}" method="post" action="{% url 'garage_job_update' j.pk %}">{% csrf_token %}<input type="hidden" name="action" value="{% if is_closed %}reopen{% else %}close{% endif %}"></form>
+    <form id="gd-{{ j.pk }}" method="post" action="{% url 'garage_job_update' j.pk %}" onsubmit="return confirm('Delete this row?')">{% csrf_token %}<input type="hidden" name="action" value="delete"></form>
+    <input form="g-{{ j.pk }}" name="accident_date" type="date" value="{{ j.accident_date|date:'Y-m-d' }}" class="atf-input">
+  </td>
+  <td><input form="g-{{ j.pk }}" name="survey_date" type="date" value="{{ j.survey_date|date:'Y-m-d' }}" class="atf-input"></td>
+  <td><input form="g-{{ j.pk }}" name="plate_no" value="{{ j.plate_no }}" class="atf-input" style="width:6rem"></td>
+  <td><input form="g-{{ j.pk }}" name="client" value="{{ j.client }}" class="atf-input atf-wide"></td>
+  <td><input form="g-{{ j.pk }}" name="make" value="{{ j.make }}" class="atf-input"></td>
+  <td><input form="g-{{ j.pk }}" name="claim_no" value="{{ j.claim_no }}" class="atf-input"></td>
+  <td><input form="g-{{ j.pk }}" name="surveyor" value="{{ j.surveyor }}" class="atf-input"></td>
+  <td><input form="g-{{ j.pk }}" name="insurance" value="{{ j.insurance }}" class="atf-input" style="width:6rem"></td>
+  <td><input form="g-{{ j.pk }}" name="report_received" value="{{ j.report_received }}" class="atf-input" placeholder="date or note"></td>
+  <td class="{% if j.go_ahead_yes %}atf-yes{% endif %}"><input form="g-{{ j.pk }}" name="go_ahead" value="{{ j.go_ahead }}" class="atf-input atf-wide" placeholder="e.g. Yes, parts Elmo"></td>
+  <td style="white-space:nowrap">
+    <button form="g-{{ j.pk }}" type="submit" class="btn btn-sm btn-primary">Save</button>
+    <button form="ga-{{ j.pk }}" type="submit" class="btn btn-sm">{% if is_closed %}Reopen{% else %}Close{% endif %}</button>
+    <button form="gd-{{ j.pk }}" type="submit" class="btn btn-sm btn-danger" title="Delete row">✕</button>
+  </td>
+</tr>
+{% empty %}
+<tr><td colspan="11" class="empty">None.</td></tr>
+{% endfor %}
