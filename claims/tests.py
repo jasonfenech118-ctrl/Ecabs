@@ -1182,6 +1182,41 @@ class GarageJobTests(TestCase):
         self.client.post(reverse("garage_job_update", args=[job.pk]), {"action": "delete"})
         self.assertFalse(GarageJob.objects.filter(pk=job.pk).exists())
 
+    def test_job_items_feed_invoice(self):
+        from decimal import Decimal
+
+        from .models import GarageInvoice, GarageJob, RepairType
+
+        # new job redirects to its own form
+        r = self.client.post(reverse("garage_job_new"),
+                             {"plate_no": "ITM9", "client": "FASTDROP", "make": "Toyota"})
+        job = GarageJob.objects.get(plate_no="ITM9")
+        self.assertRedirects(r, reverse("garage_job_form", args=[job.pk]))
+
+        spray = RepairType.objects.filter(name__icontains="Spray").first()
+        # add an existing type and a brand-new one
+        self.client.post(reverse("garage_job_item_add", args=[job.pk]),
+                         {"repair_type": spray.pk, "price": "120.00"})
+        self.client.post(reverse("garage_job_item_add", args=[job.pk]),
+                         {"new_type": "Panel", "price": "80.00"})
+        job.refresh_from_db()
+        self.assertEqual(job.items.count(), 2)
+        self.assertEqual(job.items_total, Decimal("200.00"))
+        self.assertEqual(job.effective_total, Decimal("200.00"))
+        self.assertTrue(RepairType.objects.filter(name="Panel").exists())
+
+        # → invoice makes one line per item
+        self.client.post(reverse("garage_job_to_invoice", args=[job.pk]))
+        inv = GarageInvoice.objects.filter(created_by=self.user).order_by("-id").first()
+        self.assertEqual(inv.lines.count(), 2)
+        self.assertEqual(inv.subtotal, Decimal("200.00"))
+
+        # deleting an item updates the total
+        item = job.items.first()
+        self.client.post(reverse("garage_job_item_delete", args=[job.pk, item.pk]))
+        job.refresh_from_db()
+        self.assertEqual(job.items.count(), 1)
+
     def test_add_and_edit_via_full_form(self):
         from datetime import date
 

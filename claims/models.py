@@ -749,8 +749,42 @@ class GarageJob(models.Model):
     def go_ahead_yes(self):
         return self.go_ahead.strip().lower().startswith("yes")
 
+    @property
+    def items_total(self):
+        return sum((it.price or Decimal("0")) for it in self.items.all())
+
+    @property
+    def effective_total(self):
+        """The job's value: the sum of its itemised repairs if any, otherwise
+        the single Total field."""
+        if self.items.exists():
+            return self.items_total
+        return self.total or Decimal("0")
+
     def __str__(self):
         return f"{self.plate_no or '—'} · {self.client or '—'}"
+
+
+class GarageJobItem(models.Model):
+    """One itemised repair on a garage job: a type (spray, parts, panel, …) and
+    its price. These become the invoice lines when the job is billed."""
+
+    job = models.ForeignKey(GarageJob, on_delete=models.CASCADE, related_name="items")
+    repair_type = models.ForeignKey(
+        RepairType, on_delete=models.PROTECT, related_name="+"
+    )
+    price = models.DecimalField("Price (€)", max_digits=10, decimal_places=2, default=0)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    @property
+    def label(self):
+        return self.repair_type.name
+
+    def __str__(self):
+        return f"{self.repair_type.name} — €{self.price}"
 
 
 class GarageInvoice(models.Model):

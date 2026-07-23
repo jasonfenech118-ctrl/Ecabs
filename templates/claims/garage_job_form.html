@@ -26,7 +26,7 @@
       <label class="field"><span>Insurance</span><input name="insurance" value="{{ job.insurance }}"></label>
       <label class="field"><span>Report received</span><input name="report_received" value="{{ job.report_received }}" placeholder="date or note"></label>
       <label class="field"><span>Go ahead?</span><input name="go_ahead" value="{{ job.go_ahead }}" list="awaiting-yes" placeholder="e.g. Yes, parts Elmo"></label>
-      <label class="field"><span>Total (€, ex-VAT)</span><input type="number" step="0.01" min="0" name="total" value="{{ job.total|default_if_none:'' }}" placeholder="€"></label>
+      <label class="field"><span>Total (€, ex-VAT) <span class="muted">— used only if no items below</span></span><input type="number" step="0.01" min="0" name="total" value="{{ job.total|default_if_none:'' }}" placeholder="€"></label>
       <label class="field" style="display:flex; align-items:center; gap:.5rem; margin-top:1.4rem">
         <input type="checkbox" name="is_closed" {% if job.is_closed %}checked{% endif %} style="width:auto"> <span style="margin:0">Closed (job finished)</span>
       </label>
@@ -38,4 +38,51 @@
     </div>
   </div>
 </form>
+
+{% if job.pk %}
+<div class="card mt">
+  <h3>Repair items <span class="muted" style="font-weight:400; font-size:.85rem">— type &amp; price; these become the invoice lines</span></h3>
+  <div class="table-wrap">
+    <table class="list">
+      <thead><tr><th>Type</th><th class="right">Price €</th><th></th></tr></thead>
+      <tbody>
+        {% for it in job.items.all %}
+        <tr>
+          <td>{{ it.repair_type.name }}</td>
+          <td class="right">€{{ it.price|floatformat:2 }}</td>
+          <td style="white-space:nowrap">
+            <form method="post" action="{% url 'garage_job_item_delete' job.pk it.pk %}" onsubmit="return confirm('Remove this item?')" style="display:inline">{% csrf_token %}<button type="submit" class="btn btn-sm btn-danger">✕</button></form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="empty">No items yet — add the repair types and prices below.</td></tr>
+        {% endfor %}
+      </tbody>
+      {% if job.items.all %}
+      <tfoot><tr><th>Total (ex-VAT)</th><th class="right">€{{ job.items_total|floatformat:2 }}</th><th></th></tr></tfoot>
+      {% endif %}
+    </table>
+  </div>
+
+  <form method="post" action="{% url 'garage_job_item_add' job.pk %}" class="row" style="gap:.5rem; align-items:flex-end; margin-top:.8rem; flex-wrap:wrap">
+    {% csrf_token %}
+    <label class="field" style="margin:0"><span>Type</span>
+      <select name="repair_type">
+        <option value="">— pick a type —</option>
+        {% for rt in repair_types %}<option value="{{ rt.pk }}">{{ rt.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label class="field" style="margin:0"><span>…or new type</span>
+      <input name="new_type" placeholder="e.g. Spray" maxlength="100">
+    </label>
+    <label class="field" style="margin:0"><span>Price €</span>
+      <input type="number" step="0.01" min="0" name="price" placeholder="0.00" style="width:120px">
+    </label>
+    <button type="submit" class="btn btn-primary">＋ Add item</button>
+  </form>
+  <p class="muted" style="font-size:.8rem; margin:.6rem 0 0">Pick an existing type (Spray &amp; paint, Parts, Bodywork, Mechanical, Windscreen, Electrical…) or type a new one. Then use <strong>→ Invoice</strong> on the worklist to bill these items.</p>
+</div>
+{% else %}
+<p class="muted" style="margin-top:1rem">Save the job first, then you can add itemised repairs (type &amp; price).</p>
+{% endif %}
 {% endblock %}

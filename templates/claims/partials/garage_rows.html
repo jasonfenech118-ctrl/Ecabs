@@ -10,7 +10,7 @@
   <td>{{ j.insurance|default:"—" }}</td>
   <td>{{ j.report_received|default:"—" }}</td>
   <td class="{% if j.go_ahead_yes %}atf-yes{% endif %}">{{ j.go_ahead|default:"—" }}</td>
-  <td class="right">{% if j.total is not None %}€{{ j.total|floatformat:2 }}{% else %}—{% endif %}</td>
+  <td class="right">{% if j.items.exists %}€{{ j.effective_total|floatformat:2 }}{% elif j.total is not None %}€{{ j.total|floatformat:2 }}{% else %}—{% endif %}</td>
   <td style="white-space:nowrap">
     <a href="{% url 'garage_job_form' j.pk %}" class="btn btn-sm btn-primary" title="Open / edit in form">Open</a>
     <form id="ga-{{ j.pk }}" method="post" action="{% url 'garage_job_update' j.pk %}" style="display:inline">{% csrf_token %}<input type="hidden" name="action" value="{% if is_closed %}reopen{% else %}close{% endif %}"><button type="submit" class="btn btn-sm">{% if is_closed %}Reopen{% else %}Close{% endif %}</button></form>
