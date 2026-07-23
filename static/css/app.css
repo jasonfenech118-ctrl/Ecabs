@@ -65,11 +65,11 @@ h3 { font-size: .95rem; margin: 0 0 .5rem; }
 /* Per-section colour accents. Each section gets its own --sec colour used on
    its heading, icons, left bar and active state. ACR Garage is orange. */
 .nav-sec {
-  border-left: 3px solid var(--sec); padding: 0 0 .45rem 5px;
-  margin: 0;
+  border-left: 3px solid var(--sec); border-radius: 3px;
+  padding: .15rem 0 .3rem 5px; margin: 0 0 .7rem;
 }
-.nav-sec:last-child { padding-bottom: 0; }
-.nav-sec .nav-group { color: var(--sec); }
+.nav-sec:last-child { margin-bottom: 0; }
+.nav-sec .nav-group { color: var(--sec); padding-top: .3rem; }
 .nav-sec .nav-icon { color: var(--sec); }
 .sidebar nav .nav-sec a.active { background: var(--sec); color: #fff; }
 .sidebar nav .nav-sec a.active .nav-icon { color: #fff; }
