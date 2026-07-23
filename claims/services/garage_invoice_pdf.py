@@ -7,13 +7,16 @@ with subtotal, discount, VAT and balance due.
 
 from decimal import Decimal
 from io import BytesIO
+from pathlib import Path
 
+from django.conf import settings
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import (
+    Image,
     Paragraph,
     SimpleDocTemplate,
     Spacer,
@@ -63,8 +66,26 @@ def _p(text, size=9, color=INK, bold=False, align=0, leading=None):
     return Paragraph(str(text or ""), style)
 
 
+def _logo_path():
+    """Locate the ACR Garage logo across the static dirs / collected root."""
+    for base in list(settings.STATICFILES_DIRS) + [settings.STATIC_ROOT]:
+        if not base:
+            continue
+        p = Path(base) / "img" / "acr-garage-logo.jpg"
+        if p.exists():
+            return str(p)
+    return None
+
+
 def _logo_flowable():
-    """A text logo box for ACR Garage (no external image needed)."""
+    """The real ACR Garage logo image, or a text box if it can't be found."""
+    path = _logo_path()
+    if path:
+        # Native 863x394; scale to a 40mm-wide badge preserving aspect ratio.
+        w = 40 * mm
+        img = Image(path, width=w, height=w * 394 / 863)
+        img.hAlign = "LEFT"
+        return img
     inner = Table(
         [[_p("ACR", 20, ORANGE, bold=True)], [_p("Garage", 12, INK, bold=True)]],
         colWidths=[38 * mm],
