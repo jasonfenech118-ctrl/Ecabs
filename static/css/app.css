@@ -207,6 +207,9 @@ input:focus, select:focus, textarea:focus {
 .garage-theme .card h3 { color: var(--garage-dark); }
 .sidebar-garage nav a.active { background: var(--garage); color: #fff; }
 .sidebar-garage nav a.active .nav-icon { filter: none; }
+.garage-banner { display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 12px; border-top: 4px solid var(--garage); padding: .9rem 1rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.garage-banner-logo { height: 72px; width: auto; max-width: 100%; }
+@media (max-width: 640px) { .garage-banner-logo { height: 52px; } }
 
 /* --- Simple two-column form grid ------------------------------------------ */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }

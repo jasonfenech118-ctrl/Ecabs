@@ -1,7 +1,10 @@
 {% extends "base.html" %}
-{% load humanize %}
+{% load humanize static %}
 {% block title %}{{ garage_name }} — Vai Drive Claims{% endblock %}
 {% block content %}
+<div class="garage-banner">
+  <img src="{% static 'img/acr-garage-logo.jpg' %}" alt="ACR Garage" class="garage-banner-logo">
+</div>
 <div class="page-head">
   <div>
     <h1>{{ garage_name }}</h1>

@@ -2,6 +2,9 @@
 {% load humanize static %}
 {% block title %}{{ inv.invoice_no|default:"Invoice" }} — ACR Garage{% endblock %}
 {% block content %}
+<div class="garage-banner no-print">
+  <img src="{% static 'img/acr-garage-logo.jpg' %}" alt="ACR Garage" class="garage-banner-logo">
+</div>
 <div class="page-head no-print">
   <div>
     <h1>{{ inv.invoice_no|default:"New invoice" }}</h1>
