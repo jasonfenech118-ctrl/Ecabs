@@ -696,6 +696,63 @@ def dashboard(request):
     )
 
 
+@login_required
+def metrics(request):
+    """System-wide metrics — a high-level KPI section across the whole app."""
+    now = timezone.now()
+    claims = Claim.objects.all()
+    open_statuses = [
+        Claim.Status.OPEN, Claim.Status.AWAITING_SURVEY, Claim.Status.AWAITING_INSURER,
+    ]
+    open_claims = list(claims.filter(status__in=open_statuses))
+    closed_statuses = [Claim.Status.SETTLED, Claim.Status.CLOSED, Claim.Status.REJECTED]
+
+    # At-fault (our insured liable)
+    atf = claims.filter(fault=Claim.Fault.OUR_DRIVER).exclude(status=Claim.Status.DRAFT)
+    atf_open = [c for c in atf if c.status != Claim.Status.CLOSED]
+    atf_estimate = sum((c.estimate_amount or Decimal("0")) for c in atf_open)
+
+    # ACR Garage
+    jobs = list(GarageJob.objects.filter(garage=GarageJob.Garage.ACL))
+    invoices = list(GarageInvoice.objects.prefetch_related("lines"))
+    garage_invoiced = sum((i.balance_due for i in invoices), Decimal("0"))
+    garage_outstanding = sum((i.balance_due for i in invoices
+                              if i.status != GarageInvoice.Status.PAID), Decimal("0"))
+
+    # Claim status breakdown
+    status_labels = dict(Claim.Status.choices)
+    status_breakdown = [
+        {"label": status_labels.get(row["status"], row["status"]), "n": row["n"]}
+        for row in claims.values("status").annotate(n=Count("id")).order_by("-n")
+    ]
+
+    cards = {
+        "claims_total": claims.count(),
+        "claims_open": len(open_claims),
+        "claims_closed": claims.filter(status__in=closed_statuses).count(),
+        "claims_drafts": claims.filter(status=Claim.Status.DRAFT).count(),
+        "new_this_month": claims.filter(created_at__year=now.year,
+                                        created_at__month=now.month).count(),
+        "recovery_outstanding": sum((c.outstanding_amount for c in open_claims), Decimal("0")),
+        "atf_open": len(atf_open),
+        "atf_estimate": atf_estimate,
+        "bills_outstanding": BillingItem.objects.filter(
+            status__in=[BillingItem.Status.PENDING, BillingItem.Status.INVOICED]
+        ).aggregate(total=Sum("amount"))["total"] or Decimal("0"),
+        "overdue_reminders": Reminder.objects.filter(
+            completed_at__isnull=True, due_at__lt=now).count(),
+        "accident_records": AccidentRecord.objects.count(),
+        "garage_open_jobs": len([j for j in jobs if not j.is_closed]),
+        "garage_jobs_total": len(jobs),
+        "garage_invoiced": garage_invoiced,
+        "garage_outstanding": garage_outstanding,
+        "garage_invoices": len(invoices),
+    }
+    return render(request, "claims/metrics.html", {
+        "c": cards, "status_breakdown": status_breakdown,
+    })
+
+
 # --- Claim list & search -------------------------------------------------------
 
 def _filtered_claims(request):

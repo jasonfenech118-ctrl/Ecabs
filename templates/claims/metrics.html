@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Metrics — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Metrics</h1>
+    <div class="sub">Key numbers across the whole system</div>
+  </div>
+</div>
+
+<h2 class="atf-heading">Claims</h2>
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="metric-label">Total claims</div>
+    <div class="metric-value">{{ c.claims_total|intcomma }}</div>
+    <div class="metric-sub">{{ c.new_this_month }} new this month</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Open</div>
+    <div class="metric-value">{{ c.claims_open|intcomma }}</div>
+    <div class="metric-sub">{{ c.claims_drafts }} draft{{ c.claims_drafts|pluralize }}</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Closed / settled</div>
+    <div class="metric-value">{{ c.claims_closed|intcomma }}</div>
+    <div class="metric-sub">resolved</div>
+  </div>
+  <div class="metric-card metric-warn">
+    <div class="metric-label">Recovery outstanding</div>
+    <div class="metric-value">€{{ c.recovery_outstanding|floatformat:2|intcomma }}</div>
+    <div class="metric-sub">on open claims</div>
+  </div>
+</div>
+
+<h2 class="atf-heading mt">At fault · bills · reminders</h2>
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="metric-label">At-fault open</div>
+    <div class="metric-value">{{ c.atf_open|intcomma }}</div>
+    <div class="metric-sub">est. €{{ c.atf_estimate|floatformat:2|intcomma }} damages</div>
+  </div>
+  <div class="metric-card metric-warn">
+    <div class="metric-label">Bills outstanding</div>
+    <div class="metric-value">€{{ c.bills_outstanding|floatformat:2|intcomma }}</div>
+    <div class="metric-sub">pending / invoiced</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Overdue reminders</div>
+    <div class="metric-value">{{ c.overdue_reminders|intcomma }}</div>
+    <div class="metric-sub">need attention</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Accident records</div>
+    <div class="metric-value">{{ c.accident_records|intcomma }}</div>
+    <div class="metric-sub">in the register</div>
+  </div>
+</div>
+
+<h2 class="atf-heading mt">ACR Garage</h2>
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="metric-label">Open jobs</div>
+    <div class="metric-value">{{ c.garage_open_jobs|intcomma }}</div>
+    <div class="metric-sub">{{ c.garage_jobs_total }} total</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Invoices</div>
+    <div class="metric-value">{{ c.garage_invoices|intcomma }}</div>
+    <div class="metric-sub">raised by the garage</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Invoiced (total)</div>
+    <div class="metric-value">€{{ c.garage_invoiced|floatformat:2|intcomma }}</div>
+    <div class="metric-sub">all statuses</div>
+  </div>
+  <div class="metric-card metric-warn">
+    <div class="metric-label">Garage outstanding</div>
+    <div class="metric-value">€{{ c.garage_outstanding|floatformat:2|intcomma }}</div>
+    <div class="metric-sub">not yet paid</div>
+  </div>
+</div>
+
+<div class="card mt" style="max-width:520px">
+  <h3>Claims by status</h3>
+  <table class="list">
+    <thead><tr><th>Status</th><th class="right">Count</th></tr></thead>
+    <tbody>
+      {% for row in status_breakdown %}
+      <tr><td>{{ row.label }}</td><td class="right">{{ row.n }}</td></tr>
+      {% empty %}
+      <tr><td colspan="2" class="empty">No claims yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

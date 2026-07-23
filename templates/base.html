@@ -80,6 +80,9 @@
       <a href="{% url 'bills_report' %}" class="{% if request.resolver_match.url_name == 'bills_report' %}active{% endif %}">
         <span class="nav-icon">€</span> Bills this month
       </a>
+      <a href="{% url 'metrics' %}" class="{% if request.resolver_match.url_name == 'metrics' %}active{% endif %}">
+        <span class="nav-icon">📊</span> Metrics
+      </a>
       <a href="{% url 'data_dashboard' %}" class="{% if request.resolver_match.url_name == 'data_dashboard' %}active{% endif %}">
         <span class="nav-icon">◔</span> Data
       </a>

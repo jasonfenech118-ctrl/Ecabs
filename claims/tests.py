@@ -1423,6 +1423,28 @@ class GarageInvoicePrivacyTests(TestCase):
         self.assertNotContains(r2, "ZED111")
 
 
+class MetricsSectionTests(TestCase):
+    def setUp(self):
+        self.admin = get_user_model().objects.create_superuser("boss", password="pw")
+
+    def test_metrics_page_renders_for_admin(self):
+        self.client.force_login(self.admin)
+        r = self.client.get(reverse("metrics"))
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "Total claims")
+        self.assertContains(r, "ACR Garage")
+
+    def test_garage_user_blocked_from_metrics(self):
+        from django.contrib.auth.models import Group
+
+        m = get_user_model().objects.create_user("g", password="pw")
+        grp, _ = Group.objects.get_or_create(name="Garage")
+        m.groups.add(grp)
+        self.client.force_login(m)
+        r = self.client.get(reverse("metrics"))
+        self.assertRedirects(r, reverse("garage_jobs"), fetch_redirect_response=False)
+
+
 class AccidentListTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("fran", password="pw")

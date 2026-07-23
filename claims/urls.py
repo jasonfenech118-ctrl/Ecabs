@@ -32,6 +32,7 @@ urlpatterns = [
     path("accidents/new/", views.accident_record_edit, name="accident_record_new"),
     path("accidents/<int:pk>/edit/", views.accident_record_edit, name="accident_record_edit"),
     path("accidents/<int:pk>/delete/", views.accident_record_delete, name="accident_record_delete"),
+    path("metrics/", views.metrics, name="metrics"),
     path("data/", views.data_dashboard, name="data_dashboard"),
     path("audit/", views.audit_trail, name="audit_trail"),
     path("maintenance/", views.maintenance, name="maintenance"),
