@@ -67,7 +67,7 @@ h3 { font-size: .95rem; margin: 0 0 .5rem; }
 .link-btn { background: none; border: none; color: #b8cddd; cursor: pointer; font: inherit; font-size: .85rem; padding: 0; }
 .link-btn:hover { color: #fff; text-decoration: underline; }
 
-.main { flex: 1; padding: 1.5rem 2rem 3rem; max-width: 1200px; }
+.main { flex: 1; min-width: 0; padding: 1.5rem 2rem 3rem; }
 .main-anon { display: grid; place-items: center; min-height: 100vh; }
 
 .page-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
