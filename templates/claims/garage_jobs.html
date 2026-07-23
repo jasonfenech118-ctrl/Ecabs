@@ -10,9 +10,12 @@
     <h1>{{ garage_name }}</h1>
     <div class="sub">Panel-beater worklist — vehicles sent for repair, survey and go-ahead tracking</div>
   </div>
-  <form method="post" action="{% url 'garage_job_add' %}">{% csrf_token %}
-    <button type="submit" class="btn btn-primary">＋ Add row</button>
-  </form>
+  <div class="row" style="gap:.5rem">
+    <a href="{% url 'garage_job_new' %}" class="btn btn-primary">＋ New job (form)</a>
+    <form method="post" action="{% url 'garage_job_add' %}">{% csrf_token %}
+      <button type="submit" class="btn">＋ Quick row</button>
+    </form>
+  </div>
 </div>
 
 <h2 class="atf-heading">Open <span class="muted">· {{ open_jobs|length }} job{{ open_jobs|length|pluralize }} · €{{ open_total|floatformat:2|intcomma }}</span></h2>

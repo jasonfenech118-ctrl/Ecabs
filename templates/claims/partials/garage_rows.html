@@ -19,6 +19,7 @@
   <td style="white-space:nowrap">
     <button form="g-{{ j.pk }}" type="submit" class="btn btn-sm btn-primary">Save</button>
     <button form="ga-{{ j.pk }}" type="submit" class="btn btn-sm">{% if is_closed %}Reopen{% else %}Close{% endif %}</button>
+    <a href="{% url 'garage_job_form' j.pk %}" class="btn btn-sm" title="Open full form">Form</a>
     <button form="gd-{{ j.pk }}" type="submit" class="btn btn-sm btn-danger" title="Delete row">✕</button>
     {% if j.updated_by %}<div class="muted" style="font-size:.68rem; margin-top:.15rem">by {{ j.updated_by.get_full_name|default:j.updated_by.username }}</div>{% endif %}
   </td>

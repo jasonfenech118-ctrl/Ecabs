@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{% if job.pk %}Edit job{% else %}New job{% endif %} — ACR Garage{% endblock %}
+{% block content %}
+<div class="garage-banner">
+  <img src="{% static 'img/acr-garage-logo.jpg' %}" alt="ACR Garage" class="garage-banner-logo">
+</div>
+<div class="page-head">
+  <div><h1>{% if job.pk %}Edit job{% else %}New job{% endif %}</h1>
+    <div class="sub">ACR Garage — panel-beater job details</div>
+  </div>
+  <a href="{% url 'garage_jobs' %}" class="btn">← Back to worklist</a>
+</div>
+
+<form method="post" action="{% if job.pk %}{% url 'garage_job_form' job.pk %}{% else %}{% url 'garage_job_new' %}{% endif %}">
+  {% csrf_token %}
+  <div class="card">
+    <div class="grid-2">
+      <label class="field"><span>Accident date</span><input type="date" name="accident_date" value="{{ job.accident_date|date:'Y-m-d' }}"></label>
+      <label class="field"><span>Survey date</span><input type="date" name="survey_date" value="{{ job.survey_date|date:'Y-m-d' }}"></label>
+      <label class="field"><span>No plate</span><input name="plate_no" value="{{ job.plate_no }}"></label>
+      <label class="field"><span>Client</span><input name="client" value="{{ job.client }}"></label>
+      <label class="field"><span>Make</span><input name="make" value="{{ job.make }}"></label>
+      <label class="field"><span>Claim No</span><input name="claim_no" value="{{ job.claim_no }}"></label>
+      <label class="field"><span>Surveyor</span><input name="surveyor" value="{{ job.surveyor }}"></label>
+      <label class="field"><span>Insurance</span><input name="insurance" value="{{ job.insurance }}"></label>
+      <label class="field"><span>Report received</span><input name="report_received" value="{{ job.report_received }}" placeholder="date or note"></label>
+      <label class="field"><span>Go ahead?</span><input name="go_ahead" value="{{ job.go_ahead }}" list="awaiting-yes" placeholder="e.g. Yes, parts Elmo"></label>
+      <label class="field"><span>Total (€, ex-VAT)</span><input type="number" step="0.01" min="0" name="total" value="{{ job.total|default_if_none:'' }}" placeholder="€"></label>
+      <label class="field" style="display:flex; align-items:center; gap:.5rem; margin-top:1.4rem">
+        <input type="checkbox" name="is_closed" {% if job.is_closed %}checked{% endif %} style="width:auto"> <span style="margin:0">Closed (job finished)</span>
+      </label>
+    </div>
+    <datalist id="awaiting-yes"><option value="Yes"></option><option value="No"></option></datalist>
+    <div class="row" style="gap:.5rem; margin-top:.5rem">
+      <button type="submit" class="btn btn-primary">Save job</button>
+      <a href="{% url 'garage_jobs' %}" class="btn">Cancel</a>
+    </div>
+  </div>
+</form>
+{% endblock %}

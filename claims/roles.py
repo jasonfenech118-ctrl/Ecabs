@@ -13,6 +13,8 @@ GARAGE_GROUP = "Garage"
 GARAGE_ALLOWED_URL_NAMES = {
     "garage_jobs",
     "garage_job_add",
+    "garage_job_new",
+    "garage_job_form",
     "garage_job_update",
     "garage_invoices",
     "garage_invoice_new",

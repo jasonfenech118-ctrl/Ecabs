@@ -1182,6 +1182,31 @@ class GarageJobTests(TestCase):
         self.client.post(reverse("garage_job_update", args=[job.pk]), {"action": "delete"})
         self.assertFalse(GarageJob.objects.filter(pk=job.pk).exists())
 
+    def test_add_and_edit_via_full_form(self):
+        from datetime import date
+
+        from .models import GarageJob
+
+        # GET the blank form
+        self.assertEqual(self.client.get(reverse("garage_job_new")).status_code, 200)
+        # POST creates a job
+        self.client.post(reverse("garage_job_new"), {
+            "accident_date": "2026-07-01", "survey_date": "2026-07-03",
+            "plate_no": "FRM123", "client": "Test Co", "make": "Toyota",
+            "claim_no": "CL9", "surveyor": "Jo", "insurance": "Elmo",
+            "report_received": "2026-07-05", "go_ahead": "Yes", "total": "500.00",
+        })
+        job = GarageJob.objects.get(plate_no="FRM123")
+        self.assertEqual(job.accident_date, date(2026, 7, 1))
+        self.assertEqual(str(job.total), "500.00")
+        self.assertFalse(job.is_closed)
+        # edit via the same form, mark closed
+        self.client.post(reverse("garage_job_form", args=[job.pk]),
+                         {"plate_no": "FRM123", "client": "Renamed", "is_closed": "on"})
+        job.refresh_from_db()
+        self.assertEqual(job.client, "Renamed")
+        self.assertTrue(job.is_closed)
+
 
 class GarageAccessTests(TestCase):
     """A garage-only user (Mario) is confined to the ACR Garage page; an admin

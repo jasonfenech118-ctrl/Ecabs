@@ -219,6 +219,37 @@ def garage_job_add(request):
     return redirect("garage_jobs")
 
 
+GARAGE_JOB_TEXT_FIELDS = [
+    "plate_no", "client", "make", "claim_no", "surveyor", "insurance",
+    "report_received", "go_ahead",
+]
+
+
+@login_required
+def garage_job_form(request, pk=None):
+    """Add or edit an ACR Garage job through a full-page form."""
+    job = get_object_or_404(GarageJob, pk=pk) if pk else GarageJob(
+        garage=GarageJob.Garage.ACL)
+    if request.method == "POST":
+        job.accident_date = _parse_date(request.POST.get("accident_date"))
+        job.survey_date = _parse_date(request.POST.get("survey_date"))
+        for f in GARAGE_JOB_TEXT_FIELDS:
+            setattr(job, f, request.POST.get(f, getattr(job, f) or ""))
+        raw_total = (request.POST.get("total") or "").strip()
+        if raw_total:
+            try:
+                job.total = Decimal(raw_total)
+            except InvalidOperation:
+                pass
+        else:
+            job.total = None
+        job.is_closed = request.POST.get("is_closed") == "on"
+        job.updated_by = request.user
+        job.save()
+        return redirect("garage_jobs")
+    return render(request, "claims/garage_job_form.html", {"job": job})
+
+
 @login_required
 @require_POST
 def garage_job_update(request, pk):
