@@ -134,6 +134,13 @@
     </div>
   </aside>
   <main class="main">
+    {% if is_garage_user %}
+      {% if request.resolver_match.url_name != 'garage_jobs' %}
+      <div class="home-btn-bar no-print"><a href="{% url 'garage_jobs' %}" class="home-btn">⌂ Home</a></div>
+      {% endif %}
+    {% elif request.resolver_match.url_name != 'home' %}
+      <div class="home-btn-bar no-print"><a href="{% url 'home' %}" class="home-btn">⌂ Home</a></div>
+    {% endif %}
     {% if messages %}
     <div class="messages no-print">
       {% for m in messages %}<div class="msg msg-{{ m.tags }}">{{ m }}</div>{% endfor %}

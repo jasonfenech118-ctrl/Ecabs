@@ -38,6 +38,15 @@
           {% endfor %}
         </select>
       </label>
+      {% if not is_garage %}
+      <label class="field"><span>Owner <span class="muted">(who this invoice belongs to)</span></span>
+        <select name="owner">
+          {% for u in owners %}
+          <option value="{{ u.pk }}" {% if inv.created_by_id == u.pk %}selected{% endif %}>{{ u.get_full_name|default:u.username }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      {% endif %}
     </div>
 
     <div class="card">

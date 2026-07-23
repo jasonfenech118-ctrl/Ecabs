@@ -88,6 +88,15 @@ h3 { font-size: .95rem; margin: 0 0 .5rem; }
 .link-btn:hover { color: #ffe0cf; }
 
 .main { flex: 1; min-width: 0; padding: 1.5rem 2rem 3rem; }
+.home-btn-bar { display: flex; justify-content: center; margin: 0 0 1.1rem; }
+.home-btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: var(--accent); color: #fff; font-weight: 700; font-size: 1.05rem;
+  padding: .6rem 2rem; border-radius: 999px; box-shadow: 0 2px 8px rgba(16,24,40,.18);
+}
+.home-btn:hover { background: var(--accent-hover); color: #fff; text-decoration: none; transform: translateY(-1px); }
+.garage-theme .home-btn { background: var(--garage); }
+.garage-theme .home-btn:hover { background: var(--garage-dark); }
 .main-anon { display: grid; place-items: center; min-height: 100vh; }
 
 .page-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }

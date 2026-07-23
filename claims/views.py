@@ -568,10 +568,25 @@ def garage_invoice_edit(request, pk):
         status = request.POST.get("status")
         if status in dict(GarageInvoice.Status.choices):
             inv.status = status
+        # An admin can reassign the invoice's owner (e.g. to Mario).
+        if not is_garage_user(request.user):
+            owner_id = (request.POST.get("owner") or "").strip()
+            if owner_id.isdigit():
+                from django.contrib.auth import get_user_model
+                owner = get_user_model().objects.filter(pk=int(owner_id)).first()
+                if owner:
+                    inv.created_by = owner
         inv.updated_by = request.user
         inv.save()
         return redirect("garage_invoice_edit", pk=inv.pk)
-    return render(request, "claims/garage_invoice_edit.html", {"inv": inv})
+
+    owners = []
+    if not is_garage_user(request.user):
+        from django.contrib.auth import get_user_model
+        owners = get_user_model().objects.order_by("username")
+    return render(request, "claims/garage_invoice_edit.html", {
+        "inv": inv, "owners": owners, "is_garage": is_garage_user(request.user),
+    })
 
 
 @login_required
