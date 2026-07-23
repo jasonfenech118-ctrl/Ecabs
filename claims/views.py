@@ -36,6 +36,7 @@ from .models import (
     GarageInvoiceLine,
     GarageJob,
     GarageJobItem,
+    GarageJobLabour,
     GeneralClaim,
     Reminder,
     RepairLine,
@@ -241,7 +242,6 @@ def garage_job_form(request, pk=None):
     """Add or edit an ACR Garage job through a full-page form."""
     job = get_object_or_404(GarageJob, pk=pk) if pk else GarageJob(
         garage=GarageJob.Garage.ACL)
-    was_saved = job.pk is not None
     if request.method == "POST":
         job.accident_date = _parse_date(request.POST.get("accident_date"))
         job.survey_date = _parse_date(request.POST.get("survey_date"))
@@ -258,10 +258,8 @@ def garage_job_form(request, pk=None):
         job.is_closed = request.POST.get("is_closed") == "on"
         job.updated_by = request.user
         job.save()
-        # New jobs go to their own form so repair items can be added;
-        # editing an existing job returns to the worklist.
-        if not was_saved:
-            return redirect("garage_job_form", pk=job.pk)
+        _sync_job_items(request, job)
+        _sync_job_labour(request, job)
         return redirect("garage_jobs")
     return render(request, "claims/garage_job_form.html", {
         "job": job,
@@ -269,41 +267,56 @@ def garage_job_form(request, pk=None):
     })
 
 
-@login_required
-@require_POST
-def garage_job_item_add(request, pk):
-    """Add an itemised repair (type + price) to a job. Accepts an existing
-    repair type or a brand-new one typed in."""
-    job = get_object_or_404(GarageJob, pk=pk)
-    rt = None
-    new_name = (request.POST.get("new_type") or "").strip()
-    if new_name:
-        rt, _ = RepairType.objects.get_or_create(name=new_name, defaults={"order": 100})
-    else:
-        rt_id = request.POST.get("repair_type")
-        if rt_id:
-            rt = RepairType.objects.filter(pk=rt_id).first()
-    if rt:
-        raw = (request.POST.get("price") or "").strip()
-        try:
-            price = Decimal(raw) if raw else Decimal("0")
-        except InvalidOperation:
-            price = Decimal("0")
-        last = job.items.order_by("-order").first()
-        GarageJobItem.objects.create(job=job, repair_type=rt, price=price,
-                                     order=(last.order + 1) if last else 0)
-        job.updated_by = request.user
-        job.save(update_fields=["updated_by", "updated_at"])
-    return redirect("garage_job_form", pk=job.pk)
+def _dec(raw):
+    try:
+        return Decimal(raw.strip()) if (raw or "").strip() else Decimal("0")
+    except (InvalidOperation, AttributeError):
+        return Decimal("0")
 
 
-@login_required
-@require_POST
-def garage_job_item_delete(request, pk, item_pk):
-    """Remove an itemised repair from a job."""
-    job = get_object_or_404(GarageJob, pk=pk)
-    GarageJobItem.objects.filter(pk=item_pk, job=job).delete()
-    return redirect("garage_job_form", pk=job.pk)
+def _sync_job_items(request, job):
+    """Replace the job's repair items from the submitted in-form rows.
+
+    Each row posts a parallel (item_type, item_new, item_price) triple; a row
+    can pick an existing type or type a brand-new one. Empty rows are skipped."""
+    type_ids = request.POST.getlist("item_type")
+    new_names = request.POST.getlist("item_new")
+    prices = request.POST.getlist("item_price")
+    job.items.all().delete()
+    order = 0
+    for i in range(len(prices)):
+        new_name = (new_names[i] if i < len(new_names) else "").strip()
+        tid = type_ids[i] if i < len(type_ids) else ""
+        rt = None
+        if new_name:
+            rt, _ = RepairType.objects.get_or_create(
+                name=new_name, defaults={"order": 100})
+        elif tid:
+            rt = RepairType.objects.filter(pk=tid).first()
+        if rt is None:
+            continue
+        GarageJobItem.objects.create(job=job, repair_type=rt, price=_dec(prices[i]),
+                                     order=order)
+        order += 1
+
+
+def _sync_job_labour(request, job):
+    """Replace the job's labour lines from the submitted in-form rows
+    (description, hours, rate). Rows with no hours and no rate are skipped."""
+    descs = request.POST.getlist("labour_desc")
+    hours = request.POST.getlist("labour_hours")
+    rates = request.POST.getlist("labour_rate")
+    job.labour.all().delete()
+    order = 0
+    for i in range(len(hours)):
+        h = _dec(hours[i] if i < len(hours) else "")
+        r = _dec(rates[i] if i < len(rates) else "")
+        desc = (descs[i] if i < len(descs) else "").strip()
+        if not h and not r and not desc:
+            continue
+        GarageJobLabour.objects.create(job=job, description=desc, hours=h, rate=r,
+                                       order=order)
+        order += 1
 
 
 @login_required
@@ -474,17 +487,32 @@ def garage_job_to_invoice(request, pk):
         updated_by=request.user,
     )
     items = list(job.items.all())
-    if items:
-        # One invoice line per itemised repair (type + price).
-        for i, it in enumerate(items):
+    labour = list(job.labour.all())
+    order = 0
+    if items or labour:
+        # One invoice line per itemised repair (type + price)…
+        for it in items:
             GarageInvoiceLine.objects.create(
                 invoice=inv,
-                line_date=job.accident_date if i == 0 else None,
-                reg_no=job.plate_no if i == 0 else "",
+                line_date=job.accident_date if order == 0 else None,
+                reg_no=job.plate_no if order == 0 else "",
                 description=it.repair_type.name,
                 amount=it.price or Decimal("0"),
-                order=i,
+                order=order,
             )
+            order += 1
+        # …and one per labour line (hours × rate).
+        for lb in labour:
+            GarageInvoiceLine.objects.create(
+                invoice=inv,
+                line_date=job.accident_date if order == 0 else None,
+                reg_no=job.plate_no if order == 0 else "",
+                description=lb.label,
+                unit_price=lb.rate,
+                amount=lb.cost,
+                order=order,
+            )
+            order += 1
     else:
         GarageInvoiceLine.objects.create(
             invoice=inv,

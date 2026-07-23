@@ -754,11 +754,15 @@ class GarageJob(models.Model):
         return sum((it.price or Decimal("0")) for it in self.items.all())
 
     @property
+    def labour_total(self):
+        return sum((lb.cost for lb in self.labour.all()), Decimal("0"))
+
+    @property
     def effective_total(self):
-        """The job's value: the sum of its itemised repairs if any, otherwise
-        the single Total field."""
-        if self.items.exists():
-            return self.items_total
+        """The job's value: itemised repairs + labour if any, otherwise the
+        single Total field."""
+        if self.items.exists() or self.labour.exists():
+            return self.items_total + self.labour_total
         return self.total or Decimal("0")
 
     def __str__(self):
@@ -785,6 +789,32 @@ class GarageJobItem(models.Model):
 
     def __str__(self):
         return f"{self.repair_type.name} — €{self.price}"
+
+
+class GarageJobLabour(models.Model):
+    """A labour line on a garage job: hours worked at a rate per hour. The cost
+    is hours × rate, and it becomes an invoice line when the job is billed."""
+
+    job = models.ForeignKey(GarageJob, on_delete=models.CASCADE, related_name="labour")
+    description = models.CharField("Work", max_length=200, blank=True)
+    hours = models.DecimalField("Hours", max_digits=8, decimal_places=2, default=0)
+    rate = models.DecimalField("Rate €/hr", max_digits=10, decimal_places=2, default=0)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    @property
+    def cost(self):
+        return ((self.hours or Decimal("0")) * (self.rate or Decimal("0"))).quantize(Decimal("0.01"))
+
+    @property
+    def label(self):
+        base = self.description or "Labour"
+        return f"{base} ({self.hours}h @ €{self.rate}/hr)"
+
+    def __str__(self):
+        return f"{self.label} — €{self.cost}"
 
 
 class GarageInvoice(models.Model):

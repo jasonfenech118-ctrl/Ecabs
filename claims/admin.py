@@ -13,6 +13,7 @@ from .models import (
     GarageInvoiceLine,
     GarageJob,
     GarageJobItem,
+    GarageJobLabour,
     GeneralClaim,
     OtherCharge,
     Reminder,
@@ -39,6 +40,11 @@ class GarageJobItemInline(admin.TabularInline):
     extra = 0
 
 
+class GarageJobLabourInline(admin.TabularInline):
+    model = GarageJobLabour
+    extra = 0
+
+
 @admin.register(GarageJob)
 class GarageJobAdmin(admin.ModelAdmin):
     list_display = ("plate_no", "client", "make", "claim_no", "surveyor",
@@ -46,7 +52,7 @@ class GarageJobAdmin(admin.ModelAdmin):
     list_filter = ("garage", "is_closed", "insurance")
     search_fields = ("plate_no", "client", "claim_no", "surveyor")
     readonly_fields = ("updated_by", "created_at", "updated_at")
-    inlines = [GarageJobItemInline]
+    inlines = [GarageJobItemInline, GarageJobLabourInline]
 
 
 @admin.register(AccidentRecord)

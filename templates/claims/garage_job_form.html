@@ -25,64 +25,133 @@
       <label class="field"><span>Surveyor</span><input name="surveyor" value="{{ job.surveyor }}"></label>
       <label class="field"><span>Insurance</span><input name="insurance" value="{{ job.insurance }}"></label>
       <label class="field"><span>Report received</span><input name="report_received" value="{{ job.report_received }}" placeholder="date or note"></label>
-      <label class="field"><span>Go ahead?</span><input name="go_ahead" value="{{ job.go_ahead }}" list="awaiting-yes" placeholder="e.g. Yes, parts Elmo"></label>
-      <label class="field"><span>Total (€, ex-VAT) <span class="muted">— used only if no items below</span></span><input type="number" step="0.01" min="0" name="total" value="{{ job.total|default_if_none:'' }}" placeholder="€"></label>
+      <label class="field"><span>Go ahead?</span><input name="go_ahead" value="{{ job.go_ahead }}" placeholder="e.g. Yes, parts Elmo"></label>
+      <label class="field"><span>Total (€, ex-VAT) <span class="muted">— used only if no items/labour below</span></span><input type="number" step="0.01" min="0" name="total" value="{{ job.total|default_if_none:'' }}" placeholder="€"></label>
       <label class="field" style="display:flex; align-items:center; gap:.5rem; margin-top:1.4rem">
         <input type="checkbox" name="is_closed" {% if job.is_closed %}checked{% endif %} style="width:auto"> <span style="margin:0">Closed (job finished)</span>
       </label>
     </div>
-    <datalist id="awaiting-yes"><option value="Yes"></option><option value="No"></option></datalist>
-    <div class="row" style="gap:.5rem; margin-top:.5rem">
+  </div>
+
+  <!-- Repair items ------------------------------------------------------->
+  <div class="card mt">
+    <h3>Repair items <span class="muted" style="font-weight:400; font-size:.85rem">— type &amp; price; these become invoice lines</span></h3>
+    <div class="table-wrap">
+      <table class="list" id="items-table">
+        <thead><tr><th style="width:34%">Type</th><th style="width:34%">…or new type</th><th class="right" style="width:22%">Price €</th><th></th></tr></thead>
+        <tbody id="items-body">
+          {% if job.pk %}{% for it in job.items.all %}
+          <tr class="line-row">
+            <td>
+              <select name="item_type">
+                <option value="">— pick a type —</option>
+                {% for rt in repair_types %}<option value="{{ rt.pk }}" {% if rt.pk == it.repair_type_id %}selected{% endif %}>{{ rt.name }}</option>{% endfor %}
+              </select>
+            </td>
+            <td><input name="item_new" placeholder="e.g. Spray"></td>
+            <td class="right"><input type="number" step="0.01" min="0" name="item_price" value="{{ it.price }}" class="js-amount" style="text-align:right"></td>
+            <td><button type="button" class="btn btn-sm btn-danger js-remove">✕</button></td>
+          </tr>
+          {% endfor %}{% endif %}
+        </tbody>
+      </table>
+    </div>
+    <button type="button" class="btn btn-sm btn-primary mt" id="add-item">＋ Add item</button>
+    <span class="muted" style="font-size:.8rem; margin-left:.5rem">Pick an existing type or type a new one (it’s saved for next time).</span>
+  </div>
+
+  <!-- Labour ------------------------------------------------------------->
+  <div class="card mt">
+    <h3>Labour <span class="muted" style="font-weight:400; font-size:.85rem">— hours × rate/hour</span></h3>
+    <div class="table-wrap">
+      <table class="list" id="labour-table">
+        <thead><tr><th style="width:38%">Work</th><th class="right">Hours</th><th class="right">Rate €/hr</th><th class="right">Cost €</th><th></th></tr></thead>
+        <tbody id="labour-body">
+          {% if job.pk %}{% for lb in job.labour.all %}
+          <tr class="line-row">
+            <td><input name="labour_desc" value="{{ lb.description }}" placeholder="e.g. Panel beating"></td>
+            <td class="right"><input type="number" step="0.01" min="0" name="labour_hours" value="{{ lb.hours }}" class="js-hours" style="text-align:right; max-width:90px"></td>
+            <td class="right"><input type="number" step="0.01" min="0" name="labour_rate" value="{{ lb.rate }}" class="js-rate" style="text-align:right; max-width:90px"></td>
+            <td class="right js-cost">€{{ lb.cost|floatformat:2 }}</td>
+            <td><button type="button" class="btn btn-sm btn-danger js-remove">✕</button></td>
+          </tr>
+          {% endfor %}{% endif %}
+        </tbody>
+      </table>
+    </div>
+    <button type="button" class="btn btn-sm btn-primary mt" id="add-labour">＋ Add labour</button>
+  </div>
+
+  <div class="card mt">
+    <div class="inv-totals" style="max-width:320px">
+      <div><span>Items</span><strong id="sum-items">€0.00</strong></div>
+      <div><span>Labour</span><strong id="sum-labour">€0.00</strong></div>
+      <div class="inv-due"><span>Total (ex-VAT)</span><strong id="sum-total">€0.00</strong></div>
+    </div>
+    <div class="row" style="gap:.5rem; margin-top:1rem">
       <button type="submit" class="btn btn-primary">Save job</button>
       <a href="{% url 'garage_jobs' %}" class="btn">Cancel</a>
     </div>
+    <p class="muted" style="font-size:.8rem; margin:.6rem 0 0">Then use <strong>→ Invoice</strong> on the worklist to bill these items &amp; labour (VAT is added on the invoice).</p>
   </div>
 </form>
 
-{% if job.pk %}
-<div class="card mt">
-  <h3>Repair items <span class="muted" style="font-weight:400; font-size:.85rem">— type &amp; price; these become the invoice lines</span></h3>
-  <div class="table-wrap">
-    <table class="list">
-      <thead><tr><th>Type</th><th class="right">Price €</th><th></th></tr></thead>
-      <tbody>
-        {% for it in job.items.all %}
-        <tr>
-          <td>{{ it.repair_type.name }}</td>
-          <td class="right">€{{ it.price|floatformat:2 }}</td>
-          <td style="white-space:nowrap">
-            <form method="post" action="{% url 'garage_job_item_delete' job.pk it.pk %}" onsubmit="return confirm('Remove this item?')" style="display:inline">{% csrf_token %}<button type="submit" class="btn btn-sm btn-danger">✕</button></form>
-          </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="3" class="empty">No items yet — add the repair types and prices below.</td></tr>
-        {% endfor %}
-      </tbody>
-      {% if job.items.all %}
-      <tfoot><tr><th>Total (ex-VAT)</th><th class="right">€{{ job.items_total|floatformat:2 }}</th><th></th></tr></tfoot>
-      {% endif %}
-    </table>
-  </div>
-
-  <form method="post" action="{% url 'garage_job_item_add' job.pk %}" class="row" style="gap:.5rem; align-items:flex-end; margin-top:.8rem; flex-wrap:wrap">
-    {% csrf_token %}
-    <label class="field" style="margin:0"><span>Type</span>
-      <select name="repair_type">
+<template id="item-tpl">
+  <tr class="line-row">
+    <td>
+      <select name="item_type">
         <option value="">— pick a type —</option>
         {% for rt in repair_types %}<option value="{{ rt.pk }}">{{ rt.name }}</option>{% endfor %}
       </select>
-    </label>
-    <label class="field" style="margin:0"><span>…or new type</span>
-      <input name="new_type" placeholder="e.g. Spray" maxlength="100">
-    </label>
-    <label class="field" style="margin:0"><span>Price €</span>
-      <input type="number" step="0.01" min="0" name="price" placeholder="0.00" style="width:120px">
-    </label>
-    <button type="submit" class="btn btn-primary">＋ Add item</button>
-  </form>
-  <p class="muted" style="font-size:.8rem; margin:.6rem 0 0">Pick an existing type (Spray &amp; paint, Parts, Bodywork, Mechanical, Windscreen, Electrical…) or type a new one. Then use <strong>→ Invoice</strong> on the worklist to bill these items.</p>
-</div>
-{% else %}
-<p class="muted" style="margin-top:1rem">Save the job first, then you can add itemised repairs (type &amp; price).</p>
-{% endif %}
+    </td>
+    <td><input name="item_new" placeholder="e.g. Spray"></td>
+    <td class="right"><input type="number" step="0.01" min="0" name="item_price" placeholder="0.00" class="js-amount" style="text-align:right"></td>
+    <td><button type="button" class="btn btn-sm btn-danger js-remove">✕</button></td>
+  </tr>
+</template>
+<template id="labour-tpl">
+  <tr class="line-row">
+    <td><input name="labour_desc" placeholder="e.g. Panel beating"></td>
+    <td class="right"><input type="number" step="0.01" min="0" name="labour_hours" placeholder="0" class="js-hours" style="text-align:right; max-width:90px"></td>
+    <td class="right"><input type="number" step="0.01" min="0" name="labour_rate" placeholder="0.00" class="js-rate" style="text-align:right; max-width:90px"></td>
+    <td class="right js-cost">€0.00</td>
+    <td><button type="button" class="btn btn-sm btn-danger js-remove">✕</button></td>
+  </tr>
+</template>
+
+<script>
+(function () {
+  var euro = function (n) { return "€" + (n || 0).toFixed(2); };
+  function num(el) { return parseFloat(el && el.value) || 0; }
+  function recalc() {
+    var items = 0;
+    document.querySelectorAll("#items-body .js-amount").forEach(function (i) { items += num(i); });
+    var labour = 0;
+    document.querySelectorAll("#labour-body .line-row").forEach(function (row) {
+      var h = num(row.querySelector(".js-hours")), r = num(row.querySelector(".js-rate"));
+      var cost = h * r;
+      var cell = row.querySelector(".js-cost");
+      if (cell) cell.textContent = euro(cost);
+      labour += cost;
+    });
+    document.getElementById("sum-items").textContent = euro(items);
+    document.getElementById("sum-labour").textContent = euro(labour);
+    document.getElementById("sum-total").textContent = euro(items + labour);
+  }
+  function addRow(bodyId, tplId) {
+    var tpl = document.getElementById(tplId);
+    document.getElementById(bodyId).appendChild(tpl.content.cloneNode(true));
+    recalc();
+  }
+  document.getElementById("add-item").addEventListener("click", function () { addRow("items-body", "item-tpl"); });
+  document.getElementById("add-labour").addEventListener("click", function () { addRow("labour-body", "labour-tpl"); });
+  document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("js-remove")) { e.target.closest("tr").remove(); recalc(); }
+  });
+  document.addEventListener("input", function (e) {
+    if (e.target.classList.contains("js-amount") || e.target.classList.contains("js-hours") || e.target.classList.contains("js-rate")) recalc();
+  });
+  recalc();
+})();
+</script>
 {% endblock %}
