@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 96" width="260" height="96" role="img" aria-label="ACR Garage">
+  <g fill="none" stroke="#1a1a1a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- car silhouette -->
+    <path d="M18 60 Q40 34 78 32 Q104 30 132 46 L182 50 Q206 52 214 66"/>
+    <path d="M18 60 L214 66"/>
+    <path d="M60 33 L74 47 L128 49"/>
+  </g>
+  <circle cx="72" cy="66" r="12" fill="#fff" stroke="#1a1a1a" stroke-width="3.4"/>
+  <circle cx="72" cy="66" r="4.5" fill="#F26522"/>
+  <circle cx="176" cy="68" r="12" fill="#fff" stroke="#1a1a1a" stroke-width="3.4"/>
+  <circle cx="176" cy="68" r="4.5" fill="#F26522"/>
+  <text x="130" y="90" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">
+    <tspan fill="#F26522">ACR</tspan><tspan fill="#1a1a1a"> Garage</tspan>
+  </text>
+</svg>

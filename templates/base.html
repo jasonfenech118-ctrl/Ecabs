@@ -8,21 +8,31 @@
   <link rel="stylesheet" href="{% static 'css/app.css' %}?v=2">
   <script src="{% static 'js/htmx.min.js' %}" defer></script>
 </head>
-<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+      class="{% if request.resolver_match.url_name and 'garage' in request.resolver_match.url_name %}garage-theme{% endif %}">
 {% if user.is_authenticated %}
 <div class="layout">
-  <aside class="sidebar">
+  <aside class="sidebar {% if is_garage_user %}sidebar-garage{% endif %}">
     <div class="sidebar-top">
+      {% if is_garage_user %}
+      <a href="{% url 'garage_jobs' %}" class="brand" title="ACR Garage">
+        <img src="{% static 'img/acr-garage-logo.svg' %}" alt="ACR Garage" class="brand-logo brand-logo-garage">
+      </a>
+      {% else %}
       <a href="{% url 'home' %}" class="brand" title="Home">
         <img src="{% static 'img/vai-drive.jpg' %}" alt="Vai Drive — home" class="brand-logo">
       </a>
+      {% endif %}
       <button type="button" class="nav-toggle" aria-label="Toggle menu"
               onclick="this.closest('.sidebar').classList.toggle('open')">☰</button>
     </div>
     <nav>
       {% if is_garage_user %}
       <a href="{% url 'garage_jobs' %}" class="{% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
-        <span class="nav-icon">🔧</span> ACL Garage
+        <span class="nav-icon">🔧</span> My worklist
+      </a>
+      <a href="{% url 'garage_invoices' %}" class="{% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">🧾</span> My invoices
       </a>
       {% else %}
       <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
@@ -51,6 +61,9 @@
       </a>
       <a href="{% url 'garage_jobs' %}" class="nav-sub {% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
         <span class="nav-icon">🔧</span> ACL Garage
+      </a>
+      <a href="{% url 'garage_invoices' %}" class="nav-sub {% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">🧾</span> Garage invoices
       </a>
       <a href="{% url 'master_sheet' %}" class="{% if 'master' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">▥</span> Master sheet

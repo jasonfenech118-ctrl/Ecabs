@@ -3,7 +3,7 @@ from decimal import Decimal, InvalidOperation
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, Sum
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -31,6 +31,8 @@ from .models import (
     Company,
     DailyRate,
     EmailLog,
+    GarageInvoice,
+    GarageInvoiceLine,
     GarageJob,
     Reminder,
     RepairLine,
@@ -254,6 +256,120 @@ def garage_job_update(request, pk):
         job.updated_by = request.user
         job.save()
     return redirect("garage_jobs")
+
+
+# --- Garage invoices ---------------------------------------------------------
+
+def _next_invoice_no():
+    """Suggest the next INV number from the highest numeric suffix seen."""
+    import re
+
+    best = 1052
+    for raw in GarageInvoice.objects.values_list("invoice_no", flat=True):
+        m = re.search(r"(\d+)", raw or "")
+        if m:
+            best = max(best, int(m.group(1)))
+    return f"INV NO. {best + 1}"
+
+
+@login_required
+def garage_invoices(request):
+    """List of garage invoices (Mario raises them; Francis can see/amend)."""
+    invoices = GarageInvoice.objects.all().prefetch_related("lines")
+    return render(request, "claims/garage_invoices.html", {"invoices": invoices})
+
+
+@login_required
+@require_POST
+def garage_invoice_new(request):
+    """Start a new invoice with sensible defaults, then edit it."""
+    inv = GarageInvoice.objects.create(
+        invoice_no=_next_invoice_no(),
+        created_by=request.user,
+        updated_by=request.user,
+    )
+    return redirect("garage_invoice_edit", pk=inv.pk)
+
+
+@login_required
+def garage_invoice_edit(request, pk):
+    """Edit an invoice: header fields plus inline repair lines."""
+    inv = get_object_or_404(GarageInvoice, pk=pk)
+    if request.method == "POST":
+        for f in ("issuer_name", "payable_to", "issuer_contact", "issuer_vat",
+                  "issuer_email", "invoice_no", "bill_to", "bill_contact_name",
+                  "bill_company_name", "bill_address", "bill_email", "bill_vat",
+                  "remarks"):
+            setattr(inv, f, request.POST.get(f, getattr(inv, f)))
+        inv.invoice_date = _parse_date(request.POST.get("invoice_date"))
+        for f in ("discount_pct", "vat_rate"):
+            raw = (request.POST.get(f) or "").strip()
+            if raw:
+                try:
+                    setattr(inv, f, Decimal(raw))
+                except InvalidOperation:
+                    pass
+        status = request.POST.get("status")
+        if status in dict(GarageInvoice.Status.choices):
+            inv.status = status
+        inv.updated_by = request.user
+        inv.save()
+        return redirect("garage_invoice_edit", pk=inv.pk)
+    return render(request, "claims/garage_invoice_edit.html", {"inv": inv})
+
+
+@login_required
+@require_POST
+def garage_invoice_line_add(request, pk):
+    """Add a blank repair line to the invoice."""
+    inv = get_object_or_404(GarageInvoice, pk=pk)
+    last = inv.lines.order_by("-order").first()
+    GarageInvoiceLine.objects.create(invoice=inv, order=(last.order + 1) if last else 0)
+    inv.updated_by = request.user
+    inv.save(update_fields=["updated_by", "updated_at"])
+    return redirect("garage_invoice_edit", pk=inv.pk)
+
+
+@login_required
+@require_POST
+def garage_invoice_line_update(request, pk, line_pk):
+    """Inline save or delete of one repair line."""
+    inv = get_object_or_404(GarageInvoice, pk=pk)
+    line = get_object_or_404(GarageInvoiceLine, pk=line_pk, invoice=inv)
+    if request.POST.get("action") == "delete":
+        line.delete()
+    else:
+        line.line_date = _parse_date(request.POST.get("line_date"))
+        line.reg_no = request.POST.get("reg_no", line.reg_no)
+        line.description = request.POST.get("description", line.description)
+        for f in ("unit_price", "amount"):
+            raw = (request.POST.get(f) or "").strip()
+            if raw:
+                try:
+                    setattr(line, f, Decimal(raw))
+                except InvalidOperation:
+                    pass
+            elif f == "unit_price":
+                line.unit_price = None
+            else:
+                line.amount = Decimal("0")
+        line.save()
+    inv.updated_by = request.user
+    inv.save(update_fields=["updated_by", "updated_at"])
+    return redirect("garage_invoice_edit", pk=inv.pk)
+
+
+@login_required
+def garage_invoice_pdf(request, pk):
+    """Render the invoice as a PDF matching the ACR Garage layout."""
+    inv = get_object_or_404(GarageInvoice, pk=pk)
+    from .services.garage_invoice_pdf import build_garage_invoice_pdf
+
+    pdf = build_garage_invoice_pdf(inv)
+    resp = HttpResponse(pdf, content_type="application/pdf")
+    name = (inv.invoice_no or "invoice").replace(" ", "_").replace(".", "")
+    resp["Content-Disposition"] = f'inline; filename="{name}.pdf"'
+    return resp
 
 
 # --- Dashboard ---------------------------------------------------------------

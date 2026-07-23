@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load humanize static %}
+{% block title %}{{ inv.invoice_no|default:"Invoice" }} — ACR Garage{% endblock %}
+{% block content %}
+<div class="page-head no-print">
+  <div>
+    <h1>{{ inv.invoice_no|default:"New invoice" }}</h1>
+    <div class="sub">Fill in the details, add repair lines, then open the PDF</div>
+  </div>
+  <div class="row" style="gap:.5rem">
+    <a href="{% url 'garage_invoices' %}" class="btn">← All invoices</a>
+    <a href="{% url 'garage_invoice_pdf' inv.pk %}" target="_blank" rel="noopener" class="btn btn-primary">📄 Open PDF</a>
+  </div>
+</div>
+
+<form method="post" action="{% url 'garage_invoice_edit' inv.pk %}">
+  {% csrf_token %}
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>ACR Garage (issuer)</h3>
+      <label class="field"><span>Garage name</span><input name="issuer_name" value="{{ inv.issuer_name }}"></label>
+      <label class="field"><span>Payable to</span><input name="payable_to" value="{{ inv.payable_to }}"></label>
+      <label class="field"><span>Contact details</span><input name="issuer_contact" value="{{ inv.issuer_contact }}"></label>
+      <label class="field"><span>VAT No</span><input name="issuer_vat" value="{{ inv.issuer_vat }}"></label>
+      <label class="field"><span>Email</span><input name="issuer_email" value="{{ inv.issuer_email }}"></label>
+      <div class="row" style="gap:.6rem">
+        <label class="field" style="flex:1"><span>Invoice No</span><input name="invoice_no" value="{{ inv.invoice_no }}"></label>
+        <label class="field" style="flex:1"><span>Invoice date <span class="muted">(type it)</span></span><input type="date" name="invoice_date" value="{{ inv.invoice_date|date:'Y-m-d' }}"></label>
+      </div>
+      <label class="field"><span>Status</span>
+        <select name="status">
+          {% for val, lbl in inv.Status.choices %}
+          <option value="{{ val }}" {% if inv.status == val %}selected{% endif %}>{{ lbl }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <div class="card">
+      <h3>Bill to (customer)</h3>
+      <label class="field"><span>Bill to</span><input name="bill_to" value="{{ inv.bill_to }}" placeholder="e.g. FASTDROP"></label>
+      <label class="field"><span>Contact name</span><input name="bill_contact_name" value="{{ inv.bill_contact_name }}"></label>
+      <label class="field"><span>Client company name</span><input name="bill_company_name" value="{{ inv.bill_company_name }}"></label>
+      <label class="field"><span>Address</span><textarea name="bill_address" rows="2">{{ inv.bill_address }}</textarea></label>
+      <label class="field"><span>Email</span><input name="bill_email" value="{{ inv.bill_email }}"></label>
+      <label class="field"><span>Client VAT</span><input name="bill_vat" value="{{ inv.bill_vat }}"></label>
+    </div>
+  </div>
+
+  <div class="card mt">
+    <div class="row" style="gap:1rem; align-items:flex-end">
+      <label class="field" style="width:120px"><span>Discount %</span><input type="number" step="0.01" min="0" name="discount_pct" value="{{ inv.discount_pct }}"></label>
+      <label class="field" style="width:120px"><span>VAT rate %</span><input type="number" step="0.01" min="0" name="vat_rate" value="{{ inv.vat_rate }}"></label>
+      <label class="field" style="flex:1"><span>Remarks / payment instructions</span><textarea name="remarks" rows="2">{{ inv.remarks }}</textarea></label>
+    </div>
+    <button type="submit" class="btn btn-primary mt">Save invoice details</button>
+  </div>
+</form>
+
+<div class="card mt">
+  <div class="row" style="justify-content:space-between; align-items:center">
+    <h3 style="margin:0">Repair lines</h3>
+    <form method="post" action="{% url 'garage_invoice_line_add' inv.pk %}">{% csrf_token %}
+      <button type="submit" class="btn btn-sm btn-primary">＋ Add line</button>
+    </form>
+  </div>
+  <div class="table-wrap">
+    <table class="list at-fault">
+      <thead>
+        <tr><th>Date</th><th>Reg No</th><th>Description</th><th class="right">Unit price</th><th class="right">Total €</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for ln in inv.lines.all %}
+        <tr>
+          <td>
+            <form id="l-{{ ln.pk }}" method="post" action="{% url 'garage_invoice_line_update' inv.pk ln.pk %}">{% csrf_token %}</form>
+            <form id="ld-{{ ln.pk }}" method="post" action="{% url 'garage_invoice_line_update' inv.pk ln.pk %}" onsubmit="return confirm('Delete this line?')">{% csrf_token %}<input type="hidden" name="action" value="delete"></form>
+            <input form="l-{{ ln.pk }}" type="date" name="line_date" value="{{ ln.line_date|date:'Y-m-d' }}" class="atf-input">
+          </td>
+          <td><input form="l-{{ ln.pk }}" name="reg_no" value="{{ ln.reg_no }}" class="atf-input" style="width:6rem"></td>
+          <td><input form="l-{{ ln.pk }}" name="description" value="{{ ln.description }}" class="atf-input" style="min-width:260px"></td>
+          <td><input form="l-{{ ln.pk }}" name="unit_price" type="number" step="0.01" min="0" value="{{ ln.unit_price|default_if_none:'' }}" class="atf-input atf-num" placeholder="—"></td>
+          <td><input form="l-{{ ln.pk }}" name="amount" type="number" step="0.01" min="0" value="{{ ln.amount }}" class="atf-input atf-num" placeholder="€"></td>
+          <td style="white-space:nowrap">
+            <button form="l-{{ ln.pk }}" type="submit" class="btn btn-sm btn-primary">Save</button>
+            <button form="ld-{{ ln.pk }}" type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="empty">No lines yet — press “Add line”.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="inv-totals">
+    <div><span>Subtotal</span><strong>€{{ inv.subtotal|floatformat:2|intcomma }}</strong></div>
+    <div><span>Discount ({{ inv.discount_pct }}%)</span><strong>− €{{ inv.discount_amount|floatformat:2|intcomma }}</strong></div>
+    <div><span>Subtotal less discount</span><strong>€{{ inv.subtotal_less_discount|floatformat:2|intcomma }}</strong></div>
+    <div><span>VAT ({{ inv.vat_rate }}%)</span><strong>€{{ inv.vat_amount|floatformat:2|intcomma }}</strong></div>
+    <div class="inv-due"><span>Balance due</span><strong>€{{ inv.balance_due|floatformat:2|intcomma }}</strong></div>
+  </div>
+</div>
+{% endblock %}

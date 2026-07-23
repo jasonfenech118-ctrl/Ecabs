@@ -8,6 +8,8 @@ from .models import (
     Company,
     DailyRate,
     EmailLog,
+    GarageInvoice,
+    GarageInvoiceLine,
     GarageJob,
     OtherCharge,
     Reminder,
@@ -36,6 +38,20 @@ class GarageJobAdmin(admin.ModelAdmin):
     list_filter = ("garage", "is_closed", "insurance")
     search_fields = ("plate_no", "client", "claim_no", "surveyor")
     readonly_fields = ("updated_by", "created_at", "updated_at")
+
+
+class GarageInvoiceLineInline(admin.TabularInline):
+    model = GarageInvoiceLine
+    extra = 0
+
+
+@admin.register(GarageInvoice)
+class GarageInvoiceAdmin(admin.ModelAdmin):
+    list_display = ("invoice_no", "invoice_date", "bill_to", "status", "updated_by")
+    list_filter = ("status",)
+    search_fields = ("invoice_no", "bill_to", "bill_company_name")
+    readonly_fields = ("created_by", "updated_by", "created_at", "updated_at")
+    inlines = [GarageInvoiceLineInline]
 
 
 class OtherChargeInline(admin.TabularInline):

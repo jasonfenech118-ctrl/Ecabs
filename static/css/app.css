@@ -193,6 +193,42 @@ input:focus, select:focus, textarea:focus {
 .btn-danger { color: #b91c1c; border-color: #fca5a5; }
 .btn-danger:hover { background: #fef2f2; }
 
+/* --- Garage (ACR) theme ---------------------------------------------------- */
+:root { --garage: #F26522; --garage-dark: #d64f11; }
+.brand-logo-garage { width: 100%; max-width: 180px; height: auto; background: #fff; border-radius: 8px; padding: 6px; }
+.sidebar-garage { border-top: 4px solid var(--garage); }
+.garage-theme .page-head h1 { color: var(--garage-dark); }
+.garage-theme .page-head { border-bottom: 3px solid var(--garage); padding-bottom: .5rem; }
+.garage-theme .btn-primary { background: var(--garage); border-color: var(--garage); }
+.garage-theme .btn-primary:hover { background: var(--garage-dark); border-color: var(--garage-dark); }
+.garage-theme .list thead th { background: var(--garage); color: #fff; }
+.garage-theme .at-fault td.atf-yes { background: #16a34a; }
+.garage-theme a { color: var(--garage-dark); }
+.garage-theme .card h3 { color: var(--garage-dark); }
+.sidebar-garage nav a.active { background: var(--garage); color: #fff; }
+.sidebar-garage nav a.active .nav-icon { filter: none; }
+
+/* --- Simple two-column form grid ------------------------------------------ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 780px) { .grid-2 { grid-template-columns: 1fr; } }
+.field { display: block; margin-bottom: .6rem; }
+.field > span { display: block; font-size: .78rem; color: var(--muted, #666); margin-bottom: .2rem; }
+.field input, .field select, .field textarea {
+  width: 100%; padding: .4rem .55rem; border: 1px solid var(--border, #d1d5db);
+  border-radius: 6px; font-size: .9rem; font-family: inherit;
+}
+
+/* --- Invoice totals box ---------------------------------------------------- */
+.inv-totals { max-width: 340px; margin-left: auto; margin-top: 1rem; }
+.inv-totals > div { display: flex; justify-content: space-between; padding: .35rem 0; border-bottom: 1px solid #eee; font-size: .9rem; }
+.inv-totals .inv-due { border-bottom: none; margin-top: .3rem; padding: .5rem .6rem; background: #f8d5cd; border-radius: 6px; font-size: 1.05rem; }
+
+/* --- Status pills ---------------------------------------------------------- */
+.pill { display: inline-block; padding: .12rem .5rem; border-radius: 999px; font-size: .72rem; font-weight: 600; }
+.pill-draft { background: #eef2f7; color: #475569; }
+.pill-sent { background: #fef3c7; color: #92400e; }
+.pill-paid { background: #dcfce7; color: #166534; }
+
 /* --- Radio rows (repair type etc.) ----------------------------------------- */
 .radio-row { display: flex; align-items: center; gap: .55rem; padding: .28rem 0; cursor: pointer; }
 .radio-row input { width: 1rem; height: 1rem; }

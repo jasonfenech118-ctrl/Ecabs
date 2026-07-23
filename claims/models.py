@@ -751,3 +751,108 @@ class GarageJob(models.Model):
 
     def __str__(self):
         return f"{self.plate_no or '—'} · {self.client or '—'}"
+
+
+class GarageInvoice(models.Model):
+    """An invoice the panel-beater garage raises to bill the hire company for
+    repairs. The issuer (garage) details default to ACR Garage but can be
+    edited per invoice; totals (subtotal, discount, VAT, balance) compute from
+    the lines."""
+
+    # Issuer — the garage raising the invoice.
+    issuer_name = models.CharField("Garage name", max_length=120, default="ACR Garage")
+    payable_to = models.CharField("Payable to", max_length=120, default="Mario Galea")
+    issuer_contact = models.CharField("Contact details", max_length=120, default="9946 8105")
+    issuer_vat = models.CharField("VAT No", max_length=60, default="1579 7311 MT")
+    issuer_email = models.EmailField("Email", default="acrgarage@gmail.com")
+
+    invoice_no = models.CharField("Invoice No", max_length=40, blank=True)
+    # Manual date — never auto-filled (house rule for all documents).
+    invoice_date = models.DateField("Invoice date", null=True, blank=True)
+
+    # Bill-to — the customer (hire company).
+    bill_to = models.CharField("Bill to", max_length=160, blank=True)
+    bill_contact_name = models.CharField("Contact name", max_length=160, blank=True)
+    bill_company_name = models.CharField("Client company name", max_length=200, blank=True)
+    bill_address = models.TextField("Address", blank=True)
+    bill_email = models.CharField("Email", max_length=200, blank=True)
+    bill_vat = models.CharField("Client VAT", max_length=60, blank=True)
+
+    discount_pct = models.DecimalField(
+        "Discount %", max_digits=5, decimal_places=2, default=0
+    )
+    vat_rate = models.DecimalField(
+        "VAT rate %", max_digits=5, decimal_places=2, default=18
+    )
+    remarks = models.TextField("Remarks / payment instructions", blank=True)
+
+    class Status(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        SENT = "sent", "Sent"
+        PAID = "paid", "Paid"
+
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.DRAFT, db_index=True
+    )
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="+",
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="+", verbose_name="Last edited by",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-id"]
+
+    def __str__(self):
+        return f"{self.invoice_no or 'Invoice'} — {self.bill_to or '—'}"
+
+    def get_absolute_url(self):
+        return reverse("garage_invoice_edit", args=[self.pk])
+
+    @property
+    def subtotal(self):
+        return sum((ln.amount or Decimal("0")) for ln in self.lines.all())
+
+    @property
+    def discount_amount(self):
+        return (self.subtotal * (self.discount_pct or Decimal("0")) / Decimal("100")).quantize(Decimal("0.01"))
+
+    @property
+    def subtotal_less_discount(self):
+        return self.subtotal - self.discount_amount
+
+    @property
+    def vat_amount(self):
+        return (self.subtotal_less_discount * (self.vat_rate or Decimal("0")) / Decimal("100")).quantize(Decimal("0.01"))
+
+    @property
+    def balance_due(self):
+        return self.subtotal_less_discount + self.vat_amount
+
+
+class GarageInvoiceLine(models.Model):
+    """One repair line on a garage invoice."""
+
+    invoice = models.ForeignKey(
+        GarageInvoice, on_delete=models.CASCADE, related_name="lines"
+    )
+    line_date = models.DateField("Date", null=True, blank=True)
+    reg_no = models.CharField("Reg No", max_length=20, blank=True)
+    description = models.CharField("Description", max_length=255, blank=True)
+    unit_price = models.DecimalField(
+        "Unit price", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+    amount = models.DecimalField("Total", max_digits=10, decimal_places=2, default=0)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return f"{self.reg_no} — {self.description}"

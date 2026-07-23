@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Garage invoices — ACR Garage{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Invoices</h1>
+    <div class="sub">Invoices raised by ACR Garage for repairs carried out</div>
+  </div>
+  <form method="post" action="{% url 'garage_invoice_new' %}">{% csrf_token %}
+    <button type="submit" class="btn btn-primary">＋ New invoice</button>
+  </form>
+</div>
+
+<div class="card table-wrap">
+  <table class="list">
+    <thead>
+      <tr><th>Invoice No</th><th>Date</th><th>Bill to</th><th class="right">Balance due</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for inv in invoices %}
+      <tr>
+        <td><a href="{{ inv.get_absolute_url }}"><strong>{{ inv.invoice_no|default:"(no number)" }}</strong></a></td>
+        <td>{{ inv.invoice_date|date:"d/m/Y"|default:"—" }}</td>
+        <td>{{ inv.bill_to|default:"—" }}</td>
+        <td class="right">€{{ inv.balance_due|floatformat:2|intcomma }}</td>
+        <td><span class="pill pill-{{ inv.status }}">{{ inv.get_status_display }}</span></td>
+        <td style="white-space:nowrap">
+          <a href="{{ inv.get_absolute_url }}" class="btn btn-sm">Edit</a>
+          <a href="{% url 'garage_invoice_pdf' inv.pk %}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">PDF</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="empty">No invoices yet — press “New invoice”.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

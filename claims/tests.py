@@ -1247,6 +1247,67 @@ class GarageAccessTests(TestCase):
         self.assertIn(b"1250.50", html)
 
 
+class GarageInvoiceTests(TestCase):
+    def setUp(self):
+        from django.contrib.auth.models import Group
+
+        User = get_user_model()
+        self.mario = User.objects.create_user("mario", password="pw")
+        group, _ = Group.objects.get_or_create(name="Garage")
+        self.mario.groups.add(group)
+        self.client.force_login(self.mario)
+
+    def _make_invoice(self):
+        from .models import GarageInvoice
+
+        self.client.post(reverse("garage_invoice_new"))
+        return GarageInvoice.objects.order_by("-id").first()
+
+    def test_totals_compute_from_lines(self):
+        from decimal import Decimal
+
+        from .models import GarageInvoice
+
+        inv = self._make_invoice()
+        self.client.post(reverse("garage_invoice_edit", args=[inv.pk]),
+                         {"discount_pct": "10", "vat_rate": "18", "bill_to": "FASTDROP"})
+        # two lines
+        self.client.post(reverse("garage_invoice_line_add", args=[inv.pk]))
+        self.client.post(reverse("garage_invoice_line_add", args=[inv.pk]))
+        lines = list(inv.lines.all())
+        self.client.post(reverse("garage_invoice_line_update", args=[inv.pk, lines[0].pk]),
+                         {"reg_no": "HCF506", "description": "Wing", "amount": "100.00"})
+        self.client.post(reverse("garage_invoice_line_update", args=[inv.pk, lines[1].pk]),
+                         {"reg_no": "CEB981", "description": "Door", "amount": "100.00"})
+        inv = GarageInvoice.objects.get(pk=inv.pk)
+        self.assertEqual(inv.subtotal, Decimal("200.00"))
+        self.assertEqual(inv.discount_amount, Decimal("20.00"))
+        self.assertEqual(inv.subtotal_less_discount, Decimal("180.00"))
+        self.assertEqual(inv.vat_amount, Decimal("32.40"))
+        self.assertEqual(inv.balance_due, Decimal("212.40"))
+
+    def test_defaults_are_acr_garage(self):
+        inv = self._make_invoice()
+        self.assertEqual(inv.issuer_name, "ACR Garage")
+        self.assertEqual(inv.payable_to, "Mario Galea")
+        self.assertTrue(inv.invoice_no.startswith("INV NO."))
+
+    def test_pdf_renders(self):
+        inv = self._make_invoice()
+        self.client.post(reverse("garage_invoice_line_add", args=[inv.pk]))
+        r = self.client.get(reverse("garage_invoice_pdf", args=[inv.pk]))
+        self.assertEqual(r["Content-Type"], "application/pdf")
+        self.assertGreater(len(r.content), 800)
+
+    def test_line_delete(self):
+        inv = self._make_invoice()
+        self.client.post(reverse("garage_invoice_line_add", args=[inv.pk]))
+        line = inv.lines.first()
+        self.client.post(reverse("garage_invoice_line_update", args=[inv.pk, line.pk]),
+                         {"action": "delete"})
+        self.assertEqual(inv.lines.count(), 0)
+
+
 class ImportAccidentsTests(TestCase):
     def _make_xlsx(self, path):
         import openpyxl
