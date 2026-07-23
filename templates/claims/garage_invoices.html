@@ -20,6 +20,12 @@
     <label class="field" style="margin:0"><span>Search</span>
       <input name="q" value="{{ q }}" placeholder="Invoice no or bill-to…" style="min-width:200px">
     </label>
+    <label class="field" style="margin:0"><span>For</span>
+      <select name="for">
+        <option value="all" {% if for_kind == 'all' %}selected{% endif %}>All</option>
+        {% for val, lbl in for_kinds %}<option value="{{ val }}" {% if for_kind == val %}selected{% endif %}>{{ lbl }}</option>{% endfor %}
+      </select>
+    </label>
     <label class="field" style="margin:0"><span>Status</span>
       <select name="status">
         <option value="">All statuses</option>
@@ -38,13 +44,13 @@
     <button type="submit" class="btn btn-primary">Filter</button>
     <a href="{% url 'garage_invoices' %}" class="btn btn-sm">Reset</a>
   </form>
-  {% if not is_garage %}<p class="muted" style="margin:.5rem 0 0; font-size:.8rem">Showing <strong>{% if owner == 'mine' %}your{% elif owner == 'all' %}everyone’s{% else %}the selected owner’s{% endif %}</strong> invoices. Switch <em>Owner</em> to glance at others.</p>{% endif %}
+  {% if not is_garage %}<p class="muted" style="margin:.5rem 0 0; font-size:.8rem">Showing <strong>{% if for_kind == 'group' %}Vai Drive{% elif for_kind == 'personal' %}personal-garage{% else %}all{% endif %}</strong> invoices. Switch <em>For</em> to see the garage’s personal ones.</p>{% endif %}
 </div>
 
 <div class="card table-wrap mt">
   <table class="list">
     <thead>
-      <tr><th>Invoice No</th><th>Date</th><th>Bill to</th>{% if not is_garage %}<th>Owner</th>{% endif %}<th class="right">Balance due</th><th>Status</th><th></th></tr>
+      <tr><th>Invoice No</th><th>Date</th><th>Bill to</th><th>For</th>{% if not is_garage %}<th>Owner</th>{% endif %}<th class="right">Balance due</th><th>Status</th><th></th></tr>
     </thead>
     <tbody>
       {% for inv in invoices %}
@@ -52,6 +58,7 @@
         <td><a href="{{ inv.get_absolute_url }}"><strong>{{ inv.invoice_no|default:"(no number)" }}</strong></a></td>
         <td>{{ inv.invoice_date|date:"d/m/Y"|default:"—" }}</td>
         <td>{{ inv.bill_to|default:"—" }}</td>
+        <td><span class="pill pill-{% if inv.for_kind == 'group' %}sent{% else %}draft{% endif %}">{% if inv.for_kind == 'group' %}🏢 Vai Drive{% else %}🔧 Personal{% endif %}</span></td>
         {% if not is_garage %}<td>{% if inv.created_by %}{{ inv.created_by.get_full_name|default:inv.created_by.username }}{% else %}—{% endif %}</td>{% endif %}
         <td class="right">€{{ inv.balance_due|floatformat:2|intcomma }}</td>
         <td><span class="pill pill-{{ inv.status }}">{{ inv.get_status_display }}</span></td>
@@ -61,7 +68,7 @@
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="7" class="empty">No invoices match.</td></tr>
+      <tr><td colspan="8" class="empty">No invoices match.</td></tr>
       {% endfor %}
     </tbody>
   </table>

@@ -1404,18 +1404,23 @@ class GarageInvoicePrivacyTests(TestCase):
         r2 = self.client.get(reverse("garage_invoice_pdf", args=[theirs.pk]))
         self.assertRedirects(r2, reverse("garage_invoices"))
 
-    def test_admin_defaults_to_own_but_can_filter_to_all(self):
-        marios = self._new_invoice_as(self.mario)
-        frans = self._new_invoice_as(self.francis)
+    def test_admin_defaults_to_vai_drive_but_can_filter_personal(self):
+        from .models import GarageInvoice
+
+        # Mario raises one Vai-Drive invoice and one personal one.
+        group_inv = self._new_invoice_as(self.mario)
+        personal_inv = self._new_invoice_as(self.mario)
+        personal_inv.for_kind = GarageInvoice.ForKind.PERSONAL
+        personal_inv.save()
+
         self.client.force_login(self.francis)
-        # default (owner=mine) hides Mario's
+        # default shows Vai-Drive invoices (across owners), hides personal ones
         default = self.client.get(reverse("garage_invoices")).content.decode()
-        self.assertIn(frans.invoice_no, default)
-        self.assertNotIn(marios.invoice_no, default)
-        # owner=all shows everyone's
-        allv = self.client.get(reverse("garage_invoices"), {"owner": "all"}).content.decode()
-        self.assertIn(marios.invoice_no, allv)
-        self.assertIn(frans.invoice_no, allv)
+        self.assertIn(group_inv.invoice_no, default)
+        self.assertNotIn(personal_inv.invoice_no, default)
+        # For=personal lets her glance at the garage's personal invoices
+        personal = self.client.get(reverse("garage_invoices"), {"for": "personal"}).content.decode()
+        self.assertIn(personal_inv.invoice_no, personal)
 
     def test_status_filter(self):
         inv = self._new_invoice_as(self.francis)

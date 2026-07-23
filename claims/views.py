@@ -281,6 +281,7 @@ def _sync_job_items(request, job):
     can pick an existing type or type a brand-new one. Empty rows are skipped."""
     type_ids = request.POST.getlist("item_type")
     new_names = request.POST.getlist("item_new")
+    details = request.POST.getlist("item_details")
     prices = request.POST.getlist("item_price")
     job.items.all().delete()
     order = 0
@@ -295,8 +296,10 @@ def _sync_job_items(request, job):
             rt = RepairType.objects.filter(pk=tid).first()
         if rt is None:
             continue
-        GarageJobItem.objects.create(job=job, repair_type=rt, price=_dec(prices[i]),
-                                     order=order)
+        GarageJobItem.objects.create(
+            job=job, repair_type=rt,
+            details=(details[i] if i < len(details) else "").strip(),
+            price=_dec(prices[i]), order=order)
         order += 1
 
 
@@ -377,10 +380,11 @@ def _next_invoice_no():
 def garage_invoices(request):
     """List of garage invoices, with filters.
 
-    A garage user (ACR) only ever sees their own invoices — they are private
-    to whoever raised them. An admin (Francis) sees all, but the list defaults
-    to *her own* so she isn't shown unrelated invoices; she can switch the
-    Owner filter to glance at anyone's."""
+    A garage user (ACR) only ever sees their own invoices — they are private to
+    whoever raised them — and can filter them by whether they're for Vai Drive
+    (Francis) or the garage's own customers. An admin (Francis) defaults to the
+    Vai-Drive invoices so Mario's personal ones don't clutter her view; she can
+    switch the *For* filter to glance at the personal ones."""
     from django.contrib.auth import get_user_model
 
     garage = is_garage_user(request.user)
@@ -396,15 +400,22 @@ def garage_invoices(request):
         owner_ids = (GarageInvoice.objects.values_list("created_by", flat=True)
                      .distinct())
         owners = User.objects.filter(id__in=[i for i in owner_ids if i])
-        # Default: only her own, so unrelated invoices don't clutter the view.
         if owner == "":
-            owner = "mine"
+            owner = "all"
         if owner == "mine":
             qs = qs.filter(created_by=request.user)
         elif owner == "all":
             pass
         elif owner.isdigit():
             qs = qs.filter(created_by_id=int(owner))
+
+    # For Vai Drive (Francis) vs the garage's own customers.
+    for_kind = (request.GET.get("for") or "").strip()
+    if for_kind == "":
+        # Admin defaults to Vai-Drive invoices; a garage user sees all of theirs.
+        for_kind = "all" if garage else "group"
+    if for_kind in dict(GarageInvoice.ForKind.choices):
+        qs = qs.filter(for_kind=for_kind)
 
     status = (request.GET.get("status") or "").strip()
     if status in dict(GarageInvoice.Status.choices):
@@ -423,9 +434,36 @@ def garage_invoices(request):
         "owners": owners,
         "owner": owner,
         "status": status,
+        "for_kind": for_kind,
         "q": q,
         "statuses": GarageInvoice.Status.choices,
+        "for_kinds": GarageInvoice.ForKind.choices,
     })
+
+
+@login_required
+def repair_types_manage(request):
+    """Manage the repair-type dropdown: add, rename, or hide types. Used by the
+    garage owner and admins alike."""
+    if request.method == "POST":
+        action = request.POST.get("action")
+        pk = request.POST.get("pk")
+        name = (request.POST.get("name") or "").strip()
+        if action == "add" and name:
+            RepairType.objects.get_or_create(name=name, defaults={"order": 100})
+        elif action == "rename" and pk and name:
+            rt = RepairType.objects.filter(pk=pk).first()
+            if rt:
+                rt.name = name
+                rt.save(update_fields=["name"])
+        elif action == "toggle" and pk:
+            rt = RepairType.objects.filter(pk=pk).first()
+            if rt:
+                rt.is_active = not rt.is_active
+                rt.save(update_fields=["is_active"])
+        return redirect("repair_types_manage")
+    types = RepairType.objects.all().order_by("-is_active", "order", "name")
+    return render(request, "claims/repair_types.html", {"types": types})
 
 
 @login_required
@@ -526,7 +564,7 @@ def garage_job_to_invoice(request, pk):
                 invoice=inv,
                 line_date=job.accident_date if order == 0 else None,
                 reg_no=job.plate_no if order == 0 else "",
-                description=it.repair_type.name,
+                description=it.label,
                 amount=it.price or Decimal("0"),
                 order=order,
             )
@@ -598,6 +636,9 @@ def garage_invoice_edit(request, pk):
         status = request.POST.get("status")
         if status in dict(GarageInvoice.Status.choices):
             inv.status = status
+        for_kind = request.POST.get("for_kind")
+        if for_kind in dict(GarageInvoice.ForKind.choices):
+            inv.for_kind = for_kind
         # An admin can reassign the invoice's owner (e.g. to Mario).
         if not is_garage_user(request.user):
             owner_id = (request.POST.get("owner") or "").strip()

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Manage repair types — ACR Garage{% endblock %}
+{% block content %}
+<div class="garage-banner">
+  <img src="{% static 'img/acr-garage-logo.jpg' %}" alt="ACR Garage" class="garage-banner-logo">
+</div>
+<div class="page-head">
+  <div><h1>Manage repair types</h1>
+    <div class="sub">The options in the repair-type dropdown — add, rename or hide</div>
+  </div>
+  <a href="{% url 'garage_jobs' %}" class="btn">← Back to worklist</a>
+</div>
+
+<div class="card" style="max-width:640px">
+  <form method="post" class="row" style="gap:.5rem; align-items:flex-end">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="add">
+    <label class="field" style="flex:1; margin:0"><span>Add a new type</span>
+      <input name="name" placeholder="e.g. Spray & paint" maxlength="100" required>
+    </label>
+    <button type="submit" class="btn btn-primary">＋ Add</button>
+  </form>
+</div>
+
+<div class="card mt table-wrap" style="max-width:640px">
+  <table class="list">
+    <thead><tr><th>Type</th><th>In dropdown?</th><th></th></tr></thead>
+    <tbody>
+      {% for t in types %}
+      <tr>
+        <td>
+          <form method="post" class="row" style="gap:.4rem; align-items:center">{% csrf_token %}
+            <input type="hidden" name="action" value="rename">
+            <input type="hidden" name="pk" value="{{ t.pk }}">
+            <input name="name" value="{{ t.name }}" maxlength="100" style="min-width:220px">
+            <button type="submit" class="btn btn-sm">Rename</button>
+          </form>
+        </td>
+        <td>{% if t.is_active %}<span class="pill pill-paid">Shown</span>{% else %}<span class="pill pill-draft">Hidden</span>{% endif %}</td>
+        <td>
+          <form method="post">{% csrf_token %}
+            <input type="hidden" name="action" value="toggle">
+            <input type="hidden" name="pk" value="{{ t.pk }}">
+            <button type="submit" class="btn btn-sm">{% if t.is_active %}Hide{% else %}Show{% endif %}</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3" class="empty">No types yet — add one above.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="muted" style="font-size:.8rem; margin-top:1rem; max-width:640px">Hiding a type removes it from the dropdown but keeps it on any past jobs. Renaming updates it everywhere.</p>
+{% endblock %}

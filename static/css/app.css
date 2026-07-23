@@ -288,6 +288,16 @@ input:focus, select:focus, textarea:focus {
   border-radius: 6px; font-size: .9rem; font-family: inherit;
 }
 
+/* --- Invoice "for" radio picker -------------------------------------------- */
+.for-kind-row { display: flex; gap: .75rem; flex-wrap: wrap; }
+.for-kind-opt {
+  display: flex; align-items: center; gap: .5rem; cursor: pointer;
+  border: 2px solid var(--border, #d1d5db); border-radius: 10px;
+  padding: .55rem .9rem; font-weight: 600; font-size: .95rem;
+}
+.for-kind-opt.selected { border-color: var(--garage, #F26522); background: #fff4ee; color: var(--garage-dark, #d64f11); }
+.for-kind-opt input { width: 1rem; height: 1rem; }
+
 /* --- Invoice totals box ---------------------------------------------------- */
 .inv-totals { max-width: 340px; margin-left: auto; margin-top: 1rem; }
 .inv-totals > div { display: flex; justify-content: space-between; padding: .35rem 0; border-bottom: 1px solid #eee; font-size: .9rem; }

@@ -19,6 +19,19 @@
 <form method="post" action="{% url 'garage_invoice_edit' inv.pk %}">
   {% csrf_token %}
 
+  <div class="card" style="margin-bottom:1rem">
+    <h3>This invoice is for</h3>
+    <div class="for-kind-row">
+      {% for val, lbl in inv.ForKind.choices %}
+      <label class="for-kind-opt {% if inv.for_kind == val %}selected{% endif %}">
+        <input type="radio" name="for_kind" value="{{ val }}" {% if inv.for_kind == val %}checked{% endif %}>
+        <span>{% if val == 'group' %}🏢 {% else %}🔧 {% endif %}{{ lbl }}</span>
+      </label>
+      {% endfor %}
+    </div>
+    <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">Choose <strong>Vai Drive (Francis)</strong> for repairs billed to the hire company, or <strong>My own garage</strong> for your private customers. This drives the filtering.</p>
+  </div>
+
   <div class="grid-2">
     <div class="card">
       <h3>ACR Garage (issuer)</h3>

@@ -777,6 +777,7 @@ class GarageJobItem(models.Model):
     repair_type = models.ForeignKey(
         RepairType, on_delete=models.PROTECT, related_name="+"
     )
+    details = models.CharField("Details", max_length=255, blank=True)
     price = models.DecimalField("Price (€)", max_digits=10, decimal_places=2, default=0)
     order = models.PositiveIntegerField(default=0)
 
@@ -785,6 +786,8 @@ class GarageJobItem(models.Model):
 
     @property
     def label(self):
+        if self.details:
+            return f"{self.repair_type.name} — {self.details}"
         return self.repair_type.name
 
     def __str__(self):
@@ -857,6 +860,15 @@ class GarageInvoice(models.Model):
 
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.DRAFT, db_index=True
+    )
+
+    class ForKind(models.TextChoices):
+        GROUP = "group", "Vai Drive (Francis)"
+        PERSONAL = "personal", "My own garage"
+
+    for_kind = models.CharField(
+        "Invoice for", max_length=10, choices=ForKind.choices,
+        default=ForKind.GROUP, db_index=True,
     )
 
     created_by = models.ForeignKey(

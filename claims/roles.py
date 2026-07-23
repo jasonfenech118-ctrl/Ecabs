@@ -17,6 +17,7 @@ GARAGE_ALLOWED_URL_NAMES = {
     "garage_job_form",
     "garage_job_update",
     "garage_job_to_invoice",
+    "repair_types_manage",
     "garage_metrics",
     "garage_invoices",
     "garage_invoice_new",

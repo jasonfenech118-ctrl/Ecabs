@@ -17,6 +17,7 @@ urlpatterns = [
     path("garage/<int:pk>/form/", views.garage_job_form, name="garage_job_form"),
     path("garage/<int:pk>/update/", views.garage_job_update, name="garage_job_update"),
     path("garage/<int:pk>/to-invoice/", views.garage_job_to_invoice, name="garage_job_to_invoice"),
+    path("garage/repair-types/", views.repair_types_manage, name="repair_types_manage"),
     path("garage/view-as-mario/", views.impersonate_garage, name="impersonate_garage"),
     path("stop-impersonate/", views.stop_impersonate, name="stop_impersonate"),
     path("garage/metrics/", views.garage_metrics, name="garage_metrics"),
