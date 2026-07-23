@@ -84,6 +84,9 @@
         <a href="{% url 'garage_metrics' %}" class="{% if request.resolver_match.url_name == 'garage_metrics' %}active{% endif %}">
           <span class="nav-icon">📊</span> Garage metrics
         </a>
+        {% if user.is_staff %}
+        <a href="{% url 'impersonate_garage' %}"><span class="nav-icon">👁</span> View Mario’s screen</a>
+        {% endif %}
       </div>
 
       <div class="nav-sec nav-sec--reports">
@@ -134,6 +137,12 @@
     </div>
   </aside>
   <main class="main">
+    {% if request.impersonator %}
+    <div class="impersonate-bar no-print">
+      <span>👁 Viewing as <strong>{{ user.get_full_name|default:user.username }}</strong> (Mario’s screen)</span>
+      <a href="{% url 'stop_impersonate' %}" class="impersonate-back">← Back to my account</a>
+    </div>
+    {% endif %}
     {% if is_garage_user %}
       {% if request.resolver_match.url_name != 'garage_jobs' %}
       <div class="home-btn-bar no-print"><a href="{% url 'garage_jobs' %}" class="home-btn">⌂ Home</a></div>

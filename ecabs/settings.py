@@ -62,6 +62,9 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # Lets an admin view the app as another user. Must run after authentication
+    # and before the garage confinement so the swapped user is confined too.
+    "claims.middleware.ImpersonationMiddleware",
     # Confines garage-only users (e.g. ACR Garage) to their worklist. Must run
     # after authentication so request.user is populated.
     "claims.middleware.GarageAccessMiddleware",

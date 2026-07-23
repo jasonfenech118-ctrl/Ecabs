@@ -429,6 +429,36 @@ def garage_invoices(request):
 
 
 @login_required
+def impersonate_garage(request):
+    """Admin-only: start viewing the app as the garage user (Mario)."""
+    from django.contrib import messages
+    from django.contrib.auth import get_user_model
+
+    from .middleware import IMPERSONATE_KEY
+    from .roles import GARAGE_GROUP
+
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect("home")
+    target = (get_user_model().objects.filter(groups__name=GARAGE_GROUP)
+              .exclude(is_staff=True).order_by("id").first())
+    if not target:
+        messages.error(request, "No garage user exists yet. Create one with "
+                                "make_garage_user first.")
+        return redirect("garage_jobs")
+    request.session[IMPERSONATE_KEY] = target.pk
+    return redirect("garage_jobs")
+
+
+@login_required
+def stop_impersonate(request):
+    """Return the admin to their own account."""
+    from .middleware import IMPERSONATE_KEY
+
+    request.session.pop(IMPERSONATE_KEY, None)
+    return redirect("home")
+
+
+@login_required
 def garage_metrics(request):
     """At-a-glance metrics for the ACR Garage: invoices and worklist."""
     garage = is_garage_user(request.user)

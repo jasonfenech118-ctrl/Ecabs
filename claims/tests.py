@@ -1592,6 +1592,42 @@ class AccidentListTests(TestCase):
         r = self.client.get(reverse("accident_list"), {"q": "ZZZ999"})
         self.assertContains(r, "ZZZ999")
 
+    def test_admin_can_view_as_mario_and_switch_back(self):
+        from django.contrib.auth.models import Group
+
+        User = get_user_model()
+        francis = User.objects.create_superuser("francis_imp", password="pw")
+        mario = User.objects.create_user("mario_imp", password="pw",
+                                         first_name="Mario")
+        grp, _ = Group.objects.get_or_create(name="Garage")
+        mario.groups.add(grp)
+
+        self.client.force_login(francis)
+        # button visible to admin
+        self.assertContains(self.client.get(reverse("home")), "View Mario")
+        # start impersonation → lands on the garage worklist, confined + banner
+        self.client.get(reverse("impersonate_garage"))
+        wl = self.client.get(reverse("garage_jobs"))
+        self.assertContains(wl, "Viewing as")
+        self.assertContains(wl, "My worklist")  # garage-user nav
+        # confined like Mario
+        self.assertRedirects(self.client.get(reverse("dashboard")),
+                             reverse("garage_jobs"), fetch_redirect_response=False)
+        # switch back
+        self.client.get(reverse("stop_impersonate"))
+        self.assertContains(self.client.get(reverse("home")), "Dashboard")
+
+    def test_non_admin_cannot_impersonate(self):
+        from django.contrib.auth.models import Group
+
+        m = get_user_model().objects.create_user("m_imp2", password="pw")
+        grp, _ = Group.objects.get_or_create(name="Garage")
+        m.groups.add(grp)
+        self.client.force_login(m)
+        # garage user hitting the impersonate URL is just bounced to worklist
+        self.assertRedirects(self.client.get(reverse("impersonate_garage")),
+                             reverse("garage_jobs"), fetch_redirect_response=False)
+
     def test_garage_user_cannot_reach_accidents(self):
         from django.contrib.auth.models import Group
 
