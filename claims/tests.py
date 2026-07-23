@@ -1248,7 +1248,7 @@ class GarageJobTests(TestCase):
 
 class GarageAccessTests(TestCase):
     """A garage-only user (Mario) is confined to the ACR Garage page; an admin
-    (Francis) keeps full access and sees the same rows."""
+    (Frances) keeps full access and sees the same rows."""
 
     def setUp(self):
         from django.contrib.auth.models import Group
@@ -1303,7 +1303,7 @@ class GarageAccessTests(TestCase):
         job.refresh_from_db()
         self.assertEqual(job.updated_by, self.mario)
         self.assertEqual(str(job.total), "1250.50")
-        # Francis sees Mario's row and its total on the shared page
+        # Frances sees Mario's row and its total on the shared page
         self.client.force_login(self.francis)
         html = self.client.get(reverse("garage_jobs")).content
         self.assertIn(b"MAR123", html)

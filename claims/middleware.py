@@ -10,7 +10,7 @@ IMPERSONATE_KEY = "impersonate_id"
 
 
 class ImpersonationMiddleware:
-    """Let an admin (Francis) view the app exactly as another user (Mario).
+    """Let an admin (Frances) view the app exactly as another user (Mario).
 
     When an admin has set the impersonate session key, swap request.user to the
     target user for the request. The real admin is kept on request.impersonator

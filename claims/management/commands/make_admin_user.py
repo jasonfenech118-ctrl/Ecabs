@@ -1,4 +1,4 @@
-"""Create (or update) the main admin/owner user, e.g. Francis.
+"""Create (or update) the main admin/owner user, e.g. Frances.
 
     python manage.py make_admin_user francis --password "SomePass123"
 
@@ -19,7 +19,7 @@ class Command(BaseCommand):
         parser.add_argument("username")
         parser.add_argument("--password", default=None)
         parser.add_argument("--email", default="")
-        parser.add_argument("--full-name", default="", help="Display name, e.g. 'Francis'")
+        parser.add_argument("--full-name", default="", help="Display name, e.g. 'Frances'")
 
     def handle(self, *args, **opts):
         username = opts["username"].strip()

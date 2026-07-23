@@ -203,7 +203,7 @@ def garage_jobs(request):
             | Q(make__icontains=q) | Q(claim_no__icontains=q)
             | Q(surveyor__icontains=q) | Q(insurance__icontains=q)
         )
-    # For Vai Drive (Francis) vs the garage's own customers.
+    # For Vai Drive (Frances) vs the garage's own customers.
     for_kind = (request.GET.get("for") or "all").strip()
     if for_kind in dict(GarageJob.ForKind.choices):
         qs = qs.filter(for_kind=for_kind)
@@ -391,7 +391,7 @@ def garage_invoices(request):
 
     A garage user (ACR) only ever sees their own invoices — they are private to
     whoever raised them — and can filter them by whether they're for Vai Drive
-    (Francis) or the garage's own customers. An admin (Francis) defaults to the
+    (Frances) or the garage's own customers. An admin (Frances) defaults to the
     Vai-Drive invoices so Mario's personal ones don't clutter her view; she can
     switch the *For* filter to glance at the personal ones."""
     from django.contrib.auth import get_user_model
@@ -418,7 +418,7 @@ def garage_invoices(request):
         elif owner.isdigit():
             qs = qs.filter(created_by_id=int(owner))
 
-    # For Vai Drive (Francis) vs the garage's own customers.
+    # For Vai Drive (Frances) vs the garage's own customers.
     for_kind = (request.GET.get("for") or "").strip()
     if for_kind == "":
         # Admin defaults to Vai-Drive invoices; a garage user sees all of theirs.
