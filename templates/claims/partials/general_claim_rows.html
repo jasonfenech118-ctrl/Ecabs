@@ -1,0 +1,21 @@
+{% for c in rows %}
+<tr>
+  <td style="white-space:nowrap">{{ c.claim_date|date:"d/m/Y"|default:"—" }}</td>
+  <td>{{ c.our_reg|default:"—" }}</td>
+  <td>{{ c.driver_name|default:"—" }}</td>
+  <td>{{ c.tp_reg|default:"—" }}</td>
+  <td>{{ c.vehicle_make|default:"—" }}</td>
+  <td>{{ c.insurer|default:"—" }}</td>
+  <td>{{ c.claim_no|default:"—" }}</td>
+  <td>{% if c.fault %}<span class="pill pill-{% if c.fault == 'OI' %}sent{% else %}draft{% endif %}">{{ c.fault }}</span>{% else %}—{% endif %}</td>
+  <td>{{ c.details|default:"—" }}</td>
+  <td>{{ c.status_note|default:"—" }}</td>
+  <td class="right">{% if c.estimate_amount is not None %}€{{ c.estimate_amount|floatformat:2 }}{% else %}—{% endif %}</td>
+  <td style="white-space:nowrap">
+    <a href="{% url 'general_claim_edit' c.pk %}" class="btn btn-sm btn-primary">Open</a>
+    <form method="post" action="{% url 'general_claim_toggle' c.pk %}" style="display:inline">{% csrf_token %}<input type="hidden" name="action" value="{% if is_closed %}reopen{% else %}close{% endif %}"><button type="submit" class="btn btn-sm">{% if is_closed %}Reopen{% else %}Close{% endif %}</button></form>
+  </td>
+</tr>
+{% empty %}
+<tr><td colspan="12" class="empty">None.</td></tr>
+{% endfor %}

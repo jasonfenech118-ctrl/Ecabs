@@ -12,6 +12,7 @@ from .models import (
     GarageInvoice,
     GarageInvoiceLine,
     GarageJob,
+    GeneralClaim,
     OtherCharge,
     Reminder,
     RepairType,
@@ -48,6 +49,15 @@ class AccidentRecordAdmin(admin.ModelAdmin):
     list_filter = ("fault", "tp_insurance")
     search_fields = ("our_reg", "tp_reg", "driver_name", "tp_owner_name")
     date_hierarchy = "date_of_acc"
+
+
+@admin.register(GeneralClaim)
+class GeneralClaimAdmin(admin.ModelAdmin):
+    list_display = ("claim_date", "brand", "our_reg", "driver_name", "insurer",
+                    "claim_no", "fault", "estimate_amount", "is_closed")
+    list_filter = ("brand", "is_closed", "fault", "insurer")
+    search_fields = ("our_reg", "tp_reg", "driver_name", "claim_no")
+    date_hierarchy = "claim_date"
 
 
 class GarageInvoiceLineInline(admin.TabularInline):

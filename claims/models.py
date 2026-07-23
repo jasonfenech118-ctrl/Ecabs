@@ -901,3 +901,48 @@ class AccidentRecord(models.Model):
 
     def get_absolute_url(self):
         return reverse("accident_record_edit", args=[self.pk])
+
+
+class GeneralClaim(models.Model):
+    """A simple general-claims listing (e.g. for the Firefly brand). Add a row
+    when needed — it can be at fault or not. Purely a listing register, kept
+    apart from the main claims workflow. Rows split into Open and Closed."""
+
+    brand = models.CharField("Brand", max_length=60, default="Firefly", db_index=True)
+    claim_date = models.DateField("Date", null=True, blank=True)
+    our_reg = models.CharField("Our Reg", max_length=20, blank=True)
+    driver_name = models.CharField("Driver name", max_length=160, blank=True)
+    tp_reg = models.CharField("TP Reg", max_length=20, blank=True)
+    vehicle_make = models.CharField("Vehicle make", max_length=120, blank=True)
+    insurer = models.CharField("Insurer", max_length=120, blank=True)
+    claim_no = models.CharField("Claim No", max_length=60, blank=True)
+
+    class Fault(models.TextChoices):
+        OUR_INSURED = "OI", "Our insured (OI)"
+        THIRD_PARTY = "TP", "Third party (TP)"
+        UNKNOWN = "", "—"
+
+    fault = models.CharField("Fault (OI / TP)", max_length=4, blank=True)
+    details = models.CharField("Details", max_length=255, blank=True)
+    status_note = models.CharField("Status / awaiting", max_length=200, blank=True)
+    estimate_amount = models.DecimalField(
+        "Estimate (€)", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+    is_closed = models.BooleanField(default=False, db_index=True)
+
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="+", verbose_name="Last edited by",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-claim_date", "-id"]
+        indexes = [models.Index(fields=["our_reg"]), models.Index(fields=["tp_reg"])]
+
+    def __str__(self):
+        return f"{self.claim_date or '—'} · {self.our_reg or '—'}"
+
+    def get_absolute_url(self):
+        return reverse("general_claim_edit", args=[self.pk])

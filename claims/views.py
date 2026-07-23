@@ -35,6 +35,7 @@ from .models import (
     GarageInvoice,
     GarageInvoiceLine,
     GarageJob,
+    GeneralClaim,
     Reminder,
     RepairLine,
     RepairType,
@@ -628,6 +629,82 @@ def accident_list_upload(request):
         + (" — existing register replaced." if replace else "."),
     )
     return redirect("accident_list")
+
+
+# --- General claims listing (e.g. Firefly) -----------------------------------
+
+GENERAL_CLAIM_TEXT_FIELDS = [
+    "brand", "our_reg", "driver_name", "tp_reg", "vehicle_make", "insurer",
+    "claim_no", "details", "status_note",
+]
+
+
+@login_required
+def general_claims(request):
+    """General-claims listing (Firefly). Open/closed sections, searchable."""
+    qs = GeneralClaim.objects.select_related("updated_by")
+    q = (request.GET.get("q") or "").strip()
+    if q:
+        qs = qs.filter(
+            Q(our_reg__icontains=q) | Q(tp_reg__icontains=q)
+            | Q(driver_name__icontains=q) | Q(insurer__icontains=q)
+            | Q(claim_no__icontains=q) | Q(vehicle_make__icontains=q)
+            | Q(details__icontains=q) | Q(status_note__icontains=q)
+        )
+    open_rows = [c for c in qs if not c.is_closed]
+    closed_rows = [c for c in qs if c.is_closed]
+
+    def est(items):
+        return sum((c.estimate_amount or Decimal("0")) for c in items)
+
+    return render(request, "claims/general_claims.html", {
+        "open_rows": open_rows, "closed_rows": closed_rows,
+        "open_estimate": est(open_rows), "closed_estimate": est(closed_rows),
+        "q": q,
+    })
+
+
+@login_required
+def general_claim_edit(request, pk=None):
+    """Add or edit a general claim through a full-page form."""
+    row = get_object_or_404(GeneralClaim, pk=pk) if pk else GeneralClaim()
+    if request.method == "POST":
+        row.claim_date = _parse_date(request.POST.get("claim_date"))
+        for f in GENERAL_CLAIM_TEXT_FIELDS:
+            setattr(row, f, request.POST.get(f, getattr(row, f) or ""))
+        val = (request.POST.get("fault") or "").strip().upper()
+        row.fault = val if val in ("OI", "TP") else ""
+        raw = (request.POST.get("estimate_amount") or "").strip()
+        if raw:
+            try:
+                row.estimate_amount = Decimal(raw)
+            except InvalidOperation:
+                pass
+        else:
+            row.estimate_amount = None
+        row.is_closed = request.POST.get("is_closed") == "on"
+        row.updated_by = request.user
+        row.save()
+        return redirect("general_claims")
+    return render(request, "claims/general_claim_form.html", {"row": row})
+
+
+@login_required
+@require_POST
+def general_claim_toggle(request, pk):
+    """Close or reopen a general claim from the list."""
+    row = get_object_or_404(GeneralClaim, pk=pk)
+    row.is_closed = request.POST.get("action") == "close"
+    row.updated_by = request.user
+    row.save(update_fields=["is_closed", "updated_by", "updated_at"])
+    return redirect("general_claims")
+
+
+@login_required
+@require_POST
+def general_claim_delete(request, pk):
+    get_object_or_404(GeneralClaim, pk=pk).delete()
+    return redirect("general_claims")
 
 
 # --- Dashboard ---------------------------------------------------------------

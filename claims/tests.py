@@ -1445,6 +1445,59 @@ class MetricsSectionTests(TestCase):
         self.assertRedirects(r, reverse("garage_jobs"), fetch_redirect_response=False)
 
 
+class GeneralClaimsTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user("gcuser", password="pw")
+        self.client.force_login(self.user)
+
+    def test_add_edit_close_and_search(self):
+        from datetime import date
+
+        from .models import GeneralClaim
+
+        self.assertEqual(self.client.get(reverse("general_claim_new")).status_code, 200)
+        self.client.post(reverse("general_claim_new"), {
+            "claim_date": "2026-07-01", "brand": "Firefly", "our_reg": "FRF001",
+            "driver_name": "Joe", "insurer": "Elmo", "claim_no": "GC1",
+            "fault": "TP", "details": "rear hit", "status_note": "Awaiting RGM",
+            "estimate_amount": "450.00",
+        })
+        row = GeneralClaim.objects.get(our_reg="FRF001")
+        self.assertEqual(row.brand, "Firefly")
+        self.assertEqual(row.fault, "TP")
+        self.assertEqual(row.claim_date, date(2026, 7, 1))
+        self.assertEqual(str(row.estimate_amount), "450.00")
+        self.assertFalse(row.is_closed)
+
+        # appears in Open section, search works
+        r = self.client.get(reverse("general_claims"), {"q": "FRF001"})
+        self.assertContains(r, "FRF001")
+        self.assertNotContains(self.client.get(reverse("general_claims"), {"q": "zzz"}), "FRF001")
+
+        # close from the list
+        self.client.post(reverse("general_claim_toggle", args=[row.pk]), {"action": "close"})
+        row.refresh_from_db()
+        self.assertTrue(row.is_closed)
+
+        # edit then delete
+        self.client.post(reverse("general_claim_edit", args=[row.pk]),
+                         {"our_reg": "FRF001", "details": "updated"})
+        row.refresh_from_db()
+        self.assertEqual(row.details, "updated")
+        self.client.post(reverse("general_claim_delete", args=[row.pk]))
+        self.assertFalse(GeneralClaim.objects.filter(pk=row.pk).exists())
+
+    def test_garage_user_cannot_reach_general_claims(self):
+        from django.contrib.auth.models import Group
+
+        m = get_user_model().objects.create_user("gg", password="pw")
+        grp, _ = Group.objects.get_or_create(name="Garage")
+        m.groups.add(grp)
+        self.client.force_login(m)
+        r = self.client.get(reverse("general_claims"))
+        self.assertRedirects(r, reverse("garage_jobs"), fetch_redirect_response=False)
+
+
 class AccidentListTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("fran", password="pw")

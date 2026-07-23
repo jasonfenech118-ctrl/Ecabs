@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{% if row.pk %}Edit claim{% else %}New claim{% endif %} — General claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>{% if row.pk %}Edit general claim{% else %}New general claim{% endif %}</h1>
+    <div class="sub">Firefly — general claims listing</div>
+  </div>
+  <a href="{% url 'general_claims' %}" class="btn">← Back to list</a>
+</div>
+
+<form method="post" action="{% if row.pk %}{% url 'general_claim_edit' row.pk %}{% else %}{% url 'general_claim_new' %}{% endif %}">
+  {% csrf_token %}
+  <div class="card">
+    <div class="grid-2">
+      <label class="field"><span>Date</span><input type="date" name="claim_date" value="{{ row.claim_date|date:'Y-m-d' }}"></label>
+      <label class="field"><span>Brand</span><input name="brand" value="{{ row.brand|default:'Firefly' }}"></label>
+      <label class="field"><span>Our Reg</span><input name="our_reg" value="{{ row.our_reg }}"></label>
+      <label class="field"><span>Driver name</span><input name="driver_name" value="{{ row.driver_name }}"></label>
+      <label class="field"><span>TP Reg</span><input name="tp_reg" value="{{ row.tp_reg }}"></label>
+      <label class="field"><span>Vehicle make</span><input name="vehicle_make" value="{{ row.vehicle_make }}"></label>
+      <label class="field"><span>Insurer</span><input name="insurer" value="{{ row.insurer }}"></label>
+      <label class="field"><span>Claim No</span><input name="claim_no" value="{{ row.claim_no }}"></label>
+      <label class="field"><span>Fault</span>
+        <select name="fault">
+          <option value="" {% if not row.fault %}selected{% endif %}>—</option>
+          <option value="OI" {% if row.fault == 'OI' %}selected{% endif %}>Our insured (OI)</option>
+          <option value="TP" {% if row.fault == 'TP' %}selected{% endif %}>Third party (TP)</option>
+        </select>
+      </label>
+      <label class="field"><span>Estimate (€)</span><input type="number" step="0.01" min="0" name="estimate_amount" value="{{ row.estimate_amount|default_if_none:'' }}" placeholder="€"></label>
+      <label class="field"><span>Details</span><input name="details" value="{{ row.details }}"></label>
+      <label class="field"><span>Status / awaiting</span><input name="status_note" value="{{ row.status_note }}" list="awaiting-options" placeholder="Pick or type…"></label>
+    </div>
+    <datalist id="awaiting-options">
+      <option value="Liability pending"></option><option value="O/S bills"></option>
+      <option value="O/S payment"></option><option value="Awaiting RGM"></option>
+      <option value="Awaiting Andrew"></option><option value="Awaiting survey"></option>
+    </datalist>
+    <label class="field" style="display:flex; align-items:center; gap:.5rem; margin-top:.6rem">
+      <input type="checkbox" name="is_closed" {% if row.is_closed %}checked{% endif %} style="width:auto"> <span style="margin:0">Closed</span>
+    </label>
+    <div class="row" style="gap:.5rem; margin-top:.5rem">
+      <button type="submit" class="btn btn-primary">Save claim</button>
+      {% if row.pk %}<a href="#" class="btn btn-danger" onclick="event.preventDefault(); if(confirm('Delete this claim?')) document.getElementById('gc-del').submit();">Delete</a>{% endif %}
+    </div>
+  </div>
+</form>
+{% if row.pk %}<form id="gc-del" method="post" action="{% url 'general_claim_delete' row.pk %}">{% csrf_token %}</form>{% endif %}
+{% endblock %}
