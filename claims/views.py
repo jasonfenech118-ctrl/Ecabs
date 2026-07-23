@@ -41,6 +41,7 @@ from .models import (
     Survey,
     Vehicle,
 )
+from .roles import is_garage_user
 from .services import drive
 from .services import email as email_service
 from .services.auto_reminders import sync_auto_reminders
@@ -192,6 +193,13 @@ def _parse_date(raw):
 def garage_jobs(request):
     """ACR Garage worklist — vehicles sent to the panel beater for repair."""
     qs = GarageJob.objects.filter(garage=GarageJob.Garage.ACL).select_related("updated_by")
+    q = (request.GET.get("q") or "").strip()
+    if q:
+        qs = qs.filter(
+            Q(plate_no__icontains=q) | Q(client__icontains=q)
+            | Q(make__icontains=q) | Q(claim_no__icontains=q)
+            | Q(surveyor__icontains=q) | Q(insurance__icontains=q)
+        )
     open_jobs = [j for j in qs if not j.is_closed]
     closed_jobs = [j for j in qs if j.is_closed]
 
@@ -207,6 +215,7 @@ def garage_jobs(request):
             "open_total": sum_total(open_jobs),
             "closed_total": sum_total(closed_jobs),
             "garage_name": "ACR Garage",
+            "q": q,
         },
     )
 
@@ -306,9 +315,126 @@ def _next_invoice_no():
 
 @login_required
 def garage_invoices(request):
-    """List of garage invoices (Mario raises them; Francis can see/amend)."""
-    invoices = GarageInvoice.objects.all().prefetch_related("lines")
-    return render(request, "claims/garage_invoices.html", {"invoices": invoices})
+    """List of garage invoices, with filters.
+
+    A garage user (ACR) only ever sees their own invoices — they are private
+    to whoever raised them. An admin (Francis) sees all, but the list defaults
+    to *her own* so she isn't shown unrelated invoices; she can switch the
+    Owner filter to glance at anyone's."""
+    from django.contrib.auth import get_user_model
+
+    garage = is_garage_user(request.user)
+    qs = GarageInvoice.objects.select_related("created_by").prefetch_related("lines")
+
+    owners = []
+    owner = (request.GET.get("owner") or "").strip()
+    if garage:
+        qs = qs.filter(created_by=request.user)
+        owner = "mine"
+    else:
+        User = get_user_model()
+        owner_ids = (GarageInvoice.objects.values_list("created_by", flat=True)
+                     .distinct())
+        owners = User.objects.filter(id__in=[i for i in owner_ids if i])
+        # Default: only her own, so unrelated invoices don't clutter the view.
+        if owner == "":
+            owner = "mine"
+        if owner == "mine":
+            qs = qs.filter(created_by=request.user)
+        elif owner == "all":
+            pass
+        elif owner.isdigit():
+            qs = qs.filter(created_by_id=int(owner))
+
+    status = (request.GET.get("status") or "").strip()
+    if status in dict(GarageInvoice.Status.choices):
+        qs = qs.filter(status=status)
+
+    q = (request.GET.get("q") or "").strip()
+    if q:
+        qs = qs.filter(
+            Q(invoice_no__icontains=q) | Q(bill_to__icontains=q)
+            | Q(bill_company_name__icontains=q)
+        )
+
+    return render(request, "claims/garage_invoices.html", {
+        "invoices": qs,
+        "is_garage": garage,
+        "owners": owners,
+        "owner": owner,
+        "status": status,
+        "q": q,
+        "statuses": GarageInvoice.Status.choices,
+    })
+
+
+@login_required
+def garage_metrics(request):
+    """At-a-glance metrics for the ACR Garage: invoices and worklist."""
+    garage = is_garage_user(request.user)
+    inv_qs = GarageInvoice.objects.prefetch_related("lines")
+    if garage:
+        inv_qs = inv_qs.filter(created_by=request.user)
+    invoices = list(inv_qs)
+
+    total_invoiced = sum((i.balance_due for i in invoices), Decimal("0"))
+    by_status = []
+    for value, label in GarageInvoice.Status.choices:
+        subset = [i for i in invoices if i.status == value]
+        by_status.append({
+            "label": label, "value": value, "count": len(subset),
+            "total": sum((i.balance_due for i in subset), Decimal("0")),
+        })
+    outstanding = sum((i.balance_due for i in invoices
+                       if i.status != GarageInvoice.Status.PAID), Decimal("0"))
+
+    jobs = list(GarageJob.objects.filter(garage=GarageJob.Garage.ACL))
+    open_jobs = [j for j in jobs if not j.is_closed]
+    closed_jobs = [j for j in jobs if j.is_closed]
+    jobs_value = sum((j.total or Decimal("0") for j in jobs), Decimal("0"))
+
+    # Job value by insurer (top rows).
+    by_insurer = {}
+    for j in jobs:
+        key = j.insurance.strip() or "—"
+        by_insurer[key] = by_insurer.get(key, Decimal("0")) + (j.total or Decimal("0"))
+    insurer_rows = sorted(by_insurer.items(), key=lambda kv: kv[1], reverse=True)[:8]
+
+    return render(request, "claims/garage_metrics.html", {
+        "is_garage": garage,
+        "invoice_count": len(invoices),
+        "total_invoiced": total_invoiced,
+        "outstanding": outstanding,
+        "by_status": by_status,
+        "open_jobs": len(open_jobs),
+        "closed_jobs": len(closed_jobs),
+        "jobs_total": len(jobs),
+        "jobs_value": jobs_value,
+        "insurer_rows": insurer_rows,
+    })
+
+
+@login_required
+@require_POST
+def garage_job_to_invoice(request, pk):
+    """Create a new invoice pre-filled from a worklist job (its repairs go on
+    the invoice), owned privately by whoever raised it."""
+    job = get_object_or_404(GarageJob, pk=pk)
+    inv = GarageInvoice.objects.create(
+        invoice_no=_next_invoice_no(),
+        bill_to=job.client,
+        created_by=request.user,
+        updated_by=request.user,
+    )
+    GarageInvoiceLine.objects.create(
+        invoice=inv,
+        line_date=job.accident_date,
+        reg_no=job.plate_no,
+        description=job.make or "Repairs",
+        amount=job.total or Decimal("0"),
+        order=0,
+    )
+    return redirect("garage_invoice_edit", pk=inv.pk)
 
 
 @login_required
@@ -323,10 +449,20 @@ def garage_invoice_new(request):
     return redirect("garage_invoice_edit", pk=inv.pk)
 
 
+def _get_owned_invoice(request, pk):
+    """Fetch an invoice, but a garage user may only reach their own."""
+    inv = get_object_or_404(GarageInvoice, pk=pk)
+    if is_garage_user(request.user) and inv.created_by_id != request.user.id:
+        return None
+    return inv
+
+
 @login_required
 def garage_invoice_edit(request, pk):
     """Edit an invoice: header fields plus inline repair lines."""
-    inv = get_object_or_404(GarageInvoice, pk=pk)
+    inv = _get_owned_invoice(request, pk)
+    if inv is None:
+        return redirect("garage_invoices")
     if request.method == "POST":
         for f in ("issuer_name", "payable_to", "issuer_contact", "issuer_vat",
                   "issuer_email", "invoice_no", "bill_to", "bill_contact_name",
@@ -354,7 +490,9 @@ def garage_invoice_edit(request, pk):
 @require_POST
 def garage_invoice_line_add(request, pk):
     """Add a blank repair line to the invoice."""
-    inv = get_object_or_404(GarageInvoice, pk=pk)
+    inv = _get_owned_invoice(request, pk)
+    if inv is None:
+        return redirect("garage_invoices")
     last = inv.lines.order_by("-order").first()
     GarageInvoiceLine.objects.create(invoice=inv, order=(last.order + 1) if last else 0)
     inv.updated_by = request.user
@@ -366,7 +504,9 @@ def garage_invoice_line_add(request, pk):
 @require_POST
 def garage_invoice_line_update(request, pk, line_pk):
     """Inline save or delete of one repair line."""
-    inv = get_object_or_404(GarageInvoice, pk=pk)
+    inv = _get_owned_invoice(request, pk)
+    if inv is None:
+        return redirect("garage_invoices")
     line = get_object_or_404(GarageInvoiceLine, pk=line_pk, invoice=inv)
     if request.POST.get("action") == "delete":
         line.delete()
@@ -394,7 +534,9 @@ def garage_invoice_line_update(request, pk, line_pk):
 @login_required
 def garage_invoice_pdf(request, pk):
     """Render the invoice as a PDF matching the ACR Garage layout."""
-    inv = get_object_or_404(GarageInvoice, pk=pk)
+    inv = _get_owned_invoice(request, pk)
+    if inv is None:
+        return redirect("garage_invoices")
     from .services.garage_invoice_pdf import build_garage_invoice_pdf
 
     pdf = build_garage_invoice_pdf(inv)

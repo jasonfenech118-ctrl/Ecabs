@@ -1,26 +1,20 @@
 {% for j in rows %}
 <tr>
-  <td>
-    <form id="g-{{ j.pk }}" method="post" action="{% url 'garage_job_update' j.pk %}">{% csrf_token %}</form>
-    <form id="ga-{{ j.pk }}" method="post" action="{% url 'garage_job_update' j.pk %}">{% csrf_token %}<input type="hidden" name="action" value="{% if is_closed %}reopen{% else %}close{% endif %}"></form>
-    <form id="gd-{{ j.pk }}" method="post" action="{% url 'garage_job_update' j.pk %}" onsubmit="return confirm('Delete this row?')">{% csrf_token %}<input type="hidden" name="action" value="delete"></form>
-    <input form="g-{{ j.pk }}" name="accident_date" type="date" value="{{ j.accident_date|date:'Y-m-d' }}" class="atf-input">
-  </td>
-  <td><input form="g-{{ j.pk }}" name="survey_date" type="date" value="{{ j.survey_date|date:'Y-m-d' }}" class="atf-input"></td>
-  <td><input form="g-{{ j.pk }}" name="plate_no" value="{{ j.plate_no }}" class="atf-input" style="width:6rem"></td>
-  <td><input form="g-{{ j.pk }}" name="client" value="{{ j.client }}" class="atf-input atf-wide"></td>
-  <td><input form="g-{{ j.pk }}" name="make" value="{{ j.make }}" class="atf-input"></td>
-  <td><input form="g-{{ j.pk }}" name="claim_no" value="{{ j.claim_no }}" class="atf-input"></td>
-  <td><input form="g-{{ j.pk }}" name="surveyor" value="{{ j.surveyor }}" class="atf-input"></td>
-  <td><input form="g-{{ j.pk }}" name="insurance" value="{{ j.insurance }}" class="atf-input" style="width:6rem"></td>
-  <td><input form="g-{{ j.pk }}" name="report_received" value="{{ j.report_received }}" class="atf-input" placeholder="date or note"></td>
-  <td class="{% if j.go_ahead_yes %}atf-yes{% endif %}"><input form="g-{{ j.pk }}" name="go_ahead" value="{{ j.go_ahead }}" class="atf-input atf-wide" placeholder="e.g. Yes, parts Elmo"></td>
-  <td><input form="g-{{ j.pk }}" name="total" type="number" step="0.01" min="0" value="{{ j.total|default_if_none:'' }}" class="atf-input atf-num" placeholder="€"></td>
+  <td style="white-space:nowrap">{{ j.accident_date|date:"d/m/Y"|default:"—" }}</td>
+  <td style="white-space:nowrap">{{ j.survey_date|date:"d/m/Y"|default:"—" }}</td>
+  <td>{{ j.plate_no|default:"—" }}</td>
+  <td>{{ j.client|default:"—" }}</td>
+  <td>{{ j.make|default:"—" }}</td>
+  <td>{{ j.claim_no|default:"—" }}</td>
+  <td>{{ j.surveyor|default:"—" }}</td>
+  <td>{{ j.insurance|default:"—" }}</td>
+  <td>{{ j.report_received|default:"—" }}</td>
+  <td class="{% if j.go_ahead_yes %}atf-yes{% endif %}">{{ j.go_ahead|default:"—" }}</td>
+  <td class="right">{% if j.total is not None %}€{{ j.total|floatformat:2 }}{% else %}—{% endif %}</td>
   <td style="white-space:nowrap">
-    <button form="g-{{ j.pk }}" type="submit" class="btn btn-sm btn-primary">Save</button>
-    <button form="ga-{{ j.pk }}" type="submit" class="btn btn-sm">{% if is_closed %}Reopen{% else %}Close{% endif %}</button>
-    <a href="{% url 'garage_job_form' j.pk %}" class="btn btn-sm" title="Open full form">Form</a>
-    <button form="gd-{{ j.pk }}" type="submit" class="btn btn-sm btn-danger" title="Delete row">✕</button>
+    <a href="{% url 'garage_job_form' j.pk %}" class="btn btn-sm btn-primary" title="Open / edit in form">Open</a>
+    <form id="ga-{{ j.pk }}" method="post" action="{% url 'garage_job_update' j.pk %}" style="display:inline">{% csrf_token %}<input type="hidden" name="action" value="{% if is_closed %}reopen{% else %}close{% endif %}"><button type="submit" class="btn btn-sm">{% if is_closed %}Reopen{% else %}Close{% endif %}</button></form>
+    <form method="post" action="{% url 'garage_job_to_invoice' j.pk %}" style="display:inline">{% csrf_token %}<button type="submit" class="btn btn-sm" title="Create an invoice from this job">→ Invoice</button></form>
     {% if j.updated_by %}<div class="muted" style="font-size:.68rem; margin-top:.15rem">by {{ j.updated_by.get_full_name|default:j.updated_by.username }}</div>{% endif %}
   </td>
 </tr>

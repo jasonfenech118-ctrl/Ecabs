@@ -10,12 +10,15 @@
     <h1>{{ garage_name }}</h1>
     <div class="sub">Panel-beater worklist — vehicles sent for repair, survey and go-ahead tracking</div>
   </div>
-  <div class="row" style="gap:.5rem">
-    <a href="{% url 'garage_job_new' %}" class="btn btn-primary">＋ New job (form)</a>
-    <form method="post" action="{% url 'garage_job_add' %}">{% csrf_token %}
-      <button type="submit" class="btn">＋ Quick row</button>
-    </form>
-  </div>
+  <a href="{% url 'garage_job_new' %}" class="btn btn-primary">＋ New job</a>
+</div>
+
+<div class="card no-print">
+  <form method="get" class="row" style="gap:.5rem; align-items:center">
+    <input name="q" value="{{ q }}" placeholder="Search plate, client, make, claim, surveyor, insurer…" style="min-width:300px; padding:.45rem .6rem; border:1px solid #d1d5db; border-radius:6px">
+    <button type="submit" class="btn btn-primary">Search</button>
+    {% if q %}<a href="{% url 'garage_jobs' %}" class="btn btn-sm">Clear</a>{% endif %}
+  </form>
 </div>
 
 <h2 class="atf-heading">Open <span class="muted">· {{ open_jobs|length }} job{{ open_jobs|length|pluralize }} · €{{ open_total|floatformat:2|intcomma }}</span></h2>
@@ -50,5 +53,5 @@
   </table>
 </div>
 
-<p class="muted" style="font-size:.8rem; margin-top:1rem">Add a row, then fill in each cell inline and press <strong>Save</strong>. A green <strong>Go ahead?</strong> means the insurer has approved the repair (type it starting with “Yes”). Use <strong>Close</strong> once the job is finished.</p>
+<p class="muted" style="font-size:.8rem; margin-top:1rem">The table is read-only. Use <strong>＋ New job</strong> to add one, or <strong>Open</strong> to edit a job in the form. A green <strong>Go ahead?</strong> means the insurer has approved the repair. <strong>→ Invoice</strong> starts an invoice from that job. Use <strong>Close</strong> once the job is finished.</p>
 {% endblock %}

@@ -15,10 +15,36 @@
   </form>
 </div>
 
-<div class="card table-wrap">
+<div class="card no-print">
+  <form method="get" class="row" style="gap:.6rem; align-items:flex-end; flex-wrap:wrap">
+    <label class="field" style="margin:0"><span>Search</span>
+      <input name="q" value="{{ q }}" placeholder="Invoice no or bill-to…" style="min-width:200px">
+    </label>
+    <label class="field" style="margin:0"><span>Status</span>
+      <select name="status">
+        <option value="">All statuses</option>
+        {% for val, lbl in statuses %}<option value="{{ val }}" {% if status == val %}selected{% endif %}>{{ lbl }}</option>{% endfor %}
+      </select>
+    </label>
+    {% if not is_garage %}
+    <label class="field" style="margin:0"><span>Owner</span>
+      <select name="owner">
+        <option value="mine" {% if owner == 'mine' %}selected{% endif %}>Mine</option>
+        <option value="all" {% if owner == 'all' %}selected{% endif %}>Everyone</option>
+        {% for u in owners %}<option value="{{ u.pk }}" {% if owner == u.pk|stringformat:'s' %}selected{% endif %}>{{ u.get_full_name|default:u.username }}</option>{% endfor %}
+      </select>
+    </label>
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="{% url 'garage_invoices' %}" class="btn btn-sm">Reset</a>
+  </form>
+  {% if not is_garage %}<p class="muted" style="margin:.5rem 0 0; font-size:.8rem">Showing <strong>{% if owner == 'mine' %}your{% elif owner == 'all' %}everyone’s{% else %}the selected owner’s{% endif %}</strong> invoices. Switch <em>Owner</em> to glance at others.</p>{% endif %}
+</div>
+
+<div class="card table-wrap mt">
   <table class="list">
     <thead>
-      <tr><th>Invoice No</th><th>Date</th><th>Bill to</th><th class="right">Balance due</th><th>Status</th><th></th></tr>
+      <tr><th>Invoice No</th><th>Date</th><th>Bill to</th>{% if not is_garage %}<th>Owner</th>{% endif %}<th class="right">Balance due</th><th>Status</th><th></th></tr>
     </thead>
     <tbody>
       {% for inv in invoices %}
@@ -26,6 +52,7 @@
         <td><a href="{{ inv.get_absolute_url }}"><strong>{{ inv.invoice_no|default:"(no number)" }}</strong></a></td>
         <td>{{ inv.invoice_date|date:"d/m/Y"|default:"—" }}</td>
         <td>{{ inv.bill_to|default:"—" }}</td>
+        {% if not is_garage %}<td>{% if inv.created_by %}{{ inv.created_by.get_full_name|default:inv.created_by.username }}{% else %}—{% endif %}</td>{% endif %}
         <td class="right">€{{ inv.balance_due|floatformat:2|intcomma }}</td>
         <td><span class="pill pill-{{ inv.status }}">{{ inv.get_status_display }}</span></td>
         <td style="white-space:nowrap">
@@ -34,7 +61,7 @@
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="6" class="empty">No invoices yet — press “New invoice”.</td></tr>
+      <tr><td colspan="7" class="empty">No invoices match.</td></tr>
       {% endfor %}
     </tbody>
   </table>

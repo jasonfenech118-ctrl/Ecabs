@@ -34,6 +34,9 @@
       <a href="{% url 'garage_invoices' %}" class="{% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">🧾</span> My invoices
       </a>
+      <a href="{% url 'garage_metrics' %}" class="{% if request.resolver_match.url_name == 'garage_metrics' %}active{% endif %}">
+        <span class="nav-icon">📊</span> My metrics
+      </a>
       {% else %}
       <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
         <span class="nav-icon">⌂</span> Home
@@ -64,6 +67,9 @@
       </a>
       <a href="{% url 'garage_invoices' %}" class="nav-sub {% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">🧾</span> Garage invoices
+      </a>
+      <a href="{% url 'garage_metrics' %}" class="nav-sub {% if request.resolver_match.url_name == 'garage_metrics' %}active{% endif %}">
+        <span class="nav-icon">📊</span> Garage metrics
       </a>
       <a href="{% url 'master_sheet' %}" class="{% if 'master' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">▥</span> Master sheet

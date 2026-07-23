@@ -211,6 +211,24 @@ input:focus, select:focus, textarea:focus {
 .garage-banner-logo { height: 72px; width: auto; max-width: 100%; }
 @media (max-width: 640px) { .garage-banner-logo { height: 52px; } }
 
+/* Deeper orange treatment across the whole garage section. */
+.garage-theme .main { background: #fff7f3; }
+.garage-theme .card { border-top: 3px solid var(--garage); }
+.garage-theme .garage-banner { border-top-width: 4px; }
+.garage-theme .btn-primary { background: var(--garage); border-color: var(--garage); color: #fff; }
+.garage-theme .pill-sent { background: #ffe3d3; color: var(--garage-dark); }
+.garage-theme .field > span { color: var(--garage-dark); }
+
+/* --- Metrics cards --------------------------------------------------------- */
+.metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+@media (max-width: 900px) { .metric-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .metric-grid { grid-template-columns: 1fr; } }
+.metric-card { background: #fff; border-radius: 12px; padding: 1.1rem 1.2rem; box-shadow: 0 1px 3px rgba(0,0,0,.06); border-top: 4px solid var(--garage); }
+.metric-card.metric-warn { border-top-color: #d97706; }
+.metric-label { font-size: .78rem; color: #6b7280; text-transform: uppercase; letter-spacing: .03em; }
+.metric-value { font-size: 1.7rem; font-weight: 700; margin: .2rem 0; color: #1a1a1a; }
+.metric-sub { font-size: .8rem; color: #6b7280; }
+
 /* --- Simple two-column form grid ------------------------------------------ */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 @media (max-width: 780px) { .grid-2 { grid-template-columns: 1fr; } }

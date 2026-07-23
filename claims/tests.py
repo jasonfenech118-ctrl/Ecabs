@@ -1333,6 +1333,96 @@ class GarageInvoiceTests(TestCase):
         self.assertEqual(inv.lines.count(), 0)
 
 
+class GarageInvoicePrivacyTests(TestCase):
+    def setUp(self):
+        from django.contrib.auth.models import Group
+
+        User = get_user_model()
+        self.mario = User.objects.create_user("mario", password="pw")
+        grp, _ = Group.objects.get_or_create(name="Garage")
+        self.mario.groups.add(grp)
+        self.francis = User.objects.create_superuser("francis", password="pw")
+
+    def _new_invoice_as(self, user):
+        from .models import GarageInvoice
+
+        self.client.force_login(user)
+        self.client.post(reverse("garage_invoice_new"))
+        return GarageInvoice.objects.filter(created_by=user).order_by("-id").first()
+
+    def test_garage_user_only_sees_own(self):
+        mine = self._new_invoice_as(self.mario)
+        theirs = self._new_invoice_as(self.francis)
+        self.client.force_login(self.mario)
+        html = self.client.get(reverse("garage_invoices")).content.decode()
+        self.assertIn(mine.invoice_no, html)
+        self.assertNotIn(theirs.invoice_no, html)
+
+    def test_garage_user_cannot_open_others_invoice(self):
+        theirs = self._new_invoice_as(self.francis)
+        self.client.force_login(self.mario)
+        r = self.client.get(reverse("garage_invoice_edit", args=[theirs.pk]))
+        self.assertRedirects(r, reverse("garage_invoices"))
+        r2 = self.client.get(reverse("garage_invoice_pdf", args=[theirs.pk]))
+        self.assertRedirects(r2, reverse("garage_invoices"))
+
+    def test_admin_defaults_to_own_but_can_filter_to_all(self):
+        marios = self._new_invoice_as(self.mario)
+        frans = self._new_invoice_as(self.francis)
+        self.client.force_login(self.francis)
+        # default (owner=mine) hides Mario's
+        default = self.client.get(reverse("garage_invoices")).content.decode()
+        self.assertIn(frans.invoice_no, default)
+        self.assertNotIn(marios.invoice_no, default)
+        # owner=all shows everyone's
+        allv = self.client.get(reverse("garage_invoices"), {"owner": "all"}).content.decode()
+        self.assertIn(marios.invoice_no, allv)
+        self.assertIn(frans.invoice_no, allv)
+
+    def test_status_filter(self):
+        inv = self._new_invoice_as(self.francis)
+        inv.status = "paid"; inv.save()
+        self.client.force_login(self.francis)
+        r = self.client.get(reverse("garage_invoices"), {"owner": "all", "status": "paid"})
+        self.assertContains(r, inv.invoice_no)
+        r2 = self.client.get(reverse("garage_invoices"), {"owner": "all", "status": "draft"})
+        self.assertNotContains(r2, inv.invoice_no)
+
+    def test_job_to_invoice_prefills(self):
+        from decimal import Decimal
+
+        from .models import GarageInvoice, GarageJob
+
+        job = GarageJob.objects.create(garage=GarageJob.Garage.ACL, client="FASTDROP",
+                                       plate_no="GLY555", make="Toyota",
+                                       total=Decimal("300.00"))
+        self.client.force_login(self.mario)
+        self.client.post(reverse("garage_job_to_invoice", args=[job.pk]))
+        inv = GarageInvoice.objects.filter(created_by=self.mario).order_by("-id").first()
+        self.assertEqual(inv.bill_to, "FASTDROP")
+        line = inv.lines.first()
+        self.assertEqual(line.reg_no, "GLY555")
+        self.assertEqual(str(line.amount), "300.00")
+
+    def test_metrics_page(self):
+        self._new_invoice_as(self.francis)
+        self.client.force_login(self.francis)
+        r = self.client.get(reverse("garage_metrics"))
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "Invoiced (total)")
+
+    def test_worklist_search(self):
+        from .models import GarageJob
+
+        GarageJob.objects.create(garage=GarageJob.Garage.ACL, plate_no="ZED111",
+                                 client="Findme Ltd")
+        self.client.force_login(self.francis)
+        r = self.client.get(reverse("garage_jobs"), {"q": "Findme"})
+        self.assertContains(r, "ZED111")
+        r2 = self.client.get(reverse("garage_jobs"), {"q": "Nothinghere"})
+        self.assertNotContains(r2, "ZED111")
+
+
 class AccidentListTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("fran", password="pw")

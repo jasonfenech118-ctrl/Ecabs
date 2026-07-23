@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load humanize static %}
+{% block title %}ACR Garage — metrics{% endblock %}
+{% block content %}
+<div class="garage-banner">
+  <img src="{% static 'img/acr-garage-logo.jpg' %}" alt="ACR Garage" class="garage-banner-logo">
+</div>
+<div class="page-head">
+  <div>
+    <h1>Metrics</h1>
+    <div class="sub">ACR Garage — invoices &amp; worklist at a glance{% if is_garage %} (your data){% endif %}</div>
+  </div>
+</div>
+
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="metric-label">Invoiced (total)</div>
+    <div class="metric-value">€{{ total_invoiced|floatformat:2|intcomma }}</div>
+    <div class="metric-sub">{{ invoice_count }} invoice{{ invoice_count|pluralize }}</div>
+  </div>
+  <div class="metric-card metric-warn">
+    <div class="metric-label">Outstanding</div>
+    <div class="metric-value">€{{ outstanding|floatformat:2|intcomma }}</div>
+    <div class="metric-sub">not yet marked paid</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Open jobs</div>
+    <div class="metric-value">{{ open_jobs }}</div>
+    <div class="metric-sub">{{ closed_jobs }} closed · {{ jobs_total }} total</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Worklist value</div>
+    <div class="metric-value">€{{ jobs_value|floatformat:2|intcomma }}</div>
+    <div class="metric-sub">sum of job totals</div>
+  </div>
+</div>
+
+<div class="grid-2 mt">
+  <div class="card">
+    <h3>Invoices by status</h3>
+    <table class="list">
+      <thead><tr><th>Status</th><th class="right">Count</th><th class="right">Value</th></tr></thead>
+      <tbody>
+        {% for s in by_status %}
+        <tr>
+          <td><span class="pill pill-{{ s.value }}">{{ s.label }}</span></td>
+          <td class="right">{{ s.count }}</td>
+          <td class="right">€{{ s.total|floatformat:2|intcomma }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Worklist value by insurer</h3>
+    <table class="list">
+      <thead><tr><th>Insurer</th><th class="right">Value</th></tr></thead>
+      <tbody>
+        {% for name, value in insurer_rows %}
+        <tr><td>{{ name }}</td><td class="right">€{{ value|floatformat:2|intcomma }}</td></tr>
+        {% empty %}
+        <tr><td colspan="2" class="empty">No jobs yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
