@@ -1,8 +1,8 @@
-"""Create (or update) a garage-only user, e.g. the ACL Garage owner Mario.
+"""Create (or update) a garage-only user, e.g. the ACR Garage owner Mario.
 
     python manage.py make_garage_user mario --password "SomePass123"
 
-The user is placed in the "Garage" group, which limits them to the ACL Garage
+The user is placed in the "Garage" group, which limits them to the ACR Garage
 page only. Run again to reset the password. Omit --password to be prompted.
 """
 
@@ -53,5 +53,5 @@ class Command(BaseCommand):
 
         verb = "Created" if created else "Updated"
         self.stdout.write(self.style.SUCCESS(
-            "%s garage user '%s' — access limited to the ACL Garage page." % (verb, username)
+            "%s garage user '%s' — access limited to the ACR Garage page." % (verb, username)
         ))

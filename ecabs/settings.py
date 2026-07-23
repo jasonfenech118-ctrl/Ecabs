@@ -62,7 +62,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    # Confines garage-only users (e.g. ACL Garage) to their worklist. Must run
+    # Confines garage-only users (e.g. ACR Garage) to their worklist. Must run
     # after authentication so request.user is populated.
     "claims.middleware.GarageAccessMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",

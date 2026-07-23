@@ -1,6 +1,6 @@
 """Role helpers.
 
-A "Garage" user (e.g. the ACL Garage owner, Mario) is limited to the ACL
+A "Garage" user (e.g. the ACR Garage owner, Mario) is limited to the ACR
 Garage page only — they can add/edit their own worklist rows and totals, but
 see nothing else in the system. Admins/superusers (Francis) keep full access
 and see the same rows, so they can help amend what the garage user enters.

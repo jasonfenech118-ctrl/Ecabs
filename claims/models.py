@@ -709,12 +709,12 @@ class RepairLine(models.Model):
 
 
 class GarageJob(models.Model):
-    """A vehicle sent to a panel-beater garage (e.g. ACL Garage) for repair.
+    """A vehicle sent to a panel-beater garage (e.g. ACR Garage) for repair.
     A simple tracking register mirroring the garage's worksheet: survey, when
     the report came back, and whether we have the insurer's go-ahead."""
 
     class Garage(models.TextChoices):
-        ACL = "acl", "ACL Garage"
+        ACL = "acl", "ACR Garage"
 
     garage = models.CharField(
         max_length=20, choices=Garage.choices, default=Garage.ACL, db_index=True

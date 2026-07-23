@@ -60,7 +60,7 @@
         <span class="nav-icon">⚠</span> At fault
       </a>
       <a href="{% url 'garage_jobs' %}" class="nav-sub {% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
-        <span class="nav-icon">🔧</span> ACL Garage
+        <span class="nav-icon">🔧</span> ACR Garage
       </a>
       <a href="{% url 'garage_invoices' %}" class="nav-sub {% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">🧾</span> Garage invoices

@@ -1147,7 +1147,7 @@ class GarageJobTests(TestCase):
 
     def test_seeded_rows_show_on_page(self):
         r = self.client.get(reverse("garage_jobs"))
-        self.assertContains(r, "ACL Garage")
+        self.assertContains(r, "ACR Garage")
         self.assertContains(r, "Mohammed Asif Khaled")
 
     def test_add_edit_close_reopen_delete_row(self):
@@ -1184,7 +1184,7 @@ class GarageJobTests(TestCase):
 
 
 class GarageAccessTests(TestCase):
-    """A garage-only user (Mario) is confined to the ACL Garage page; an admin
+    """A garage-only user (Mario) is confined to the ACR Garage page; an admin
     (Francis) keeps full access and sees the same rows."""
 
     def setUp(self):
@@ -1218,7 +1218,7 @@ class GarageAccessTests(TestCase):
     def test_garage_user_nav_is_trimmed(self):
         self.client.force_login(self.mario)
         html = self.client.get(reverse("garage_jobs")).content
-        self.assertIn(b"ACL Garage", html)
+        self.assertIn(b"ACR Garage", html)
         self.assertNotIn(b"Dashboard", html)
         self.assertNotIn(b"Master sheet", html)
 
@@ -1227,7 +1227,7 @@ class GarageAccessTests(TestCase):
         self.assertEqual(self.client.get(reverse("dashboard")).status_code, 200)
         html = self.client.get(reverse("garage_jobs")).content
         self.assertIn(b"Dashboard", html)  # full nav
-        self.assertIn(b"ACL Garage", html)
+        self.assertIn(b"ACR Garage", html)
 
     def test_edits_are_attributed_and_shared(self):
         from .models import GarageJob

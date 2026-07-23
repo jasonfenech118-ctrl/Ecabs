@@ -171,7 +171,7 @@ def at_fault_update(request, pk):
     return redirect("claims_at_fault")
 
 
-# --- Panel-beater garage register (ACL Garage) -------------------------------
+# --- Panel-beater garage register (ACR Garage) -------------------------------
 
 def _parse_date(raw):
     """Parse a yyyy-mm-dd date from an inline input; blank -> None."""
@@ -190,7 +190,7 @@ def _parse_date(raw):
 
 @login_required
 def garage_jobs(request):
-    """ACL Garage worklist — vehicles sent to the panel beater for repair."""
+    """ACR Garage worklist — vehicles sent to the panel beater for repair."""
     qs = GarageJob.objects.filter(garage=GarageJob.Garage.ACL).select_related("updated_by")
     open_jobs = [j for j in qs if not j.is_closed]
     closed_jobs = [j for j in qs if j.is_closed]
@@ -206,7 +206,7 @@ def garage_jobs(request):
             "closed_jobs": closed_jobs,
             "open_total": sum_total(open_jobs),
             "closed_total": sum_total(closed_jobs),
-            "garage_name": "ACL Garage",
+            "garage_name": "ACR Garage",
         },
     )
 
@@ -214,7 +214,7 @@ def garage_jobs(request):
 @login_required
 @require_POST
 def garage_job_add(request):
-    """Add a blank row to the ACL Garage register (fill it in inline)."""
+    """Add a blank row to the ACR Garage register (fill it in inline)."""
     GarageJob.objects.create(garage=GarageJob.Garage.ACL, updated_by=request.user)
     return redirect("garage_jobs")
 
