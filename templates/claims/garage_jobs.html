@@ -12,13 +12,14 @@
   </form>
 </div>
 
-<h2 class="atf-heading">Open <span class="muted">· {{ open_jobs|length }} job{{ open_jobs|length|pluralize }}</span></h2>
+<h2 class="atf-heading">Open <span class="muted">· {{ open_jobs|length }} job{{ open_jobs|length|pluralize }} · €{{ open_total|floatformat:2|intcomma }}</span></h2>
 <div class="card table-wrap">
   <table class="list at-fault">
     <thead>
       <tr>
         <th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th>
-        <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th><th></th>
+        <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th>
+        <th class="right">Total €</th><th></th>
       </tr>
     </thead>
     <tbody>
@@ -27,13 +28,14 @@
   </table>
 </div>
 
-<h2 class="atf-heading mt">Closed <span class="muted">· {{ closed_jobs|length }} job{{ closed_jobs|length|pluralize }}</span></h2>
+<h2 class="atf-heading mt">Closed <span class="muted">· {{ closed_jobs|length }} job{{ closed_jobs|length|pluralize }} · €{{ closed_total|floatformat:2|intcomma }}</span></h2>
 <div class="card table-wrap">
   <table class="list at-fault">
     <thead>
       <tr>
         <th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th>
-        <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th><th></th>
+        <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th>
+        <th class="right">Total €</th><th></th>
       </tr>
     </thead>
     <tbody>

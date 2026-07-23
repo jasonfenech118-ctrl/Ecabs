@@ -62,6 +62,9 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # Confines garage-only users (e.g. ACL Garage) to their worklist. Must run
+    # after authentication so request.user is populated.
+    "claims.middleware.GarageAccessMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
@@ -80,6 +83,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "claims.context_processors.due_reminders",
+                "claims.context_processors.role_flags",
             ],
         },
     },

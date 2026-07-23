@@ -730,8 +730,15 @@ class GarageJob(models.Model):
     # Free text so it can hold a date or a note like "Pending part".
     report_received = models.CharField("Report received", max_length=120, blank=True)
     go_ahead = models.CharField("Go ahead?", max_length=200, blank=True)
+    total = models.DecimalField(
+        "Total (€)", max_digits=10, decimal_places=2, null=True, blank=True
+    )
 
     is_closed = models.BooleanField(default=False, db_index=True)
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="+", verbose_name="Last edited by",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

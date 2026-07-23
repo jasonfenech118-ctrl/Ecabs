@@ -188,15 +188,21 @@ def _parse_date(raw):
 @login_required
 def garage_jobs(request):
     """ACL Garage worklist — vehicles sent to the panel beater for repair."""
-    qs = GarageJob.objects.filter(garage=GarageJob.Garage.ACL)
+    qs = GarageJob.objects.filter(garage=GarageJob.Garage.ACL).select_related("updated_by")
     open_jobs = [j for j in qs if not j.is_closed]
     closed_jobs = [j for j in qs if j.is_closed]
+
+    def sum_total(items):
+        return sum((j.total or Decimal("0")) for j in items)
+
     return render(
         request,
         "claims/garage_jobs.html",
         {
             "open_jobs": open_jobs,
             "closed_jobs": closed_jobs,
+            "open_total": sum_total(open_jobs),
+            "closed_total": sum_total(closed_jobs),
             "garage_name": "ACL Garage",
         },
     )
@@ -206,7 +212,7 @@ def garage_jobs(request):
 @require_POST
 def garage_job_add(request):
     """Add a blank row to the ACL Garage register (fill it in inline)."""
-    GarageJob.objects.create(garage=GarageJob.Garage.ACL)
+    GarageJob.objects.create(garage=GarageJob.Garage.ACL, updated_by=request.user)
     return redirect("garage_jobs")
 
 
@@ -218,10 +224,12 @@ def garage_job_update(request, pk):
     action = request.POST.get("action")
     if action == "close":
         job.is_closed = True
-        job.save(update_fields=["is_closed", "updated_at"])
+        job.updated_by = request.user
+        job.save(update_fields=["is_closed", "updated_by", "updated_at"])
     elif action == "reopen":
         job.is_closed = False
-        job.save(update_fields=["is_closed", "updated_at"])
+        job.updated_by = request.user
+        job.save(update_fields=["is_closed", "updated_by", "updated_at"])
     elif action == "delete":
         job.delete()
     else:
@@ -235,6 +243,15 @@ def garage_job_update(request, pk):
         job.insurance = request.POST.get("insurance", job.insurance)
         job.report_received = request.POST.get("report_received", job.report_received)
         job.go_ahead = request.POST.get("go_ahead", job.go_ahead)
+        raw_total = (request.POST.get("total") or "").strip()
+        if raw_total:
+            try:
+                job.total = Decimal(raw_total)
+            except InvalidOperation:
+                pass
+        else:
+            job.total = None
+        job.updated_by = request.user
         job.save()
     return redirect("garage_jobs")
 

@@ -1183,6 +1183,70 @@ class GarageJobTests(TestCase):
         self.assertFalse(GarageJob.objects.filter(pk=job.pk).exists())
 
 
+class GarageAccessTests(TestCase):
+    """A garage-only user (Mario) is confined to the ACL Garage page; an admin
+    (Francis) keeps full access and sees the same rows."""
+
+    def setUp(self):
+        from django.contrib.auth.models import Group
+
+        User = get_user_model()
+        self.mario = User.objects.create_user("mario", password="pw")
+        group, _ = Group.objects.get_or_create(name="Garage")
+        self.mario.groups.add(group)
+        self.francis = User.objects.create_superuser("francis", password="pw")
+
+    def test_make_garage_user_command(self):
+        from django.core.management import call_command
+
+        from .roles import is_garage_user
+        call_command("make_garage_user", "luigi", password="pw", full_name="Luigi Verde")
+        u = get_user_model().objects.get(username="luigi")
+        self.assertTrue(is_garage_user(u))
+        self.assertFalse(u.is_staff)
+        self.assertEqual(u.first_name, "Luigi")
+
+    def test_garage_user_confined_to_garage_page(self):
+        self.client.force_login(self.mario)
+        self.assertEqual(self.client.get(reverse("garage_jobs")).status_code, 200)
+        # anything else bounces to the worklist
+        for name in ("dashboard", "claim_list", "claims_at_fault", "master_sheet"):
+            r = self.client.get(reverse(name))
+            self.assertRedirects(r, reverse("garage_jobs"),
+                                 fetch_redirect_response=False)
+
+    def test_garage_user_nav_is_trimmed(self):
+        self.client.force_login(self.mario)
+        html = self.client.get(reverse("garage_jobs")).content
+        self.assertIn(b"ACL Garage", html)
+        self.assertNotIn(b"Dashboard", html)
+        self.assertNotIn(b"Master sheet", html)
+
+    def test_admin_has_full_access_and_sees_garage(self):
+        self.client.force_login(self.francis)
+        self.assertEqual(self.client.get(reverse("dashboard")).status_code, 200)
+        html = self.client.get(reverse("garage_jobs")).content
+        self.assertIn(b"Dashboard", html)  # full nav
+        self.assertIn(b"ACL Garage", html)
+
+    def test_edits_are_attributed_and_shared(self):
+        from .models import GarageJob
+
+        self.client.force_login(self.mario)
+        self.client.post(reverse("garage_job_add"))
+        job = GarageJob.objects.order_by("-id").first()
+        self.client.post(reverse("garage_job_update", args=[job.pk]),
+                         {"plate_no": "MAR123", "total": "1250.50", "go_ahead": ""})
+        job.refresh_from_db()
+        self.assertEqual(job.updated_by, self.mario)
+        self.assertEqual(str(job.total), "1250.50")
+        # Francis sees Mario's row and its total on the shared page
+        self.client.force_login(self.francis)
+        html = self.client.get(reverse("garage_jobs")).content
+        self.assertIn(b"MAR123", html)
+        self.assertIn(b"1250.50", html)
+
+
 class ImportAccidentsTests(TestCase):
     def _make_xlsx(self, path):
         import openpyxl

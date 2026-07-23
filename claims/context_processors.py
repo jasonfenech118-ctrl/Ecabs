@@ -3,8 +3,14 @@
 from django.utils import timezone
 
 from .models import Reminder
+from .roles import is_garage_user
 
 POPUP_LIMIT = 8
+
+
+def role_flags(request):
+    """Expose the current user's role so the nav can be trimmed."""
+    return {"is_garage_user": is_garage_user(getattr(request, "user", None))}
 
 
 def due_reminders(request):

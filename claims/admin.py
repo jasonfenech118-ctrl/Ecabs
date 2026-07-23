@@ -32,9 +32,10 @@ class RepairTypeAdmin(admin.ModelAdmin):
 @admin.register(GarageJob)
 class GarageJobAdmin(admin.ModelAdmin):
     list_display = ("plate_no", "client", "make", "claim_no", "surveyor",
-                    "insurance", "go_ahead", "is_closed")
+                    "insurance", "go_ahead", "total", "is_closed", "updated_by")
     list_filter = ("garage", "is_closed", "insurance")
     search_fields = ("plate_no", "client", "claim_no", "surveyor")
+    readonly_fields = ("updated_by", "created_at", "updated_at")
 
 
 class OtherChargeInline(admin.TabularInline):
