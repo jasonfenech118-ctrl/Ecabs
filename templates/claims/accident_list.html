@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Accident list — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Accident list</h1>
+    <div class="sub">The full accident register · {{ total|intcomma }} record{{ total|pluralize }}</div>
+  </div>
+  <a href="{% url 'accident_record_new' %}" class="btn btn-primary">＋ Add record</a>
+</div>
+
+<div class="card">
+  <form method="get" class="row" style="gap:.5rem; align-items:center">
+    <input name="q" value="{{ q }}" placeholder="Search reg, driver, TP, insurer, make…" style="min-width:280px; padding:.45rem .6rem; border:1px solid #d1d5db; border-radius:6px">
+    <button type="submit" class="btn btn-primary">Search</button>
+    {% if q %}<a href="{% url 'accident_list' %}" class="btn btn-sm">Clear</a>{% endif %}
+  </form>
+  <form method="post" action="{% url 'accident_list_upload' %}" enctype="multipart/form-data"
+        class="row" style="gap:.5rem; align-items:center; margin-top:.75rem; flex-wrap:wrap">
+    {% csrf_token %}
+    <span class="muted">Bulk load:</span>
+    <input type="file" name="file" accept=".xlsx" required>
+    <label class="muted" style="display:flex; align-items:center; gap:.3rem; font-size:.85rem">
+      <input type="checkbox" name="replace"> replace existing
+    </label>
+    <button type="submit" class="btn btn-sm">⬆ Upload Excel</button>
+  </form>
+</div>
+
+<div class="card table-wrap mt">
+  <table class="list accident-list">
+    <thead>
+      <tr>
+        <th>Date</th><th>Our Reg</th><th>Driver</th><th>TP Reg</th><th>Make</th>
+        <th>TP driver</th><th>TP owner</th><th>TP insurer</th><th>Report type</th><th>Fault</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in page %}
+      <tr>
+        <td style="white-space:nowrap">{{ r.date_of_acc|date:"d/m/Y"|default:"—" }}</td>
+        <td>{{ r.our_reg|default:"—" }}</td>
+        <td>{{ r.driver_name|default:"—" }}</td>
+        <td>{{ r.tp_reg|default:"—" }}</td>
+        <td>{{ r.vehicle_make|default:"—" }}</td>
+        <td>{{ r.tp_driver_name|default:"—" }}</td>
+        <td>{{ r.tp_owner_name|default:"—" }}</td>
+        <td>{{ r.tp_insurance|default:"—" }}</td>
+        <td>{{ r.report_type|default:"—" }}</td>
+        <td>{% if r.fault %}<span class="pill pill-{% if r.fault == 'OI' %}sent{% else %}draft{% endif %}">{{ r.fault }}</span>{% else %}—{% endif %}</td>
+        <td><a href="{{ r.get_absolute_url }}" class="btn btn-sm">Edit</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="11" class="empty">{% if q %}No records match “{{ q }}”.{% else %}No records yet — add one or upload the Excel file.{% endif %}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if page.paginator.num_pages > 1 %}
+<div class="row" style="justify-content:center; gap:.5rem; margin-top:1rem; align-items:center">
+  {% if page.has_previous %}<a class="btn btn-sm" href="?q={{ q|urlencode }}&page={{ page.previous_page_number }}">← Prev</a>{% endif %}
+  <span class="muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a class="btn btn-sm" href="?q={{ q|urlencode }}&page={{ page.next_page_number }}">Next →</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

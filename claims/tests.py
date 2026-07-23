@@ -1308,6 +1308,73 @@ class GarageInvoiceTests(TestCase):
         self.assertEqual(inv.lines.count(), 0)
 
 
+class AccidentListTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user("fran", password="pw")
+        self.client.force_login(self.user)
+
+    def _xlsx(self):
+        import openpyxl
+        from io import BytesIO
+
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.append(["Date of Acc", "Our Reg", "Driver Name", "TP Reg", "Vehicle Make",
+                   "TP Driver Name", "Contact Details", "TP Owner Name",
+                   "TP Owner Contact No", "TP Insurance", "Other Tps", "TP2 Owner Name",
+                   "TP2 Contact No", "TP2 Insurance", "Report Type", "Fault (OI / TP)"])
+        ws.append(["2021-01-01", "CLY142", "Isaac Zammit", "BBX937", "Nissan Qashqai",
+                   "Michael Calleja", "99432967", "Michael Calleja", "99432967",
+                   "MSI", "", "", "", "", "F 2 R", "TP"])
+        ws.append(["2021-02-03", "FLY098", "Samwel Sammut", "JBH412", "Peugeot 206",
+                   "Brian Vella", "79707569", "Brian Vella", "79707569", "MSI",
+                   "", "", "", "", "Etars", "OI"])
+        ws.append([None] * 16)  # blank row
+        buf = BytesIO(); wb.save(buf); buf.seek(0)
+        buf.name = "accidents.xlsx"
+        return buf
+
+    def test_upload_imports_records(self):
+        from .models import AccidentRecord
+
+        r = self.client.post(reverse("accident_list_upload"), {"file": self._xlsx()})
+        self.assertRedirects(r, reverse("accident_list"))
+        self.assertEqual(AccidentRecord.objects.count(), 2)
+        rec = AccidentRecord.objects.get(our_reg="CLY142")
+        self.assertEqual(rec.driver_name, "Isaac Zammit")
+        self.assertEqual(rec.fault, "TP")
+        self.assertEqual(str(rec.date_of_acc), "2021-01-01")
+
+    def test_replace_clears_first(self):
+        from .models import AccidentRecord
+
+        AccidentRecord.objects.create(our_reg="OLD001")
+        self.client.post(reverse("accident_list_upload"),
+                         {"file": self._xlsx(), "replace": "on"})
+        self.assertFalse(AccidentRecord.objects.filter(our_reg="OLD001").exists())
+        self.assertEqual(AccidentRecord.objects.count(), 2)
+
+    def test_search_and_manual_add(self):
+        from .models import AccidentRecord
+
+        self.client.post(reverse("accident_record_new"),
+                         {"our_reg": "ZZZ999", "driver_name": "Jane", "fault": "OI"})
+        rec = AccidentRecord.objects.get(our_reg="ZZZ999")
+        self.assertEqual(rec.driver_name, "Jane")
+        r = self.client.get(reverse("accident_list"), {"q": "ZZZ999"})
+        self.assertContains(r, "ZZZ999")
+
+    def test_garage_user_cannot_reach_accidents(self):
+        from django.contrib.auth.models import Group
+
+        mario = get_user_model().objects.create_user("mario_a", password="pw")
+        grp, _ = Group.objects.get_or_create(name="Garage")
+        mario.groups.add(grp)
+        self.client.force_login(mario)
+        r = self.client.get(reverse("accident_list"))
+        self.assertRedirects(r, reverse("garage_jobs"), fetch_redirect_response=False)
+
+
 class ImportAccidentsTests(TestCase):
     def _make_xlsx(self, path):
         import openpyxl

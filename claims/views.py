@@ -26,6 +26,7 @@ from .forms import (
 )
 from .models import (
     AccidentPhoto,
+    AccidentRecord,
     BillingItem,
     Claim,
     Company,
@@ -370,6 +371,90 @@ def garage_invoice_pdf(request, pk):
     name = (inv.invoice_no or "invoice").replace(" ", "_").replace(".", "")
     resp["Content-Disposition"] = f'inline; filename="{name}.pdf"'
     return resp
+
+
+# --- Accident list (master register) -----------------------------------------
+
+ACCIDENT_FIELDS = [
+    "date_of_acc", "our_reg", "driver_name", "tp_reg", "vehicle_make",
+    "tp_driver_name", "contact_details", "tp_owner_name", "tp_owner_contact",
+    "tp_insurance", "other_tps", "tp2_owner_name", "tp2_contact",
+    "tp2_insurance", "report_type", "fault",
+]
+
+
+@login_required
+def accident_list(request):
+    """Searchable, paginated view of the full accident register."""
+    from django.core.paginator import Paginator
+
+    q = (request.GET.get("q") or "").strip()
+    qs = AccidentRecord.objects.all()
+    if q:
+        qs = qs.filter(
+            Q(our_reg__icontains=q) | Q(tp_reg__icontains=q)
+            | Q(driver_name__icontains=q) | Q(tp_driver_name__icontains=q)
+            | Q(tp_owner_name__icontains=q) | Q(tp_insurance__icontains=q)
+            | Q(vehicle_make__icontains=q) | Q(report_type__icontains=q)
+        )
+    paginator = Paginator(qs, 50)
+    page = paginator.get_page(request.GET.get("page"))
+    return render(request, "claims/accident_list.html", {
+        "page": page, "q": q, "total": paginator.count,
+    })
+
+
+@login_required
+def accident_record_edit(request, pk=None):
+    """Add or edit one accident record via a full form."""
+    record = get_object_or_404(AccidentRecord, pk=pk) if pk else AccidentRecord()
+    if request.method == "POST":
+        record.date_of_acc = _parse_date(request.POST.get("date_of_acc"))
+        for f in ACCIDENT_FIELDS:
+            if f == "date_of_acc":
+                continue
+            if f == "fault":
+                val = (request.POST.get("fault") or "").strip().upper()
+                record.fault = val if val in ("OI", "TP") else ""
+            else:
+                setattr(record, f, request.POST.get(f, getattr(record, f) or ""))
+        record.save()
+        return redirect("accident_list")
+    return render(request, "claims/accident_record_form.html", {"record": record})
+
+
+@login_required
+@require_POST
+def accident_record_delete(request, pk):
+    get_object_or_404(AccidentRecord, pk=pk).delete()
+    return redirect("accident_list")
+
+
+@login_required
+@require_POST
+def accident_list_upload(request):
+    """Bulk-load the register from an uploaded .xlsx file."""
+    from django.contrib import messages
+
+    from .services.accident_import import import_accident_list
+
+    f = request.FILES.get("file")
+    if not f:
+        messages.error(request, "Choose an Excel (.xlsx) file to upload.")
+        return redirect("accident_list")
+    replace = request.POST.get("replace") == "on"
+    try:
+        created, skipped = import_accident_list(f, replace=replace)
+    except Exception as exc:  # noqa: BLE001 — surface any parse error to the user
+        messages.error(request, f"Could not import that file: {exc}")
+        return redirect("accident_list")
+    messages.success(
+        request,
+        f"Imported {created} record{'' if created == 1 else 's'}"
+        + (f" (skipped {skipped} blank rows)" if skipped else "")
+        + (" — existing register replaced." if replace else "."),
+    )
+    return redirect("accident_list")
 
 
 # --- Dashboard ---------------------------------------------------------------

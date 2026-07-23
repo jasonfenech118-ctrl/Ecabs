@@ -856,3 +856,48 @@ class GarageInvoiceLine(models.Model):
 
     def __str__(self):
         return f"{self.reg_no} — {self.description}"
+
+
+class AccidentRecord(models.Model):
+    """A row of the full accident register (the master accident list). A flat
+    reference log — every party, contact and insurer captured — separate from
+    the claims workflow. Bulk-loaded from Excel or entered by hand."""
+
+    date_of_acc = models.DateField("Date of accident", null=True, blank=True)
+    our_reg = models.CharField("Our Reg", max_length=20, blank=True)
+    driver_name = models.CharField("Driver name", max_length=160, blank=True)
+    tp_reg = models.CharField("TP Reg", max_length=20, blank=True)
+    vehicle_make = models.CharField("Vehicle make", max_length=120, blank=True)
+    tp_driver_name = models.CharField("TP driver name", max_length=160, blank=True)
+    contact_details = models.CharField("Contact details", max_length=120, blank=True)
+    tp_owner_name = models.CharField("TP owner name", max_length=160, blank=True)
+    tp_owner_contact = models.CharField("TP owner contact no", max_length=120, blank=True)
+    tp_insurance = models.CharField("TP insurance", max_length=120, blank=True)
+    other_tps = models.CharField("Other TPs", max_length=200, blank=True)
+    tp2_owner_name = models.CharField("TP2 owner name", max_length=160, blank=True)
+    tp2_contact = models.CharField("TP2 contact no", max_length=120, blank=True)
+    tp2_insurance = models.CharField("TP2 insurance", max_length=120, blank=True)
+    report_type = models.CharField("Report type", max_length=120, blank=True)
+
+    class Fault(models.TextChoices):
+        OUR_INSURED = "OI", "Our insured (OI)"
+        THIRD_PARTY = "TP", "Third party (TP)"
+        UNKNOWN = "", "—"
+
+    fault = models.CharField("Fault (OI / TP)", max_length=4, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-date_of_acc", "-id"]
+        indexes = [
+            models.Index(fields=["our_reg"]),
+            models.Index(fields=["tp_reg"]),
+        ]
+
+    def __str__(self):
+        return f"{self.date_of_acc or '—'} · {self.our_reg or '—'}"
+
+    def get_absolute_url(self):
+        return reverse("accident_record_edit", args=[self.pk])

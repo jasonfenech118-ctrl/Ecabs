@@ -3,6 +3,7 @@ from simple_history.admin import SimpleHistoryAdmin
 
 from .models import (
     AccidentPhoto,
+    AccidentRecord,
     BillingItem,
     Claim,
     Company,
@@ -38,6 +39,15 @@ class GarageJobAdmin(admin.ModelAdmin):
     list_filter = ("garage", "is_closed", "insurance")
     search_fields = ("plate_no", "client", "claim_no", "surveyor")
     readonly_fields = ("updated_by", "created_at", "updated_at")
+
+
+@admin.register(AccidentRecord)
+class AccidentRecordAdmin(admin.ModelAdmin):
+    list_display = ("date_of_acc", "our_reg", "driver_name", "tp_reg",
+                    "vehicle_make", "tp_insurance", "report_type", "fault")
+    list_filter = ("fault", "tp_insurance")
+    search_fields = ("our_reg", "tp_reg", "driver_name", "tp_owner_name")
+    date_hierarchy = "date_of_acc"
 
 
 class GarageInvoiceLineInline(admin.TabularInline):

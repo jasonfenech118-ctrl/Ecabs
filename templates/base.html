@@ -68,6 +68,9 @@
       <a href="{% url 'master_sheet' %}" class="{% if 'master' in request.resolver_match.url_name %}active{% endif %}">
         <span class="nav-icon">▥</span> Master sheet
       </a>
+      <a href="{% url 'accident_list' %}" class="{% if 'accident' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">▤</span> Accident list
+      </a>
       <a href="{% url 'bills_report' %}" class="{% if request.resolver_match.url_name == 'bills_report' %}active{% endif %}">
         <span class="nav-icon">€</span> Bills this month
       </a>
@@ -98,6 +101,11 @@
     </div>
   </aside>
   <main class="main">
+    {% if messages %}
+    <div class="messages no-print">
+      {% for m in messages %}<div class="msg msg-{{ m.tags }}">{{ m }}</div>{% endfor %}
+    </div>
+    {% endif %}
     {% block content %}{% endblock %}
   </main>
 </div>
