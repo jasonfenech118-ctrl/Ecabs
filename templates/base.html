@@ -74,6 +74,9 @@
         <a href="{% url 'general_claims' %}" class="{% if 'general' in request.resolver_match.url_name %}active{% endif %}">
           <span class="nav-icon">✦</span> General claims (Firefly)
         </a>
+        <a href="{% url 'claim_statuses_manage' %}" class="nav-sub {% if request.resolver_match.url_name == 'claim_statuses_manage' %}active{% endif %}">
+          <span class="nav-icon">⚙</span> Manage statuses
+        </a>
       </div>
 
       <div class="nav-sec nav-sec--garage">

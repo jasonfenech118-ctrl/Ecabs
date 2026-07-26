@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Manage statuses — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Manage claim statuses</h1>
+    <div class="sub">Add your own statuses to the dropdown, alongside the built-in ones</div>
+  </div>
+  <a href="{% url 'claim_group' 'open' %}" class="btn">← Back to open claims</a>
+</div>
+
+<div class="card" style="max-width:640px">
+  <form method="post" class="row" style="gap:.5rem; align-items:flex-end">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="add">
+    <label class="field" style="flex:1; margin:0"><span>Add a new status</span>
+      <input name="name" placeholder="e.g. Awaiting parts" maxlength="60" required>
+    </label>
+    <button type="submit" class="btn btn-primary">＋ Add</button>
+  </form>
+</div>
+
+<div class="card mt table-wrap" style="max-width:640px">
+  <h3>Built-in statuses</h3>
+  <p class="muted" style="font-size:.85rem; margin:.2rem 0 .6rem">Always available — these also drive the automated workflow.</p>
+  <div class="row" style="flex-wrap:wrap; gap:.4rem">
+    {% for val, lbl in builtin %}<span class="badge {{ val }}">{{ lbl }}</span>{% endfor %}
+  </div>
+</div>
+
+<div class="card mt table-wrap" style="max-width:640px">
+  <h3>Your custom statuses</h3>
+  <table class="list">
+    <thead><tr><th>Status</th><th>In dropdown?</th><th></th></tr></thead>
+    <tbody>
+      {% for s in custom %}
+      <tr>
+        <td>
+          <form method="post" class="row" style="gap:.4rem; align-items:center">{% csrf_token %}
+            <input type="hidden" name="action" value="rename">
+            <input type="hidden" name="pk" value="{{ s.pk }}">
+            <input name="name" value="{{ s.name }}" maxlength="60" style="min-width:220px">
+            <button type="submit" class="btn btn-sm">Rename</button>
+          </form>
+        </td>
+        <td>{% if s.is_active %}<span class="pill pill-paid">Shown</span>{% else %}<span class="pill pill-draft">Hidden</span>{% endif %}</td>
+        <td>
+          <form method="post">{% csrf_token %}
+            <input type="hidden" name="action" value="toggle">
+            <input type="hidden" name="pk" value="{{ s.pk }}">
+            <button type="submit" class="btn btn-sm">{% if s.is_active %}Hide{% else %}Show{% endif %}</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3" class="empty">No custom statuses yet — add one above.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="muted" style="font-size:.8rem; margin-top:1rem; max-width:640px">Custom statuses are manual — they appear in the dropdown but don't trigger the automated workflow (auto-advance / auto-close). Hiding one keeps it on any claim already set to it.</p>
+{% endblock %}

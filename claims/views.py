@@ -29,6 +29,8 @@ from .models import (
     AccidentRecord,
     BillingItem,
     Claim,
+    ClaimStatus,
+    claim_status_choices,
     Company,
     DailyRate,
     EmailLog,
@@ -1096,7 +1098,7 @@ def claim_group(request, group):
             "group": group,
             "sorts": CLAIM_SORTS,
             "sort": sort,
-            "statuses": Claim.Status.choices,
+            "statuses": claim_status_choices(),
             "bill_total": bill_total,
             "estimated_portion": estimated_portion,
             "actual_portion": actual_portion,
@@ -1297,7 +1299,7 @@ def claim_detail(request, pk, tab="overview"):
     if tab not in VALID_TABS:
         return HttpResponseBadRequest("Unknown tab")
     context = _tab_context(request, claim, tab)
-    context["statuses"] = Claim.Status.choices
+    context["statuses"] = claim_status_choices()
     if request.headers.get("HX-Request"):
         return render(request, f"claims/partials/tab_{tab}.html", context)
     return render(request, "claims/claim_detail.html", context)
@@ -1308,7 +1310,8 @@ def claim_detail(request, pk, tab="overview"):
 def claim_set_status(request, pk):
     claim = get_object_or_404(Claim, pk=pk)
     status = request.POST.get("status")
-    if status not in Claim.Status.values:
+    valid = {v for v, _ in claim_status_choices()}
+    if status not in valid:
         return HttpResponseBadRequest("Unknown status")
     claim.status = status
     if status == Claim.Status.OPEN and claim.submitted_at is None:
@@ -1322,8 +1325,34 @@ def claim_set_status(request, pk):
     return render(
         request,
         "claims/partials/status_control.html",
-        {"claim": claim, "statuses": Claim.Status.choices},
+        {"claim": claim, "statuses": claim_status_choices()},
     )
+
+
+@login_required
+def claim_statuses_manage(request):
+    """Add, rename or hide custom claim statuses shown in the status dropdown."""
+    if request.method == "POST":
+        action = request.POST.get("action")
+        pk = request.POST.get("pk")
+        name = (request.POST.get("name") or "").strip()
+        if action == "add" and name:
+            ClaimStatus.objects.get_or_create(name=name)
+        elif action == "rename" and pk and name:
+            cs = ClaimStatus.objects.filter(pk=pk).first()
+            if cs:
+                cs.name = name
+                cs.save(update_fields=["name"])
+        elif action == "toggle" and pk:
+            cs = ClaimStatus.objects.filter(pk=pk).first()
+            if cs:
+                cs.is_active = not cs.is_active
+                cs.save(update_fields=["is_active"])
+        return redirect("claim_statuses_manage")
+    return render(request, "claims/claim_statuses.html", {
+        "builtin": Claim.Status.choices,
+        "custom": ClaimStatus.objects.all(),
+    })
 
 
 # --- Photos ------------------------------------------------------------------

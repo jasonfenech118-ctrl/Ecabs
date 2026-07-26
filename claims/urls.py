@@ -55,6 +55,7 @@ urlpatterns = [
     path("claims/<int:pk>/autosave/", views.claim_autosave, name="claim_autosave"),
     path("claims/<int:pk>/submit/", views.claim_submit, name="claim_submit"),
     path("claims/<int:pk>/status/", views.claim_set_status, name="claim_set_status"),
+    path("claims/statuses/", views.claim_statuses_manage, name="claim_statuses_manage"),
     path("claims/<int:pk>/documents/", views.claim_documents, name="claim_documents"),
     path("claims/<int:pk>/invoice.pdf", views.claim_invoice_pdf, name="claim_invoice_pdf"),
     path("claims/<int:pk>/lou.pdf", views.claim_lou_pdf, name="claim_lou_pdf"),

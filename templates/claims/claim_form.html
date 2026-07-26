@@ -5,7 +5,7 @@
   <div>
     <h1>{% if claim.is_draft %}New claim{% else %}Edit claim{% endif %} <span class="muted">{{ claim.reference }}</span></h1>
     <div class="sub">
-      <span class="badge {{ claim.status }}">{{ claim.get_status_display }}</span>
+      <span class="badge {{ claim.status }}">{{ claim.status_label }}</span>
       {% if claim.is_draft %} · auto-saves as you type; stays a draft until you submit{% endif %}
     </div>
   </div>

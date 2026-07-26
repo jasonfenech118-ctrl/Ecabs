@@ -124,6 +124,46 @@ class Vehicle(models.Model):
         self.save()
 
 
+class ClaimStatus(models.Model):
+    """An extra, staff-defined claim status that appears in the status dropdown
+    alongside the built-in ones. Purely manual — it doesn't drive the automated
+    workflow."""
+
+    name = models.CharField(max_length=60, unique=True)
+    slug = models.SlugField(max_length=40, unique=True)
+    order = models.PositiveIntegerField(default=100)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["order", "name"]
+        verbose_name_plural = "claim statuses"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            from django.utils.text import slugify
+            base = slugify(self.name)[:40] or "status"
+            slug, n = base, 2
+            while ClaimStatus.objects.exclude(pk=self.pk).filter(slug=slug).exists():
+                slug = f"{base[:37]}-{n}"
+                n += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+def claim_status_choices(include_inactive=False):
+    """Built-in statuses plus the active custom ones — for the dropdown."""
+    choices = list(Claim.Status.choices)
+    qs = ClaimStatus.objects.all()
+    if not include_inactive:
+        qs = qs.filter(is_active=True)
+    for s in qs:
+        choices.append((s.slug, s.name))
+    return choices
+
+
 class Claim(models.Model):
     class Status(models.TextChoices):
         DRAFT = "draft", "Draft"
@@ -158,7 +198,7 @@ class Claim(models.Model):
         unique=True, null=True, blank=True, editable=False
     )
     status = models.CharField(
-        max_length=20, choices=Status.choices, default=Status.DRAFT, db_index=True
+        max_length=40, choices=Status.choices, default=Status.DRAFT, db_index=True
     )
 
     # Vehicle
@@ -433,6 +473,16 @@ class Claim(models.Model):
         if self.bill_is_actual:
             return self.outstanding_amount
         return self.estimate_amount or Decimal("0")
+
+    @property
+    def status_label(self):
+        """Display label for the status — a built-in one, or a custom status
+        added via the manage page."""
+        builtin = dict(self.Status.choices)
+        if self.status in builtin:
+            return builtin[self.status]
+        cs = ClaimStatus.objects.filter(slug=self.status).first()
+        return cs.name if cs else self.status.replace("_", " ").title()
 
     @property
     def repairs_total(self):

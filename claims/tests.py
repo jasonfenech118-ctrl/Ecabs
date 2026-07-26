@@ -645,6 +645,34 @@ class ViewTests(TestCase):
         self.assertEqual(claim.estimate_amount, Decimal("1500.00"))
         self.assertEqual(claim.effective_bill, Decimal("1500.00"))
 
+    def test_custom_claim_status(self):
+        from .models import Claim, ClaimStatus
+
+        # add a custom status via the manage page
+        self.client.post(reverse("claim_statuses_manage"),
+                         {"action": "add", "name": "Awaiting parts"})
+        cs = ClaimStatus.objects.get(name="Awaiting parts")
+        self.assertTrue(cs.is_active)
+
+        claim = Claim.objects.create(status=Claim.Status.OPEN,
+                                     vehicle_registration="CSTT", created_by=self.user)
+        # it shows in the status dropdown on the list
+        self.assertContains(self.client.get(reverse("claim_group", args=["open"])),
+                            "Awaiting parts")
+        # a claim can be set to the custom status
+        self.client.post(reverse("claim_set_status", args=[claim.pk]),
+                         {"status": cs.slug, "next": reverse("claim_group", args=["open"])})
+        claim.refresh_from_db()
+        self.assertEqual(claim.status, cs.slug)
+        self.assertEqual(claim.status_label, "Awaiting parts")
+
+        # hiding removes it from the dropdown but keeps the label on the claim
+        self.client.post(reverse("claim_statuses_manage"),
+                         {"action": "toggle", "pk": cs.pk})
+        cs.refresh_from_db()
+        self.assertFalse(cs.is_active)
+        self.assertEqual(claim.status_label, "Awaiting parts")
+
     def test_open_claims_bill_switches_to_actual(self):
         from decimal import Decimal
 
