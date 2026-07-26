@@ -540,6 +540,8 @@ details.inline-form[open] summary::before { content: "− "; }
 .rate-row input[name="name"] { flex: 1; min-width: 180px; }
 
 .estimate-input { max-width: 110px; padding: .3rem .45rem; text-align: right; }
+.chase-input { padding: .3rem .4rem; border: 1px solid var(--border, #d1d5db); border-radius: 6px; font-size: .82rem; }
+.chase-input.chase-overdue { border-color: var(--danger, #dc2626); color: var(--danger, #dc2626); font-weight: 600; }
 
 /* --- Auto-calculated value (loss of earnings) ---------------------------------- */
 .calc-value {

@@ -53,10 +53,14 @@
           <td>{{ c.third_party_registration }}</td>
           <td>{{ c.insurer }}</td>
           <td>{{ c.third_party_insurer|default:"—" }}</td>
-          <td>
-            {% if c.chase_on %}
-              {% if group == "overdue" %}<span class="badge overdue">{{ c.chase_on|date:"d M Y" }}</span>{% else %}{{ c.chase_on|date:"d M Y" }}{% endif %}
-            {% endif %}
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="{% url 'claim_set_chase' c.pk %}" style="margin:0">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <input type="date" name="chase_on" value="{{ c.chase_on|date:'Y-m-d' }}"
+                     class="chase-input {% if group == 'overdue' %}chase-overdue{% endif %}"
+                     onchange="this.form.submit()" aria-label="Chase on">
+            </form>
           </td>
           <td class="right" onclick="event.stopPropagation()">
             {% if c.bill_is_actual %}

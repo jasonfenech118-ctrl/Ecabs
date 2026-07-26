@@ -1117,6 +1117,16 @@ def claim_set_estimate(request, pk):
     return redirect(request.POST.get("next") or reverse("claim_group", args=["open"]))
 
 
+@login_required
+@require_POST
+def claim_set_chase(request, pk):
+    """Inline-edit the chase date for a claim from a group table."""
+    claim = get_object_or_404(Claim, pk=pk)
+    claim.chase_on = _parse_date(request.POST.get("chase_on"))
+    claim.save(update_fields=["chase_on"])
+    return redirect(request.POST.get("next") or reverse("claim_group", args=["open"]))
+
+
 # --- Intake form with auto-save ------------------------------------------------
 
 @login_required
