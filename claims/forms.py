@@ -80,12 +80,16 @@ class ClaimForm(forms.ModelForm):
             "urgent",
         ]
         widgets = {
-            "accident_date": forms.DateInput(attrs={"type": "date"}),
-            "accident_time": forms.TimeInput(attrs={"type": "time"}),
-            "bills_sent_on": forms.DateInput(attrs={"type": "date"}),
-            "chase_on": forms.DateInput(attrs={"type": "date"}),
-            "survey_date": forms.DateInput(attrs={"type": "date"}),
-            "liability_chase_date": forms.DateInput(attrs={"type": "date"}),
+            # A native <input type="date"> only shows its value when it is in
+            # ISO YYYY-MM-DD form, so pin the render format — otherwise the saved
+            # date renders in a localized format the browser can't read and the
+            # field appears blank ("coming and going").
+            "accident_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "accident_time": forms.TimeInput(attrs={"type": "time"}, format="%H:%M"),
+            "bills_sent_on": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "chase_on": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "survey_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "liability_chase_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
             "description": forms.Textarea(attrs={"rows": 5}),
             "drivable": forms.NullBooleanSelect(),
             # Suggests active fleet vehicles via the datalist in claim_form.html.
