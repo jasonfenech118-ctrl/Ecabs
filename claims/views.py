@@ -1096,6 +1096,7 @@ def claim_group(request, group):
             "group": group,
             "sorts": CLAIM_SORTS,
             "sort": sort,
+            "statuses": Claim.Status.choices,
             "bill_total": bill_total,
             "estimated_portion": estimated_portion,
             "actual_portion": actual_portion,
@@ -1313,6 +1314,11 @@ def claim_set_status(request, pk):
     if status == Claim.Status.OPEN and claim.submitted_at is None:
         claim.submitted_at = timezone.now()
     claim.save()
+    # A plain form submit from a list passes ?next and wants a redirect; the
+    # HTMX control on the detail page wants the refreshed partial.
+    nxt = request.POST.get("next")
+    if nxt:
+        return redirect(nxt)
     return render(
         request,
         "claims/partials/status_control.html",

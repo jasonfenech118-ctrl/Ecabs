@@ -47,7 +47,18 @@
         <tr class="clickable" onclick="window.location='{{ c.get_absolute_url }}'">
           <td>{{ c.case_ref|default:"—" }}</td>
           <td><a href="{{ c.get_absolute_url }}">{{ c.reference }}</a></td>
-          <td><span class="badge {{ c.status }}">{{ c.get_status_display }}</span>{% if c.urgent %} <span class="badge overdue">URGENT</span>{% endif %}</td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="{% url 'claim_set_status' c.pk %}" style="margin:0">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <select name="status" class="status-select badge {{ c.status }}" onchange="this.form.submit()" aria-label="Status">
+                {% for value, label in statuses %}
+                <option value="{{ value }}" {% if value == c.status %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </form>
+            {% if c.urgent %}<span class="badge overdue" style="margin-top:.2rem">URGENT</span>{% endif %}
+          </td>
           <td>{{ c.accident_date|date:"d M Y" }}</td>
           <td>{{ c.vehicle_registration }}</td>
           <td>{{ c.third_party_registration }}</td>
