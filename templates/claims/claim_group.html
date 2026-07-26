@@ -35,7 +35,7 @@
       <thead>
         <tr>
           <th>Case no</th><th>Ref</th><th>Status</th><th>Accident date</th>
-          <th>Our reg</th><th>TP plate</th><th>Insurer</th>
+          <th>Our reg</th><th>TP plate</th><th>Our insurer</th><th>TP insurer</th>
           <th>Chase on</th><th class="right">Estimate €</th><th class="right">Outstanding</th><th>Next action</th>
         </tr>
       </thead>
@@ -49,6 +49,7 @@
           <td>{{ c.vehicle_registration }}</td>
           <td>{{ c.third_party_registration }}</td>
           <td>{{ c.insurer }}</td>
+          <td>{{ c.third_party_insurer|default:"—" }}</td>
           <td>
             {% if c.chase_on %}
               {% if group == "overdue" %}<span class="badge overdue">{{ c.chase_on|date:"d M Y" }}</span>{% else %}{{ c.chase_on|date:"d M Y" }}{% endif %}
@@ -67,13 +68,13 @@
           <td class="muted">{{ c.next_action|truncatechars:40 }}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="11" class="empty">No {{ title|lower }} right now.</td></tr>
+        <tr><td colspan="12" class="empty">No {{ title|lower }} right now.</td></tr>
         {% endfor %}
       </tbody>
       {% if claims %}
       <tfoot>
         <tr class="summary-total">
-          <td colspan="8" class="right"><strong>Totals</strong></td>
+          <td colspan="9" class="right"><strong>Totals</strong></td>
           <td class="right"><strong>€{{ estimate_total|floatformat:2 }}</strong></td>
           <td class="right"><strong>€{{ outstanding_total|floatformat:2 }}</strong></td>
           <td></td>
