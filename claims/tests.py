@@ -632,8 +632,10 @@ class ViewTests(TestCase):
             status=Claim.Status.OPEN, vehicle_registration="ECB-EST", created_by=self.user
         )
         r = self.client.get(reverse("claim_group", args=["open"]))
-        self.assertContains(r, "Estimated total bill")
-        self.assertContains(r, "Estimate")
+        self.assertContains(r, "Total bill")
+        # a claim with no real amounts shows the editable estimate cell
+        self.assertContains(r, "estimate")
+        self.assertFalse(claim.bill_is_actual)
         # Inline-save an estimate
         self.client.post(
             reverse("claim_set_estimate", args=[claim.pk]),
@@ -641,6 +643,21 @@ class ViewTests(TestCase):
         )
         claim.refresh_from_db()
         self.assertEqual(claim.estimate_amount, Decimal("1500.00"))
+        self.assertEqual(claim.effective_bill, Decimal("1500.00"))
+
+    def test_open_claims_bill_switches_to_actual(self):
+        from decimal import Decimal
+
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-ACT",
+            estimate_amount=Decimal("999.00"), labour_amount=Decimal("800.00"),
+            amount_paid=Decimal("200.00"), created_by=self.user,
+        )
+        # real amounts entered → actual outstanding supersedes the estimate
+        self.assertTrue(claim.bill_is_actual)
+        self.assertEqual(claim.effective_bill, Decimal("600.00"))
+        r = self.client.get(reverse("claim_group", args=["open"]))
+        self.assertContains(r, "actual")
 
     def test_claim_sheets_sort(self):
         from datetime import date

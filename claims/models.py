@@ -421,6 +421,20 @@ class Claim(models.Model):
         )
 
     @property
+    def bill_is_actual(self):
+        """True once real recovery amounts have been entered, so the actual
+        outstanding supersedes the manual estimate."""
+        return self.total_claim_amount > 0
+
+    @property
+    def effective_bill(self):
+        """The bill figure to show in lists: the actual outstanding once real
+        amounts exist, otherwise the manual estimate."""
+        if self.bill_is_actual:
+            return self.outstanding_amount
+        return self.estimate_amount or Decimal("0")
+
+    @property
     def repairs_total(self):
         """Repair costs only (labour, spray+material, parts, others) — no LOE.
         Used net-of-VAT on the repairs receipt."""

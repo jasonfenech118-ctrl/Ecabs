@@ -13,8 +13,11 @@
 </div>
 
 <div class="stats" style="margin-bottom:1rem">
-  <div class="stat"><div class="label">Estimated total bill</div><div class="value">€{{ estimate_total|floatformat:2 }}</div></div>
-  <div class="stat"><div class="label">Total outstanding</div><div class="value {% if outstanding_total %}alert{% endif %}">€{{ outstanding_total|floatformat:2 }}</div></div>
+  <div class="stat">
+    <div class="label">Total bill</div>
+    <div class="value {% if bill_total %}alert{% endif %}">€{{ bill_total|floatformat:2 }}</div>
+    <div class="muted" style="font-size:.75rem">€{{ estimated_portion|floatformat:2 }} estimated · €{{ actual_portion|floatformat:2 }} actual</div>
+  </div>
 </div>
 
 <div class="card">
@@ -36,7 +39,7 @@
         <tr>
           <th>Case no</th><th>Ref</th><th>Status</th><th>Accident date</th>
           <th>Our reg</th><th>TP plate</th><th>Our insurer</th><th>TP insurer</th>
-          <th>Chase on</th><th class="right">Estimate €</th><th class="right">Outstanding</th><th>Next action</th>
+          <th>Chase on</th><th class="right">Bill (est./actual)</th><th>Next action</th>
         </tr>
       </thead>
       <tbody>
@@ -56,33 +59,37 @@
             {% endif %}
           </td>
           <td class="right" onclick="event.stopPropagation()">
-            <form method="post" action="{% url 'claim_set_estimate' c.pk %}" style="margin:0">
-              {% csrf_token %}
-              <input type="hidden" name="next" value="{{ request.get_full_path }}">
-              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
-                     value="{{ c.estimate_amount|default_if_none:'' }}" placeholder="€"
-                     onchange="this.form.submit()" aria-label="Estimate">
-            </form>
+            {% if c.bill_is_actual %}
+              <strong>€{{ c.outstanding_amount|floatformat:2 }}</strong>
+              <div class="muted" style="font-size:.68rem">actual</div>
+            {% else %}
+              <form method="post" action="{% url 'claim_set_estimate' c.pk %}" style="margin:0">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
+                       value="{{ c.estimate_amount|default_if_none:'' }}" placeholder="€"
+                       onchange="this.form.submit()" aria-label="Estimate">
+              </form>
+              <div class="muted" style="font-size:.68rem">estimate</div>
+            {% endif %}
           </td>
-          <td class="right">{% if c.outstanding_amount %}€{{ c.outstanding_amount|floatformat:2 }}{% endif %}</td>
           <td class="muted">{{ c.next_action|truncatechars:40 }}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="12" class="empty">No {{ title|lower }} right now.</td></tr>
+        <tr><td colspan="11" class="empty">No {{ title|lower }} right now.</td></tr>
         {% endfor %}
       </tbody>
       {% if claims %}
       <tfoot>
         <tr class="summary-total">
-          <td colspan="9" class="right"><strong>Totals</strong></td>
-          <td class="right"><strong>€{{ estimate_total|floatformat:2 }}</strong></td>
-          <td class="right"><strong>€{{ outstanding_total|floatformat:2 }}</strong></td>
+          <td colspan="9" class="right"><strong>Total bill</strong></td>
+          <td class="right"><strong>€{{ bill_total|floatformat:2 }}</strong></td>
           <td></td>
         </tr>
       </tfoot>
       {% endif %}
     </table>
   </div>
-  <p class="muted" style="font-size:.8rem; margin-bottom:0">Type an estimate in the Estimate column and it saves automatically.</p>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">Type an estimate in the Bill column (it saves automatically). Once real recovery amounts are entered on a claim, that row switches to the <strong>actual</strong> outstanding.</p>
 </div>
 {% endblock %}

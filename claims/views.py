@@ -1079,8 +1079,13 @@ def claim_group(request, group):
         return HttpResponseBadRequest("Unknown group")
     qs, sort = _apply_sort(qs, request)
     claims = list(qs)
-    estimate_total = sum((c.estimate_amount or Decimal("0") for c in claims), Decimal("0"))
-    outstanding_total = sum((c.outstanding_amount for c in claims), Decimal("0"))
+    # One headline bill: actual outstanding where real amounts exist, else the
+    # manual estimate. Keep the split for a small caption.
+    bill_total = sum((c.effective_bill for c in claims), Decimal("0"))
+    estimated_portion = sum(
+        (c.effective_bill for c in claims if not c.bill_is_actual), Decimal("0"))
+    actual_portion = sum(
+        (c.effective_bill for c in claims if c.bill_is_actual), Decimal("0"))
     return render(
         request,
         "claims/claim_group.html",
@@ -1091,8 +1096,9 @@ def claim_group(request, group):
             "group": group,
             "sorts": CLAIM_SORTS,
             "sort": sort,
-            "estimate_total": estimate_total,
-            "outstanding_total": outstanding_total,
+            "bill_total": bill_total,
+            "estimated_portion": estimated_portion,
+            "actual_portion": actual_portion,
         },
     )
 
