@@ -6,19 +6,23 @@
     {% if v.is_active %}<span class="badge open">Active</span>
     {% else %}<span class="badge closed">Left fleet{% if v.retired_on %} {{ v.retired_on|date:"M Y" }}{% endif %}</span>{% endif %}
   </td>
-  {% for label, due, state in v.compliance_items %}
-  <td>
-    {% if due %}
-      {{ due|date:"d M Y" }}
+  <td class="right">{% if v.insurance_amount is not None %}€{{ v.insurance_amount|floatformat:2 }}{% else %}—{% endif %}</td>
+  <td style="white-space:nowrap">
+    {% if v.pay_date %}
+      {{ v.pay_date|date:"d M Y" }}
       {% if v.is_active %}
-        {% if state == "overdue" %}<span class="badge overdue">overdue</span>
-        {% elif state == "soon" %}<span class="badge pending">soon</span>{% endif %}
+        {% with state=v.worst_compliance_state %}
+          {% if state == "overdue" %}<span class="badge overdue">overdue</span>
+          {% elif state == "soon" %}<span class="badge pending">soon</span>{% endif %}
+        {% endwith %}
       {% endif %}
     {% else %}<span class="muted">—</span>{% endif %}
   </td>
-  {% endfor %}
+  <td class="right">{% if v.licence_amount is not None %}€{{ v.licence_amount|floatformat:2 }}{% else %}—{% endif %}</td>
+  <td class="right">{% if v.additional_costs is not None %}€{{ v.additional_costs|floatformat:2 }}{% else %}—{% endif %}</td>
+  <td class="right"><strong>€{{ v.total_costs|floatformat:2 }}</strong></td>
   <td><a href="{% url 'vehicle_edit' v.pk %}" class="btn btn-sm">Manage</a></td>
 </tr>
 {% empty %}
-<tr><td colspan="5" class="empty">No vehicles match.</td></tr>
+<tr><td colspan="9" class="empty">No vehicles match.</td></tr>
 {% endfor %}

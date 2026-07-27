@@ -24,12 +24,15 @@
     </div>
   </fieldset>
   <fieldset>
-    <legend>Insurance renewal — used for the due-date reminder</legend>
+    <legend>Costs — insurance, licence &amp; additional</legend>
     <div class="form-grid">
-      {% include "claims/partials/field.html" with field=form.insurance_due %}
+      {% include "claims/partials/field.html" with field=form.insurance_amount %}
+      {% include "claims/partials/field.html" with field=form.pay_date %}
+      {% include "claims/partials/field.html" with field=form.licence_amount %}
+      {% include "claims/partials/field.html" with field=form.additional_costs %}
     </div>
     <p class="muted" style="font-size:.8rem; margin-bottom:0">
-      After renewing, update the date to the next due date and the reminder clears itself.
+      The <strong>pay date</strong> drives the insurance-payment reminder. After paying, set it to the next due date and the reminder clears itself.
     </p>
   </fieldset>
   <fieldset>

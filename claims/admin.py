@@ -111,7 +111,10 @@ class VehicleAdmin(SimpleHistoryAdmin):
         "registration",
         "make_model",
         "status",
-        "insurance_due",
+        "insurance_amount",
+        "pay_date",
+        "licence_amount",
+        "additional_costs",
         "retired_on",
     )
     list_filter = ("status",)

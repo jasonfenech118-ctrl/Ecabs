@@ -38,19 +38,19 @@ def sync_auto_reminders():
 
     vehicles = Vehicle.objects.filter(
         status=Vehicle.Status.ACTIVE,
-        insurance_due__isnull=False,
-        insurance_due__lte=horizon,
+        pay_date__isnull=False,
+        pay_date__lte=horizon,
     )
     for vehicle in vehicles:
-        key = f"veh-ins-{vehicle.pk}-{vehicle.insurance_due.isoformat()}"
+        key = f"veh-ins-{vehicle.pk}-{vehicle.pay_date.isoformat()}"
         expected[key] = {
             "claim": None,
-            "title": f"Insurance renewal — {vehicle.registration}",
+            "title": f"Insurance payment — {vehicle.registration}",
             "notes": (
                 f"{vehicle.registration} {vehicle.make_model}".strip()
-                + f" insurance is due on {vehicle.insurance_due:%d %b %Y}."
+                + f" insurance payment is due on {vehicle.pay_date:%d %b %Y}."
             ),
-            "due": vehicle.insurance_due,
+            "due": vehicle.pay_date,
         }
 
     open_statuses = [

@@ -79,8 +79,14 @@ class Vehicle(models.Model):
     acquired_on = models.DateField(null=True, blank=True)
     retired_on = models.DateField(null=True, blank=True)
 
-    # Renewal due date — drives the reminders on the dashboard.
-    insurance_due = models.DateField("Insurance renewal", null=True, blank=True)
+    # Costs & the insurance pay date (drives the payment reminders).
+    insurance_amount = models.DecimalField(
+        "Insurance amount (€)", max_digits=10, decimal_places=2, null=True, blank=True)
+    pay_date = models.DateField("Insurance pay date", null=True, blank=True)
+    licence_amount = models.DecimalField(
+        "Licence amount (€)", max_digits=10, decimal_places=2, null=True, blank=True)
+    additional_costs = models.DecimalField(
+        "Additional costs (€)", max_digits=10, decimal_places=2, null=True, blank=True)
 
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -98,10 +104,17 @@ class Vehicle(models.Model):
     def is_active(self):
         return self.status == self.Status.ACTIVE
 
+    @property
+    def total_costs(self):
+        return sum(
+            (x or Decimal("0"))
+            for x in (self.insurance_amount, self.licence_amount, self.additional_costs)
+        )
+
     def compliance_items(self):
-        """(label, due date, state) for each tracked renewal."""
+        """(label, date, state) for each tracked payment."""
         return [
-            ("Insurance", self.insurance_due, compliance_state(self.insurance_due)),
+            ("Insurance payment", self.pay_date, compliance_state(self.pay_date)),
         ]
 
     @property

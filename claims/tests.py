@@ -143,7 +143,7 @@ class ViewTests(TestCase):
         self.assertEqual(compliance_state(None), "")
 
         Vehicle.objects.create(
-            registration="ECB-600", insurance_due=today + timedelta(days=5)
+            registration="ECB-600", pay_date=today + timedelta(days=5)
         )
         response = self.client.get(reverse("dashboard"))
         self.assertContains(response, "ECB-600")
@@ -154,7 +154,7 @@ class ViewTests(TestCase):
         Vehicle.objects.create(
             registration="ECB-700",
             status=Vehicle.Status.RETIRED,
-            insurance_due=today - timedelta(days=5),
+            pay_date=today - timedelta(days=5),
         )
         response = self.client.get(reverse("dashboard"))
         self.assertNotContains(response, "ECB-700")
@@ -179,7 +179,7 @@ class ViewTests(TestCase):
 
         today = timezone.localdate()
         vehicle = Vehicle.objects.create(
-            registration="ECB-810", insurance_due=today + timedelta(days=10)
+            registration="ECB-810", pay_date=today + timedelta(days=10)
         )
         claim = Claim.objects.create(
             status=Claim.Status.OPEN,
@@ -194,7 +194,7 @@ class ViewTests(TestCase):
         self.assertTrue(autos.filter(claim=claim, title__contains="O/S payment").exists())
 
         # Date moves on -> stale auto reminder replaced, not duplicated.
-        vehicle.insurance_due = today + timedelta(days=40)
+        vehicle.pay_date = today + timedelta(days=40)
         vehicle.save()
         sync_auto_reminders()
         self.assertEqual(Reminder.objects.filter(is_auto=True).count(), 2)

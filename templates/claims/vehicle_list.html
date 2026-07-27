@@ -4,7 +4,7 @@
 <div class="page-head">
   <div>
     <h1>Vehicles</h1>
-    <div class="sub">Fleet register with insurance renewal reminders</div>
+    <div class="sub">Fleet register — insurance, licence &amp; running costs</div>
   </div>
   <div class="row">
     <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
@@ -14,7 +14,7 @@
 
 {% if compliance_due %}
 <div class="card" style="margin-bottom:1rem">
-  <h2>Insurance renewals due in the next 30 days</h2>
+  <h2>Insurance payments due in the next 30 days</h2>
   <div class="table-wrap">
     <table class="list">
       <thead><tr><th>Vehicle</th><th>Renewal</th><th>Due</th><th></th></tr></thead>
@@ -55,7 +55,9 @@
       <thead>
         <tr>
           <th>Registration</th><th>Make / model</th><th>Status</th>
-          <th>Insurance due</th><th></th>
+          <th class="right">Insurance €</th><th>Pay date</th>
+          <th class="right">Licence €</th><th class="right">Additional €</th>
+          <th class="right">Total €</th><th></th>
         </tr>
       </thead>
       <tbody id="vehicle-rows">
