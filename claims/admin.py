@@ -21,6 +21,7 @@ from .models import (
     RepairType,
     Survey,
     Vehicle,
+    VehicleCost,
 )
 
 
@@ -105,20 +106,17 @@ class CompanyAdmin(admin.ModelAdmin):
     list_editable = ("order", "is_active")
 
 
+class VehicleCostInline(admin.TabularInline):
+    model = VehicleCost
+    extra = 0
+
+
 @admin.register(Vehicle)
 class VehicleAdmin(SimpleHistoryAdmin):
-    list_display = (
-        "registration",
-        "make_model",
-        "status",
-        "insurance_amount",
-        "pay_date",
-        "licence_amount",
-        "additional_costs",
-        "retired_on",
-    )
-    list_filter = ("status",)
-    search_fields = ("registration", "make_model")
+    list_display = ("registration", "make_model", "owner", "status", "retired_on")
+    list_filter = ("status", "owner")
+    search_fields = ("registration", "make_model", "owner")
+    inlines = [VehicleCostInline]
 
 
 class AccidentPhotoInline(admin.TabularInline):

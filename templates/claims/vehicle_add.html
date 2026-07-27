@@ -17,12 +17,9 @@
     {% include "claims/partials/field.html" with field=form.owner %}
     {% include "claims/partials/field.html" with field=form.year %}
     {% include "claims/partials/field.html" with field=form.acquired_on %}
-    {% include "claims/partials/field.html" with field=form.insurance_amount %}
-    {% include "claims/partials/field.html" with field=form.pay_date %}
-    {% include "claims/partials/field.html" with field=form.licence_amount %}
-    {% include "claims/partials/field.html" with field=form.additional_costs %}
     {% include "claims/partials/field.html" with field=form.notes extra_class="span-2" %}
   </div>
   <button type="submit" class="btn btn-primary mt">Add vehicle</button>
+  <p class="muted" style="font-size:.8rem; margin:.6rem 0 0">Add the yearly insurance / licence / additional costs after saving, from the vehicle's page.</p>
 </form>
 {% endblock %}

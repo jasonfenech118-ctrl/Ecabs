@@ -45,6 +45,7 @@ from .models import (
     RepairType,
     Survey,
     Vehicle,
+    VehicleCost,
 )
 from .roles import is_garage_user
 from .services import drive
@@ -1600,8 +1601,43 @@ def vehicle_edit(request, pk):
     return render(
         request,
         "claims/vehicle_form.html",
-        {"vehicle": vehicle, "form": form, "related_claims": related_claims},
+        {
+            "vehicle": vehicle,
+            "form": form,
+            "related_claims": related_claims,
+            "costs": vehicle.costs.all(),
+            "next_year": timezone.localdate().year,
+        },
     )
+
+
+@login_required
+@require_POST
+def vehicle_cost_save(request, pk):
+    """Add or update a vehicle's costs for a given year (renews each year)."""
+    vehicle = get_object_or_404(Vehicle, pk=pk)
+    raw_year = (request.POST.get("year") or "").strip()
+    if not raw_year.isdigit():
+        return redirect("vehicle_edit", pk=pk)
+    year = int(raw_year)
+    cost, _ = VehicleCost.objects.get_or_create(vehicle=vehicle, year=year)
+    for f in ("insurance_amount", "licence_amount", "additional_costs"):
+        raw = (request.POST.get(f) or "").strip()
+        try:
+            setattr(cost, f, Decimal(raw) if raw else None)
+        except InvalidOperation:
+            setattr(cost, f, None)
+    cost.pay_date = _parse_date(request.POST.get("pay_date"))
+    cost.save()
+    return redirect("vehicle_edit", pk=pk)
+
+
+@login_required
+@require_POST
+def vehicle_cost_delete(request, pk, year):
+    vehicle = get_object_or_404(Vehicle, pk=pk)
+    VehicleCost.objects.filter(vehicle=vehicle, year=year).delete()
+    return redirect("vehicle_edit", pk=pk)
 
 
 @login_required

@@ -80,15 +80,6 @@ class Vehicle(models.Model):
     acquired_on = models.DateField(null=True, blank=True)
     retired_on = models.DateField(null=True, blank=True)
 
-    # Costs & the insurance pay date (drives the payment reminders).
-    insurance_amount = models.DecimalField(
-        "Insurance amount (€)", max_digits=10, decimal_places=2, null=True, blank=True)
-    pay_date = models.DateField("Insurance pay date", null=True, blank=True)
-    licence_amount = models.DecimalField(
-        "Licence amount (€)", max_digits=10, decimal_places=2, null=True, blank=True)
-    additional_costs = models.DecimalField(
-        "Additional costs (€)", max_digits=10, decimal_places=2, null=True, blank=True)
-
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -106,14 +97,37 @@ class Vehicle(models.Model):
         return self.status == self.Status.ACTIVE
 
     @property
+    def current_cost(self):
+        """The most recent year's cost record (insurance renews each year)."""
+        return self.costs.order_by("-year").first()
+
+    @property
+    def insurance_amount(self):
+        c = self.current_cost
+        return c.insurance_amount if c else None
+
+    @property
+    def licence_amount(self):
+        c = self.current_cost
+        return c.licence_amount if c else None
+
+    @property
+    def additional_costs(self):
+        c = self.current_cost
+        return c.additional_costs if c else None
+
+    @property
+    def pay_date(self):
+        c = self.current_cost
+        return c.pay_date if c else None
+
+    @property
     def total_costs(self):
-        return sum(
-            (x or Decimal("0"))
-            for x in (self.insurance_amount, self.licence_amount, self.additional_costs)
-        )
+        c = self.current_cost
+        return c.total if c else Decimal("0")
 
     def compliance_items(self):
-        """(label, date, state) for each tracked payment."""
+        """(label, date, state) for each tracked payment (current year)."""
         return [
             ("Insurance payment", self.pay_date, compliance_state(self.pay_date)),
         ]
@@ -136,6 +150,35 @@ class Vehicle(models.Model):
         self.status = self.Status.ACTIVE
         self.retired_on = None
         self.save()
+
+
+class VehicleCost(models.Model):
+    """A vehicle's costs for one year — insurance, licence and additional, plus
+    the insurance pay date. Renewed each year by adding a new row."""
+
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name="costs")
+    year = models.PositiveIntegerField("Year")
+    insurance_amount = models.DecimalField(
+        "Insurance amount (€)", max_digits=10, decimal_places=2, null=True, blank=True)
+    pay_date = models.DateField("Insurance pay date", null=True, blank=True)
+    licence_amount = models.DecimalField(
+        "Licence amount (€)", max_digits=10, decimal_places=2, null=True, blank=True)
+    additional_costs = models.DecimalField(
+        "Additional costs (€)", max_digits=10, decimal_places=2, null=True, blank=True)
+
+    class Meta:
+        ordering = ["-year"]
+        unique_together = ("vehicle", "year")
+
+    @property
+    def total(self):
+        return sum(
+            (x or Decimal("0"))
+            for x in (self.insurance_amount, self.licence_amount, self.additional_costs)
+        )
+
+    def __str__(self):
+        return f"{self.vehicle.registration} — {self.year}"
 
 
 class ClaimStatus(models.Model):

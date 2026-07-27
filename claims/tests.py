@@ -142,20 +142,21 @@ class ViewTests(TestCase):
         self.assertEqual(compliance_state(today + timedelta(days=90)), "ok")
         self.assertEqual(compliance_state(None), "")
 
-        Vehicle.objects.create(
-            registration="ECB-600", pay_date=today + timedelta(days=5)
-        )
+        from .models import VehicleCost
+        v600 = Vehicle.objects.create(registration="ECB-600")
+        VehicleCost.objects.create(vehicle=v600, year=today.year,
+                                   pay_date=today + timedelta(days=5))
         response = self.client.get(reverse("dashboard"))
         self.assertContains(response, "ECB-600")
         self.assertContains(response, "due soon")
 
     def test_retired_vehicle_not_in_compliance_list(self):
+        from .models import VehicleCost
         today = timezone.localdate()
-        Vehicle.objects.create(
-            registration="ECB-700",
-            status=Vehicle.Status.RETIRED,
-            pay_date=today - timedelta(days=5),
-        )
+        v700 = Vehicle.objects.create(
+            registration="ECB-700", status=Vehicle.Status.RETIRED)
+        VehicleCost.objects.create(vehicle=v700, year=today.year,
+                                   pay_date=today - timedelta(days=5))
         response = self.client.get(reverse("dashboard"))
         self.assertNotContains(response, "ECB-700")
 
@@ -163,6 +164,33 @@ class ViewTests(TestCase):
         response = self.client.get(reverse("home"))
         self.assertContains(response, "New claim")
         self.assertContains(response, "Reminders")
+
+    def test_vehicle_yearly_costs_and_owner_grouping(self):
+        from decimal import Decimal
+
+        from .models import Vehicle, VehicleCost
+
+        v = Vehicle.objects.create(registration="OWN-1", owner="Vai Drive Co Ltd")
+        # add two years of costs
+        self.client.post(reverse("vehicle_cost_save", args=[v.pk]),
+                         {"year": "2025", "insurance_amount": "400",
+                          "licence_amount": "100", "additional_costs": "50"})
+        self.client.post(reverse("vehicle_cost_save", args=[v.pk]),
+                         {"year": "2026", "insurance_amount": "440",
+                          "licence_amount": "110"})
+        self.assertEqual(v.costs.count(), 2)
+        # current (latest year) costs feed the vehicle
+        self.assertEqual(v.current_cost.year, 2026)
+        self.assertEqual(v.total_costs, Decimal("550.00"))  # 440 + 110
+
+        # fleet list groups by owner and shows the current total
+        r = self.client.get(reverse("vehicle_list"))
+        self.assertContains(r, "Vai Drive Co Ltd")
+        self.assertContains(r, "OWN-1")
+
+        # deleting a year works
+        self.client.post(reverse("vehicle_cost_delete", args=[v.pk, 2025]))
+        self.assertEqual(v.costs.count(), 1)
 
     def test_standalone_reminder(self):
         response = self.client.post(
@@ -177,10 +205,11 @@ class ViewTests(TestCase):
     def test_auto_reminder_for_insurance_and_chase(self):
         from .services.auto_reminders import sync_auto_reminders
 
+        from .models import VehicleCost
         today = timezone.localdate()
-        vehicle = Vehicle.objects.create(
-            registration="ECB-810", pay_date=today + timedelta(days=10)
-        )
+        vehicle = Vehicle.objects.create(registration="ECB-810")
+        vcost = VehicleCost.objects.create(vehicle=vehicle, year=today.year,
+                                           pay_date=today + timedelta(days=10))
         claim = Claim.objects.create(
             status=Claim.Status.OPEN,
             chase_on=today + timedelta(days=3),
@@ -194,8 +223,8 @@ class ViewTests(TestCase):
         self.assertTrue(autos.filter(claim=claim, title__contains="O/S payment").exists())
 
         # Date moves on -> stale auto reminder replaced, not duplicated.
-        vehicle.pay_date = today + timedelta(days=40)
-        vehicle.save()
+        vcost.pay_date = today + timedelta(days=40)
+        vcost.save()
         sync_auto_reminders()
         self.assertEqual(Reminder.objects.filter(is_auto=True).count(), 2)
 

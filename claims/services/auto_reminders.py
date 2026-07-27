@@ -36,21 +36,19 @@ def sync_auto_reminders():
     horizon = today + timedelta(days=INSURANCE_HORIZON_DAYS)
     expected = {}
 
-    vehicles = Vehicle.objects.filter(
-        status=Vehicle.Status.ACTIVE,
-        pay_date__isnull=False,
-        pay_date__lte=horizon,
-    )
-    for vehicle in vehicles:
-        key = f"veh-ins-{vehicle.pk}-{vehicle.pay_date.isoformat()}"
+    for vehicle in Vehicle.objects.filter(status=Vehicle.Status.ACTIVE):
+        pay_date = vehicle.pay_date  # current year's pay date
+        if not pay_date or pay_date > horizon:
+            continue
+        key = f"veh-ins-{vehicle.pk}-{pay_date.isoformat()}"
         expected[key] = {
             "claim": None,
             "title": f"Insurance payment — {vehicle.registration}",
             "notes": (
                 f"{vehicle.registration} {vehicle.make_model}".strip()
-                + f" insurance payment is due on {vehicle.pay_date:%d %b %Y}."
+                + f" insurance payment is due on {pay_date:%d %b %Y}."
             ),
-            "due": vehicle.pay_date,
+            "due": pay_date,
         }
 
     open_statuses = [
