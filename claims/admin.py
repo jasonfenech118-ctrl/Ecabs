@@ -21,6 +21,7 @@ from .models import (
     RepairType,
     Survey,
     Vehicle,
+    VehicleAdditionalCost,
     VehicleCost,
 )
 
@@ -106,9 +107,20 @@ class CompanyAdmin(admin.ModelAdmin):
     list_editable = ("order", "is_active")
 
 
+class VehicleAdditionalCostInline(admin.TabularInline):
+    model = VehicleAdditionalCost
+    extra = 0
+
+
 class VehicleCostInline(admin.TabularInline):
     model = VehicleCost
     extra = 0
+
+
+@admin.register(VehicleCost)
+class VehicleCostAdmin(admin.ModelAdmin):
+    list_display = ("vehicle", "year", "insurance_amount", "pay_date", "licence_amount")
+    inlines = [VehicleAdditionalCostInline]
 
 
 @admin.register(Vehicle)

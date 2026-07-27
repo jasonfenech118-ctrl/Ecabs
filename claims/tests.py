@@ -192,6 +192,31 @@ class ViewTests(TestCase):
         self.client.post(reverse("vehicle_cost_delete", args=[v.pk, 2025]))
         self.assertEqual(v.costs.count(), 1)
 
+    def test_multiple_additional_costs_with_note_and_date(self):
+        from decimal import Decimal
+
+        from .models import Vehicle, VehicleCost
+
+        v = Vehicle.objects.create(registration="ADD-2", owner="Fast Drop")
+        self.client.post(reverse("vehicle_cost_save", args=[v.pk]),
+                         {"year": "2026", "insurance_amount": "440", "licence_amount": "110"})
+        cost = VehicleCost.objects.get(vehicle=v, year=2026)
+        # two additional items, each with a note and a date
+        self.client.post(reverse("vehicle_additional_add", args=[cost.pk]),
+                         {"amount": "50", "note": "new tyres", "date_added": "2026-08-12"})
+        self.client.post(reverse("vehicle_additional_add", args=[cost.pk]),
+                         {"amount": "30", "note": "wiper", "date_added": "2026-08-15"})
+        cost.refresh_from_db()
+        self.assertEqual(cost.additionals.count(), 2)
+        self.assertEqual(cost.additional_total, Decimal("80.00"))
+        self.assertEqual(cost.total, Decimal("630.00"))  # 440 + 110 + 80
+        item = cost.additionals.first()
+        self.assertEqual(item.note, "new tyres")
+        # delete one
+        self.client.post(reverse("vehicle_additional_delete", args=[cost.pk, item.pk]))
+        cost.refresh_from_db()
+        self.assertEqual(cost.additionals.count(), 1)
+
     def test_standalone_reminder(self):
         response = self.client.post(
             reverse("reminder_create"),

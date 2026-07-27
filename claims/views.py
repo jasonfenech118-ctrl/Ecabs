@@ -1605,8 +1605,9 @@ def vehicle_edit(request, pk):
             "vehicle": vehicle,
             "form": form,
             "related_claims": related_claims,
-            "costs": vehicle.costs.all(),
+            "costs": vehicle.costs.prefetch_related("additionals"),
             "next_year": timezone.localdate().year,
+            "today_iso": timezone.localdate().isoformat(),
         },
     )
 
@@ -1621,7 +1622,7 @@ def vehicle_cost_save(request, pk):
         return redirect("vehicle_edit", pk=pk)
     year = int(raw_year)
     cost, _ = VehicleCost.objects.get_or_create(vehicle=vehicle, year=year)
-    for f in ("insurance_amount", "licence_amount", "additional_costs"):
+    for f in ("insurance_amount", "licence_amount"):
         raw = (request.POST.get(f) or "").strip()
         try:
             setattr(cost, f, Decimal(raw) if raw else None)
@@ -1638,6 +1639,36 @@ def vehicle_cost_delete(request, pk, year):
     vehicle = get_object_or_404(Vehicle, pk=pk)
     VehicleCost.objects.filter(vehicle=vehicle, year=year).delete()
     return redirect("vehicle_edit", pk=pk)
+
+
+@login_required
+@require_POST
+def vehicle_additional_add(request, cost_pk):
+    """Add one additional cost line (amount + note + date) to a year's costs."""
+    from .models import VehicleAdditionalCost
+
+    cost = get_object_or_404(VehicleCost, pk=cost_pk)
+    raw = (request.POST.get("amount") or "").strip()
+    try:
+        amount = Decimal(raw) if raw else Decimal("0")
+    except InvalidOperation:
+        amount = Decimal("0")
+    VehicleAdditionalCost.objects.create(
+        cost=cost, amount=amount,
+        note=(request.POST.get("note") or "").strip(),
+        date_added=_parse_date(request.POST.get("date_added")) or timezone.localdate(),
+    )
+    return redirect("vehicle_edit", pk=cost.vehicle_id)
+
+
+@login_required
+@require_POST
+def vehicle_additional_delete(request, cost_pk, item_pk):
+    from .models import VehicleAdditionalCost
+
+    cost = get_object_or_404(VehicleCost, pk=cost_pk)
+    VehicleAdditionalCost.objects.filter(pk=item_pk, cost=cost).delete()
+    return redirect("vehicle_edit", pk=cost.vehicle_id)
 
 
 @login_required

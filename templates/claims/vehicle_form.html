@@ -25,40 +25,67 @@
   </fieldset>
   <fieldset>
     <legend>Costs per year — insurance renews each year</legend>
-    <div class="table-wrap">
-      <table class="list">
-        <thead><tr><th>Year</th><th class="right">Insurance €</th><th>Pay date</th><th class="right">Licence €</th><th class="right">Additional €</th><th class="right">Total €</th><th></th></tr></thead>
-        <tbody>
-          {% for c in costs %}
-          <tr>
-            <td><strong>{{ c.year }}</strong></td>
-            <td class="right">{% if c.insurance_amount is not None %}€{{ c.insurance_amount|floatformat:2 }}{% else %}—{% endif %}</td>
-            <td>{{ c.pay_date|date:"d M Y"|default:"—" }}</td>
-            <td class="right">{% if c.licence_amount is not None %}€{{ c.licence_amount|floatformat:2 }}{% else %}—{% endif %}</td>
-            <td class="right">{% if c.additional_costs is not None %}€{{ c.additional_costs|floatformat:2 }}{% else %}—{% endif %}</td>
-            <td class="right"><strong>€{{ c.total|floatformat:2 }}</strong></td>
-            <td>
-              <form method="post" action="{% url 'vehicle_cost_delete' vehicle.pk c.year %}" onsubmit="return confirm('Delete {{ c.year }} costs?')" style="display:inline">{% csrf_token %}<button type="submit" class="btn btn-sm btn-danger">✕</button></form>
-            </td>
-          </tr>
-          {% empty %}
-          <tr><td colspan="7" class="empty">No yearly costs yet — add one below.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
+
+    {% for c in costs %}
+    <div class="card" style="margin-bottom:.9rem">
+      <div class="row" style="justify-content:space-between; align-items:center">
+        <h3 style="margin:0">{{ c.year }} <span class="muted" style="font-weight:400; font-size:.9rem">· Total €{{ c.total|floatformat:2 }}</span></h3>
+        <form method="post" action="{% url 'vehicle_cost_delete' vehicle.pk c.year %}" onsubmit="return confirm('Delete all {{ c.year }} costs?')">{% csrf_token %}<button type="submit" class="btn btn-sm btn-danger">✕ Delete year</button></form>
+      </div>
+
+      <form method="post" action="{% url 'vehicle_cost_save' vehicle.pk %}" class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap; margin-top:.5rem">
+        {% csrf_token %}
+        <input type="hidden" name="year" value="{{ c.year }}">
+        <label class="field" style="margin:0; width:120px"><span>Insurance €</span><input type="number" step="0.01" min="0" name="insurance_amount" value="{{ c.insurance_amount|default_if_none:'' }}"></label>
+        <label class="field" style="margin:0"><span>Pay date</span><input type="date" name="pay_date" value="{{ c.pay_date|date:'Y-m-d' }}"></label>
+        <label class="field" style="margin:0; width:120px"><span>Licence €</span><input type="number" step="0.01" min="0" name="licence_amount" value="{{ c.licence_amount|default_if_none:'' }}"></label>
+        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+      </form>
+
+      <div style="margin-top:.7rem">
+        <strong>Additional costs</strong> <span class="muted">· €{{ c.additional_total|floatformat:2 }}</span>
+        <div class="table-wrap">
+          <table class="list">
+            <thead><tr><th class="right">Amount €</th><th>Note</th><th>Date added</th><th></th></tr></thead>
+            <tbody>
+              {% for a in c.additionals.all %}
+              <tr>
+                <td class="right">€{{ a.amount|floatformat:2 }}</td>
+                <td>{{ a.note|default:"—" }}</td>
+                <td style="white-space:nowrap">{{ a.date_added|date:"d M Y"|default:"—" }}</td>
+                <td><form method="post" action="{% url 'vehicle_additional_delete' c.pk a.pk %}" style="display:inline">{% csrf_token %}<button type="submit" class="btn btn-sm btn-danger">✕</button></form></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="empty">No additional items yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <form method="post" action="{% url 'vehicle_additional_add' c.pk %}" class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap; margin-top:.5rem">
+          {% csrf_token %}
+          <label class="field" style="margin:0; width:110px"><span>Amount €</span><input type="number" step="0.01" min="0" name="amount" placeholder="0.00" required></label>
+          <label class="field" style="margin:0; flex:1; min-width:160px"><span>Note</span><input name="note" placeholder="e.g. new tyres, service"></label>
+          <label class="field" style="margin:0"><span>Date added</span><input type="date" name="date_added" value="{{ today_iso }}"></label>
+          <button type="submit" class="btn btn-sm">＋ Add additional</button>
+        </form>
+      </div>
     </div>
-    <form method="post" action="{% url 'vehicle_cost_save' vehicle.pk %}" class="row" style="gap:.5rem; align-items:flex-end; margin-top:.8rem; flex-wrap:wrap">
-      {% csrf_token %}
-      <label class="field" style="margin:0; width:90px"><span>Year</span><input type="number" name="year" value="{{ next_year }}" min="2000" max="2100" required></label>
-      <label class="field" style="margin:0; width:120px"><span>Insurance €</span><input type="number" step="0.01" min="0" name="insurance_amount" placeholder="0.00"></label>
-      <label class="field" style="margin:0"><span>Pay date</span><input type="date" name="pay_date"></label>
-      <label class="field" style="margin:0; width:120px"><span>Licence €</span><input type="number" step="0.01" min="0" name="licence_amount" placeholder="0.00"></label>
-      <label class="field" style="margin:0; width:120px"><span>Additional €</span><input type="number" step="0.01" min="0" name="additional_costs" placeholder="0.00"></label>
-      <button type="submit" class="btn btn-primary">Save year</button>
-    </form>
-    <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">
-      Each year add a new row with that year's amounts. The most recent year shows on the fleet list, and its <strong>pay date</strong> drives the insurance-payment reminder.
-    </p>
+    {% empty %}
+    <p class="muted" style="margin-bottom:.8rem">No yearly costs yet — add a year below.</p>
+    {% endfor %}
+
+    <div class="card">
+      <h3 style="margin:0 0 .5rem">Add a year</h3>
+      <form method="post" action="{% url 'vehicle_cost_save' vehicle.pk %}" class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap">
+        {% csrf_token %}
+        <label class="field" style="margin:0; width:90px"><span>Year</span><input type="number" name="year" value="{{ next_year }}" min="2000" max="2100" required></label>
+        <label class="field" style="margin:0; width:120px"><span>Insurance €</span><input type="number" step="0.01" min="0" name="insurance_amount" placeholder="0.00"></label>
+        <label class="field" style="margin:0"><span>Pay date</span><input type="date" name="pay_date"></label>
+        <label class="field" style="margin:0; width:120px"><span>Licence €</span><input type="number" step="0.01" min="0" name="licence_amount" placeholder="0.00"></label>
+        <button type="submit" class="btn btn-primary">Save year</button>
+      </form>
+      <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">Add the year, then add as many <strong>additional costs</strong> to it as you like (each with a note and a date). The most recent year shows on the fleet list; its <strong>pay date</strong> drives the reminder.</p>
+    </div>
   </fieldset>
   <fieldset>
     <legend>Notes</legend>

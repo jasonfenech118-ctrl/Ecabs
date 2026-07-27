@@ -114,7 +114,7 @@ class Vehicle(models.Model):
     @property
     def additional_costs(self):
         c = self.current_cost
-        return c.additional_costs if c else None
+        return c.additional_total if c else None
 
     @property
     def pay_date(self):
@@ -163,22 +163,42 @@ class VehicleCost(models.Model):
     pay_date = models.DateField("Insurance pay date", null=True, blank=True)
     licence_amount = models.DecimalField(
         "Licence amount (€)", max_digits=10, decimal_places=2, null=True, blank=True)
-    additional_costs = models.DecimalField(
-        "Additional costs (€)", max_digits=10, decimal_places=2, null=True, blank=True)
 
     class Meta:
         ordering = ["-year"]
         unique_together = ("vehicle", "year")
 
     @property
+    def additional_total(self):
+        return sum((a.amount or Decimal("0")) for a in self.additionals.all())
+
+    @property
     def total(self):
-        return sum(
-            (x or Decimal("0"))
-            for x in (self.insurance_amount, self.licence_amount, self.additional_costs)
+        return (
+            (self.insurance_amount or Decimal("0"))
+            + (self.licence_amount or Decimal("0"))
+            + self.additional_total
         )
 
     def __str__(self):
         return f"{self.vehicle.registration} — {self.year}"
+
+
+class VehicleAdditionalCost(models.Model):
+    """One additional cost line on a vehicle's yearly costs — amount, a note and
+    the date it was added. A year can have several."""
+
+    cost = models.ForeignKey(
+        VehicleCost, on_delete=models.CASCADE, related_name="additionals")
+    amount = models.DecimalField("Amount (€)", max_digits=10, decimal_places=2, default=0)
+    note = models.CharField("Note", max_length=200, blank=True)
+    date_added = models.DateField("Date added", null=True, blank=True)
+
+    class Meta:
+        ordering = ["date_added", "id"]
+
+    def __str__(self):
+        return f"{self.note or 'Additional'} — €{self.amount}"
 
 
 class ClaimStatus(models.Model):
