@@ -241,7 +241,7 @@ def garage_job_add(request):
 
 
 GARAGE_JOB_TEXT_FIELDS = [
-    "plate_no", "client", "make", "claim_no", "surveyor", "insurance",
+    "plate_no", "client", "make", "model", "claim_no", "surveyor", "insurance",
     "report_received", "go_ahead",
 ]
 

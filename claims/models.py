@@ -854,6 +854,7 @@ class GarageJob(models.Model):
     plate_no = models.CharField("No plate", max_length=20, blank=True)
     client = models.CharField("Client", max_length=200, blank=True)
     make = models.CharField("Make", max_length=120, blank=True)
+    model = models.CharField("Model", max_length=120, blank=True)
     claim_no = models.CharField("Claim No", max_length=60, blank=True)
     surveyor = models.CharField("Surveyor", max_length=120, blank=True)
     insurance = models.CharField("Insurance", max_length=120, blank=True)

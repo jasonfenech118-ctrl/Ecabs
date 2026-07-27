@@ -6,6 +6,7 @@
   <td>{{ j.plate_no|default:"—" }}</td>
   <td>{{ j.client|default:"—" }}</td>
   <td>{{ j.make|default:"—" }}</td>
+  <td>{{ j.model|default:"—" }}</td>
   <td>{{ j.claim_no|default:"—" }}</td>
   <td>{{ j.surveyor|default:"—" }}</td>
   <td>{{ j.insurance|default:"—" }}</td>
@@ -20,5 +21,5 @@
   </td>
 </tr>
 {% empty %}
-<tr><td colspan="13" class="empty">None.</td></tr>
+<tr><td colspan="14" class="empty">None.</td></tr>
 {% endfor %}
