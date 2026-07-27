@@ -1,4 +1,11 @@
-{% for v in vehicles %}
+{% for g in groups %}
+<tr class="group-head">
+  <td colspan="3"><strong>👤 {{ g.owner }}</strong> <span class="muted">· {{ g.vehicles|length }} vehicle{{ g.vehicles|length|pluralize }}</span></td>
+  <td colspan="4"></td>
+  <td class="right"><strong>€{{ g.total|floatformat:2 }}</strong></td>
+  <td></td>
+</tr>
+{% for v in g.vehicles %}
 <tr>
   <td><a href="{% url 'vehicle_edit' v.pk %}">{{ v.registration }}</a></td>
   <td>{{ v.make_model|default:"—" }}{% if v.year %} <span class="muted">({{ v.year }})</span>{% endif %}</td>
@@ -23,6 +30,7 @@
   <td class="right"><strong>€{{ v.total_costs|floatformat:2 }}</strong></td>
   <td><a href="{% url 'vehicle_edit' v.pk %}" class="btn btn-sm">Manage</a></td>
 </tr>
+{% endfor %}
 {% empty %}
 <tr><td colspan="9" class="empty">No vehicles match.</td></tr>
 {% endfor %}

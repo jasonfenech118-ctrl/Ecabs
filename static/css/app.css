@@ -646,6 +646,7 @@ tr.month-group td {
   font-weight: 700; font-size: .85rem; letter-spacing: .02em;
 }
 tr.summary-total td { font-weight: 700; border-top: 2px solid var(--border); }
+tr.group-head td { background: #eef2f7; border-top: 2px solid var(--border, #d1d5db); font-size: .92rem; padding-top: .55rem; padding-bottom: .55rem; }
 tr.subtotal-row td { background: var(--bg); color: var(--text-muted); border-bottom: 1px solid var(--border); }
 
 .login-card { width: 360px; }

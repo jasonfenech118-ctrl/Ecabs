@@ -72,6 +72,7 @@ class Vehicle(models.Model):
 
     registration = models.CharField(max_length=20, unique=True)
     make_model = models.CharField(max_length=100, blank=True)
+    owner = models.CharField("Owner", max_length=120, blank=True, db_index=True)
     year = models.PositiveIntegerField(null=True, blank=True)
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.ACTIVE, db_index=True

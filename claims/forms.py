@@ -9,6 +9,7 @@ class VehicleForm(forms.ModelForm):
         fields = [
             "registration",
             "make_model",
+            "owner",
             "year",
             "acquired_on",
             "insurance_amount",

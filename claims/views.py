@@ -1537,11 +1537,29 @@ def vehicle_list(request):
     q = request.GET.get("q", "").strip()
     status = request.GET.get("status", "").strip()
     if q:
-        qs = qs.filter(Q(registration__icontains=q) | Q(make_model__icontains=q))
+        qs = qs.filter(
+            Q(registration__icontains=q) | Q(make_model__icontains=q)
+            | Q(owner__icontains=q)
+        )
     if status:
         qs = qs.filter(status=status)
+
+    # Group the fleet by owner (blank -> "Unassigned"), with a cost subtotal.
+    groups_map = {}
+    for v in qs:
+        key = v.owner.strip() or "Unassigned"
+        groups_map.setdefault(key, []).append(v)
+    groups = []
+    for name in sorted(groups_map, key=lambda n: (n == "Unassigned", n.lower())):
+        vs = groups_map[name]
+        groups.append({
+            "owner": name,
+            "vehicles": vs,
+            "total": sum((x.total_costs for x in vs), Decimal("0")),
+        })
+
     context = {
-        "vehicles": qs,
+        "groups": groups,
         "q": q,
         "status": status,
         "statuses": Vehicle.Status.choices,
