@@ -18,7 +18,21 @@
     {% include "claims/partials/field.html" with field=form.year %}
     {% include "claims/partials/field.html" with field=form.notes extra_class="span-2" %}
   </div>
-  <button type="submit" class="btn btn-primary mt">Add vehicle</button>
-  <p class="muted" style="font-size:.8rem; margin:.6rem 0 0">Add the yearly insurance / licence / additional costs after saving, from the vehicle's page.</p>
+
+  <fieldset style="margin-top:1rem">
+    <legend>This year's costs ({{ cost_year }})</legend>
+    <input type="hidden" name="cost_year" value="{{ cost_year }}">
+    <div class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap">
+      <label class="field" style="margin:0; width:130px"><span>Insurance €</span><input type="number" step="0.01" min="0" name="insurance_amount" placeholder="0.00"></label>
+      <label class="field" style="margin:0"><span>Pay date</span><input type="date" name="pay_date"></label>
+      <label class="field" style="margin:0; width:130px"><span>Licence €</span><input type="number" step="0.01" min="0" name="licence_amount" placeholder="0.00"></label>
+    </div>
+    <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">Enter this year's amounts here so they show on the fleet list straight away. Add further years and additional costs from the vehicle's page after saving.</p>
+  </fieldset>
+
+  <div class="row mt" style="gap:.5rem">
+    <button type="submit" class="btn btn-primary">Save vehicle</button>
+    <button type="submit" name="add_another" value="1" class="btn">Save &amp; add another</button>
+  </div>
 </form>
 {% endblock %}

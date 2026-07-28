@@ -123,8 +123,8 @@ class ViewTests(TestCase):
             reverse("vehicle_add"),
             {"registration": "ECB-500", "make_model": "Toyota Yaris"},
         )
-        self.assertRedirects(response, reverse("vehicle_list"))
         vehicle = Vehicle.objects.get(registration="ECB-500")
+        self.assertRedirects(response, reverse("vehicle_edit", args=[vehicle.pk]))
         self.assertTrue(vehicle.is_active)
 
         self.client.post(reverse("vehicle_toggle_status", args=[vehicle.pk]))
@@ -311,6 +311,17 @@ class ViewTests(TestCase):
         self.assertEqual(
             self.client.get(reverse("claim_group", args=["bogus"])).status_code, 400
         )
+
+    def test_open_group_includes_custom_status(self):
+        """A claim moved to a custom status is still 'open' (not draft/finished)."""
+        from claims.models import ClaimStatus
+
+        cs = ClaimStatus.objects.create(name="O/S To open a claim")
+        custom_c = Claim.objects.create(
+            status=cs.slug, vehicle_registration="ECB-CST", created_by=self.user
+        )
+        r = self.client.get(reverse("claim_group", args=["open"]))
+        self.assertContains(r, "ECB-CST")
 
     def test_invoice_company_selection(self):
         from decimal import Decimal
@@ -813,14 +824,29 @@ class ViewTests(TestCase):
         self.assertNotContains(response, "ECB-OK")
 
     def test_vehicle_add_page(self):
+        from decimal import Decimal
+
         response = self.client.get(reverse("vehicle_add"))
         self.assertEqual(response.status_code, 200)
         response = self.client.post(
             reverse("vehicle_add"),
-            {"registration": "ECB-NEW", "make_model": "Kia Picanto"},
+            {"registration": "ECB-NEW", "make_model": "Kia Picanto",
+             "insurance_amount": "450.00", "licence_amount": "60.00"},
         )
-        self.assertRedirects(response, reverse("vehicle_list"))
-        self.assertTrue(Vehicle.objects.filter(registration="ECB-NEW").exists())
+        vehicle = Vehicle.objects.get(registration="ECB-NEW")
+        self.assertRedirects(response, reverse("vehicle_edit", args=[vehicle.pk]))
+        # The year's costs entered on the add form are saved and show up.
+        cost = vehicle.costs.get()
+        self.assertEqual(cost.insurance_amount, Decimal("450.00"))
+        self.assertEqual(cost.licence_amount, Decimal("60.00"))
+
+        # "Save & add another" keeps us on the add form.
+        response = self.client.post(
+            reverse("vehicle_add"),
+            {"registration": "ECB-NEW2", "make_model": "Kia Rio", "add_another": "1"},
+        )
+        self.assertRedirects(response, reverse("vehicle_add"))
+        self.assertTrue(Vehicle.objects.filter(registration="ECB-NEW2").exists())
 
     def test_master_sheet_and_csv(self):
         from decimal import Decimal

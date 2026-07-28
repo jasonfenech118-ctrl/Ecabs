@@ -66,6 +66,13 @@ FINISHED_STATUSES = [
 ]
 
 
+def open_claims_qs(base=None):
+    """Claims still being worked: anything that isn't a draft or finished —
+    so it also includes claims on a custom status."""
+    qs = base if base is not None else Claim.objects.all()
+    return qs.exclude(status=Claim.Status.DRAFT).exclude(status__in=FINISHED_STATUSES)
+
+
 # Sort options for the claim sheets. Each: key, label, DB ordering.
 CLAIM_SORTS = [
     ("date_desc", "Accident date — newest first", ["-accident_date", "-created_at"]),
@@ -101,13 +108,8 @@ def _compliance_due(limit=None):
 def home(request):
     sync_auto_reminders()
     now = timezone.now()
-    open_statuses = [
-        Claim.Status.OPEN,
-        Claim.Status.AWAITING_SURVEY,
-        Claim.Status.AWAITING_INSURER,
-    ]
     counts = {
-        "open_claims": Claim.objects.filter(status__in=open_statuses).count(),
+        "open_claims": open_claims_qs().count(),
         "reminders_due": Reminder.objects.filter(
             completed_at__isnull=True, due_at__lte=now + timedelta(days=1)
         ).count(),
@@ -193,6 +195,17 @@ def _parse_date(raw):
         except ValueError:
             continue
     return None
+
+
+def _parse_decimal(raw):
+    """Parse a money amount from an inline input; blank/invalid -> None."""
+    raw = (raw or "").strip()
+    if not raw:
+        return None
+    try:
+        return Decimal(raw)
+    except InvalidOperation:
+        return None
 
 
 @login_required
@@ -900,13 +913,8 @@ def dashboard(request):
     sync_auto_reminders()
     now = timezone.now()
     claims = Claim.objects.all()
-    open_statuses = [
-        Claim.Status.OPEN,
-        Claim.Status.AWAITING_SURVEY,
-        Claim.Status.AWAITING_INSURER,
-    ]
     stats = {
-        "open": claims.filter(status__in=open_statuses).count(),
+        "open": open_claims_qs(claims).count(),
         "drafts": claims.filter(status=Claim.Status.DRAFT).count(),
         "new_this_month": claims.filter(
             created_at__year=now.year, created_at__month=now.month
@@ -921,7 +929,7 @@ def dashboard(request):
     compliance_due = _compliance_due(limit=8)
     stats["compliance_due"] = len(_compliance_due())
 
-    open_claims = claims.filter(status__in=open_statuses)
+    open_claims = open_claims_qs(claims)
     stats["recovery_outstanding"] = sum(
         (c.outstanding_amount for c in open_claims), Decimal("0")
     )
@@ -932,9 +940,9 @@ def dashboard(request):
     status_breakdown = (
         claims.values("status").annotate(n=Count("id")).order_by("-n")
     )
-    status_labels = dict(Claim.Status.choices)
+    status_labels = dict(claim_status_choices(include_inactive=True))
     breakdown = [
-        {"label": status_labels[row["status"]], "status": row["status"], "n": row["n"]}
+        {"label": status_labels.get(row["status"], row["status"]), "status": row["status"], "n": row["n"]}
         for row in status_breakdown
     ]
     recent_claims = claims.select_related("created_by")[:8]
@@ -964,10 +972,7 @@ def metrics(request):
     """System-wide metrics — a high-level KPI section across the whole app."""
     now = timezone.now()
     claims = Claim.objects.all()
-    open_statuses = [
-        Claim.Status.OPEN, Claim.Status.AWAITING_SURVEY, Claim.Status.AWAITING_INSURER,
-    ]
-    open_claims = list(claims.filter(status__in=open_statuses))
+    open_claims = list(open_claims_qs(claims))
     closed_statuses = [Claim.Status.SETTLED, Claim.Status.CLOSED, Claim.Status.REJECTED]
 
     # At-fault (our insured liable)
@@ -983,7 +988,7 @@ def metrics(request):
                               if i.status != GarageInvoice.Status.PAID), Decimal("0"))
 
     # Claim status breakdown
-    status_labels = dict(Claim.Status.choices)
+    status_labels = dict(claim_status_choices(include_inactive=True))
     status_breakdown = [
         {"label": status_labels.get(row["status"], row["status"]), "n": row["n"]}
         for row in claims.values("status").annotate(n=Count("id")).order_by("-n")
@@ -1038,7 +1043,7 @@ def _filtered_claims(request):
         qs = qs.filter(status=status)
     flag = request.GET.get("flag", "").strip()
     if flag == "overdue":
-        qs = qs.filter(status__in=OPEN_STATUSES, chase_on__lt=timezone.localdate())
+        qs = open_claims_qs(qs).filter(chase_on__lt=timezone.localdate())
     elif flag == "urgent":
         qs = qs.filter(urgent=True)
     return qs
@@ -1050,7 +1055,7 @@ def claim_list(request):
     claims = qs[:100]
     context = {
         "claims": claims,
-        "statuses": Claim.Status.choices,
+        "statuses": claim_status_choices(),
         "sorts": CLAIM_SORTS,
         "sort": sort,
         "q": request.GET.get("q", ""),
@@ -1067,15 +1072,15 @@ def claim_group(request, group):
     """Focused tables: open, closed/finished, or overdue claims."""
     today = timezone.localdate()
     if group == "open":
-        qs = Claim.objects.filter(status__in=OPEN_STATUSES)
+        qs = open_claims_qs()
         title = "Open claims"
-        subtitle = "Claims still being worked — open, awaiting survey or awaiting insurer"
+        subtitle = "Claims still being worked — anything not a draft or finished"
     elif group == "closed":
         qs = Claim.objects.filter(status__in=FINISHED_STATUSES)
         title = "Closed claims"
         subtitle = "Finished claims — settled, closed or rejected"
     elif group == "overdue":
-        qs = Claim.objects.filter(status__in=OPEN_STATUSES, chase_on__lt=today)
+        qs = open_claims_qs().filter(chase_on__lt=today)
         title = "Overdue claims"
         subtitle = "Open claims past their chase date"
     else:
@@ -1574,15 +1579,39 @@ def vehicle_list(request):
 
 @login_required
 def vehicle_add(request):
-    """Full-page add-vehicle form (linked from the home menu)."""
+    """Full-page add-vehicle form (linked from the home menu).
+
+    Captures this year's insurance / licence costs straight away so the amounts
+    show on the fleet list, and offers "Save & add another" to stay on the form.
+    """
+    from django.contrib import messages
+
     if request.method == "POST":
         form = VehicleForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect("vehicle_list")
+            vehicle = form.save()
+            # Optional first-year costs entered on the add form.
+            raw_year = (request.POST.get("cost_year") or "").strip()
+            year = int(raw_year) if raw_year.isdigit() else timezone.localdate().year
+            ins = _parse_decimal(request.POST.get("insurance_amount"))
+            lic = _parse_decimal(request.POST.get("licence_amount"))
+            pay = _parse_date(request.POST.get("pay_date"))
+            if ins is not None or lic is not None or pay is not None:
+                VehicleCost.objects.update_or_create(
+                    vehicle=vehicle, year=year,
+                    defaults={"insurance_amount": ins, "licence_amount": lic,
+                              "pay_date": pay},
+                )
+            messages.success(request, f"{vehicle.registration} added to the fleet.")
+            if "add_another" in request.POST:
+                return redirect("vehicle_add")
+            return redirect("vehicle_edit", pk=vehicle.pk)
     else:
         form = VehicleForm()
-    return render(request, "claims/vehicle_add.html", {"form": form})
+    return render(request, "claims/vehicle_add.html", {
+        "form": form,
+        "cost_year": timezone.localdate().year,
+    })
 
 
 @login_required
@@ -1842,15 +1871,17 @@ def _status_summary():
         total = sum((c.outstanding_amount for c in matched), Decimal("0"))
         return len(matched), total
 
+    finished = set(FINISHED_STATUSES)
     rows = []
-    for value, label in Claim.Status.choices:
+    for value, label in claim_status_choices():
         count, outstanding = agg(lambda c, v=value: c.status == v)
         rows.append(
             {"label": label, "count": count, "outstanding": outstanding,
              "query": f"status={value}"}
         )
     count, outstanding = agg(
-        lambda c: c.status in OPEN_STATUSES and c.chase_on and c.chase_on < today
+        lambda c: c.status != Claim.Status.DRAFT and c.status not in finished
+        and c.chase_on and c.chase_on < today
     )
     rows.append(
         {"label": "Overdue (chase date passed)", "count": count,
@@ -2115,21 +2146,24 @@ def data_dashboard(request):
     today = timezone.localdate()
 
     # KPIs
-    open_n = sum(1 for c in claims if c.status in OPEN_STATUSES)
+    finished = set(FINISHED_STATUSES)
+    is_open = lambda c: c.status != Claim.Status.DRAFT and c.status not in finished
+    open_n = sum(1 for c in claims if is_open(c))
     closed_n = sum(1 for c in claims if c.status in FINISHED_STATUSES)
     draft_n = sum(1 for c in claims if c.status == Claim.Status.DRAFT)
     overdue_n = sum(
         1 for c in claims
-        if c.status in OPEN_STATUSES and c.chase_on and c.chase_on < today
+        if is_open(c) and c.chase_on and c.chase_on < today
     )
     urgent_n = sum(1 for c in claims if c.urgent)
     outstanding = sum((c.outstanding_amount for c in claims), Decimal("0"))
 
     # Claims by status
     status_counts = Counter(c.status for c in claims)
+    status_choices = claim_status_choices(include_inactive=True)
     by_status = {
-        "labels": [label for _v, label in Claim.Status.choices],
-        "data": [status_counts.get(v, 0) for v, _l in Claim.Status.choices],
+        "labels": [label for _v, label in status_choices],
+        "data": [status_counts.get(v, 0) for v, _l in status_choices],
     }
 
     # Lifecycle (mutually exclusive)
