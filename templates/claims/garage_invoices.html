@@ -58,7 +58,7 @@
         <td><a href="{{ inv.get_absolute_url }}"><strong>{{ inv.invoice_no|default:"(no number)" }}</strong></a></td>
         <td>{{ inv.invoice_date|date:"d/m/Y"|default:"—" }}</td>
         <td>{{ inv.bill_to|default:"—" }}</td>
-        <td>{% if inv.for_kind == 'group' %}<img src="{% static 'img/vai-drive.jpg' %}" alt="Vai Drive" title="Vai Drive (Frances)" class="for-logo">{% else %}<span class="pill pill-draft">🔧 Personal</span>{% endif %}</td>
+        <td>{% if inv.for_kind == 'group' %}<img src="{% static 'img/vai-drive.jpg' %}" alt="Vai Drive" title="Vai Drive (Frances)" class="for-logo">{% else %}<img src="{% static 'img/acr-garage-logo.jpg' %}" alt="ACR Garage" title="ACR Garage (own customer)" class="for-logo for-logo-acr">{% endif %}</td>
         {% if not is_garage %}<td>{% if inv.created_by %}{{ inv.created_by.get_full_name|default:inv.created_by.username }}{% else %}—{% endif %}</td>{% endif %}
         <td class="right">€{{ inv.balance_due|floatformat:2|intcomma }}</td>
         <td><span class="pill pill-{{ inv.status }}">{{ inv.get_status_display }}</span></td>
