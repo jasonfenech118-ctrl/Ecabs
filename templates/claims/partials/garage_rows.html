@@ -1,6 +1,7 @@
+{% load static %}
 {% for j in rows %}
 <tr>
-  <td><span class="pill pill-{% if j.for_kind == 'group' %}sent{% else %}draft{% endif %}">{% if j.for_kind == 'group' %}🏢 Vai Drive{% else %}🔧 Personal{% endif %}</span></td>
+  <td>{% if j.for_kind == 'group' %}<img src="{% static 'img/vai-drive.jpg' %}" alt="Vai Drive" title="Vai Drive (Frances)" class="for-logo">{% else %}<span class="pill pill-draft">🔧 Personal</span>{% endif %}</td>
   <td style="white-space:nowrap">{{ j.accident_date|date:"d/m/Y"|default:"—" }}</td>
   <td style="white-space:nowrap">{{ j.survey_date|date:"d/m/Y"|default:"—" }}</td>
   <td>{{ j.plate_no|default:"—" }}</td>
