@@ -24,6 +24,15 @@
     </div>
   </fieldset>
   <fieldset>
+    <legend>Notes</legend>
+    {% include "claims/partials/field.html" with field=form.notes %}
+  </fieldset>
+  <div class="row" style="margin-bottom:1.5rem">
+    <button type="submit" class="btn btn-primary">Save vehicle details</button>
+  </div>
+</form>
+
+<fieldset>
     <legend>Costs per year — insurance renews each year</legend>
 
     {% for c in costs %}
@@ -86,15 +95,7 @@
       </form>
       <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">Add the year, then add as many <strong>additional costs</strong> to it as you like (each with a note and a date). The most recent year shows on the fleet list; its <strong>pay date</strong> drives the reminder.</p>
     </div>
-  </fieldset>
-  <fieldset>
-    <legend>Notes</legend>
-    {% include "claims/partials/field.html" with field=form.notes %}
-  </fieldset>
-  <div class="row" style="margin-bottom:1.5rem">
-    <button type="submit" class="btn btn-primary">Save vehicle</button>
-  </div>
-</form>
+</fieldset>
 
 <div class="card" style="margin-bottom:1rem">
   <h3>Claims for this vehicle</h3>
