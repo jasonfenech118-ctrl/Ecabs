@@ -1173,3 +1173,31 @@ class GeneralClaim(models.Model):
 
     def get_absolute_url(self):
         return reverse("general_claim_edit", args=[self.pk])
+
+
+class InsuranceClaim(models.Model):
+    """Insurance claim payment record for budgeting.
+
+    Simple data-entry register: amount paid, date paid, company and insurer.
+    The main view splits costs by month paid and by company."""
+
+    company = models.ForeignKey(
+        Company, on_delete=models.PROTECT, related_name="insurance_claims",
+    )
+    insurer = models.CharField(max_length=120)
+    reference = models.CharField(max_length=80, blank=True)
+    description = models.CharField(max_length=255, blank=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date_paid = models.DateField()
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-date_paid", "-id"]
+
+    def __str__(self):
+        return f"{self.date_paid} · {self.company} · €{self.amount}"
+
+    def get_absolute_url(self):
+        return reverse("insurance_claim_edit", args=[self.pk])

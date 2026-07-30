@@ -122,6 +122,9 @@
         <a href="{% url 'vehicle_list' %}" class="{% if 'vehicle' in request.resolver_match.url_name %}active{% endif %}">
           <span class="nav-icon">⬖</span> Vehicles
         </a>
+        <a href="{% url 'insurance_claims' %}" class="{% if 'insurance' in request.resolver_match.url_name %}active{% endif %}">
+          <span class="nav-icon">⛨</span> Insurance claims
+        </a>
         <a href="{% url 'reminder_list' %}" class="{% if 'reminder' in request.resolver_match.url_name %}active{% endif %}">
           <span class="nav-icon">◷</span> Reminders
         </a>

@@ -40,6 +40,7 @@ from .models import (
     GarageJobItem,
     GarageJobLabour,
     GeneralClaim,
+    InsuranceClaim,
     Reminder,
     RepairLine,
     RepairType,
@@ -2420,3 +2421,100 @@ def master_sheet_csv(request):
     for claim in _by_accident_desc(_filtered_claims(request)):
         writer.writerow([fn(claim) for _, fn in MASTER_COLUMNS])
     return response
+
+
+# --- Insurance claims (budgeting register) ------------------------------------
+
+def _insurance_claims_budget(qs=None):
+    """Insurance claim costs split by month paid and by company, for budgeting.
+    Returns a month x company matrix (most recent month first) with row, column
+    and grand totals — same shape as _fleet_cost_budget()."""
+    from calendar import month_abbr
+    from collections import defaultdict
+
+    if qs is None:
+        qs = InsuranceClaim.objects.select_related("company")
+
+    bucket = defaultdict(lambda: defaultdict(lambda: Decimal("0")))
+    companies = set()
+
+    for ic in qs:
+        name = ic.company.name
+        bucket[(ic.date_paid.year, ic.date_paid.month)][name] += ic.amount
+        companies.add(name)
+
+    companies = sorted(companies, key=str.lower)
+    col_totals = {c: Decimal("0") for c in companies}
+    rows = []
+    for (year, month) in sorted(bucket, reverse=True):
+        cells = []
+        row_total = Decimal("0")
+        for c in companies:
+            amt = bucket[(year, month)].get(c, Decimal("0"))
+            cells.append({"company": c, "amount": amt})
+            col_totals[c] += amt
+            row_total += amt
+        rows.append({
+            "label": f"{month_abbr[month]} {year}",
+            "cells": cells,
+            "total": row_total,
+        })
+    grand_total = sum(col_totals.values(), Decimal("0"))
+    return {
+        "companies": companies,
+        "rows": rows,
+        "col_totals": [{"company": c, "amount": col_totals[c]} for c in companies],
+        "grand_total": grand_total,
+    }
+
+
+@login_required
+def insurance_claims(request):
+    """Insurance claim payment register with month x company budget breakdown."""
+    qs = InsuranceClaim.objects.select_related("company")
+    q = (request.GET.get("q") or "").strip()
+    if q:
+        qs = qs.filter(
+            Q(insurer__icontains=q) | Q(reference__icontains=q)
+            | Q(description__icontains=q) | Q(company__name__icontains=q)
+            | Q(notes__icontains=q)
+        )
+    return render(request, "claims/insurance_claims.html", {
+        "rows": qs,
+        "q": q,
+        "budget": _insurance_claims_budget(qs),
+        "total": sum((ic.amount for ic in qs), Decimal("0")),
+    })
+
+
+@login_required
+def insurance_claim_edit(request, pk=None):
+    """Add or edit an insurance claim payment."""
+    row = get_object_or_404(InsuranceClaim, pk=pk) if pk else InsuranceClaim()
+    companies = Company.objects.filter(is_active=True)
+    if request.method == "POST":
+        row.insurer = (request.POST.get("insurer") or "").strip()
+        row.reference = (request.POST.get("reference") or "").strip()
+        row.description = (request.POST.get("description") or "").strip()
+        row.notes = (request.POST.get("notes") or "").strip()
+        raw_amount = (request.POST.get("amount") or "").strip()
+        try:
+            row.amount = Decimal(raw_amount) if raw_amount else Decimal("0")
+        except InvalidOperation:
+            row.amount = Decimal("0")
+        row.date_paid = _parse_date(request.POST.get("date_paid"))
+        company_pk = request.POST.get("company")
+        if company_pk:
+            row.company_id = int(company_pk)
+        row.save()
+        return redirect("insurance_claims")
+    return render(request, "claims/insurance_claim_form.html", {
+        "row": row, "companies": companies,
+    })
+
+
+@login_required
+@require_POST
+def insurance_claim_delete(request, pk):
+    get_object_or_404(InsuranceClaim, pk=pk).delete()
+    return redirect("insurance_claims")

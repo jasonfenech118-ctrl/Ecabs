@@ -16,6 +16,7 @@ from .models import (
     GarageJobItem,
     GarageJobLabour,
     GeneralClaim,
+    InsuranceClaim,
     OtherCharge,
     Reminder,
     RepairType,
@@ -204,6 +205,14 @@ class SurveyAdmin(admin.ModelAdmin):
 class BillingItemAdmin(admin.ModelAdmin):
     list_display = ("description", "claim", "category", "amount", "status", "invoice_number")
     list_filter = ("category", "status")
+
+
+@admin.register(InsuranceClaim)
+class InsuranceClaimAdmin(admin.ModelAdmin):
+    list_display = ("date_paid", "company", "insurer", "reference", "amount")
+    list_filter = ("company", "insurer")
+    search_fields = ("insurer", "reference", "description")
+    date_hierarchy = "date_paid"
 
 
 @admin.register(AccidentPhoto)

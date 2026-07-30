@@ -80,4 +80,8 @@ urlpatterns = [
     path("reminders/", views.reminder_list, name="reminder_list"),
     path("reminders/add/", views.reminder_create, name="reminder_create"),
     path("reminders/<int:pk>/toggle/", views.reminder_toggle, name="reminder_toggle"),
+    path("insurance-claims/", views.insurance_claims, name="insurance_claims"),
+    path("insurance-claims/new/", views.insurance_claim_edit, name="insurance_claim_new"),
+    path("insurance-claims/<int:pk>/edit/", views.insurance_claim_edit, name="insurance_claim_edit"),
+    path("insurance-claims/<int:pk>/delete/", views.insurance_claim_delete, name="insurance_claim_delete"),
 ]
