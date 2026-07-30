@@ -12,24 +12,35 @@
   </div>
 </div>
 
-{% if compliance_due %}
+{% if budget.rows %}
 <div class="card" style="margin-bottom:1rem">
-  <h2>Insurance payments due in the next 30 days</h2>
+  <h2>Monthly cost breakdown <span class="muted" style="font-weight:400; font-size:.9rem">— for budgeting</span></h2>
+  <p class="muted" style="margin:.1rem 0 .7rem; font-size:.82rem">Costs split by <strong>month paid</strong> and by <strong>company</strong>. Insurance &amp; licence are counted in the insurance pay-date month; additional costs on the date they were added.</p>
   <div class="table-wrap">
     <table class="list">
-      <thead><tr><th>Vehicle</th><th>Renewal</th><th>Due</th><th></th></tr></thead>
-      <tbody>
-        {% for item in compliance_due %}
+      <thead>
         <tr>
-          <td><a href="{% url 'vehicle_edit' item.vehicle.pk %}">{{ item.vehicle.registration }}</a>
-              <span class="muted">{{ item.vehicle.make_model }}</span></td>
-          <td>{{ item.label }}</td>
-          <td>{{ item.due|date:"d M Y" }}</td>
-          <td><span class="badge {% if item.state == 'overdue' %}overdue{% else %}pending{% endif %}">
-            {% if item.state == 'overdue' %}overdue{% else %}due soon{% endif %}</span></td>
+          <th>Month paid</th>
+          {% for o in budget.companies %}<th class="right">{{ o }}</th>{% endfor %}
+          <th class="right">Total €</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in budget.rows %}
+        <tr>
+          <td style="white-space:nowrap"><strong>{{ row.label }}</strong></td>
+          {% for cell in row.cells %}<td class="right">{% if cell.amount %}€{{ cell.amount|floatformat:2 }}{% else %}<span class="muted">—</span>{% endif %}</td>{% endfor %}
+          <td class="right"><strong>€{{ row.total|floatformat:2 }}</strong></td>
         </tr>
         {% endfor %}
       </tbody>
+      <tfoot>
+        <tr class="group-head">
+          <td><strong>All months</strong></td>
+          {% for col in budget.col_totals %}<td class="right"><strong>€{{ col.amount|floatformat:2 }}</strong></td>{% endfor %}
+          <td class="right"><strong>€{{ budget.grand_total|floatformat:2 }}</strong></td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </div>

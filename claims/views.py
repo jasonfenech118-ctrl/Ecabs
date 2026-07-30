@@ -45,6 +45,7 @@ from .models import (
     RepairType,
     Survey,
     Vehicle,
+    VehicleAdditionalCost,
     VehicleCost,
 )
 from .roles import is_garage_user
@@ -100,6 +101,57 @@ def _compliance_due(limit=None):
                 items.append({"vehicle": vehicle, "label": label, "due": due, "state": state})
     items.sort(key=lambda item: item["due"])
     return items[:limit] if limit else items
+
+
+def _fleet_cost_budget():
+    """Fleet running costs split by month paid and by company (owner), for
+    budgeting. Insurance + licence are attributed to the insurance pay date;
+    each additional cost to its own date. Returns a month × company matrix
+    (most recent month first) with row, column and grand totals."""
+    from calendar import month_abbr
+    from collections import defaultdict
+
+    # bucket[(year, month)][owner] = Decimal
+    bucket = defaultdict(lambda: defaultdict(lambda: Decimal("0")))
+    owners = set()
+
+    def add(d, owner, amount):
+        if not d or not amount:
+            return
+        bucket[(d.year, d.month)][owner] += amount
+        owners.add(owner)
+
+    for c in VehicleCost.objects.select_related("vehicle"):
+        owner = (c.vehicle.owner or "").strip() or "Unassigned"
+        paid = (c.insurance_amount or Decimal("0")) + (c.licence_amount or Decimal("0"))
+        add(c.pay_date, owner, paid)
+    for a in VehicleAdditionalCost.objects.select_related("cost__vehicle"):
+        owner = (a.cost.vehicle.owner or "").strip() or "Unassigned"
+        add(a.date_added, owner, a.amount or Decimal("0"))
+
+    companies = sorted(owners, key=lambda n: (n == "Unassigned", n.lower()))
+    col_totals = {o: Decimal("0") for o in companies}
+    rows = []
+    for (year, month) in sorted(bucket, reverse=True):
+        cells = []
+        row_total = Decimal("0")
+        for o in companies:
+            amt = bucket[(year, month)].get(o, Decimal("0"))
+            cells.append({"owner": o, "amount": amt})
+            col_totals[o] += amt
+            row_total += amt
+        rows.append({
+            "label": f"{month_abbr[month]} {year}",
+            "cells": cells,
+            "total": row_total,
+        })
+    grand_total = sum(col_totals.values(), Decimal("0"))
+    return {
+        "companies": companies,
+        "rows": rows,
+        "col_totals": [{"owner": o, "amount": col_totals[o]} for o in companies],
+        "grand_total": grand_total,
+    }
 
 
 # --- Home (front page) ---------------------------------------------------------
@@ -1570,7 +1622,7 @@ def vehicle_list(request):
         "status": status,
         "statuses": Vehicle.Status.choices,
         "form": VehicleForm(),
-        "compliance_due": _compliance_due(),
+        "budget": _fleet_cost_budget(),
     }
     if request.headers.get("HX-Request"):
         return render(request, "claims/partials/vehicle_rows.html", context)

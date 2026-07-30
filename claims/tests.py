@@ -848,6 +848,36 @@ class ViewTests(TestCase):
         self.assertRedirects(response, reverse("vehicle_add"))
         self.assertTrue(Vehicle.objects.filter(registration="ECB-NEW2").exists())
 
+    def test_vehicle_monthly_budget(self):
+        """Costs split by month paid and by company for budgeting."""
+        from datetime import date
+        from decimal import Decimal
+
+        from claims.models import Vehicle, VehicleAdditionalCost, VehicleCost
+        from claims.views import _fleet_cost_budget
+
+        v1 = Vehicle.objects.create(registration="BUD-1", owner="eCabs EN")
+        VehicleCost.objects.create(
+            vehicle=v1, year=2026, insurance_amount=Decimal("320.00"),
+            licence_amount=Decimal("45.00"), pay_date=date(2026, 3, 1))
+        v2 = Vehicle.objects.create(registration="BUD-2", owner="Fast Drop")
+        c2 = VehicleCost.objects.create(
+            vehicle=v2, year=2026, insurance_amount=Decimal("280.00"),
+            licence_amount=Decimal("40.00"), pay_date=date(2026, 4, 5))
+        VehicleAdditionalCost.objects.create(
+            cost=c2, amount=Decimal("100.00"), date_added=date(2026, 5, 10))
+
+        budget = _fleet_cost_budget()
+        self.assertEqual(budget["companies"], ["eCabs EN", "Fast Drop"])
+        # Grand total = 365 + 320 + 100
+        self.assertEqual(budget["grand_total"], Decimal("785.00"))
+        # Rows are most-recent-month first (May, Apr, Mar)
+        self.assertEqual([r["label"] for r in budget["rows"]],
+                         ["May 2026", "Apr 2026", "Mar 2026"])
+        # The page renders the breakdown
+        r = self.client.get(reverse("vehicle_list"))
+        self.assertContains(r, "Monthly cost breakdown")
+
     def test_master_sheet_and_csv(self):
         from decimal import Decimal
 
