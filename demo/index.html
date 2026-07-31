@@ -8,55 +8,123 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "5CJD3JP2mtR3HLuviKhCKxxbwAyZOvmaeHWmZZXWKnnlKlLP9mcCR6lu4iPPWNiG"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "JoBmHkJMdENiaNWk3KYmCOvtujatZ6FyE4uRDoAdgpNGZI7ykFOQG8Jh9BvLmdFu"}'
+      class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
-  <aside class="sidebar">
-    <a href="index.html" class="brand" title="Home">
-      <img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
-    </a>
+  <aside class="sidebar ">
+    <div class="sidebar-top">
+      
+      <a href="index.html" class="brand" title="Home">
+        <img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
+      </a>
+      
+      <button type="button" class="nav-toggle" aria-label="Toggle menu"
+              onclick="this.closest('.sidebar').classList.toggle('open')">☰</button>
+    </div>
     <nav>
-      <a href="index.html" class="active">
-        <span class="nav-icon">⌂</span> Home
-      </a>
-      <a href="dashboard.html" class="">
-        <span class="nav-icon">▦</span> Dashboard
-      </a>
-      <a href="claims.html" class="">
-        <span class="nav-icon">▤</span> Claims
-      </a>
-      <a href="claims-open.html" class="nav-sub ">
-        <span class="nav-icon">●</span> Open claims
-      </a>
-      <a href="claims-closed.html" class="nav-sub ">
-        <span class="nav-icon">○</span> Closed claims
-      </a>
-      <a href="claims-overdue.html" class="nav-sub ">
-        <span class="nav-icon">▲</span> Overdue
-      </a>
-      <a href="master.html" class="">
-        <span class="nav-icon">▥</span> Master sheet
-      </a>
-      <a href="bills.html" class="">
-        <span class="nav-icon">€</span> Bills this month
-      </a>
-      <a href="data.html" class="">
-        <span class="nav-icon">◔</span> Data
-      </a>
-      <a href="vehicles.html" class="">
-        <span class="nav-icon">⬖</span> Vehicles
-      </a>
-      <a href="reminders.html" class="">
-        <span class="nav-icon">◷</span> Reminders
-      </a>
+      
+      <div class="nav-sec nav-sec--main">
+        <span class="nav-group">Main</span>
+        <a href="index.html" class="active">
+          <span class="nav-icon">⌂</span> Home
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">◈</span> Overview
+        </a>
+        <a href="dashboard.html" class="">
+          <span class="nav-icon">▦</span> Dashboard
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--claims">
+        <span class="nav-group">Claims</span>
+        <a href="claims.html" class="">
+          <span class="nav-icon">▤</span> All claims
+        </a>
+        <a href="claims-open.html" class="nav-sub ">
+          <span class="nav-icon">●</span> Open claims
+        </a>
+        <a href="claims-closed.html" class="nav-sub ">
+          <span class="nav-icon">○</span> Closed claims
+        </a>
+        <a href="claims-overdue.html" class="nav-sub ">
+          <span class="nav-icon">▲</span> Overdue
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">⚠</span> At fault
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">✦</span> General claims (Firefly)
+        </a>
+        <a href="#" class="nav-sub ">
+          <span class="nav-icon">⚙</span> Manage statuses
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--garage">
+        <span class="nav-group">ACR Garage</span>
+        <a href="#" class="">
+          <span class="nav-icon">🔧</span> Worklist
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">🧾</span> Invoices
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">📊</span> Garage metrics
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">⚙</span> Manage types
+        </a>
+        
+      </div>
+
+      <div class="nav-sec nav-sec--reports">
+        <span class="nav-group">Records &amp; reports</span>
+        <a href="#" class="">
+          <span class="nav-icon">▤</span> Accident list
+        </a>
+        <a href="master.html" class="">
+          <span class="nav-icon">▥</span> Master sheet
+        </a>
+        <a href="bills.html" class="">
+          <span class="nav-icon">€</span> Bills this month
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">📈</span> Metrics
+        </a>
+        <a href="data.html" class="">
+          <span class="nav-icon">◔</span> Data
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--manage">
+        <span class="nav-group">Manage</span>
+        <a href="vehicles.html" class="">
+          <span class="nav-icon">⬖</span> Vehicles
+        </a>
+        <a href="reminders.html" class="">
+          <span class="nav-icon">◷</span> Reminders
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">☰</span> Audit trail
+        </a>
+        
+      </div>
       
     </nav>
     <div class="sidebar-footer">
-      <span class="user-name">Vai Drive Staff</span>
-      <a class="link-btn" href="login.html">Sign out</a>
+      <span class="user-name">👤 Vai Drive Staff</span>
+      <div class="sidebar-footer-actions">
+        <a href="#" class="link-btn">Change password</a>
+        <a class="link-btn" href="login.html">Sign out</a>
+      </div>
     </div>
   </aside>
   <main class="main">
+    
+    
+    
     
 <div class="home-hero">
   <a href="index.html" title="Home"><img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="home-logo"></a>
@@ -64,71 +132,137 @@
   <p class="sub">What would you like to do?</p>
 </div>
 
+<h2 class="tile-heading">Claims</h2>
 <div class="tile-grid">
   <a href="claim-9-edit.html" class="tile tile-primary">
     <span class="tile-icon">＋</span>
     <span class="tile-title">New claim</span>
     <span class="tile-sub">Record an accident — saves as you type</span>
   </a>
-
   <a href="claims.html" class="tile">
     <span class="tile-icon">▤</span>
-    <span class="tile-title">Claims</span>
+    <span class="tile-title">All claims</span>
     <span class="tile-sub">5 open — search &amp; manage</span>
   </a>
-
-  <a href="reminders.html" class="tile tile-alert">
-    <span class="tile-icon">◷</span>
-    <span class="tile-title">Reminders</span>
-    <span class="tile-sub">3 due now</span>
+  <a href="claims-open.html" class="tile">
+    <span class="tile-icon">●</span>
+    <span class="tile-title">Open claims</span>
+    <span class="tile-sub">Currently in progress</span>
   </a>
-
-  <a href="vehicles.html" class="tile">
-    <span class="tile-icon">⬖</span>
-    <span class="tile-title">Vehicles</span>
-    <span class="tile-sub">1 active in fleet</span>
+  <a href="claims-overdue.html" class="tile">
+    <span class="tile-icon">▲</span>
+    <span class="tile-title">Overdue</span>
+    <span class="tile-sub">Past their chase date</span>
   </a>
-
-  <a href="dashboard.html" class="tile">
-    <span class="tile-icon">▦</span>
-    <span class="tile-title">Dashboard</span>
-    <span class="tile-sub">Totals, chasers &amp; renewals</span>
+  <a href="#" class="tile">
+    <span class="tile-icon">⚠</span>
+    <span class="tile-title">At fault</span>
+    <span class="tile-sub">Where our insured is liable</span>
   </a>
+  <a href="#" class="tile">
+    <span class="tile-icon">✦</span>
+    <span class="tile-title">General claims</span>
+    <span class="tile-sub">Firefly listing register</span>
+  </a>
+</div>
 
+<h2 class="tile-heading tile-heading-garage">🔧 ACR Garage</h2>
+<div class="tile-grid">
+  <a href="#" class="tile tile-garage">
+    <span class="tile-icon">🔧</span>
+    <span class="tile-title">Worklist</span>
+    <span class="tile-sub">Panel-beater jobs &amp; go-ahead</span>
+  </a>
+  <a href="#" class="tile tile-garage">
+    <span class="tile-icon">🧾</span>
+    <span class="tile-title">Garage invoices</span>
+    <span class="tile-sub">Bill repairs (items + labour)</span>
+  </a>
+  <a href="#" class="tile tile-garage">
+    <span class="tile-icon">📊</span>
+    <span class="tile-title">Garage metrics</span>
+    <span class="tile-sub">Invoiced, outstanding &amp; jobs</span>
+  </a>
+</div>
+
+<h2 class="tile-heading">Records &amp; reports</h2>
+<div class="tile-grid">
+  <a href="#" class="tile">
+    <span class="tile-icon">▤</span>
+    <span class="tile-title">Accident list</span>
+    <span class="tile-sub">Full accident register</span>
+  </a>
   <a href="master.html" class="tile">
     <span class="tile-icon">▥</span>
     <span class="tile-title">Master sheet</span>
-    <span class="tile-sub">All claims, all columns — CSV export</span>
+    <span class="tile-sub">All claims, all columns — CSV</span>
   </a>
-
+  <a href="bills.html" class="tile">
+    <span class="tile-icon">€</span>
+    <span class="tile-title">Bills this month</span>
+    <span class="tile-sub">Sent &amp; pending bills</span>
+  </a>
+  <a href="#" class="tile">
+    <span class="tile-icon">📈</span>
+    <span class="tile-title">Metrics</span>
+    <span class="tile-sub">System-wide KPIs</span>
+  </a>
   <a href="data.html" class="tile">
     <span class="tile-icon">◔</span>
     <span class="tile-title">Data</span>
     <span class="tile-sub">Charts &amp; breakdowns</span>
   </a>
+  <a href="dashboard.html" class="tile">
+    <span class="tile-icon">▦</span>
+    <span class="tile-title">Dashboard</span>
+    <span class="tile-sub">Totals, chasers &amp; renewals</span>
+  </a>
+  <a href="#" class="tile">
+    <span class="tile-icon">◈</span>
+    <span class="tile-title">Overview</span>
+    <span class="tile-sub">How the whole system works</span>
+  </a>
+</div>
 
+<h2 class="tile-heading">Manage</h2>
+<div class="tile-grid">
+  <a href="reminders.html" class="tile tile-alert">
+    <span class="tile-icon">◷</span>
+    <span class="tile-title">Reminders</span>
+    <span class="tile-sub">7 due now</span>
+  </a>
+  <a href="vehicles.html" class="tile">
+    <span class="tile-icon">⬖</span>
+    <span class="tile-title">Vehicles</span>
+    <span class="tile-sub">4 active in fleet</span>
+  </a>
+  <a href="#" class="tile">
+    <span class="tile-icon">☰</span>
+    <span class="tile-title">Audit trail</span>
+    <span class="tile-sub">Who changed what, and when</span>
+  </a>
   
 </div>
 
-<h2 style="text-align:center; margin:2rem 0 1rem">Quick entry</h2>
+<h2 class="tile-heading">Quick entry</h2>
 <div class="tile-grid">
   <a href="add-email.html" class="tile">
-    <span class="tile-icon">📧</span>
+    <span class="tile-icon">✉︎</span>
     <span class="tile-title">Log email</span>
     <span class="tile-sub">Record correspondence</span>
   </a>
   <a href="add-survey.html" class="tile">
-    <span class="tile-icon">🔍</span>
+    <span class="tile-icon">⌕</span>
     <span class="tile-title">Add survey</span>
     <span class="tile-sub">Surveyor visit or report</span>
   </a>
   <a href="add-billing.html" class="tile">
-    <span class="tile-icon">💶</span>
+    <span class="tile-icon">€</span>
     <span class="tile-title">Add billing</span>
     <span class="tile-sub">Repair, towing, fees…</span>
   </a>
   <a href="vehicle-add.html" class="tile">
-    <span class="tile-icon">🚗</span>
+    <span class="tile-icon">⬖</span>
     <span class="tile-title">Add vehicle</span>
     <span class="tile-sub">Register a fleet vehicle</span>
   </a>
@@ -136,6 +270,67 @@
 
   </main>
 </div>
+
+
+<div id="reminder-popup" class="modal-overlay no-print" hidden>
+  <div class="modal-card">
+    <h2 class="modal-title"><span class="nav-icon">◷</span> Reminders due</h2>
+    <ul class="popup-list">
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB330</strong></div>
+        <div class="muted popup-meta">Due 20 Jun 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB407</strong></div>
+        <div class="muted popup-meta">Due 20 Jun 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB101</strong></div>
+        <div class="muted popup-meta">Due 08 Jul 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB214</strong></div>
+        <div class="muted popup-meta">Due 08 Jul 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
+        <div class="muted popup-meta">Due 20 Jul 2026 · CLM-2026-0005</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
+        <div class="muted popup-meta">Due 27 Jul 2026 · CLM-2026-0004</div>
+      </li>
+      
+    </ul>
+    
+    <div class="modal-actions">
+      <a href="reminders.html" class="btn btn-primary">View all reminders</a>
+      <button type="button" class="btn" onclick="dismissReminderPopup()">Dismiss</button>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    // Show once per browser session so it doesn't nag on every page.
+    var seenKey = 'reminderPopupSeen';
+    var el = document.getElementById('reminder-popup');
+    if (el && !sessionStorage.getItem(seenKey)) {
+      el.hidden = false;
+      sessionStorage.setItem(seenKey, '1');
+    }
+  })();
+  function dismissReminderPopup() {
+    var el = document.getElementById('reminder-popup');
+    if (el) el.hidden = true;
+  }
+</script>
+
 
 </body>
 </html>

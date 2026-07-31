@@ -166,15 +166,40 @@ def seed_samples(user):
 
     from django.utils import timezone
 
-    from claims.models import Vehicle
+    from claims.models import Vehicle, VehicleAdditionalCost, VehicleCost
 
     if Claim.objects.exclude(status=Claim.Status.DRAFT).exists():
         return
     today = timezone.localdate()
-    Vehicle.objects.get_or_create(
-        registration="ECB101",
-        defaults={"make_model": "Toyota Corolla Hybrid", "insurance_due": today + timedelta(days=18)},
-    )
+
+    # A small fleet spread across two companies with insurance paid in different
+    # months, so the "Monthly cost breakdown — for budgeting" panel has data.
+    fleet = [
+        # registration, make/model, owner, year, insurance, pay_date, licence, additionals
+        ("ECB101", "Toyota Corolla Hybrid", "Vai Drive", today.year,
+         Decimal("620.00"), today.replace(day=8), Decimal("120.00"),
+         [(Decimal("85.00"), "Service", today.replace(day=12))]),
+        ("ECB214", "Peugeot 108", "Vai Drive", today.year,
+         Decimal("540.00"), today.replace(day=8), Decimal("100.00"), []),
+        ("ECB330", "Kymco Agility 125i", "Fastdrop International", today.year,
+         Decimal("310.00"), (today.replace(day=1) - timedelta(days=15)).replace(day=20),
+         Decimal("65.00"), [(Decimal("45.00"), "Tyres", today.replace(day=3))]),
+        ("ECB407", "Peugeot 108", "Fastdrop International", today.year,
+         Decimal("560.00"), (today.replace(day=1) - timedelta(days=15)).replace(day=20),
+         Decimal("100.00"), []),
+    ]
+    for reg, model, owner, year, ins, pay, lic, extras in fleet:
+        vehicle, _ = Vehicle.objects.get_or_create(
+            registration=reg,
+            defaults={"make_model": model, "owner": owner},
+        )
+        cost, _ = VehicleCost.objects.get_or_create(
+            vehicle=vehicle, year=year,
+            defaults={"insurance_amount": ins, "pay_date": pay, "licence_amount": lic},
+        )
+        for amount, note, when in extras:
+            VehicleAdditionalCost.objects.get_or_create(
+                cost=cost, note=note, defaults={"amount": amount, "date_added": when})
 
     S = Claim.Status
     F = Claim.Fault
