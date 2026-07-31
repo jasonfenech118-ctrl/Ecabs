@@ -8,60 +8,130 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "RilBiYe6Ss1bEg6uTACSx6mxEXOb6cxr0nykeem0gmxtHQnOKcxSEFaQcF51eutX"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "xcl0hU3OM40OUxgFa2soWP4ZfwEmHTrpsSevdYUfPP0cJsrTrXiS09iNUOZE40rl"}'
+      class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
-  <aside class="sidebar">
-    <a href="index.html" class="brand" title="Home">
-      <img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
-    </a>
+  <aside class="sidebar ">
+    <div class="sidebar-top">
+      
+      <a href="index.html" class="brand" title="Home">
+        <img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
+      </a>
+      
+      <button type="button" class="nav-toggle" aria-label="Toggle menu"
+              onclick="this.closest('.sidebar').classList.toggle('open')">☰</button>
+    </div>
     <nav>
-      <a href="index.html" class="">
-        <span class="nav-icon">⌂</span> Home
-      </a>
-      <a href="dashboard.html" class="">
-        <span class="nav-icon">▦</span> Dashboard
-      </a>
-      <a href="claims.html" class="">
-        <span class="nav-icon">▤</span> Claims
-      </a>
-      <a href="claims-open.html" class="nav-sub ">
-        <span class="nav-icon">●</span> Open claims
-      </a>
-      <a href="claims-closed.html" class="nav-sub ">
-        <span class="nav-icon">○</span> Closed claims
-      </a>
-      <a href="claims-overdue.html" class="nav-sub ">
-        <span class="nav-icon">▲</span> Overdue
-      </a>
-      <a href="master.html" class="">
-        <span class="nav-icon">▥</span> Master sheet
-      </a>
-      <a href="bills.html" class="">
-        <span class="nav-icon">€</span> Bills this month
-      </a>
-      <a href="data.html" class="">
-        <span class="nav-icon">◔</span> Data
-      </a>
-      <a href="vehicles.html" class="active">
-        <span class="nav-icon">⬖</span> Vehicles
-      </a>
-      <a href="reminders.html" class="">
-        <span class="nav-icon">◷</span> Reminders
-      </a>
+      
+      <div class="nav-sec nav-sec--main">
+        <span class="nav-group">Main</span>
+        <a href="index.html" class="">
+          <span class="nav-icon">⌂</span> Home
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">◈</span> Overview
+        </a>
+        <a href="dashboard.html" class="">
+          <span class="nav-icon">▦</span> Dashboard
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--claims">
+        <span class="nav-group">Claims</span>
+        <a href="claims.html" class="">
+          <span class="nav-icon">▤</span> All claims
+        </a>
+        <a href="claims-open.html" class="nav-sub ">
+          <span class="nav-icon">●</span> Open claims
+        </a>
+        <a href="claims-closed.html" class="nav-sub ">
+          <span class="nav-icon">○</span> Closed claims
+        </a>
+        <a href="claims-overdue.html" class="nav-sub ">
+          <span class="nav-icon">▲</span> Overdue
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">⚠</span> At fault
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">✦</span> General claims (Firefly)
+        </a>
+        <a href="#" class="nav-sub ">
+          <span class="nav-icon">⚙</span> Manage statuses
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--garage">
+        <span class="nav-group">ACR Garage</span>
+        <a href="#" class="">
+          <span class="nav-icon">🔧</span> Worklist
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">🧾</span> Invoices
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">📊</span> Garage metrics
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">⚙</span> Manage types
+        </a>
+        
+      </div>
+
+      <div class="nav-sec nav-sec--reports">
+        <span class="nav-group">Records &amp; reports</span>
+        <a href="#" class="">
+          <span class="nav-icon">▤</span> Accident list
+        </a>
+        <a href="master.html" class="">
+          <span class="nav-icon">▥</span> Master sheet
+        </a>
+        <a href="bills.html" class="">
+          <span class="nav-icon">€</span> Bills this month
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">📈</span> Metrics
+        </a>
+        <a href="data.html" class="">
+          <span class="nav-icon">◔</span> Data
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--manage">
+        <span class="nav-group">Manage</span>
+        <a href="vehicles.html" class="active">
+          <span class="nav-icon">⬖</span> Vehicles
+        </a>
+        <a href="reminders.html" class="">
+          <span class="nav-icon">◷</span> Reminders
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">☰</span> Audit trail
+        </a>
+        
+      </div>
       
     </nav>
     <div class="sidebar-footer">
-      <span class="user-name">Vai Drive Staff</span>
-      <a class="link-btn" href="login.html">Sign out</a>
+      <span class="user-name">👤 Vai Drive Staff</span>
+      <div class="sidebar-footer-actions">
+        <a href="#" class="link-btn">Change password</a>
+        <a class="link-btn" href="login.html">Sign out</a>
+      </div>
     </div>
   </aside>
   <main class="main">
     
+    
+      <div class="home-btn-bar no-print"><a href="index.html" class="home-btn">⌂ Home</a></div>
+    
+    
+    
 <div class="page-head">
   <div>
     <h1>Vehicles</h1>
-    <div class="sub">Fleet register with insurance renewal reminders</div>
+    <div class="sub">Fleet register — insurance, licence &amp; running costs</div>
   </div>
   <div class="row">
     <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
@@ -71,22 +141,39 @@
 
 
 <div class="card" style="margin-bottom:1rem">
-  <h2>Insurance renewals due in the next 30 days</h2>
+  <h2>Monthly cost breakdown <span class="muted" style="font-weight:400; font-size:.9rem">— for budgeting</span></h2>
+  <p class="muted" style="margin:.1rem 0 .7rem; font-size:.82rem">Costs split by <strong>month paid</strong> and by <strong>company</strong>. Insurance &amp; licence are counted in the insurance pay-date month; additional costs on the date they were added.</p>
   <div class="table-wrap">
     <table class="list">
-      <thead><tr><th>Vehicle</th><th>Renewal</th><th>Due</th><th></th></tr></thead>
+      <thead>
+        <tr>
+          <th>Month paid</th>
+          <th class="right">Fastdrop International</th><th class="right">Vai Drive</th>
+          <th class="right">Total €</th>
+        </tr>
+      </thead>
       <tbody>
         
         <tr>
-          <td><a href="vehicle-1.html">ECB101</a>
-              <span class="muted">Toyota Corolla Hybrid</span></td>
-          <td>Insurance</td>
-          <td>08 Aug 2026</td>
-          <td><span class="badge pending">
-            due soon</span></td>
+          <td style="white-space:nowrap"><strong>Jul 2026</strong></td>
+          <td class="right">€45.00</td><td class="right">€1465.00</td>
+          <td class="right"><strong>€1510.00</strong></td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap"><strong>Jun 2026</strong></td>
+          <td class="right">€1035.00</td><td class="right"><span class="muted">—</span></td>
+          <td class="right"><strong>€1035.00</strong></td>
         </tr>
         
       </tbody>
+      <tfoot>
+        <tr class="group-head">
+          <td><strong>All months</strong></td>
+          <td class="right"><strong>€1080.00</strong></td><td class="right"><strong>€1465.00</strong></td>
+          <td class="right"><strong>€2545.00</strong></td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </div>
@@ -114,11 +201,78 @@
       <thead>
         <tr>
           <th>Registration</th><th>Make / model</th><th>Status</th>
-          <th>Insurance due</th><th></th>
+          <th class="right">Insurance €</th><th>Pay date</th>
+          <th class="right">Licence €</th><th class="right">Additional €</th>
+          <th class="right">Total €</th><th></th>
         </tr>
       </thead>
       <tbody id="vehicle-rows">
         
+<tr class="group-head">
+  <td colspan="3"><strong>👤 Fastdrop International</strong> <span class="muted">· 2 vehicles</span></td>
+  <td colspan="4"></td>
+  <td class="right"><strong>€1080.00</strong></td>
+  <td></td>
+</tr>
+
+<tr>
+  <td><a href="vehicle-3.html">ECB330</a></td>
+  <td>Kymco Agility 125i</td>
+  <td>
+    <span class="badge open">Active</span>
+    
+  </td>
+  <td class="right">€310.00</td>
+  <td style="white-space:nowrap">
+    
+      20 Jun 2026
+      
+        
+          <span class="badge overdue">overdue</span>
+          
+        
+      
+    
+  </td>
+  <td class="right">€65.00</td>
+  <td class="right">€45.00</td>
+  <td class="right"><strong>€420.00</strong></td>
+  <td><a href="vehicle-3.html" class="btn btn-sm">Manage</a></td>
+</tr>
+
+<tr>
+  <td><a href="vehicle-4.html">ECB407</a></td>
+  <td>Peugeot 108</td>
+  <td>
+    <span class="badge open">Active</span>
+    
+  </td>
+  <td class="right">€560.00</td>
+  <td style="white-space:nowrap">
+    
+      20 Jun 2026
+      
+        
+          <span class="badge overdue">overdue</span>
+          
+        
+      
+    
+  </td>
+  <td class="right">€100.00</td>
+  <td class="right">€0.00</td>
+  <td class="right"><strong>€660.00</strong></td>
+  <td><a href="vehicle-4.html" class="btn btn-sm">Manage</a></td>
+</tr>
+
+
+<tr class="group-head">
+  <td colspan="3"><strong>👤 Vai Drive</strong> <span class="muted">· 2 vehicles</span></td>
+  <td colspan="4"></td>
+  <td class="right"><strong>€1465.00</strong></td>
+  <td></td>
+</tr>
+
 <tr>
   <td><a href="vehicle-1.html">ECB101</a></td>
   <td>Toyota Corolla Hybrid</td>
@@ -126,18 +280,49 @@
     <span class="badge open">Active</span>
     
   </td>
-  
-  <td>
+  <td class="right">€620.00</td>
+  <td style="white-space:nowrap">
     
-      08 Aug 2026
+      08 Jul 2026
       
-        <span class="badge pending">soon</span>
+        
+          <span class="badge overdue">overdue</span>
+          
+        
       
     
   </td>
-  
+  <td class="right">€120.00</td>
+  <td class="right">€85.00</td>
+  <td class="right"><strong>€825.00</strong></td>
   <td><a href="vehicle-1.html" class="btn btn-sm">Manage</a></td>
 </tr>
+
+<tr>
+  <td><a href="vehicle-2.html">ECB214</a></td>
+  <td>Peugeot 108</td>
+  <td>
+    <span class="badge open">Active</span>
+    
+  </td>
+  <td class="right">€540.00</td>
+  <td style="white-space:nowrap">
+    
+      08 Jul 2026
+      
+        
+          <span class="badge overdue">overdue</span>
+          
+        
+      
+    
+  </td>
+  <td class="right">€100.00</td>
+  <td class="right">€0.00</td>
+  <td class="right"><strong>€640.00</strong></td>
+  <td><a href="vehicle-2.html" class="btn btn-sm">Manage</a></td>
+</tr>
+
 
 
       </tbody>
@@ -147,6 +332,67 @@
 
   </main>
 </div>
+
+
+<div id="reminder-popup" class="modal-overlay no-print" hidden>
+  <div class="modal-card">
+    <h2 class="modal-title"><span class="nav-icon">◷</span> Reminders due</h2>
+    <ul class="popup-list">
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB330</strong></div>
+        <div class="muted popup-meta">Due 20 Jun 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB407</strong></div>
+        <div class="muted popup-meta">Due 20 Jun 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB101</strong></div>
+        <div class="muted popup-meta">Due 08 Jul 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB214</strong></div>
+        <div class="muted popup-meta">Due 08 Jul 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
+        <div class="muted popup-meta">Due 20 Jul 2026 · CLM-2026-0005</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
+        <div class="muted popup-meta">Due 27 Jul 2026 · CLM-2026-0004</div>
+      </li>
+      
+    </ul>
+    
+    <div class="modal-actions">
+      <a href="reminders.html" class="btn btn-primary">View all reminders</a>
+      <button type="button" class="btn" onclick="dismissReminderPopup()">Dismiss</button>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    // Show once per browser session so it doesn't nag on every page.
+    var seenKey = 'reminderPopupSeen';
+    var el = document.getElementById('reminder-popup');
+    if (el && !sessionStorage.getItem(seenKey)) {
+      el.hidden = false;
+      sessionStorage.setItem(seenKey, '1');
+    }
+  })();
+  function dismissReminderPopup() {
+    var el = document.getElementById('reminder-popup');
+    if (el) el.hidden = true;
+  }
+</script>
+
 
 </body>
 </html>

@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ECB101 — vehicle</title>
+  <title>ECB330 — vehicle</title>
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "INNN8k2fWFf5QugyTcOJYOfbcqt7ahdBDtGi4oTGZqftFprMa7Ed28tZRIOpxodx"}'
+<body hx-headers='{"X-CSRFToken": "eJcMt4uJfFpwBDyO7t9Nlltc6Ct839tG9p5hp8laiqpUqyJ2ooZhpFH0LUOqqgtC"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -130,7 +130,7 @@
     
 <div class="page-head">
   <div>
-    <h1>ECB101 <span class="muted">Toyota Corolla Hybrid</span></h1>
+    <h1>ECB330 <span class="muted">Kymco Agility 125i</span></h1>
     <div class="sub">
       <span class="badge open">Active</span>
       
@@ -140,25 +140,25 @@
 </div>
 
 <form method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="INNN8k2fWFf5QugyTcOJYOfbcqt7ahdBDtGi4oTGZqftFprMa7Ed28tZRIOpxodx">
+  <input type="hidden" name="csrfmiddlewaretoken" value="eJcMt4uJfFpwBDyO7t9Nlltc6Ct839tG9p5hp8laiqpUqyJ2ooZhpFH0LUOqqgtC">
   <fieldset>
     <legend>Vehicle details</legend>
     <div class="form-grid">
       <div class="field ">
   <label for="id_registration">Registration</label>
-  <input type="text" name="registration" value="ECB101" maxlength="20" required id="id_registration">
+  <input type="text" name="registration" value="ECB330" maxlength="20" required id="id_registration">
   
 </div>
 
       <div class="field ">
   <label for="id_make_model">Make model</label>
-  <input type="text" name="make_model" value="Toyota Corolla Hybrid" maxlength="100" id="id_make_model">
+  <input type="text" name="make_model" value="Kymco Agility 125i" maxlength="100" id="id_make_model">
   
 </div>
 
       <div class="field ">
   <label for="id_owner">Owner</label>
-  <input type="text" name="owner" value="Vai Drive" maxlength="120" id="id_owner">
+  <input type="text" name="owner" value="Fastdrop International" maxlength="120" id="id_owner">
   
 </div>
 
@@ -191,38 +191,38 @@
     
     <div class="card" style="margin-bottom:.9rem">
       <div class="row" style="justify-content:space-between; align-items:center">
-        <h3 style="margin:0">2026 <span class="muted" style="font-weight:400; font-size:.9rem">· Total €825.00</span></h3>
-        <form method="post" action="/vehicles/1/cost/2026/delete/" onsubmit="return confirm('Delete all 2026 costs?')"><input type="hidden" name="csrfmiddlewaretoken" value="INNN8k2fWFf5QugyTcOJYOfbcqt7ahdBDtGi4oTGZqftFprMa7Ed28tZRIOpxodx"><button type="submit" class="btn btn-sm btn-danger">✕ Delete year</button></form>
+        <h3 style="margin:0">2026 <span class="muted" style="font-weight:400; font-size:.9rem">· Total €420.00</span></h3>
+        <form method="post" action="/vehicles/3/cost/2026/delete/" onsubmit="return confirm('Delete all 2026 costs?')"><input type="hidden" name="csrfmiddlewaretoken" value="eJcMt4uJfFpwBDyO7t9Nlltc6Ct839tG9p5hp8laiqpUqyJ2ooZhpFH0LUOqqgtC"><button type="submit" class="btn btn-sm btn-danger">✕ Delete year</button></form>
       </div>
 
-      <form method="post" action="/vehicles/1/cost/save/" class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap; margin-top:.5rem">
-        <input type="hidden" name="csrfmiddlewaretoken" value="INNN8k2fWFf5QugyTcOJYOfbcqt7ahdBDtGi4oTGZqftFprMa7Ed28tZRIOpxodx">
+      <form method="post" action="/vehicles/3/cost/save/" class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap; margin-top:.5rem">
+        <input type="hidden" name="csrfmiddlewaretoken" value="eJcMt4uJfFpwBDyO7t9Nlltc6Ct839tG9p5hp8laiqpUqyJ2ooZhpFH0LUOqqgtC">
         <input type="hidden" name="year" value="2026">
-        <label class="field" style="margin:0; width:120px"><span>Insurance €</span><input type="number" step="0.01" min="0" name="insurance_amount" value="620.00"></label>
-        <label class="field" style="margin:0"><span>Pay date</span><input type="date" name="pay_date" value="2026-07-08"></label>
-        <label class="field" style="margin:0; width:120px"><span>Licence €</span><input type="number" step="0.01" min="0" name="licence_amount" value="120.00"></label>
+        <label class="field" style="margin:0; width:120px"><span>Insurance €</span><input type="number" step="0.01" min="0" name="insurance_amount" value="310.00"></label>
+        <label class="field" style="margin:0"><span>Pay date</span><input type="date" name="pay_date" value="2026-06-20"></label>
+        <label class="field" style="margin:0; width:120px"><span>Licence €</span><input type="number" step="0.01" min="0" name="licence_amount" value="65.00"></label>
         <button type="submit" class="btn btn-sm btn-primary">Save</button>
       </form>
 
       <div style="margin-top:.7rem">
-        <strong>Additional costs</strong> <span class="muted">· €85.00</span>
+        <strong>Additional costs</strong> <span class="muted">· €45.00</span>
         <div class="table-wrap">
           <table class="list">
             <thead><tr><th class="right">Amount €</th><th>Note</th><th>Date added</th><th></th></tr></thead>
             <tbody>
               
               <tr>
-                <td class="right">€85.00</td>
-                <td>Service</td>
-                <td style="white-space:nowrap">12 Jul 2026</td>
-                <td><form method="post" action="/vehicles/cost/1/additional/1/delete/" style="display:inline"><input type="hidden" name="csrfmiddlewaretoken" value="INNN8k2fWFf5QugyTcOJYOfbcqt7ahdBDtGi4oTGZqftFprMa7Ed28tZRIOpxodx"><button type="submit" class="btn btn-sm btn-danger">✕</button></form></td>
+                <td class="right">€45.00</td>
+                <td>Tyres</td>
+                <td style="white-space:nowrap">03 Jul 2026</td>
+                <td><form method="post" action="/vehicles/cost/3/additional/2/delete/" style="display:inline"><input type="hidden" name="csrfmiddlewaretoken" value="eJcMt4uJfFpwBDyO7t9Nlltc6Ct839tG9p5hp8laiqpUqyJ2ooZhpFH0LUOqqgtC"><button type="submit" class="btn btn-sm btn-danger">✕</button></form></td>
               </tr>
               
             </tbody>
           </table>
         </div>
-        <form method="post" action="/vehicles/cost/1/additional/add/" class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap; margin-top:.5rem">
-          <input type="hidden" name="csrfmiddlewaretoken" value="INNN8k2fWFf5QugyTcOJYOfbcqt7ahdBDtGi4oTGZqftFprMa7Ed28tZRIOpxodx">
+        <form method="post" action="/vehicles/cost/3/additional/add/" class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap; margin-top:.5rem">
+          <input type="hidden" name="csrfmiddlewaretoken" value="eJcMt4uJfFpwBDyO7t9Nlltc6Ct839tG9p5hp8laiqpUqyJ2ooZhpFH0LUOqqgtC">
           <label class="field" style="margin:0; width:110px"><span>Amount €</span><input type="number" step="0.01" min="0" name="amount" placeholder="0.00" required></label>
           <label class="field" style="margin:0; flex:1; min-width:160px"><span>Note</span><input name="note" placeholder="e.g. new tyres, service"></label>
           <label class="field" style="margin:0"><span>Date added</span><input type="date" name="date_added" value="2026-07-31"></label>
@@ -234,8 +234,8 @@
 
     <div class="card">
       <h3 style="margin:0 0 .5rem">Add a year</h3>
-      <form method="post" action="/vehicles/1/cost/save/" class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap">
-        <input type="hidden" name="csrfmiddlewaretoken" value="INNN8k2fWFf5QugyTcOJYOfbcqt7ahdBDtGi4oTGZqftFprMa7Ed28tZRIOpxodx">
+      <form method="post" action="/vehicles/3/cost/save/" class="row" style="gap:.5rem; align-items:flex-end; flex-wrap:wrap">
+        <input type="hidden" name="csrfmiddlewaretoken" value="eJcMt4uJfFpwBDyO7t9Nlltc6Ct839tG9p5hp8laiqpUqyJ2ooZhpFH0LUOqqgtC">
         <label class="field" style="margin:0; width:90px"><span>Year</span><input type="number" name="year" value="2026" min="2000" max="2100" required></label>
         <label class="field" style="margin:0; width:120px"><span>Insurance €</span><input type="number" step="0.01" min="0" name="insurance_amount" placeholder="0.00"></label>
         <label class="field" style="margin:0"><span>Pay date</span><input type="date" name="pay_date"></label>
@@ -255,17 +255,17 @@
         <tbody>
           
           <tr>
-            <td><a href="claim-6.html">CLM-2026-0006</a></td>
-            <td><span class="badge closed">Closed</span></td>
-            <td>14 Mar 2026</td>
+            <td><a href="claim-8.html">CLM-2026-0008</a></td>
+            <td><span class="badge rejected">Rejected</span></td>
+            <td>19 Dec 2025</td>
             <td></td>
           </tr>
           
           <tr>
-            <td><a href="claim-1.html">CLM-2026-0001</a></td>
-            <td><span class="badge open">Open</span></td>
-            <td>12 Jun 2026</td>
-            <td>ABC123</td>
+            <td><a href="claim-3.html">CLM-2026-0003</a></td>
+            <td><span class="badge awaiting_survey">Awaiting survey</span></td>
+            <td>21 May 2026</td>
+            <td></td>
           </tr>
           
         </tbody>
@@ -277,15 +277,15 @@
 <div class="card">
   <h3>Fleet status</h3>
   <div class="row">
-    <form method="post" action="/vehicles/1/toggle/">
-      <input type="hidden" name="csrfmiddlewaretoken" value="INNN8k2fWFf5QugyTcOJYOfbcqt7ahdBDtGi4oTGZqftFprMa7Ed28tZRIOpxodx">
+    <form method="post" action="/vehicles/3/toggle/">
+      <input type="hidden" name="csrfmiddlewaretoken" value="eJcMt4uJfFpwBDyO7t9Nlltc6Ct839tG9p5hp8laiqpUqyJ2ooZhpFH0LUOqqgtC">
       
         <button type="submit" class="btn">Mark as left fleet</button>
       
     </form>
-    <form method="post" action="/vehicles/1/delete/"
-          onsubmit="return confirm('Delete ECB101 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
-      <input type="hidden" name="csrfmiddlewaretoken" value="INNN8k2fWFf5QugyTcOJYOfbcqt7ahdBDtGi4oTGZqftFprMa7Ed28tZRIOpxodx">
+    <form method="post" action="/vehicles/3/delete/"
+          onsubmit="return confirm('Delete ECB330 permanently? Use “Mark as left fleet” instead if it has history worth keeping.')">
+      <input type="hidden" name="csrfmiddlewaretoken" value="eJcMt4uJfFpwBDyO7t9Nlltc6Ct839tG9p5hp8laiqpUqyJ2ooZhpFH0LUOqqgtC">
       <button type="submit" class="btn" style="color:var(--danger); border-color:var(--danger)">Delete permanently</button>
     </form>
   </div>

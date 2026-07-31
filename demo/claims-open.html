@@ -8,60 +8,130 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "Wy1UHZN5mF3kFurDozBWgAyB40hkFmGS5DeDDfVZKzzCI4IXfbwWn9mUCIyaNECo"}'><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+<body hx-headers='{"X-CSRFToken": "zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf"}'
+      class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
-  <aside class="sidebar">
-    <a href="index.html" class="brand" title="Home">
-      <img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
-    </a>
+  <aside class="sidebar ">
+    <div class="sidebar-top">
+      
+      <a href="index.html" class="brand" title="Home">
+        <img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
+      </a>
+      
+      <button type="button" class="nav-toggle" aria-label="Toggle menu"
+              onclick="this.closest('.sidebar').classList.toggle('open')">☰</button>
+    </div>
     <nav>
-      <a href="index.html" class="">
-        <span class="nav-icon">⌂</span> Home
-      </a>
-      <a href="dashboard.html" class="">
-        <span class="nav-icon">▦</span> Dashboard
-      </a>
-      <a href="claims.html" class="">
-        <span class="nav-icon">▤</span> Claims
-      </a>
-      <a href="claims-open.html" class="nav-sub active">
-        <span class="nav-icon">●</span> Open claims
-      </a>
-      <a href="claims-closed.html" class="nav-sub ">
-        <span class="nav-icon">○</span> Closed claims
-      </a>
-      <a href="claims-overdue.html" class="nav-sub ">
-        <span class="nav-icon">▲</span> Overdue
-      </a>
-      <a href="master.html" class="">
-        <span class="nav-icon">▥</span> Master sheet
-      </a>
-      <a href="bills.html" class="">
-        <span class="nav-icon">€</span> Bills this month
-      </a>
-      <a href="data.html" class="">
-        <span class="nav-icon">◔</span> Data
-      </a>
-      <a href="vehicles.html" class="">
-        <span class="nav-icon">⬖</span> Vehicles
-      </a>
-      <a href="reminders.html" class="">
-        <span class="nav-icon">◷</span> Reminders
-      </a>
+      
+      <div class="nav-sec nav-sec--main">
+        <span class="nav-group">Main</span>
+        <a href="index.html" class="">
+          <span class="nav-icon">⌂</span> Home
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">◈</span> Overview
+        </a>
+        <a href="dashboard.html" class="">
+          <span class="nav-icon">▦</span> Dashboard
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--claims">
+        <span class="nav-group">Claims</span>
+        <a href="claims.html" class="">
+          <span class="nav-icon">▤</span> All claims
+        </a>
+        <a href="claims-open.html" class="nav-sub active">
+          <span class="nav-icon">●</span> Open claims
+        </a>
+        <a href="claims-closed.html" class="nav-sub ">
+          <span class="nav-icon">○</span> Closed claims
+        </a>
+        <a href="claims-overdue.html" class="nav-sub ">
+          <span class="nav-icon">▲</span> Overdue
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">⚠</span> At fault
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">✦</span> General claims (Firefly)
+        </a>
+        <a href="#" class="nav-sub ">
+          <span class="nav-icon">⚙</span> Manage statuses
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--garage">
+        <span class="nav-group">ACR Garage</span>
+        <a href="#" class="">
+          <span class="nav-icon">🔧</span> Worklist
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">🧾</span> Invoices
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">📊</span> Garage metrics
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">⚙</span> Manage types
+        </a>
+        
+      </div>
+
+      <div class="nav-sec nav-sec--reports">
+        <span class="nav-group">Records &amp; reports</span>
+        <a href="#" class="">
+          <span class="nav-icon">▤</span> Accident list
+        </a>
+        <a href="master.html" class="">
+          <span class="nav-icon">▥</span> Master sheet
+        </a>
+        <a href="bills.html" class="">
+          <span class="nav-icon">€</span> Bills this month
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">📈</span> Metrics
+        </a>
+        <a href="data.html" class="">
+          <span class="nav-icon">◔</span> Data
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--manage">
+        <span class="nav-group">Manage</span>
+        <a href="vehicles.html" class="">
+          <span class="nav-icon">⬖</span> Vehicles
+        </a>
+        <a href="reminders.html" class="">
+          <span class="nav-icon">◷</span> Reminders
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">☰</span> Audit trail
+        </a>
+        
+      </div>
       
     </nav>
     <div class="sidebar-footer">
-      <span class="user-name">Vai Drive Staff</span>
-      <a class="link-btn" href="login.html">Sign out</a>
+      <span class="user-name">👤 Vai Drive Staff</span>
+      <div class="sidebar-footer-actions">
+        <a href="#" class="link-btn">Change password</a>
+        <a class="link-btn" href="login.html">Sign out</a>
+      </div>
     </div>
   </aside>
   <main class="main">
     
+    
+      <div class="home-btn-bar no-print"><a href="index.html" class="home-btn">⌂ Home</a></div>
+    
+    
+    
 <div class="page-head">
   <div>
     <h1>Open claims <span class="muted">(5)</span></h1>
-    <div class="sub">Claims still being worked — open, awaiting survey or awaiting insurer</div>
+    <div class="sub">Claims still being worked — anything not a draft or finished</div>
   </div>
   <div class="row">
     <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
@@ -70,8 +140,11 @@
 </div>
 
 <div class="stats" style="margin-bottom:1rem">
-  <div class="stat"><div class="label">Estimated total bill</div><div class="value">€2100.00</div></div>
-  <div class="stat"><div class="label">Total outstanding</div><div class="value alert">€4143.04</div></div>
+  <div class="stat">
+    <div class="label">Total bill</div>
+    <div class="value alert">€4143.04</div>
+    <div class="muted" style="font-size:.75rem">€0.00 estimated · €4143.04 actual</div>
+  </div>
 </div>
 
 <div class="card">
@@ -100,8 +173,8 @@
       <thead>
         <tr>
           <th>Case no</th><th>Ref</th><th>Status</th><th>Accident date</th>
-          <th>Our reg</th><th>TP plate</th><th>Insurer</th>
-          <th>Chase on</th><th class="right">Estimate €</th><th class="right">Outstanding</th><th>Next action</th>
+          <th>Our reg</th><th>TP plate</th><th>Our insurer</th><th>TP insurer</th>
+          <th>Chase on</th><th class="right">Bill (est./actual)</th><th>Next action</th>
         </tr>
       </thead>
       <tbody>
@@ -109,128 +182,256 @@
         <tr class="clickable" onclick="window.location='/claims/1/'">
           <td>VD-00001</td>
           <td><a href="claim-1.html">CLM-2026-0001</a></td>
-          <td><span class="badge open">Open</span></td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="/claims/1/status/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
+              <input type="hidden" name="next" value="/claims/group/open/">
+              <select name="status" class="status-select badge open" onchange="this.form.submit()" aria-label="Status">
+                
+                <option value="draft" >Draft</option>
+                
+                <option value="open" selected>Open</option>
+                
+                <option value="awaiting_survey" >Awaiting survey</option>
+                
+                <option value="awaiting_insurer" >Awaiting insurer</option>
+                
+                <option value="settled" >Settled</option>
+                
+                <option value="closed" >Closed</option>
+                
+                <option value="rejected" >Rejected</option>
+                
+              </select>
+            </form>
+            
+          </td>
           <td>12 Jun 2026</td>
           <td>ECB101</td>
           <td>ABC123</td>
           <td>Atlas Insurance</td>
-          <td>
-            
-              27 Jul 2026
-            
-          </td>
-          <td class="right" onclick="event.stopPropagation()">
-            <form method="post" action="/claims/1/estimate/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="Wy1UHZN5mF3kFurDozBWgAyB40hkFmGS5DeDDfVZKzzCI4IXfbwWn9mUCIyaNECo">
+          <td>Mapfre Middlesea</td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="/claims/1/chase/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
               <input type="hidden" name="next" value="/claims/group/open/">
-              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
-                     value="1400.00" placeholder="€"
-                     onchange="this.form.submit()" aria-label="Estimate">
+              <input type="date" name="chase_on" value="2026-08-06"
+                     class="chase-input "
+                     onchange="this.form.submit()" aria-label="Chase on">
             </form>
           </td>
-          <td class="right">€2037.64</td>
+          <td class="right" onclick="event.stopPropagation()">
+            
+              <strong>€2037.64</strong>
+              <div class="muted" style="font-size:.68rem">actual</div>
+            
+          </td>
           <td class="muted">Awaiting survey report</td>
         </tr>
         
         <tr class="clickable" onclick="window.location='/claims/2/'">
           <td>VD-00002</td>
           <td><a href="claim-2.html">CLM-2026-0002</a></td>
-          <td><span class="badge awaiting_insurer">Awaiting insurer</span></td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="/claims/2/status/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
+              <input type="hidden" name="next" value="/claims/group/open/">
+              <select name="status" class="status-select badge awaiting_insurer" onchange="this.form.submit()" aria-label="Status">
+                
+                <option value="draft" >Draft</option>
+                
+                <option value="open" >Open</option>
+                
+                <option value="awaiting_survey" >Awaiting survey</option>
+                
+                <option value="awaiting_insurer" selected>Awaiting insurer</option>
+                
+                <option value="settled" >Settled</option>
+                
+                <option value="closed" >Closed</option>
+                
+                <option value="rejected" >Rejected</option>
+                
+              </select>
+            </form>
+            
+          </td>
           <td>03 Jun 2026</td>
           <td>ECB214</td>
           <td>DEF456</td>
           <td>Mapfre Middlesea</td>
-          <td>
-            
-              24 Jul 2026
-            
-          </td>
-          <td class="right" onclick="event.stopPropagation()">
-            <form method="post" action="/claims/2/estimate/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="Wy1UHZN5mF3kFurDozBWgAyB40hkFmGS5DeDDfVZKzzCI4IXfbwWn9mUCIyaNECo">
+          <td>GasanMamo</td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="/claims/2/chase/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
               <input type="hidden" name="next" value="/claims/group/open/">
-              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
-                     value="700.00" placeholder="€"
-                     onchange="this.form.submit()" aria-label="Estimate">
+              <input type="date" name="chase_on" value="2026-08-03"
+                     class="chase-input "
+                     onchange="this.form.submit()" aria-label="Chase on">
             </form>
           </td>
-          <td class="right">€450.00</td>
+          <td class="right" onclick="event.stopPropagation()">
+            
+              <strong>€450.00</strong>
+              <div class="muted" style="font-size:.68rem">actual</div>
+            
+          </td>
           <td class="muted">O/S payment from MSI</td>
         </tr>
         
         <tr class="clickable" onclick="window.location='/claims/3/'">
           <td>VD-00003</td>
           <td><a href="claim-3.html">CLM-2026-0003</a></td>
-          <td><span class="badge awaiting_survey">Awaiting survey</span></td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="/claims/3/status/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
+              <input type="hidden" name="next" value="/claims/group/open/">
+              <select name="status" class="status-select badge awaiting_survey" onchange="this.form.submit()" aria-label="Status">
+                
+                <option value="draft" >Draft</option>
+                
+                <option value="open" >Open</option>
+                
+                <option value="awaiting_survey" selected>Awaiting survey</option>
+                
+                <option value="awaiting_insurer" >Awaiting insurer</option>
+                
+                <option value="settled" >Settled</option>
+                
+                <option value="closed" >Closed</option>
+                
+                <option value="rejected" >Rejected</option>
+                
+              </select>
+            </form>
+            
+          </td>
           <td>21 May 2026</td>
           <td>ECB330</td>
           <td></td>
           <td>Atlas Insurance</td>
-          <td>
-            
-          </td>
-          <td class="right" onclick="event.stopPropagation()">
-            <form method="post" action="/claims/3/estimate/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="Wy1UHZN5mF3kFurDozBWgAyB40hkFmGS5DeDDfVZKzzCI4IXfbwWn9mUCIyaNECo">
+          <td>—</td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="/claims/3/chase/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
               <input type="hidden" name="next" value="/claims/group/open/">
-              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
-                     value="" placeholder="€"
-                     onchange="this.form.submit()" aria-label="Estimate">
+              <input type="date" name="chase_on" value=""
+                     class="chase-input "
+                     onchange="this.form.submit()" aria-label="Chase on">
             </form>
           </td>
-          <td class="right"></td>
+          <td class="right" onclick="event.stopPropagation()">
+            
+              <form method="post" action="/claims/3/estimate/" style="margin:0">
+                <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
+                <input type="hidden" name="next" value="/claims/group/open/">
+                <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
+                       value="" placeholder="€"
+                       onchange="this.form.submit()" aria-label="Estimate">
+              </form>
+              <div class="muted" style="font-size:.68rem">estimate</div>
+            
+          </td>
           <td class="muted">Book surveyor</td>
         </tr>
         
         <tr class="clickable" onclick="window.location='/claims/4/'">
           <td>VD-00004</td>
           <td><a href="claim-4.html">CLM-2026-0004</a></td>
-          <td><span class="badge open">Open</span> <span class="badge overdue">URGENT</span></td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="/claims/4/status/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
+              <input type="hidden" name="next" value="/claims/group/open/">
+              <select name="status" class="status-select badge open" onchange="this.form.submit()" aria-label="Status">
+                
+                <option value="draft" >Draft</option>
+                
+                <option value="open" selected>Open</option>
+                
+                <option value="awaiting_survey" >Awaiting survey</option>
+                
+                <option value="awaiting_insurer" >Awaiting insurer</option>
+                
+                <option value="settled" >Settled</option>
+                
+                <option value="closed" >Closed</option>
+                
+                <option value="rejected" >Rejected</option>
+                
+              </select>
+            </form>
+            <span class="badge overdue" style="margin-top:.2rem">URGENT</span>
+          </td>
           <td>08 May 2026</td>
           <td>ECB407</td>
           <td>GHI789</td>
           <td>GasanMamo</td>
-          <td>
-            
-              17 Jul 2026
-            
-          </td>
-          <td class="right" onclick="event.stopPropagation()">
-            <form method="post" action="/claims/4/estimate/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="Wy1UHZN5mF3kFurDozBWgAyB40hkFmGS5DeDDfVZKzzCI4IXfbwWn9mUCIyaNECo">
+          <td>Elmo Insurance</td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="/claims/4/chase/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
               <input type="hidden" name="next" value="/claims/group/open/">
-              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
-                     value="" placeholder="€"
-                     onchange="this.form.submit()" aria-label="Estimate">
+              <input type="date" name="chase_on" value="2026-07-27"
+                     class="chase-input "
+                     onchange="this.form.submit()" aria-label="Chase on">
             </form>
           </td>
-          <td class="right">€1015.40</td>
+          <td class="right" onclick="event.stopPropagation()">
+            
+              <strong>€1015.40</strong>
+              <div class="muted" style="font-size:.68rem">actual</div>
+            
+          </td>
           <td class="muted">Chase Elmo — no response</td>
         </tr>
         
         <tr class="clickable" onclick="window.location='/claims/5/'">
           <td>VD-00005</td>
           <td><a href="claim-5.html">CLM-2026-0005</a></td>
-          <td><span class="badge awaiting_insurer">Awaiting insurer</span></td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="/claims/5/status/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
+              <input type="hidden" name="next" value="/claims/group/open/">
+              <select name="status" class="status-select badge awaiting_insurer" onchange="this.form.submit()" aria-label="Status">
+                
+                <option value="draft" >Draft</option>
+                
+                <option value="open" >Open</option>
+                
+                <option value="awaiting_survey" >Awaiting survey</option>
+                
+                <option value="awaiting_insurer" selected>Awaiting insurer</option>
+                
+                <option value="settled" >Settled</option>
+                
+                <option value="closed" >Closed</option>
+                
+                <option value="rejected" >Rejected</option>
+                
+              </select>
+            </form>
+            
+          </td>
           <td>27 Apr 2026</td>
           <td>ECB512</td>
           <td>JKL012</td>
           <td>Atlas Insurance</td>
-          <td>
-            
-              10 Jul 2026
-            
-          </td>
-          <td class="right" onclick="event.stopPropagation()">
-            <form method="post" action="/claims/5/estimate/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="Wy1UHZN5mF3kFurDozBWgAyB40hkFmGS5DeDDfVZKzzCI4IXfbwWn9mUCIyaNECo">
+          <td>—</td>
+          <td onclick="event.stopPropagation()">
+            <form method="post" action="/claims/5/chase/" style="margin:0">
+              <input type="hidden" name="csrfmiddlewaretoken" value="zX4ykWKRD2JnX0ZtPXEaJJ4q6savlSLjuDX3g0BiGNJLMVaH6SuEN3ieLKvNIZLf">
               <input type="hidden" name="next" value="/claims/group/open/">
-              <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
-                     value="" placeholder="€"
-                     onchange="this.form.submit()" aria-label="Estimate">
+              <input type="date" name="chase_on" value="2026-07-20"
+                     class="chase-input "
+                     onchange="this.form.submit()" aria-label="Chase on">
             </form>
           </td>
-          <td class="right">€640.00</td>
+          <td class="right" onclick="event.stopPropagation()">
+            
+              <strong>€640.00</strong>
+              <div class="muted" style="font-size:.68rem">actual</div>
+            
+          </td>
           <td class="muted">O/S payment from Argus</td>
         </tr>
         
@@ -238,8 +439,7 @@
       
       <tfoot>
         <tr class="summary-total">
-          <td colspan="8" class="right"><strong>Totals</strong></td>
-          <td class="right"><strong>€2100.00</strong></td>
+          <td colspan="9" class="right"><strong>Total bill</strong></td>
           <td class="right"><strong>€4143.04</strong></td>
           <td></td>
         </tr>
@@ -247,11 +447,72 @@
       
     </table>
   </div>
-  <p class="muted" style="font-size:.8rem; margin-bottom:0">Type an estimate in the Estimate column and it saves automatically.</p>
+  <p class="muted" style="font-size:.8rem; margin-bottom:0">Type an estimate in the Bill column (it saves automatically). Once real recovery amounts are entered on a claim, that row switches to the <strong>actual</strong> outstanding.</p>
 </div>
 
   </main>
 </div>
+
+
+<div id="reminder-popup" class="modal-overlay no-print" hidden>
+  <div class="modal-card">
+    <h2 class="modal-title"><span class="nav-icon">◷</span> Reminders due</h2>
+    <ul class="popup-list">
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB330</strong></div>
+        <div class="muted popup-meta">Due 20 Jun 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB407</strong></div>
+        <div class="muted popup-meta">Due 20 Jun 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB101</strong></div>
+        <div class="muted popup-meta">Due 08 Jul 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB214</strong></div>
+        <div class="muted popup-meta">Due 08 Jul 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
+        <div class="muted popup-meta">Due 20 Jul 2026 · CLM-2026-0005</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
+        <div class="muted popup-meta">Due 27 Jul 2026 · CLM-2026-0004</div>
+      </li>
+      
+    </ul>
+    
+    <div class="modal-actions">
+      <a href="reminders.html" class="btn btn-primary">View all reminders</a>
+      <button type="button" class="btn" onclick="dismissReminderPopup()">Dismiss</button>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    // Show once per browser session so it doesn't nag on every page.
+    var seenKey = 'reminderPopupSeen';
+    var el = document.getElementById('reminder-popup');
+    if (el && !sessionStorage.getItem(seenKey)) {
+      el.hidden = false;
+      sessionStorage.setItem(seenKey, '1');
+    }
+  })();
+  function dismissReminderPopup() {
+    var el = document.getElementById('reminder-popup');
+    if (el) el.hidden = true;
+  }
+</script>
+
 
 </body>
 </html>
