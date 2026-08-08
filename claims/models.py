@@ -1173,3 +1173,171 @@ class GeneralClaim(models.Model):
 
     def get_absolute_url(self):
         return reverse("general_claim_edit", args=[self.pk])
+
+
+# --- ECABS sales invoices -----------------------------------------------------
+
+class ClientInsurer(models.Model):
+    """A third-party insurer (or other client) that ECABS bills. Picked on a
+    sales invoice to auto-fill the bill-to block, so the address and reference
+    numbers are entered once here and reused on every invoice for that client."""
+
+    name = models.CharField("Client name", max_length=160)
+    address = models.TextField("Address", blank=True, help_text="One line each")
+    customer_no = models.CharField("Bill-to Customer No.", max_length=40, blank=True)
+    vat_reg_no = models.CharField("VAT Registration No.", max_length=60, blank=True)
+    company_reg_no = models.CharField("Company Reg. No.", max_length=60, blank=True)
+    email = models.CharField("Email", max_length=200, blank=True)
+    default_payment_terms = models.CharField(
+        "Payment Terms", max_length=60, blank=True, default="Net 15 days")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def as_billing(self):
+        """The bill-to details as a dict, for auto-filling an invoice."""
+        return {
+            "bill_to_name": self.name,
+            "bill_to_address": self.address,
+            "bill_customer_no": self.customer_no,
+            "bill_vat_reg_no": self.vat_reg_no,
+            "bill_company_reg_no": self.company_reg_no,
+            "payment_terms": self.default_payment_terms,
+        }
+
+
+class SalesInvoice(models.Model):
+    """A sales invoice ECABS raises to a third-party insurer (or other client),
+    usually against a claim. Every header field is editable; line prices are
+    VAT-inclusive and the Net / VAT / Total figures compute from them, matching
+    the ECABS invoice layout."""
+
+    # The claim this invoice relates to ("invoice as per claim no").
+    claim = models.ForeignKey(
+        "Claim", on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="sales_invoices",
+    )
+
+    # Issuer — ECABS. Defaults taken from the ECABS invoice, editable per invoice.
+    issuer_name = models.CharField(
+        "Issuer name", max_length=160, default="eCabs Operators Company Ltd.")
+    issuer_address = models.TextField(
+        "Issuer address",
+        default="eCabs Head Office\nTriq Santu Wistin\nSTJ 3180 San Giljan\nMalta")
+    issuer_email = models.CharField("Email", max_length=200, default="finance@ecabs.com.mt")
+    issuer_website = models.CharField(
+        "Home Page", max_length=200, default="https://www.ecabs.com.mt/")
+    issuer_phone = models.CharField("Phone No.", max_length=60, default="21383838")
+    issuer_vat = models.CharField("VAT Registration No.", max_length=60, default="MT21583611")
+    issuer_exo = models.CharField("EXO Number", max_length=40, default="4270")
+
+    # Bill-to — the client (third-party insurer), snapshotted from the register
+    # so later edits to the register don't rewrite an issued invoice.
+    client = models.ForeignKey(
+        ClientInsurer, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="invoices",
+    )
+    bill_to_name = models.CharField("Bill-to name", max_length=160, blank=True)
+    bill_to_address = models.TextField("Bill-to address", blank=True)
+    bill_customer_no = models.CharField("Bill-to Customer No.", max_length=40, blank=True)
+    bill_vat_reg_no = models.CharField("VAT Registration No.", max_length=60, blank=True)
+    bill_company_reg_no = models.CharField("Company Reg. No.", max_length=60, blank=True)
+
+    invoice_no = models.CharField("Invoice No.", max_length=40, blank=True)
+    # Manual dates — never auto-filled (house rule for all documents).
+    document_date = models.DateField("Document Date", null=True, blank=True)
+    due_date = models.DateField("Due Date", null=True, blank=True)
+    payment_terms = models.CharField(
+        "Payment Terms", max_length=60, blank=True, default="Net 15 days")
+
+    vat_rate = models.DecimalField("VAT rate %", max_digits=5, decimal_places=2, default=18)
+
+    class Status(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        SENT = "sent", "Sent"
+        PAID = "paid", "Paid"
+
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.DRAFT, db_index=True)
+
+    remarks = models.TextField("Remarks", blank=True)
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="+",
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="+", verbose_name="Last edited by",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-id"]
+
+    def __str__(self):
+        return f"{self.invoice_no or 'Invoice'} — {self.bill_to_name or '—'}"
+
+    def get_absolute_url(self):
+        return reverse("sales_invoice_edit", args=[self.pk])
+
+    # Line prices are VAT-inclusive, so Total is their sum and Net/VAT are
+    # backed out of it at the invoice VAT rate.
+    @property
+    def total(self):
+        return sum((ln.price_with_discount for ln in self.lines.all()), Decimal("0"))
+
+    @property
+    def total_discount(self):
+        return sum(
+            ((ln.discount_amount_incl_vat or Decimal("0")) for ln in self.lines.all()),
+            Decimal("0"),
+        )
+
+    @property
+    def net(self):
+        rate = (self.vat_rate or Decimal("0")) / Decimal("100")
+        if rate <= 0:
+            return self.total.quantize(Decimal("0.01"))
+        return (self.total / (Decimal("1") + rate)).quantize(Decimal("0.01"))
+
+    @property
+    def vat_amount(self):
+        return (self.total - self.net).quantize(Decimal("0.01"))
+
+    @property
+    def is_paid(self):
+        return self.status == self.Status.PAID
+
+
+class SalesInvoiceLine(models.Model):
+    """One line on an ECABS sales invoice. Prices are VAT-inclusive; the price
+    with discount (original − discount) feeds the invoice total."""
+
+    invoice = models.ForeignKey(
+        SalesInvoice, on_delete=models.CASCADE, related_name="lines")
+    quantity = models.DecimalField("Amount", max_digits=10, decimal_places=2, default=1)
+    description = models.CharField("Description", max_length=255, blank=True)
+    original_amount_incl_vat = models.DecimalField(
+        "Original Amount Incl. VAT", max_digits=12, decimal_places=2, default=0)
+    discount_amount_incl_vat = models.DecimalField(
+        "Discount Amount incl. VAT", max_digits=12, decimal_places=2, default=0)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return self.description or f"Line {self.pk}"
+
+    @property
+    def price_with_discount(self):
+        return (self.original_amount_incl_vat or Decimal("0")) - (
+            self.discount_amount_incl_vat or Decimal("0"))

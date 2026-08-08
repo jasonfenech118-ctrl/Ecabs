@@ -109,6 +109,9 @@
         <a href="{% url 'bills_report' %}" class="{% if request.resolver_match.url_name == 'bills_report' %}active{% endif %}">
           <span class="nav-icon">€</span> Bills this month
         </a>
+        <a href="{% url 'sales_invoices' %}" class="{% if 'sales_invoice' in request.resolver_match.url_name or request.resolver_match.url_name == 'client_insurers' %}active{% endif %}">
+          <span class="nav-icon">🧾</span> Sales invoices
+        </a>
         <a href="{% url 'metrics' %}" class="{% if request.resolver_match.url_name == 'metrics' %}active{% endif %}">
           <span class="nav-icon">📈</span> Metrics
         </a>

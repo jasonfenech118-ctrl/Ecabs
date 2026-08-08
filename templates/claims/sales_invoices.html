@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load humanize static %}
+{% block title %}Sales invoices — eCabs{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Sales invoices</h1>
+    <div class="sub">Invoices eCabs raises to third-party insurers &amp; clients</div>
+  </div>
+  <div class="row" style="gap:.5rem">
+    <a href="{% url 'client_insurers' %}" class="btn">👥 Client register</a>
+    <form method="post" action="{% url 'sales_invoice_new' %}">{% csrf_token %}
+      <button type="submit" class="btn btn-primary">＋ New invoice</button>
+    </form>
+  </div>
+</div>
+
+<div class="card no-print">
+  <form method="get" class="row" style="gap:.6rem; align-items:flex-end; flex-wrap:wrap">
+    <label class="field" style="margin:0"><span>Search</span>
+      <input name="q" value="{{ q }}" placeholder="Invoice no, client or claim…" style="min-width:220px">
+    </label>
+    <label class="field" style="margin:0"><span>Status</span>
+      <select name="status">
+        <option value="">All statuses</option>
+        {% for val, lbl in statuses %}<option value="{{ val }}" {% if status == val %}selected{% endif %}>{{ lbl }}</option>{% endfor %}
+      </select>
+    </label>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="{% url 'sales_invoices' %}" class="btn btn-sm">Reset</a>
+  </form>
+</div>
+
+<div class="card table-wrap mt">
+  <table class="list">
+    <thead>
+      <tr><th>Invoice No.</th><th>Document date</th><th>Bill to</th><th>Claim</th><th class="right">Total</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for inv in invoices %}
+      <tr>
+        <td><a href="{{ inv.get_absolute_url }}"><strong>{{ inv.invoice_no|default:"(no number)" }}</strong></a></td>
+        <td>{{ inv.document_date|date:"d/m/Y"|default:"—" }}</td>
+        <td>{{ inv.bill_to_name|default:"—" }}</td>
+        <td>{% if inv.claim %}<a href="{% url 'claim_detail' inv.claim.pk %}">{{ inv.claim.reference }}</a>{% else %}—{% endif %}</td>
+        <td class="right">€{{ inv.total|floatformat:2|intcomma }}</td>
+        <td><span class="pill pill-{{ inv.status }}">{{ inv.get_status_display }}</span></td>
+        <td style="white-space:nowrap">
+          <a href="{{ inv.get_absolute_url }}" class="btn btn-sm">Edit</a>
+          <a href="{% url 'sales_invoice_pdf' inv.pk %}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">PDF</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="empty">No invoices yet — press “New invoice”.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

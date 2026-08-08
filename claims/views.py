@@ -31,6 +31,7 @@ from .models import (
     Claim,
     ClaimStatus,
     claim_status_choices,
+    ClientInsurer,
     Company,
     DailyRate,
     EmailLog,
@@ -43,6 +44,8 @@ from .models import (
     Reminder,
     RepairLine,
     RepairType,
+    SalesInvoice,
+    SalesInvoiceLine,
     Survey,
     Vehicle,
     VehicleAdditionalCost,
@@ -796,6 +799,212 @@ def garage_invoice_pdf(request, pk):
     name = (inv.invoice_no or "invoice").replace(" ", "_").replace(".", "")
     resp["Content-Disposition"] = f'inline; filename="{name}.pdf"'
     return resp
+
+
+# --- ECABS sales invoices -----------------------------------------------------
+
+SALES_HEADER_FIELDS = (
+    "issuer_name", "issuer_address", "issuer_email", "issuer_website",
+    "issuer_phone", "issuer_vat", "issuer_exo",
+    "bill_to_name", "bill_to_address", "bill_customer_no", "bill_vat_reg_no",
+    "bill_company_reg_no", "invoice_no", "payment_terms", "remarks",
+)
+
+
+def _next_sales_invoice_no():
+    """Suggest the next invoice number from the highest numeric suffix seen,
+    keeping the ECABS PSIN######## shape."""
+    import re
+
+    best = 1920245
+    for raw in SalesInvoice.objects.values_list("invoice_no", flat=True):
+        m = re.search(r"(\d+)", raw or "")
+        if m:
+            best = max(best, int(m.group(1)))
+    return f"PSIN{best + 1:08d}"
+
+
+@login_required
+def sales_invoices(request):
+    """List of ECABS sales invoices, searchable and filterable by status."""
+    qs = (SalesInvoice.objects.select_related("client", "claim", "created_by")
+          .prefetch_related("lines"))
+
+    status = (request.GET.get("status") or "").strip()
+    if status in dict(SalesInvoice.Status.choices):
+        qs = qs.filter(status=status)
+
+    q = (request.GET.get("q") or "").strip()
+    if q:
+        qs = qs.filter(
+            Q(invoice_no__icontains=q) | Q(bill_to_name__icontains=q)
+            | Q(claim__reference__icontains=q)
+        )
+
+    return render(request, "claims/sales_invoices.html", {
+        "invoices": qs,
+        "status": status,
+        "q": q,
+        "statuses": SalesInvoice.Status.choices,
+    })
+
+
+@login_required
+@require_POST
+def sales_invoice_new(request):
+    """Start a new sales invoice, optionally pre-filled from a claim, then edit
+    it. If the claim's third-party insurer matches a client in the register, its
+    bill-to details are copied in so the address is ready to amend."""
+    inv = SalesInvoice(
+        invoice_no=_next_sales_invoice_no(),
+        created_by=request.user,
+        updated_by=request.user,
+    )
+    claim_id = (request.POST.get("claim") or "").strip()
+    if claim_id.isdigit():
+        claim = Claim.objects.filter(pk=int(claim_id)).first()
+        if claim:
+            inv.claim = claim
+            match = ClientInsurer.objects.filter(
+                is_active=True, name__iexact=(claim.third_party_insurer or "").strip()
+            ).first() if claim.third_party_insurer else None
+            if match:
+                inv.client = match
+                for k, v in match.as_billing().items():
+                    setattr(inv, k, v)
+    inv.save()
+    return redirect("sales_invoice_edit", pk=inv.pk)
+
+
+@login_required
+def sales_invoice_edit(request, pk):
+    """Edit a sales invoice: header fields, the client, and inline lines."""
+    inv = get_object_or_404(SalesInvoice, pk=pk)
+    if request.method == "POST":
+        # Choosing a client copies its details into the (still editable) bill-to
+        # snapshot — the "register integrated when you choose the client" flow.
+        prev_client_id = inv.client_id
+        client_id = (request.POST.get("client") or "").strip()
+        inv.client = (ClientInsurer.objects.filter(pk=int(client_id)).first()
+                      if client_id.isdigit() else None)
+
+        for f in SALES_HEADER_FIELDS:
+            setattr(inv, f, request.POST.get(f, getattr(inv, f)))
+
+        # When the client changes, refresh the bill-to block from the register.
+        if inv.client and inv.client_id != prev_client_id:
+            for k, v in inv.client.as_billing().items():
+                setattr(inv, k, v)
+
+        claim_id = (request.POST.get("claim") or "").strip()
+        inv.claim = (Claim.objects.filter(pk=int(claim_id)).first()
+                     if claim_id.isdigit() else None)
+
+        inv.document_date = _parse_date(request.POST.get("document_date"))
+        inv.due_date = _parse_date(request.POST.get("due_date"))
+
+        raw = (request.POST.get("vat_rate") or "").strip()
+        if raw:
+            try:
+                inv.vat_rate = Decimal(raw)
+            except InvalidOperation:
+                pass
+
+        status = request.POST.get("status")
+        if status in dict(SalesInvoice.Status.choices):
+            inv.status = status
+
+        inv.updated_by = request.user
+        inv.save()
+        return redirect("sales_invoice_edit", pk=inv.pk)
+
+    import json
+
+    clients = list(ClientInsurer.objects.filter(is_active=True))
+    clients_json = json.dumps({str(c.pk): c.as_billing() for c in clients})
+    return render(request, "claims/sales_invoice_edit.html", {
+        "inv": inv,
+        "clients": clients,
+        "clients_json": clients_json,
+        "claims": Claim.objects.order_by("-id")[:500],
+    })
+
+
+@login_required
+@require_POST
+def sales_invoice_line_add(request, pk):
+    """Add a blank line to the invoice."""
+    inv = get_object_or_404(SalesInvoice, pk=pk)
+    last = inv.lines.order_by("-order").first()
+    SalesInvoiceLine.objects.create(
+        invoice=inv, order=(last.order + 1) if last else 0)
+    inv.updated_by = request.user
+    inv.save(update_fields=["updated_by", "updated_at"])
+    return redirect("sales_invoice_edit", pk=inv.pk)
+
+
+@login_required
+@require_POST
+def sales_invoice_line_update(request, pk, line_pk):
+    """Inline save or delete of one invoice line."""
+    inv = get_object_or_404(SalesInvoice, pk=pk)
+    line = get_object_or_404(SalesInvoiceLine, pk=line_pk, invoice=inv)
+    if request.POST.get("action") == "delete":
+        line.delete()
+    else:
+        line.description = request.POST.get("description", line.description)
+        for f in ("quantity", "original_amount_incl_vat", "discount_amount_incl_vat"):
+            raw = (request.POST.get(f) or "").strip()
+            if raw:
+                try:
+                    setattr(line, f, Decimal(raw))
+                except InvalidOperation:
+                    pass
+            else:
+                setattr(line, f, Decimal("0"))
+        line.save()
+    inv.updated_by = request.user
+    inv.save(update_fields=["updated_by", "updated_at"])
+    return redirect("sales_invoice_edit", pk=inv.pk)
+
+
+@login_required
+def sales_invoice_pdf(request, pk):
+    """Render the sales invoice as a PDF in the ECABS layout."""
+    inv = get_object_or_404(SalesInvoice, pk=pk)
+    from .services.sales_invoice_pdf import build_sales_invoice_pdf
+
+    pdf = build_sales_invoice_pdf(inv)
+    resp = HttpResponse(pdf, content_type="application/pdf")
+    name = (inv.invoice_no or "invoice").replace(" ", "_").replace(".", "")
+    resp["Content-Disposition"] = f'inline; filename="{name}.pdf"'
+    return resp
+
+
+@login_required
+def client_insurers(request):
+    """The third-party insurer / client register: add and edit the clients that
+    ECABS bills, so their bill-to details auto-fill on an invoice."""
+    if request.method == "POST":
+        pk = (request.POST.get("pk") or "").strip()
+        obj = ClientInsurer.objects.filter(pk=pk).first() if pk.isdigit() else ClientInsurer()
+        if request.POST.get("action") == "delete" and obj.pk:
+            obj.is_active = False
+            obj.save(update_fields=["is_active"])
+            return redirect("client_insurers")
+        name = (request.POST.get("name") or "").strip()
+        if name:
+            obj.name = name
+            for f in ("address", "customer_no", "vat_reg_no", "company_reg_no",
+                      "email", "default_payment_terms"):
+                setattr(obj, f, request.POST.get(f, getattr(obj, f) or ""))
+            obj.is_active = True
+            obj.save()
+        return redirect("client_insurers")
+
+    return render(request, "claims/client_insurers.html", {
+        "clients": ClientInsurer.objects.filter(is_active=True),
+    })
 
 
 # --- Accident list (master register) -----------------------------------------
