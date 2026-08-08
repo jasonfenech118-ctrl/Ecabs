@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import Claim, Reminder, Vehicle, compliance_state
+from .models import Claim, OtherCharge, Reminder, Vehicle, compliance_state
 
 
 class ClaimModelTests(TestCase):
@@ -976,6 +976,88 @@ class ViewTests(TestCase):
         r = self.client.get(reverse("parts_receipt_pdf", args=[rec.pk]))
         self.assertEqual(r.status_code, 200)
         self.assertTrue(r.content.startswith(b"%PDF-"))
+
+    def test_claims_master_import(self):
+        """The master tracker imports into claims whose own arithmetic matches
+        the sheet's total, re-imports without duplicating, and flags a row whose
+        figures don't add up."""
+        import io
+        from decimal import Decimal
+
+        import openpyxl
+
+        from claims.services.claims_master_import import import_master_sheet
+
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.append([None, "25"])  # the stray cell above the real header
+        ws.append([
+            "Calendar Chaser", "Our Reg No", "TP Reg No", "Accident Date",
+            "TP Claim No", "MSI Claim No", "TP Insurance", "RAR / ETARS / F2R",
+            "Drivable?", "Survey / Photos", "Survey In Hand?",
+            "Estimate Claim Amt", "Referred RGM / etc",
+            "Claim Phase / Next Action", "Bills Sent", "Invoice No",
+            "Labour (Net)", "Spray + Material (Net)", "Parts",
+            "Loss of Earnings", "LOE (Days) - Daily Amt", "Others",
+            "Settlement", "Amount Paid", "Offset", "TOTAL - Claim Amount",
+        ])
+        # Coherent: 243.6 + 429.53 + 800.21 + 0 + 0 − 1023.34 − 240 = 210.00
+        ws.append([
+            "2026-07-14", "RQZ031", "BUS013", "2023-08-14", "", "C34-277148",
+            "Middlesea", "Etars", "YES", "", "Yes", "", "", "O/S payment",
+            "2026-01-10", "100050", 243.6, 429.53, 800.21, 0, "", 0, 0,
+            1023.34, 240, 210,
+        ])
+        # LOE split "4 days - € 185.62" = 742.48, plus 35 of Others.
+        ws.append([
+            "2026-06-30", "ELY236", "GLY062", "2023-10-30", "2023HAR2414", "",
+            "Argus", "F 2 R", "NO - CLAIMING FROM 30/10", "", "", "", "", "",
+            "", "500136", 100, 0, 0, 742.48, "4 days - € 185.62", 35, 0, 0, 0,
+            877.48,
+        ])
+        # Incoherent: the sheet's total disagrees with its own figures.
+        ws.append([
+            "", "GQZ976", "ALH001", "2026-04-25", "M20262065", "C34-302964",
+            "Atlas", "Etars", "", "", "", "", "", "", "", "", 0, 0, 0, 402.54,
+            "", 0, 4500, 4500, 0, 402.54,
+        ])
+        ws.append([None] * 26)  # dragged-down blank row
+        buf = io.BytesIO()
+        wb.save(buf)
+
+        buf.seek(0)
+        dry = import_master_sheet(buf, commit=False)
+        self.assertEqual(dry["rows"], 3)
+        self.assertEqual(dry["created"], 3)
+        self.assertEqual(Claim.objects.count(), 0)  # dry run writes nothing
+        self.assertEqual(len(dry["warnings"]), 1)
+        self.assertIn("GQZ976", dry["warnings"][0]["issue"])
+
+        buf.seek(0)
+        report = import_master_sheet(buf, commit=True, user=self.user)
+        self.assertEqual((report["created"], report["updated"]), (3, 0))
+        self.assertEqual(Claim.objects.count(), 3)
+
+        first = Claim.objects.get(insurer_claim_number="C34-277148")
+        self.assertEqual(first.vehicle_registration, "RQZ031")
+        self.assertEqual(first.report_type, Claim.ReportType.ETARS)
+        self.assertTrue(first.drivable)
+        self.assertEqual(first.outstanding_amount, Decimal("210.00"))
+
+        # LOE is stored split, and "Others" rides on an OtherCharge so it counts.
+        second = Claim.objects.get(tp_claim_number="2023HAR2414")
+        self.assertEqual((second.loe_days, second.loe_daily_rate),
+                         (4, Decimal("185.62")))
+        self.assertEqual(second.loss_of_earnings, Decimal("742.48"))
+        self.assertEqual(second.other_charges_total, Decimal("35.00"))
+        self.assertEqual(second.outstanding_amount, Decimal("877.48"))
+
+        # Re-importing the same sheet updates rather than duplicates.
+        buf.seek(0)
+        again = import_master_sheet(buf, commit=True, user=self.user)
+        self.assertEqual((again["created"], again["updated"]), (0, 3))
+        self.assertEqual(Claim.objects.count(), 3)
+        self.assertEqual(OtherCharge.objects.filter(claim=second).count(), 1)
 
     def test_master_sheet_and_csv(self):
         from decimal import Decimal

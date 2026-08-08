@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Import claims register — Vai Drive Claims{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Import claims register</h1>
+    <div class="sub">Load the master tracker (.xlsx) — one row per claim</div>
+  </div>
+  <a href="{% url 'master_sheet' %}" class="btn">← Master sheet</a>
+</div>
+
+<div class="card">
+  <form method="post" enctype="multipart/form-data" action="{% url 'claims_master_import' %}">
+    {% csrf_token %}
+    <label class="field"><span>Tracker file (.xlsx)</span>
+      <input type="file" name="file" accept=".xlsx" required>
+    </label>
+    <p class="muted" style="font-size:.82rem; margin:.2rem 0 .7rem">
+      Checking the file first is safe — nothing is saved until you press
+      <strong>Import them</strong>. Claims already on file are matched on their
+      insurer claim number (or the plates and accident date) and updated, so the
+      same file can be loaded again without creating duplicates.
+    </p>
+    <button type="submit" class="btn btn-primary">Check the file</button>
+  </form>
+</div>
+
+{% if report %}
+<div class="card mt">
+  <h3>{% if report.committed %}Imported{% else %}What this file would do{% endif %}</h3>
+  <p>
+    <strong>{{ report.rows }}</strong> claim{{ report.rows|pluralize }} read —
+    <strong>{{ report.created }}</strong> new,
+    <strong>{{ report.updated }}</strong> already on file.
+  </p>
+
+  {% if report.problems %}
+  <div class="table-wrap">
+    <table class="list">
+      <thead><tr><th style="width:6rem">Sheet row</th><th>Needs a look</th></tr></thead>
+      <tbody>
+        {% for p in report.problems %}
+        <tr>
+          <td>{{ p.row|default:"—" }}</td>
+          <td>{% if p.severity == 'error' %}<span class="pill pill-rejected">Error</span>
+              {% elif p.severity == 'warning' %}<span class="pill pill-draft">Check</span>{% endif %}
+            {{ p.issue }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="font-size:.82rem; margin:.5rem 0 0">
+    Rows flagged <em>Check</em> are still imported — the figures are copied as
+    they are in the sheet. Fix them in the sheet and load it again if needed.
+  </p>
+  {% else %}
+  <p class="muted">Every row's figures add up.</p>
+  {% endif %}
+
+  {% if not report.committed %}
+  <form method="post" enctype="multipart/form-data" action="{% url 'claims_master_import' %}" class="mt">
+    {% csrf_token %}
+    <input type="hidden" name="commit" value="1">
+    <label class="field"><span>Choose the same file again to import it</span>
+      <input type="file" name="file" accept=".xlsx" required>
+    </label>
+    <button type="submit" class="btn btn-primary">Import them</button>
+  </form>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

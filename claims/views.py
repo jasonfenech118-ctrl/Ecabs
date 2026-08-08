@@ -1220,6 +1220,37 @@ def accident_list_upload(request):
     return redirect("accident_list")
 
 
+@login_required
+def claims_master_import(request):
+    """Upload the master claims tracker. Checks the sheet first and shows what
+    it would do; only writes when 'Import them' is pressed, so the figures can
+    be read through before they touch the register."""
+    from django.contrib import messages
+
+    from .services.claims_master_import import import_master_sheet
+
+    report = None
+    if request.method == "POST":
+        f = request.FILES.get("file")
+        if not f:
+            messages.error(request, "Choose an Excel (.xlsx) file to upload.")
+            return redirect("claims_master_import")
+        commit = request.POST.get("commit") == "1"
+        try:
+            report = import_master_sheet(f, commit=commit, user=request.user)
+        except Exception as exc:  # noqa: BLE001 — show any parse error to staff
+            messages.error(request, f"Could not read that file: {exc}")
+            return redirect("claims_master_import")
+        if commit:
+            messages.success(
+                request,
+                f"Imported {report['rows']} claims — {report['created']} new, "
+                f"{report['updated']} updated.",
+            )
+
+    return render(request, "claims/claims_master_import.html", {"report": report})
+
+
 # --- General claims listing (e.g. Firefly) -----------------------------------
 
 GENERAL_CLAIM_TEXT_FIELDS = [

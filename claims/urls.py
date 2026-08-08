@@ -37,6 +37,7 @@ urlpatterns = [
     path("parts/receipts/new/", views.parts_receipt_new, name="parts_receipt_new"),
     path("parts/receipts/<int:pk>/", views.parts_receipt_edit, name="parts_receipt_edit"),
     path("parts/receipts/<int:pk>/pdf/", views.parts_receipt_pdf, name="parts_receipt_pdf"),
+    path("claims/master/import/", views.claims_master_import, name="claims_master_import"),
     path("claims/master/", views.master_sheet, name="master_sheet"),
     path("claims/master/csv/", views.master_sheet_csv, name="master_sheet_csv"),
     path("claims/bills/", views.bills_report, name="bills_report"),

@@ -8,6 +8,7 @@
   </div>
   <div class="row">
     <button type="button" onclick="window.print()" class="btn">🖨 Print</button>
+    <a href="{% url 'claims_master_import' %}" class="btn">⬆ Import register</a>
     <a href="{% url 'master_sheet_csv' %}?q={{ q|urlencode }}&status={{ status|urlencode }}" class="btn btn-primary">⬇ Download CSV (Excel)</a>
   </div>
 </div>
