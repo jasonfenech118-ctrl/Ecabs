@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "dCKtBY4w0PrV04KoRyMlqOVgvqcQ1D0X8iDYx2VX3ArjPZVC8tCPu894aIx8oK0T"}'
+<body hx-headers='{"X-CSRFToken": "1pRktecGgxJiw5laWhupu5P4TTSGI8IV9l0E7N6Cn8CrRTmbP5J5cJDYQBXxTWqp"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -89,6 +89,9 @@
         </a>
         <a href="bills.html" class="">
           <span class="nav-icon">€</span> Bills this month
+        </a>
+        <a href="sales-invoices.html" class="">
+          <span class="nav-icon">🧾</span> Sales invoices
         </a>
         <a href="#" class="">
           <span class="nav-icon">📈</span> Metrics
@@ -184,7 +187,7 @@
           <td><a href="claim-6.html">CLM-2026-0006</a></td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/6/status/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="dCKtBY4w0PrV04KoRyMlqOVgvqcQ1D0X8iDYx2VX3ArjPZVC8tCPu894aIx8oK0T">
+              <input type="hidden" name="csrfmiddlewaretoken" value="1pRktecGgxJiw5laWhupu5P4TTSGI8IV9l0E7N6Cn8CrRTmbP5J5cJDYQBXxTWqp">
               <input type="hidden" name="next" value="/claims/group/closed/">
               <select name="status" class="status-select badge closed" onchange="this.form.submit()" aria-label="Status">
                 
@@ -213,7 +216,7 @@
           <td>—</td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/6/chase/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="dCKtBY4w0PrV04KoRyMlqOVgvqcQ1D0X8iDYx2VX3ArjPZVC8tCPu894aIx8oK0T">
+              <input type="hidden" name="csrfmiddlewaretoken" value="1pRktecGgxJiw5laWhupu5P4TTSGI8IV9l0E7N6Cn8CrRTmbP5J5cJDYQBXxTWqp">
               <input type="hidden" name="next" value="/claims/group/closed/">
               <input type="date" name="chase_on" value=""
                      class="chase-input "
@@ -234,7 +237,7 @@
           <td><a href="claim-7.html">CLM-2026-0007</a></td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/7/status/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="dCKtBY4w0PrV04KoRyMlqOVgvqcQ1D0X8iDYx2VX3ArjPZVC8tCPu894aIx8oK0T">
+              <input type="hidden" name="csrfmiddlewaretoken" value="1pRktecGgxJiw5laWhupu5P4TTSGI8IV9l0E7N6Cn8CrRTmbP5J5cJDYQBXxTWqp">
               <input type="hidden" name="next" value="/claims/group/closed/">
               <select name="status" class="status-select badge closed" onchange="this.form.submit()" aria-label="Status">
                 
@@ -263,7 +266,7 @@
           <td>—</td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/7/chase/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="dCKtBY4w0PrV04KoRyMlqOVgvqcQ1D0X8iDYx2VX3ArjPZVC8tCPu894aIx8oK0T">
+              <input type="hidden" name="csrfmiddlewaretoken" value="1pRktecGgxJiw5laWhupu5P4TTSGI8IV9l0E7N6Cn8CrRTmbP5J5cJDYQBXxTWqp">
               <input type="hidden" name="next" value="/claims/group/closed/">
               <input type="date" name="chase_on" value=""
                      class="chase-input "
@@ -273,7 +276,7 @@
           <td class="right" onclick="event.stopPropagation()">
             
               <form method="post" action="/claims/7/estimate/" style="margin:0">
-                <input type="hidden" name="csrfmiddlewaretoken" value="dCKtBY4w0PrV04KoRyMlqOVgvqcQ1D0X8iDYx2VX3ArjPZVC8tCPu894aIx8oK0T">
+                <input type="hidden" name="csrfmiddlewaretoken" value="1pRktecGgxJiw5laWhupu5P4TTSGI8IV9l0E7N6Cn8CrRTmbP5J5cJDYQBXxTWqp">
                 <input type="hidden" name="next" value="/claims/group/closed/">
                 <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
                        value="" placeholder="€"
@@ -290,7 +293,7 @@
           <td><a href="claim-8.html">CLM-2026-0008</a></td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/8/status/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="dCKtBY4w0PrV04KoRyMlqOVgvqcQ1D0X8iDYx2VX3ArjPZVC8tCPu894aIx8oK0T">
+              <input type="hidden" name="csrfmiddlewaretoken" value="1pRktecGgxJiw5laWhupu5P4TTSGI8IV9l0E7N6Cn8CrRTmbP5J5cJDYQBXxTWqp">
               <input type="hidden" name="next" value="/claims/group/closed/">
               <select name="status" class="status-select badge rejected" onchange="this.form.submit()" aria-label="Status">
                 
@@ -319,7 +322,7 @@
           <td>—</td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/8/chase/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="dCKtBY4w0PrV04KoRyMlqOVgvqcQ1D0X8iDYx2VX3ArjPZVC8tCPu894aIx8oK0T">
+              <input type="hidden" name="csrfmiddlewaretoken" value="1pRktecGgxJiw5laWhupu5P4TTSGI8IV9l0E7N6Cn8CrRTmbP5J5cJDYQBXxTWqp">
               <input type="hidden" name="next" value="/claims/group/closed/">
               <input type="date" name="chase_on" value=""
                      class="chase-input "
@@ -329,7 +332,7 @@
           <td class="right" onclick="event.stopPropagation()">
             
               <form method="post" action="/claims/8/estimate/" style="margin:0">
-                <input type="hidden" name="csrfmiddlewaretoken" value="dCKtBY4w0PrV04KoRyMlqOVgvqcQ1D0X8iDYx2VX3ArjPZVC8tCPu894aIx8oK0T">
+                <input type="hidden" name="csrfmiddlewaretoken" value="1pRktecGgxJiw5laWhupu5P4TTSGI8IV9l0E7N6Cn8CrRTmbP5J5cJDYQBXxTWqp">
                 <input type="hidden" name="next" value="/claims/group/closed/">
                 <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
                        value="" placeholder="€"
@@ -367,32 +370,22 @@
       
       <li>
         <div class="popup-line"><strong>Insurance payment — ECB330</strong></div>
-        <div class="muted popup-meta">Due 20 Jun 2026</div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Insurance payment — ECB407</strong></div>
-        <div class="muted popup-meta">Due 20 Jun 2026</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Insurance payment — ECB101</strong></div>
-        <div class="muted popup-meta">Due 08 Jul 2026</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Insurance payment — ECB214</strong></div>
-        <div class="muted popup-meta">Due 08 Jul 2026</div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
-        <div class="muted popup-meta">Due 20 Jul 2026 · CLM-2026-0005</div>
+        <div class="muted popup-meta">Due 28 Jul 2026 · CLM-2026-0005</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
-        <div class="muted popup-meta">Due 27 Jul 2026 · CLM-2026-0004</div>
+        <div class="muted popup-meta">Due 04 Aug 2026 · CLM-2026-0004</div>
       </li>
       
     </ul>

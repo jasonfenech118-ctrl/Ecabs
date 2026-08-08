@@ -878,6 +878,49 @@ class ViewTests(TestCase):
         r = self.client.get(reverse("vehicle_list"))
         self.assertContains(r, "Monthly cost breakdown")
 
+    def test_sales_invoice_client_autofill_and_totals(self):
+        """ECABS sales invoice: client register auto-fills the bill-to block,
+        VAT-inclusive lines back out Net/VAT, and the PDF renders."""
+        from datetime import date
+        from decimal import Decimal
+
+        from claims.models import ClientInsurer, SalesInvoice, SalesInvoiceLine
+
+        client_rec = ClientInsurer.objects.create(
+            name="PWO S.p.A. Malta Branch",
+            address="Focus House, First Floor,\nMalta",
+            customer_no="CUST000445", vat_reg_no="MT 2099-1236",
+            company_reg_no="OC 1562", default_payment_terms="Net 15 days")
+
+        # New invoice, then choosing the client copies its details into the
+        # (still editable) bill-to snapshot.
+        self.client.post(reverse("sales_invoice_new"))
+        inv = SalesInvoice.objects.get()
+        self.client.post(reverse("sales_invoice_edit", args=[inv.pk]), {
+            "client": client_rec.pk, "invoice_no": "PSIN01920245",
+            "document_date": "2026-02-05", "due_date": "2026-02-20",
+            "vat_rate": "18", "status": "sent",
+        })
+        inv.refresh_from_db()
+        self.assertEqual(inv.bill_customer_no, "CUST000445")
+        self.assertEqual(inv.bill_company_reg_no, "OC 1562")
+        self.assertEqual(inv.payment_terms, "Net 15 days")
+        self.assertEqual(inv.due_date, date(2026, 2, 20))
+
+        # Two VAT-inclusive lines of 10.00 each → Total 20, Net 16.95, VAT 3.05.
+        SalesInvoiceLine.objects.create(
+            invoice=inv, description="Door", original_amount_incl_vat=Decimal("10"))
+        SalesInvoiceLine.objects.create(
+            invoice=inv, description="Door", original_amount_incl_vat=Decimal("10"))
+        self.assertEqual(inv.total, Decimal("20"))
+        self.assertEqual(inv.net, Decimal("16.95"))
+        self.assertEqual(inv.vat_amount, Decimal("3.05"))
+
+        r = self.client.get(reverse("sales_invoice_pdf", args=[inv.pk]))
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r["Content-Type"], "application/pdf")
+        self.assertTrue(r.content.startswith(b"%PDF-"))
+
     def test_master_sheet_and_csv(self):
         from decimal import Decimal
 

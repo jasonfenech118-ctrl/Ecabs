@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Client register — eCabs{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Client register</h1>
+    <div class="sub">Third-party insurers &amp; clients eCabs bills — details auto-fill on an invoice</div>
+  </div>
+  <a href="{% url 'sales_invoices' %}" class="btn">← Sales invoices</a>
+</div>
+
+<div class="card">
+  <h3 id="add">Add a client</h3>
+  <form method="post" action="{% url 'client_insurers' %}">
+    {% csrf_token %}
+    <div class="grid-2">
+      <div>
+        <label class="field"><span>Client name</span><input name="name" required placeholder="e.g. PWO S.p.A. Malta Branch"></label>
+        <label class="field"><span>Address</span><textarea name="address" rows="4" placeholder="One line each"></textarea></label>
+        <label class="field"><span>Email</span><input name="email"></label>
+      </div>
+      <div>
+        <label class="field"><span>Bill-to Customer No.</span><input name="customer_no" placeholder="CUST000445"></label>
+        <label class="field"><span>VAT Registration No.</span><input name="vat_reg_no" placeholder="MT 2099-1236"></label>
+        <label class="field"><span>Company Reg. No.</span><input name="company_reg_no" placeholder="OC 1562"></label>
+        <label class="field"><span>Payment Terms</span><input name="default_payment_terms" value="Net 15 days"></label>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt">Add client</button>
+  </form>
+</div>
+
+<div class="card table-wrap mt">
+  <table class="list">
+    <thead>
+      <tr><th>Client</th><th>Customer No.</th><th>VAT Reg No.</th><th>Company Reg No.</th><th>Terms</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for c in clients %}
+      <tr>
+        <td><strong>{{ c.name }}</strong>{% if c.address %}<br><span class="muted" style="font-size:.8rem">{{ c.address|linebreaksbr }}</span>{% endif %}</td>
+        <td>{{ c.customer_no|default:"—" }}</td>
+        <td>{{ c.vat_reg_no|default:"—" }}</td>
+        <td>{{ c.company_reg_no|default:"—" }}</td>
+        <td>{{ c.default_payment_terms|default:"—" }}</td>
+        <td style="white-space:nowrap">
+          <button type="button" class="btn btn-sm" onclick="editClient(this)"
+            data-pk="{{ c.pk }}" data-name="{{ c.name }}" data-address="{{ c.address }}"
+            data-customer_no="{{ c.customer_no }}" data-vat_reg_no="{{ c.vat_reg_no }}"
+            data-company_reg_no="{{ c.company_reg_no }}" data-email="{{ c.email }}"
+            data-default_payment_terms="{{ c.default_payment_terms }}">Edit</button>
+          <form method="post" action="{% url 'client_insurers' %}" style="display:inline" onsubmit="return confirm('Remove this client from the register?')">
+            {% csrf_token %}<input type="hidden" name="pk" value="{{ c.pk }}"><input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-sm btn-danger" title="Remove">✕</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="empty">No clients yet — add one above.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+// Load a row's values into the add form for editing (posts back with its pk).
+function editClient(btn) {
+  var f = btn.closest('table').closest('.card').previousElementSibling.querySelector('form');
+  var d = btn.dataset;
+  f.querySelector('[name=name]').value = d.name || '';
+  f.querySelector('[name=address]').value = d.address || '';
+  f.querySelector('[name=email]').value = d.email || '';
+  f.querySelector('[name=customer_no]').value = d.customer_no || '';
+  f.querySelector('[name=vat_reg_no]').value = d.vat_reg_no || '';
+  f.querySelector('[name=company_reg_no]').value = d.company_reg_no || '';
+  f.querySelector('[name=default_payment_terms]').value = d.default_payment_terms || '';
+  var pk = f.querySelector('[name=pk]');
+  if (!pk) { pk = document.createElement('input'); pk.type = 'hidden'; pk.name = 'pk'; f.appendChild(pk); }
+  pk.value = d.pk;
+  f.scrollIntoView({behavior: 'smooth'});
+}
+</script>
+{% endblock %}

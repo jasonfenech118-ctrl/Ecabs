@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "lzu8thosoy1Vd0ZdckKCVeA1QdPzW0bVgfnDplfTrj1j2VartfA6ZyOPvvaRj7bR"}'
+<body hx-headers='{"X-CSRFToken": "mtNA9cZNoONKnYZAqUT2M8j3owDtW6EWupWUNLTJvpGTIM0BjI8IuM7XleIk7Umq"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -89,6 +89,9 @@
         </a>
         <a href="bills.html" class="">
           <span class="nav-icon">€</span> Bills this month
+        </a>
+        <a href="sales-invoices.html" class="">
+          <span class="nav-icon">🧾</span> Sales invoices
         </a>
         <a href="#" class="">
           <span class="nav-icon">📈</span> Metrics
@@ -197,7 +200,7 @@
   <h3>Types of repair &amp; cost</h3>
   <p class="muted" style="margin:.2rem 0 .9rem; font-size:.85rem">Tick each repair carried out and enter its cost (net, ex-VAT). VAT @18% is added automatically on the receipt. Each ticked line appears separately on the statement.</p>
   <form method="post" action="/claims/8/repair-lines/">
-    <input type="hidden" name="csrfmiddlewaretoken" value="lzu8thosoy1Vd0ZdckKCVeA1QdPzW0bVgfnDplfTrj1j2VartfA6ZyOPvvaRj7bR">
+    <input type="hidden" name="csrfmiddlewaretoken" value="mtNA9cZNoONKnYZAqUT2M8j3owDtW6EWupWUNLTJvpGTIM0BjI8IuM7XleIk7Umq">
     <input type="hidden" name="company" value="1">
     <div class="repair-lines">
       
@@ -277,7 +280,7 @@
     <button type="submit" class="btn btn-sm btn-primary mt">Save repairs</button>
   </form>
   <form method="post" action="/claims/8/repair-type/add/" class="row" style="margin-top:.9rem; gap:.4rem">
-    <input type="hidden" name="csrfmiddlewaretoken" value="lzu8thosoy1Vd0ZdckKCVeA1QdPzW0bVgfnDplfTrj1j2VartfA6ZyOPvvaRj7bR">
+    <input type="hidden" name="csrfmiddlewaretoken" value="mtNA9cZNoONKnYZAqUT2M8j3owDtW6EWupWUNLTJvpGTIM0BjI8IuM7XleIk7Umq">
     <input type="hidden" name="company" value="1">
     <input name="name" placeholder="Add a new repair type…" maxlength="100" style="min-width:220px" required>
     <button type="submit" class="btn btn-sm">Add type</button>
@@ -320,32 +323,22 @@
       
       <li>
         <div class="popup-line"><strong>Insurance payment — ECB330</strong></div>
-        <div class="muted popup-meta">Due 20 Jun 2026</div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Insurance payment — ECB407</strong></div>
-        <div class="muted popup-meta">Due 20 Jun 2026</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Insurance payment — ECB101</strong></div>
-        <div class="muted popup-meta">Due 08 Jul 2026</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Insurance payment — ECB214</strong></div>
-        <div class="muted popup-meta">Due 08 Jul 2026</div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
-        <div class="muted popup-meta">Due 20 Jul 2026 · CLM-2026-0005</div>
+        <div class="muted popup-meta">Due 28 Jul 2026 · CLM-2026-0005</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
-        <div class="muted popup-meta">Due 27 Jul 2026 · CLM-2026-0004</div>
+        <div class="muted popup-meta">Due 04 Aug 2026 · CLM-2026-0004</div>
       </li>
       
     </ul>

@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Client register — eCabs</title>
+  <link rel="stylesheet" href="static/css/app.css?v=2">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "xF9EUKstdN4NCgBP2HZTa3bfjE4Dr7xNFBiYyjmpkoXWX4CQVvezSHZ9gm9uCVfh"}'
+      class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar ">
+    <div class="sidebar-top">
+      
+      <a href="index.html" class="brand" title="Home">
+        <img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
+      </a>
+      
+      <button type="button" class="nav-toggle" aria-label="Toggle menu"
+              onclick="this.closest('.sidebar').classList.toggle('open')">☰</button>
+    </div>
+    <nav>
+      
+      <div class="nav-sec nav-sec--main">
+        <span class="nav-group">Main</span>
+        <a href="index.html" class="">
+          <span class="nav-icon">⌂</span> Home
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">◈</span> Overview
+        </a>
+        <a href="dashboard.html" class="">
+          <span class="nav-icon">▦</span> Dashboard
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--claims">
+        <span class="nav-group">Claims</span>
+        <a href="claims.html" class="">
+          <span class="nav-icon">▤</span> All claims
+        </a>
+        <a href="claims-open.html" class="nav-sub ">
+          <span class="nav-icon">●</span> Open claims
+        </a>
+        <a href="claims-closed.html" class="nav-sub ">
+          <span class="nav-icon">○</span> Closed claims
+        </a>
+        <a href="claims-overdue.html" class="nav-sub ">
+          <span class="nav-icon">▲</span> Overdue
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">⚠</span> At fault
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">✦</span> General claims (Firefly)
+        </a>
+        <a href="#" class="nav-sub ">
+          <span class="nav-icon">⚙</span> Manage statuses
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--garage">
+        <span class="nav-group">ACR Garage</span>
+        <a href="#" class="">
+          <span class="nav-icon">🔧</span> Worklist
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">🧾</span> Invoices
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">📊</span> Garage metrics
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">⚙</span> Manage types
+        </a>
+        
+      </div>
+
+      <div class="nav-sec nav-sec--reports">
+        <span class="nav-group">Records &amp; reports</span>
+        <a href="#" class="">
+          <span class="nav-icon">▤</span> Accident list
+        </a>
+        <a href="master.html" class="">
+          <span class="nav-icon">▥</span> Master sheet
+        </a>
+        <a href="bills.html" class="">
+          <span class="nav-icon">€</span> Bills this month
+        </a>
+        <a href="sales-invoices.html" class="active">
+          <span class="nav-icon">🧾</span> Sales invoices
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">📈</span> Metrics
+        </a>
+        <a href="data.html" class="">
+          <span class="nav-icon">◔</span> Data
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--manage">
+        <span class="nav-group">Manage</span>
+        <a href="vehicles.html" class="">
+          <span class="nav-icon">⬖</span> Vehicles
+        </a>
+        <a href="reminders.html" class="">
+          <span class="nav-icon">◷</span> Reminders
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">☰</span> Audit trail
+        </a>
+        
+      </div>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">👤 Vai Drive Staff</span>
+      <div class="sidebar-footer-actions">
+        <a href="#" class="link-btn">Change password</a>
+        <a class="link-btn" href="login.html">Sign out</a>
+      </div>
+    </div>
+  </aside>
+  <main class="main">
+    
+    
+      <div class="home-btn-bar no-print"><a href="index.html" class="home-btn">⌂ Home</a></div>
+    
+    
+    
+<div class="page-head">
+  <div>
+    <h1>Client register</h1>
+    <div class="sub">Third-party insurers &amp; clients eCabs bills — details auto-fill on an invoice</div>
+  </div>
+  <a href="sales-invoices.html" class="btn">← Sales invoices</a>
+</div>
+
+<div class="card">
+  <h3 id="add">Add a client</h3>
+  <form method="post" action="/sales/clients/">
+    <input type="hidden" name="csrfmiddlewaretoken" value="xF9EUKstdN4NCgBP2HZTa3bfjE4Dr7xNFBiYyjmpkoXWX4CQVvezSHZ9gm9uCVfh">
+    <div class="grid-2">
+      <div>
+        <label class="field"><span>Client name</span><input name="name" required placeholder="e.g. PWO S.p.A. Malta Branch"></label>
+        <label class="field"><span>Address</span><textarea name="address" rows="4" placeholder="One line each"></textarea></label>
+        <label class="field"><span>Email</span><input name="email"></label>
+      </div>
+      <div>
+        <label class="field"><span>Bill-to Customer No.</span><input name="customer_no" placeholder="CUST000445"></label>
+        <label class="field"><span>VAT Registration No.</span><input name="vat_reg_no" placeholder="MT 2099-1236"></label>
+        <label class="field"><span>Company Reg. No.</span><input name="company_reg_no" placeholder="OC 1562"></label>
+        <label class="field"><span>Payment Terms</span><input name="default_payment_terms" value="Net 15 days"></label>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt">Add client</button>
+  </form>
+</div>
+
+<div class="card table-wrap mt">
+  <table class="list">
+    <thead>
+      <tr><th>Client</th><th>Customer No.</th><th>VAT Reg No.</th><th>Company Reg No.</th><th>Terms</th><th></th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td><strong>PWO S.p.A. Malta Branch</strong><br><span class="muted" style="font-size:.8rem">Focus House, First Floor,<br>Triq Sant Andrija.<br>STJ 3180 St Julians<br>Malta</span></td>
+        <td>CUST000445</td>
+        <td>MT 2099-1236</td>
+        <td>OC 1562</td>
+        <td>Net 15 days</td>
+        <td style="white-space:nowrap">
+          <button type="button" class="btn btn-sm" onclick="editClient(this)"
+            data-pk="1" data-name="PWO S.p.A. Malta Branch" data-address="Focus House, First Floor,
+Triq Sant Andrija.
+STJ 3180 St Julians
+Malta"
+            data-customer_no="CUST000445" data-vat_reg_no="MT 2099-1236"
+            data-company_reg_no="OC 1562" data-email=""
+            data-default_payment_terms="Net 15 days">Edit</button>
+          <form method="post" action="/sales/clients/" style="display:inline" onsubmit="return confirm('Remove this client from the register?')">
+            <input type="hidden" name="csrfmiddlewaretoken" value="xF9EUKstdN4NCgBP2HZTa3bfjE4Dr7xNFBiYyjmpkoXWX4CQVvezSHZ9gm9uCVfh"><input type="hidden" name="pk" value="1"><input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-sm btn-danger" title="Remove">✕</button>
+          </form>
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
+</div>
+
+<script>
+// Load a row's values into the add form for editing (posts back with its pk).
+function editClient(btn) {
+  var f = btn.closest('table').closest('.card').previousElementSibling.querySelector('form');
+  var d = btn.dataset;
+  f.querySelector('[name=name]').value = d.name || '';
+  f.querySelector('[name=address]').value = d.address || '';
+  f.querySelector('[name=email]').value = d.email || '';
+  f.querySelector('[name=customer_no]').value = d.customer_no || '';
+  f.querySelector('[name=vat_reg_no]').value = d.vat_reg_no || '';
+  f.querySelector('[name=company_reg_no]').value = d.company_reg_no || '';
+  f.querySelector('[name=default_payment_terms]').value = d.default_payment_terms || '';
+  var pk = f.querySelector('[name=pk]');
+  if (!pk) { pk = document.createElement('input'); pk.type = 'hidden'; pk.name = 'pk'; f.appendChild(pk); }
+  pk.value = d.pk;
+  f.scrollIntoView({behavior: 'smooth'});
+}
+</script>
+
+  </main>
+</div>
+
+
+<div id="reminder-popup" class="modal-overlay no-print" hidden>
+  <div class="modal-card">
+    <h2 class="modal-title"><span class="nav-icon">◷</span> Reminders due</h2>
+    <ul class="popup-list">
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB330</strong></div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB407</strong></div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
+        <div class="muted popup-meta">Due 28 Jul 2026 · CLM-2026-0005</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
+        <div class="muted popup-meta">Due 04 Aug 2026 · CLM-2026-0004</div>
+      </li>
+      
+    </ul>
+    
+    <div class="modal-actions">
+      <a href="reminders.html" class="btn btn-primary">View all reminders</a>
+      <button type="button" class="btn" onclick="dismissReminderPopup()">Dismiss</button>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    // Show once per browser session so it doesn't nag on every page.
+    var seenKey = 'reminderPopupSeen';
+    var el = document.getElementById('reminder-popup');
+    if (el && !sessionStorage.getItem(seenKey)) {
+      el.hidden = false;
+      sessionStorage.setItem(seenKey, '1');
+    }
+  })();
+  function dismissReminderPopup() {
+    var el = document.getElementById('reminder-popup');
+    if (el) el.hidden = true;
+  }
+</script>
+
+
+</body>
+</html>

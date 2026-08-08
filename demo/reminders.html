@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "UsmFhDk74sZRhLXPAFSgge0PhlbFFkO8P8fadHby7dZf6G83RAIKkyeDWDwX2rO4"}'
+<body hx-headers='{"X-CSRFToken": "x34W7lYMM7JBNuqRkvMFl8S2PaojHcOgFZdgLUSITICK8irSdj1l3MGWMStaS0wK"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -90,6 +90,9 @@
         <a href="bills.html" class="">
           <span class="nav-icon">€</span> Bills this month
         </a>
+        <a href="sales-invoices.html" class="">
+          <span class="nav-icon">🧾</span> Sales invoices
+        </a>
         <a href="#" class="">
           <span class="nav-icon">📈</span> Metrics
         </a>
@@ -139,7 +142,7 @@
 <details class="inline-form" >
   <summary>Add reminder</summary>
   <form method="post" action="/reminders/add/" class="card">
-    <input type="hidden" name="csrfmiddlewaretoken" value="UsmFhDk74sZRhLXPAFSgge0PhlbFFkO8P8fadHby7dZf6G83RAIKkyeDWDwX2rO4">
+    <input type="hidden" name="csrfmiddlewaretoken" value="x34W7lYMM7JBNuqRkvMFl8S2PaojHcOgFZdgLUSITICK8irSdj1l3MGWMStaS0wK">
     <div class="form-grid">
       <div class="field ">
   <label for="id_title">Title</label>
@@ -186,8 +189,6 @@
   <option value="" selected>---------</option>
 
   <option value="1">preview</option>
-
-  <option value="2">demo</option>
 
 </select>
   
@@ -240,7 +241,7 @@
   <td><span class="muted">—</span></td>
   <td>
     <span class="badge overdue">overdue</span> 
-    20 Jun 2026 09:00
+    20 Jul 2026 09:00
   </td>
   <td class="muted">—</td>
 </tr>
@@ -257,56 +258,12 @@
   </td>
   <td class="">
     Insurance payment — ECB407 <span class="badge in">auto</span>
-     <span class="muted">— ECB407 Peugeot 108 insurance payment is due on 20 Jun 2026.</span>
+     <span class="muted">— ECB407 Peugeot 108 insurance payment is due on 20 Jul 2026.</span>
   </td>
   <td><span class="muted">—</span></td>
   <td>
     <span class="badge overdue">overdue</span> 
-    20 Jun 2026 09:00
-  </td>
-  <td class="muted">—</td>
-</tr>
-
-
-  <tr id="reminder-1">
-  <td>
-    <form hx-post="/reminders/1/toggle/"
-          hx-target="#reminder-1" hx-swap="outerHTML">
-      <input type="hidden" name="scope" value="global">
-      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
-              aria-label="Mark done">
-    </form>
-  </td>
-  <td class="">
-    Insurance payment — ECB101 <span class="badge in">auto</span>
-     <span class="muted">— ECB101 Toyota Corolla Hybrid insurance payment is due on 08…</span>
-  </td>
-  <td><span class="muted">—</span></td>
-  <td>
-    <span class="badge overdue">overdue</span> 
-    08 Jul 2026 09:00
-  </td>
-  <td class="muted">—</td>
-</tr>
-
-
-  <tr id="reminder-2">
-  <td>
-    <form hx-post="/reminders/2/toggle/"
-          hx-target="#reminder-2" hx-swap="outerHTML">
-      <input type="hidden" name="scope" value="global">
-      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
-              aria-label="Mark done">
-    </form>
-  </td>
-  <td class="">
-    Insurance payment — ECB214 <span class="badge in">auto</span>
-     <span class="muted">— ECB214 Peugeot 108 insurance payment is due on 08 Jul 2026.</span>
-  </td>
-  <td><span class="muted">—</span></td>
-  <td>
-    <span class="badge overdue">overdue</span> 
-    08 Jul 2026 09:00
+    20 Jul 2026 09:00
   </td>
   <td class="muted">—</td>
 </tr>
@@ -328,7 +285,7 @@
   <td><a href="claim-5.html">CLM-2026-0005</a></td>
   <td>
     <span class="badge overdue">overdue</span> 
-    20 Jul 2026 09:00
+    28 Jul 2026 09:00
   </td>
   <td class="muted">—</td>
 </tr>
@@ -350,7 +307,51 @@
   <td><a href="claim-4.html">CLM-2026-0004</a></td>
   <td>
     <span class="badge overdue">overdue</span> 
-    27 Jul 2026 09:00
+    04 Aug 2026 09:00
+  </td>
+  <td class="muted">—</td>
+</tr>
+
+
+  <tr id="reminder-1">
+  <td>
+    <form hx-post="/reminders/1/toggle/"
+          hx-target="#reminder-1" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">
+    Insurance payment — ECB101 <span class="badge in">auto</span>
+     <span class="muted">— ECB101 Toyota Corolla Hybrid insurance payment is due on 08…</span>
+  </td>
+  <td><span class="muted">—</span></td>
+  <td>
+    
+    08 Aug 2026 09:00
+  </td>
+  <td class="muted">—</td>
+</tr>
+
+
+  <tr id="reminder-2">
+  <td>
+    <form hx-post="/reminders/2/toggle/"
+          hx-target="#reminder-2" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">
+    Insurance payment — ECB214 <span class="badge in">auto</span>
+     <span class="muted">— ECB214 Peugeot 108 insurance payment is due on 08 Aug 2026.</span>
+  </td>
+  <td><span class="muted">—</span></td>
+  <td>
+    
+    08 Aug 2026 09:00
   </td>
   <td class="muted">—</td>
 </tr>
@@ -372,7 +373,7 @@
   <td><a href="claim-2.html">CLM-2026-0002</a></td>
   <td>
     
-    31 Jul 2026 09:00
+    08 Aug 2026 09:00
   </td>
   <td class="muted">—</td>
 </tr>
@@ -394,7 +395,7 @@
   <td><a href="claim-2.html">CLM-2026-0002</a></td>
   <td>
     
-    03 Aug 2026 09:00
+    11 Aug 2026 09:00
   </td>
   <td class="muted">—</td>
 </tr>
@@ -416,7 +417,7 @@
   <td><a href="claim-1.html">CLM-2026-0001</a></td>
   <td>
     
-    06 Aug 2026 09:00
+    14 Aug 2026 09:00
   </td>
   <td class="muted">—</td>
 </tr>
@@ -439,32 +440,22 @@
       
       <li>
         <div class="popup-line"><strong>Insurance payment — ECB330</strong></div>
-        <div class="muted popup-meta">Due 20 Jun 2026</div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Insurance payment — ECB407</strong></div>
-        <div class="muted popup-meta">Due 20 Jun 2026</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Insurance payment — ECB101</strong></div>
-        <div class="muted popup-meta">Due 08 Jul 2026</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Insurance payment — ECB214</strong></div>
-        <div class="muted popup-meta">Due 08 Jul 2026</div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
-        <div class="muted popup-meta">Due 20 Jul 2026 · CLM-2026-0005</div>
+        <div class="muted popup-meta">Due 28 Jul 2026 · CLM-2026-0005</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
-        <div class="muted popup-meta">Due 27 Jul 2026 · CLM-2026-0004</div>
+        <div class="muted popup-meta">Due 04 Aug 2026 · CLM-2026-0004</div>
       </li>
       
     </ul>

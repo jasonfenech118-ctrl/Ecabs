@@ -7,6 +7,7 @@ from .models import (
     BillingItem,
     Claim,
     ClaimStatus,
+    ClientInsurer,
     Company,
     DailyRate,
     EmailLog,
@@ -19,6 +20,8 @@ from .models import (
     OtherCharge,
     Reminder,
     RepairType,
+    SalesInvoice,
+    SalesInvoiceLine,
     Survey,
     Vehicle,
     VehicleAdditionalCost,
@@ -94,6 +97,27 @@ class GarageInvoiceAdmin(admin.ModelAdmin):
     search_fields = ("invoice_no", "bill_to", "bill_company_name")
     readonly_fields = ("created_by", "updated_by", "created_at", "updated_at")
     inlines = [GarageInvoiceLineInline]
+
+
+class SalesInvoiceLineInline(admin.TabularInline):
+    model = SalesInvoiceLine
+    extra = 0
+
+
+@admin.register(SalesInvoice)
+class SalesInvoiceAdmin(admin.ModelAdmin):
+    list_display = ("invoice_no", "document_date", "bill_to_name", "status", "updated_by")
+    list_filter = ("status",)
+    search_fields = ("invoice_no", "bill_to_name", "claim__reference")
+    readonly_fields = ("created_by", "updated_by", "created_at", "updated_at")
+    inlines = [SalesInvoiceLineInline]
+
+
+@admin.register(ClientInsurer)
+class ClientInsurerAdmin(admin.ModelAdmin):
+    list_display = ("name", "customer_no", "vat_reg_no", "company_reg_no", "is_active")
+    list_filter = ("is_active",)
+    search_fields = ("name", "customer_no", "vat_reg_no")
 
 
 class OtherChargeInline(admin.TabularInline):
