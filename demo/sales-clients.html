@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Documents CLM-2026-0002 — Vai Drive Claims</title>
+  <title>Client register — eCabs</title>
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "SDYt4hZV35PqqtqPjbHWCWIkhEN3DLsA0z7NIQTRaGIzLhrQcZWCkAweemSUOza4"}'
+<body hx-headers='{"X-CSRFToken": "xF9EUKstdN4NCgBP2HZTa3bfjE4Dr7xNFBiYyjmpkoXWX4CQVvezSHZ9gm9uCVfh"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -90,7 +90,7 @@
         <a href="bills.html" class="">
           <span class="nav-icon">€</span> Bills this month
         </a>
-        <a href="sales-invoices.html" class="">
+        <a href="sales-invoices.html" class="active">
           <span class="nav-icon">🧾</span> Sales invoices
         </a>
         <a href="#" class="">
@@ -131,91 +131,86 @@
     
     
     
-<div class="page-head no-print">
+<div class="page-head">
   <div>
-    <h1>Recovery documents</h1>
-    <div class="sub">Pick the document, then the company, then open the PDF</div>
+    <h1>Client register</h1>
+    <div class="sub">Third-party insurers &amp; clients eCabs bills — details auto-fill on an invoice</div>
   </div>
-  <a href="claim-2.html" class="btn">← Back to claim</a>
+  <a href="sales-invoices.html" class="btn">← Sales invoices</a>
 </div>
 
-<div class="card no-print">
-  <span class="muted">Document</span>
-  <div class="doc-tiles">
-    
-      <a href="claim-2-doc-statement-co3.html"
-         class="doc-tile active">
-        <span class="doc-tile-icon">🧾</span>
-        <span class="doc-tile-label">Statement</span>
-      </a>
-    
-      <a href="claim-2-doc-lossofuse-co3.html"
-         class="doc-tile ">
-        <span class="doc-tile-icon">📅</span>
-        <span class="doc-tile-label">Loss of Earnings</span>
-      </a>
-    
-      <a href="claim-2-doc-repairs-co3.html"
-         class="doc-tile ">
-        <span class="doc-tile-icon">🔧</span>
-        <span class="doc-tile-label">Repairs receipt</span>
-      </a>
-    
-  </div>
-
-  <hr style="border:none;border-top:1px solid #e5e7eb;margin:1rem 0">
-
-  <div class="row">
-    <span class="muted">Issue under company</span>
-    
-      <a href="claim-2-doc-statement-co1.html"
-         class="btn btn-sm ">Vai Drive Co Ltd.</a>
-    
-      <a href="claim-2-doc-statement-co2.html"
-         class="btn btn-sm ">eCabs Ltd</a>
-    
-      <a href="claim-2-doc-statement-co3.html"
-         class="btn btn-sm btn-primary">Fast Drop</a>
-    
-      <a href="claim-2-doc-statement-co4.html"
-         class="btn btn-sm ">Fastdrop International Ltd</a>
-    
-  </div>
-  
-    <form action="/claims/2/invoice.pdf" method="get" target="_blank" rel="noopener"
-          class="row mt" style="align-items:flex-end; gap:.6rem">
-      <input type="hidden" name="company" value="3">
-      <label class="field" style="margin:0">
-        <span>Invoice date <span class="muted">(type it in)</span></span>
-        <input type="date" name="date">
-      </label>
-      <button type="submit" class="btn btn-primary">📄 Open PDF</button>
-    </form>
-    <p class="muted" style="margin:.5rem 0 0; font-size:.8rem">Leave the date blank to omit it; it is never filled in automatically.</p>
-  
+<div class="card">
+  <h3 id="add">Add a client</h3>
+  <form method="post" action="/sales/clients/">
+    <input type="hidden" name="csrfmiddlewaretoken" value="xF9EUKstdN4NCgBP2HZTa3bfjE4Dr7xNFBiYyjmpkoXWX4CQVvezSHZ9gm9uCVfh">
+    <div class="grid-2">
+      <div>
+        <label class="field"><span>Client name</span><input name="name" required placeholder="e.g. PWO S.p.A. Malta Branch"></label>
+        <label class="field"><span>Address</span><textarea name="address" rows="4" placeholder="One line each"></textarea></label>
+        <label class="field"><span>Email</span><input name="email"></label>
+      </div>
+      <div>
+        <label class="field"><span>Bill-to Customer No.</span><input name="customer_no" placeholder="CUST000445"></label>
+        <label class="field"><span>VAT Registration No.</span><input name="vat_reg_no" placeholder="MT 2099-1236"></label>
+        <label class="field"><span>Company Reg. No.</span><input name="company_reg_no" placeholder="OC 1562"></label>
+        <label class="field"><span>Payment Terms</span><input name="default_payment_terms" value="Net 15 days"></label>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt">Add client</button>
+  </form>
 </div>
 
-
-
-
-<div class="card mt" style="max-width:640px">
-  <h3>Summary</h3>
-
-  
-    <dl class="kv">
-      <dt>Company</dt><dd>Fast Drop</dd>
-      <dt>Statement No</dt><dd>VD-00002</dd>
-      <dt>Claim No</dt><dd>C34-262527</dd>
-      <dt>Our Reg No</dt><dd>ECB214</dd>
-      <dt>Total NET</dt><dd><strong>€690.00</strong></dd>
-    </dl>
-    
-
-  
-
-  <p class="muted" style="margin:.75rem 0 0; font-size:.85rem">Set the invoice date and open the PDF from the box above.</p>
+<div class="card table-wrap mt">
+  <table class="list">
+    <thead>
+      <tr><th>Client</th><th>Customer No.</th><th>VAT Reg No.</th><th>Company Reg No.</th><th>Terms</th><th></th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td><strong>PWO S.p.A. Malta Branch</strong><br><span class="muted" style="font-size:.8rem">Focus House, First Floor,<br>Triq Sant Andrija.<br>STJ 3180 St Julians<br>Malta</span></td>
+        <td>CUST000445</td>
+        <td>MT 2099-1236</td>
+        <td>OC 1562</td>
+        <td>Net 15 days</td>
+        <td style="white-space:nowrap">
+          <button type="button" class="btn btn-sm" onclick="editClient(this)"
+            data-pk="1" data-name="PWO S.p.A. Malta Branch" data-address="Focus House, First Floor,
+Triq Sant Andrija.
+STJ 3180 St Julians
+Malta"
+            data-customer_no="CUST000445" data-vat_reg_no="MT 2099-1236"
+            data-company_reg_no="OC 1562" data-email=""
+            data-default_payment_terms="Net 15 days">Edit</button>
+          <form method="post" action="/sales/clients/" style="display:inline" onsubmit="return confirm('Remove this client from the register?')">
+            <input type="hidden" name="csrfmiddlewaretoken" value="xF9EUKstdN4NCgBP2HZTa3bfjE4Dr7xNFBiYyjmpkoXWX4CQVvezSHZ9gm9uCVfh"><input type="hidden" name="pk" value="1"><input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-sm btn-danger" title="Remove">✕</button>
+          </form>
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
 </div>
 
+<script>
+// Load a row's values into the add form for editing (posts back with its pk).
+function editClient(btn) {
+  var f = btn.closest('table').closest('.card').previousElementSibling.querySelector('form');
+  var d = btn.dataset;
+  f.querySelector('[name=name]').value = d.name || '';
+  f.querySelector('[name=address]').value = d.address || '';
+  f.querySelector('[name=email]').value = d.email || '';
+  f.querySelector('[name=customer_no]').value = d.customer_no || '';
+  f.querySelector('[name=vat_reg_no]').value = d.vat_reg_no || '';
+  f.querySelector('[name=company_reg_no]').value = d.company_reg_no || '';
+  f.querySelector('[name=default_payment_terms]').value = d.default_payment_terms || '';
+  var pk = f.querySelector('[name=pk]');
+  if (!pk) { pk = document.createElement('input'); pk.type = 'hidden'; pk.name = 'pk'; f.appendChild(pk); }
+  pk.value = d.pk;
+  f.scrollIntoView({behavior: 'smooth'});
+}
+</script>
 
   </main>
 </div>

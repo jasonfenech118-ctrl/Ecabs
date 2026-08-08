@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "KwXhMfTJ4bDftKJ5L9exzsBnawHey215FcQMIjKa7WDDiFUj2441DMPbPO2wV911"}'
+<body hx-headers='{"X-CSRFToken": "U0gbyLIQ8tOsDlp7skM6LJnCS5oO1FJ32WpvckCMf4HBY9q8l81MtnbwPNtFctrx"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -90,6 +90,9 @@
         <a href="bills.html" class="">
           <span class="nav-icon">€</span> Bills this month
         </a>
+        <a href="sales-invoices.html" class="">
+          <span class="nav-icon">🧾</span> Sales invoices
+        </a>
         <a href="#" class="">
           <span class="nav-icon">📈</span> Metrics
         </a>
@@ -152,7 +155,7 @@
   <div class="card"><h2>Claims by accident month</h2><div class="chart-box"><canvas id="c-month"></canvas></div></div>
 </div>
 
-<script id="chartData" type="application/json">{"by_status": {"labels": ["Draft", "Open", "Awaiting survey", "Awaiting insurer", "Settled", "Closed", "Rejected"], "data": [1, 2, 1, 2, 0, 2, 1]}, "lifecycle": {"labels": ["Open", "Closed", "Draft"], "data": [5, 3, 1]}, "attention": {"labels": ["Open", "Overdue", "Urgent"], "data": [5, 2, 1]}, "by_insurer": {"labels": ["(none)", "Elmo Insurance", "GasanMamo", "Mapfre Middlesea"], "data": [6, 1, 1, 1]}, "outstanding_by_insurer": {"labels": ["Mapfre Middlesea", "Elmo Insurance", "(none)", "GasanMamo"], "data": [2037.64, 1015.4, 640.0, 450.0]}, "by_month": {"labels": ["Aug 25", "Sep 25", "Oct 25", "Nov 25", "Dec 25", "Jan 26", "Feb 26", "Mar 26", "Apr 26", "May 26", "Jun 26", "Jul 26"], "data": [0, 0, 0, 0, 1, 0, 1, 1, 1, 2, 2, 0]}}</script>
+<script id="chartData" type="application/json">{"by_status": {"labels": ["Draft", "Open", "Awaiting survey", "Awaiting insurer", "Settled", "Closed", "Rejected"], "data": [1, 2, 1, 2, 0, 2, 1]}, "lifecycle": {"labels": ["Open", "Closed", "Draft"], "data": [5, 3, 1]}, "attention": {"labels": ["Open", "Overdue", "Urgent"], "data": [5, 2, 1]}, "by_insurer": {"labels": ["(none)", "Elmo Insurance", "GasanMamo", "Mapfre Middlesea"], "data": [6, 1, 1, 1]}, "outstanding_by_insurer": {"labels": ["Mapfre Middlesea", "Elmo Insurance", "(none)", "GasanMamo"], "data": [2037.64, 1015.4, 640.0, 450.0]}, "by_month": {"labels": ["Sep 25", "Oct 25", "Nov 25", "Dec 25", "Jan 26", "Feb 26", "Mar 26", "Apr 26", "May 26", "Jun 26", "Jul 26", "Aug 26"], "data": [0, 0, 0, 1, 0, 1, 1, 1, 2, 2, 0, 0]}}</script>
 <script src="static/js/chart.min.js"></script>
 <script>
 (function () {
@@ -208,32 +211,22 @@
       
       <li>
         <div class="popup-line"><strong>Insurance payment — ECB330</strong></div>
-        <div class="muted popup-meta">Due 20 Jun 2026</div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Insurance payment — ECB407</strong></div>
-        <div class="muted popup-meta">Due 20 Jun 2026</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Insurance payment — ECB101</strong></div>
-        <div class="muted popup-meta">Due 08 Jul 2026</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Insurance payment — ECB214</strong></div>
-        <div class="muted popup-meta">Due 08 Jul 2026</div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
-        <div class="muted popup-meta">Due 20 Jul 2026 · CLM-2026-0005</div>
+        <div class="muted popup-meta">Due 28 Jul 2026 · CLM-2026-0005</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
-        <div class="muted popup-meta">Due 27 Jul 2026 · CLM-2026-0004</div>
+        <div class="muted popup-meta">Due 04 Aug 2026 · CLM-2026-0004</div>
       </li>
       
     </ul>

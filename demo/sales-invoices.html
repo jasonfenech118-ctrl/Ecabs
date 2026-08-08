@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Documents CLM-2026-0002 — Vai Drive Claims</title>
+  <title>Sales invoices — eCabs</title>
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "SDYt4hZV35PqqtqPjbHWCWIkhEN3DLsA0z7NIQTRaGIzLhrQcZWCkAweemSUOza4"}'
+<body hx-headers='{"X-CSRFToken": "RnzX0sZv4OohRtoXSEI3voVMl7V1WwaFZjIhE1TrbphqchpYLsXJd2JGiP0S7kS9"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -67,7 +67,7 @@
         <a href="#" class="">
           <span class="nav-icon">🔧</span> Worklist
         </a>
-        <a href="#" class="">
+        <a href="#" class="active">
           <span class="nav-icon">🧾</span> Invoices
         </a>
         <a href="#" class="">
@@ -90,7 +90,7 @@
         <a href="bills.html" class="">
           <span class="nav-icon">€</span> Bills this month
         </a>
-        <a href="sales-invoices.html" class="">
+        <a href="sales-invoices.html" class="active">
           <span class="nav-icon">🧾</span> Sales invoices
         </a>
         <a href="#" class="">
@@ -131,91 +131,58 @@
     
     
     
-<div class="page-head no-print">
+<div class="page-head">
   <div>
-    <h1>Recovery documents</h1>
-    <div class="sub">Pick the document, then the company, then open the PDF</div>
+    <h1>Sales invoices</h1>
+    <div class="sub">Invoices eCabs raises to third-party insurers &amp; clients</div>
   </div>
-  <a href="claim-2.html" class="btn">← Back to claim</a>
+  <div class="row" style="gap:.5rem">
+    <a href="sales-clients.html" class="btn">👥 Client register</a>
+    <form method="post" action="/sales/invoices/new/"><input type="hidden" name="csrfmiddlewaretoken" value="RnzX0sZv4OohRtoXSEI3voVMl7V1WwaFZjIhE1TrbphqchpYLsXJd2JGiP0S7kS9">
+      <button type="submit" class="btn btn-primary">＋ New invoice</button>
+    </form>
+  </div>
 </div>
 
 <div class="card no-print">
-  <span class="muted">Document</span>
-  <div class="doc-tiles">
-    
-      <a href="claim-2-doc-statement-co3.html"
-         class="doc-tile active">
-        <span class="doc-tile-icon">🧾</span>
-        <span class="doc-tile-label">Statement</span>
-      </a>
-    
-      <a href="claim-2-doc-lossofuse-co3.html"
-         class="doc-tile ">
-        <span class="doc-tile-icon">📅</span>
-        <span class="doc-tile-label">Loss of Earnings</span>
-      </a>
-    
-      <a href="claim-2-doc-repairs-co3.html"
-         class="doc-tile ">
-        <span class="doc-tile-icon">🔧</span>
-        <span class="doc-tile-label">Repairs receipt</span>
-      </a>
-    
-  </div>
-
-  <hr style="border:none;border-top:1px solid #e5e7eb;margin:1rem 0">
-
-  <div class="row">
-    <span class="muted">Issue under company</span>
-    
-      <a href="claim-2-doc-statement-co1.html"
-         class="btn btn-sm ">Vai Drive Co Ltd.</a>
-    
-      <a href="claim-2-doc-statement-co2.html"
-         class="btn btn-sm ">eCabs Ltd</a>
-    
-      <a href="claim-2-doc-statement-co3.html"
-         class="btn btn-sm btn-primary">Fast Drop</a>
-    
-      <a href="claim-2-doc-statement-co4.html"
-         class="btn btn-sm ">Fastdrop International Ltd</a>
-    
-  </div>
-  
-    <form action="/claims/2/invoice.pdf" method="get" target="_blank" rel="noopener"
-          class="row mt" style="align-items:flex-end; gap:.6rem">
-      <input type="hidden" name="company" value="3">
-      <label class="field" style="margin:0">
-        <span>Invoice date <span class="muted">(type it in)</span></span>
-        <input type="date" name="date">
-      </label>
-      <button type="submit" class="btn btn-primary">📄 Open PDF</button>
-    </form>
-    <p class="muted" style="margin:.5rem 0 0; font-size:.8rem">Leave the date blank to omit it; it is never filled in automatically.</p>
-  
+  <form method="get" class="row" style="gap:.6rem; align-items:flex-end; flex-wrap:wrap">
+    <label class="field" style="margin:0"><span>Search</span>
+      <input name="q" value="" placeholder="Invoice no, client or claim…" style="min-width:220px">
+    </label>
+    <label class="field" style="margin:0"><span>Status</span>
+      <select name="status">
+        <option value="">All statuses</option>
+        <option value="draft" >Draft</option><option value="sent" >Sent</option><option value="paid" >Paid</option>
+      </select>
+    </label>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="sales-invoices.html" class="btn btn-sm">Reset</a>
+  </form>
 </div>
 
-
-
-
-<div class="card mt" style="max-width:640px">
-  <h3>Summary</h3>
-
-  
-    <dl class="kv">
-      <dt>Company</dt><dd>Fast Drop</dd>
-      <dt>Statement No</dt><dd>VD-00002</dd>
-      <dt>Claim No</dt><dd>C34-262527</dd>
-      <dt>Our Reg No</dt><dd>ECB214</dd>
-      <dt>Total NET</dt><dd><strong>€690.00</strong></dd>
-    </dl>
-    
-
-  
-
-  <p class="muted" style="margin:.75rem 0 0; font-size:.85rem">Set the invoice date and open the PDF from the box above.</p>
+<div class="card table-wrap mt">
+  <table class="list">
+    <thead>
+      <tr><th>Invoice No.</th><th>Document date</th><th>Bill to</th><th>Claim</th><th class="right">Total</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td><a href="sales-invoice-1.html"><strong>PSIN01920245</strong></a></td>
+        <td>05/02/2026</td>
+        <td>PWO S.p.A. Malta Branch</td>
+        <td>—</td>
+        <td class="right">€155.99</td>
+        <td><span class="pill pill-sent">Sent</span></td>
+        <td style="white-space:nowrap">
+          <a href="sales-invoice-1.html" class="btn btn-sm">Edit</a>
+          <a href="sales-invoice-1.pdf" target="_blank" rel="noopener" class="btn btn-sm btn-primary">PDF</a>
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
 </div>
-
 
   </main>
 </div>

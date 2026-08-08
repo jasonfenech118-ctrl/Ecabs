@@ -64,6 +64,13 @@ def build_url_map():
     }
     for pk in Vehicle.objects.values_list("pk", flat=True):
         urls[f"/vehicles/{pk}/"] = f"vehicle-{pk}.html"
+    from claims.models import SalesInvoice
+
+    urls["/sales/invoices/"] = "sales-invoices.html"
+    urls["/sales/clients/"] = "sales-clients.html"
+    for pk in SalesInvoice.objects.values_list("pk", flat=True):
+        urls[f"/sales/invoices/{pk}/"] = f"sales-invoice-{pk}.html"
+        urls[f"/sales/invoices/{pk}/pdf/"] = f"sales-invoice-{pk}.pdf"
     company_pks = list(Company.objects.values_list("pk", flat=True))
     for claim in Claim.objects.all():
         pk = claim.pk
@@ -264,6 +271,32 @@ def seed_samples(user):
         for i, (desc, amt) in enumerate(others):
             OtherCharge.objects.create(claim=claim, description=desc, amount=Decimal(amt), order=i)
 
+    # A client in the register and one sales invoice, so the preview shows the
+    # ECABS sales-invoice feature with real data.
+    from claims.models import ClientInsurer, SalesInvoice, SalesInvoiceLine
+
+    client_rec, _ = ClientInsurer.objects.get_or_create(
+        name="PWO S.p.A. Malta Branch",
+        defaults=dict(
+            address="Focus House, First Floor,\nTriq Sant Andrija.\n"
+                    "STJ 3180 St Julians\nMalta",
+            customer_no="CUST000445", vat_reg_no="MT 2099-1236",
+            company_reg_no="OC 1562", default_payment_terms="Net 15 days"),
+    )
+    if not SalesInvoice.objects.exists():
+        inv = SalesInvoice.objects.create(
+            invoice_no="PSIN01920245", document_date=date(2026, 2, 5),
+            due_date=date(2026, 2, 20), client=client_rec, status="sent",
+            created_by=user, updated_by=user, **client_rec.as_billing())
+        for i, (desc, amt) in enumerate([
+            ("Front bumper bracket set", "30.62"),
+            ("Front bumper grille", "74.30"),
+            ("Front bumper fog plugs", "51.07"),
+        ]):
+            SalesInvoiceLine.objects.create(
+                invoice=inv, quantity=1, description=desc,
+                original_amount_incl_vat=Decimal(amt), order=i)
+
 
 def main():
     # A throwaway login for rendering, and one blank draft so the
@@ -308,6 +341,14 @@ def main():
     pdfs = 0
     for t in pdf_targets():
         (OUT / t["filename"]).write_bytes(t["builder"](t["claim"], t["company"]))
+        pdfs += 1
+
+    # Render the ECABS sales-invoice PDFs.
+    from claims.models import SalesInvoice
+    from claims.services.sales_invoice_pdf import build_sales_invoice_pdf
+
+    for inv in SalesInvoice.objects.all():
+        (OUT / f"sales-invoice-{inv.pk}.pdf").write_bytes(build_sales_invoice_pdf(inv))
         pdfs += 1
 
     bundle_static()

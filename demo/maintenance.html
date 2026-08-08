@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "lEAwPHux364R18kUWa0Z7JhjEaVOcpMIgkt1LLlY6R4fQ3v8d5Qtb3v7jsg6zwME"}'
+<body hx-headers='{"X-CSRFToken": "ZmrK8pofgqCQ1hx3GoUuINdBxkb8AeAP7iA4MYibn1vZm5y4zc9aqr1vu2gZL2ij"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -90,6 +90,9 @@
         <a href="bills.html" class="">
           <span class="nav-icon">€</span> Bills this month
         </a>
+        <a href="sales-invoices.html" class="">
+          <span class="nav-icon">🧾</span> Sales invoices
+        </a>
         <a href="#" class="">
           <span class="nav-icon">📈</span> Metrics
         </a>
@@ -146,7 +149,7 @@
         <tr>
           <td colspan="4" style="padding:0">
             <form method="post" action="/maintenance/rate/1/edit/" class="rate-row">
-              <input type="hidden" name="csrfmiddlewaretoken" value="lEAwPHux364R18kUWa0Z7JhjEaVOcpMIgkt1LLlY6R4fQ3v8d5Qtb3v7jsg6zwME">
+              <input type="hidden" name="csrfmiddlewaretoken" value="ZmrK8pofgqCQ1hx3GoUuINdBxkb8AeAP7iA4MYibn1vZm5y4zc9aqr1vu2gZL2ij">
               <input type="text" name="name" value="Standard car">
               <input type="number" step="0.01" name="amount" value="35.00" style="max-width:140px">
               <label class="row" style="gap:.3rem"><input type="checkbox" name="is_active" checked> active</label>
@@ -160,7 +163,7 @@
         <tr>
           <td colspan="4" style="padding:0">
             <form method="post" action="/maintenance/rate/2/edit/" class="rate-row">
-              <input type="hidden" name="csrfmiddlewaretoken" value="lEAwPHux364R18kUWa0Z7JhjEaVOcpMIgkt1LLlY6R4fQ3v8d5Qtb3v7jsg6zwME">
+              <input type="hidden" name="csrfmiddlewaretoken" value="ZmrK8pofgqCQ1hx3GoUuINdBxkb8AeAP7iA4MYibn1vZm5y4zc9aqr1vu2gZL2ij">
               <input type="text" name="name" value="Van">
               <input type="number" step="0.01" name="amount" value="45.00" style="max-width:140px">
               <label class="row" style="gap:.3rem"><input type="checkbox" name="is_active" checked> active</label>
@@ -174,7 +177,7 @@
         <tr>
           <td colspan="4" style="padding:0">
             <form method="post" action="/maintenance/rate/3/edit/" class="rate-row">
-              <input type="hidden" name="csrfmiddlewaretoken" value="lEAwPHux364R18kUWa0Z7JhjEaVOcpMIgkt1LLlY6R4fQ3v8d5Qtb3v7jsg6zwME">
+              <input type="hidden" name="csrfmiddlewaretoken" value="ZmrK8pofgqCQ1hx3GoUuINdBxkb8AeAP7iA4MYibn1vZm5y4zc9aqr1vu2gZL2ij">
               <input type="text" name="name" value="Motorcycle">
               <input type="number" step="0.01" name="amount" value="20.00" style="max-width:140px">
               <label class="row" style="gap:.3rem"><input type="checkbox" name="is_active" checked> active</label>
@@ -190,7 +193,7 @@
   </div>
 
   <form method="post" class="rate-row" style="margin-top:1rem">
-    <input type="hidden" name="csrfmiddlewaretoken" value="lEAwPHux364R18kUWa0Z7JhjEaVOcpMIgkt1LLlY6R4fQ3v8d5Qtb3v7jsg6zwME">
+    <input type="hidden" name="csrfmiddlewaretoken" value="ZmrK8pofgqCQ1hx3GoUuINdBxkb8AeAP7iA4MYibn1vZm5y4zc9aqr1vu2gZL2ij">
     <input type="text" name="name" placeholder="Rate name (e.g. Standard car)" required>
     <input type="number" step="0.01" name="amount" placeholder="€ / day" style="max-width:140px" required>
     <button type="submit" class="btn btn-primary">+ Add rate</button>
@@ -211,32 +214,22 @@
       
       <li>
         <div class="popup-line"><strong>Insurance payment — ECB330</strong></div>
-        <div class="muted popup-meta">Due 20 Jun 2026</div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Insurance payment — ECB407</strong></div>
-        <div class="muted popup-meta">Due 20 Jun 2026</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Insurance payment — ECB101</strong></div>
-        <div class="muted popup-meta">Due 08 Jul 2026</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Insurance payment — ECB214</strong></div>
-        <div class="muted popup-meta">Due 08 Jul 2026</div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
-        <div class="muted popup-meta">Due 20 Jul 2026 · CLM-2026-0005</div>
+        <div class="muted popup-meta">Due 28 Jul 2026 · CLM-2026-0005</div>
       </li>
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
-        <div class="muted popup-meta">Due 27 Jul 2026 · CLM-2026-0004</div>
+        <div class="muted popup-meta">Due 04 Aug 2026 · CLM-2026-0004</div>
       </li>
       
     </ul>
