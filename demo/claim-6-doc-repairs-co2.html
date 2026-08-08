@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "mUbtEujFSf5YmiMWcsgkhoEM1ifqhrN2aA6DtmnOmTjRF6rnzNhjdxxd8P8SuIe8"}'
+<body hx-headers='{"X-CSRFToken": "zzHLE60HdPir8NRTRhkdCBoCqgF7pxCsaLqZw9pXwJOVWARx2adDaGtqhFwHHpYK"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -203,7 +203,7 @@
   <h3>Types of repair &amp; cost</h3>
   <p class="muted" style="margin:.2rem 0 .9rem; font-size:.85rem">Tick each repair carried out and enter its cost (net, ex-VAT). VAT @18% is added automatically on the receipt. Each ticked line appears separately on the statement.</p>
   <form method="post" action="/claims/6/repair-lines/">
-    <input type="hidden" name="csrfmiddlewaretoken" value="mUbtEujFSf5YmiMWcsgkhoEM1ifqhrN2aA6DtmnOmTjRF6rnzNhjdxxd8P8SuIe8">
+    <input type="hidden" name="csrfmiddlewaretoken" value="zzHLE60HdPir8NRTRhkdCBoCqgF7pxCsaLqZw9pXwJOVWARx2adDaGtqhFwHHpYK">
     <input type="hidden" name="company" value="2">
     <div class="repair-lines">
       
@@ -283,7 +283,7 @@
     <button type="submit" class="btn btn-sm btn-primary mt">Save repairs</button>
   </form>
   <form method="post" action="/claims/6/repair-type/add/" class="row" style="margin-top:.9rem; gap:.4rem">
-    <input type="hidden" name="csrfmiddlewaretoken" value="mUbtEujFSf5YmiMWcsgkhoEM1ifqhrN2aA6DtmnOmTjRF6rnzNhjdxxd8P8SuIe8">
+    <input type="hidden" name="csrfmiddlewaretoken" value="zzHLE60HdPir8NRTRhkdCBoCqgF7pxCsaLqZw9pXwJOVWARx2adDaGtqhFwHHpYK">
     <input type="hidden" name="company" value="2">
     <input name="name" placeholder="Add a new repair type…" maxlength="100" style="min-width:220px" required>
     <button type="submit" class="btn btn-sm">Add type</button>

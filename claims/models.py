@@ -1230,7 +1230,7 @@ class SalesInvoice(models.Model):
     issuer_address = models.TextField(
         "Issuer address",
         default="eCabs Head Office\nTriq Santu Wistin\nSTJ 3180 San Giljan\nMalta")
-    issuer_email = models.CharField("Email", max_length=200, default="finance@ecabs.com.mt")
+    issuer_email = models.CharField("Email", max_length=200, default="motorclaims@ecabs.com.mt")
     issuer_website = models.CharField(
         "Home Page", max_length=200, default="https://www.ecabs.com.mt/")
     issuer_phone = models.CharField("Phone No.", max_length=60, default="21383838")
@@ -1363,7 +1363,7 @@ class PartsReceipt(models.Model):
     issuer_address = models.TextField(
         "Issuer address",
         default="eCabs Head Office\nTriq Santu Wistin\nSTJ 3180 San Giljan\nMalta")
-    issuer_email = models.CharField("Email", max_length=200, default="finance@ecabs.com.mt")
+    issuer_email = models.CharField("Email", max_length=200, default="motorclaims@ecabs.com.mt")
     issuer_website = models.CharField(
         "Home Page", max_length=200, default="https://www.ecabs.com.mt/")
     issuer_phone = models.CharField("Phone No.", max_length=60, default="21383838")

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"}'
+<body hx-headers='{"X-CSRFToken": "teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -146,7 +146,7 @@
 </div>
 
 <form method="post" action="/parts/receipts/1/">
-  <input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk">
+  <input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT">
 
   <div class="grid-2">
     <div class="card">
@@ -198,7 +198,7 @@ Triq Santu Wistin
 STJ 3180 San Giljan
 Malta</textarea></label>
       <div class="row" style="gap:.6rem">
-        <label class="field" style="flex:1"><span>Email</span><input name="issuer_email" value="finance@ecabs.com.mt"></label>
+        <label class="field" style="flex:1"><span>Email</span><input name="issuer_email" value="motorclaims@ecabs.com.mt"></label>
         <label class="field" style="flex:1"><span>Phone No.</span><input name="issuer_phone" value="21383838"></label>
       </div>
       <div class="row" style="gap:.6rem">
@@ -218,7 +218,7 @@ Malta</textarea></label>
 <div class="card mt">
   <div class="row" style="justify-content:space-between; align-items:center">
     <h3 style="margin:0">Parts</h3>
-    <form method="post" action="/parts/receipts/1/line/add/"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk">
+    <form method="post" action="/parts/receipts/1/line/add/"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT">
       <button type="submit" class="btn btn-sm btn-primary">＋ Add part</button>
     </form>
   </div>
@@ -232,8 +232,8 @@ Malta</textarea></label>
         
         <tr>
           <td>
-            <form id="l-1" method="post" action="/parts/receipts/1/line/1/"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"></form>
-            <form id="ld-1" method="post" action="/parts/receipts/1/line/1/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"><input type="hidden" name="action" value="delete"></form>
+            <form id="l-1" method="post" action="/parts/receipts/1/line/1/"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"></form>
+            <form id="ld-1" method="post" action="/parts/receipts/1/line/1/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"><input type="hidden" name="action" value="delete"></form>
             <input form="l-1" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
           </td>
           <td><input form="l-1" name="part_code" value="1618037980" class="atf-input" style="width:9rem"></td>
@@ -248,8 +248,8 @@ Malta</textarea></label>
         
         <tr>
           <td>
-            <form id="l-2" method="post" action="/parts/receipts/1/line/2/"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"></form>
-            <form id="ld-2" method="post" action="/parts/receipts/1/line/2/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"><input type="hidden" name="action" value="delete"></form>
+            <form id="l-2" method="post" action="/parts/receipts/1/line/2/"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"></form>
+            <form id="ld-2" method="post" action="/parts/receipts/1/line/2/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"><input type="hidden" name="action" value="delete"></form>
             <input form="l-2" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
           </td>
           <td><input form="l-2" name="part_code" value="98120622" class="atf-input" style="width:9rem"></td>
@@ -264,8 +264,8 @@ Malta</textarea></label>
         
         <tr>
           <td>
-            <form id="l-3" method="post" action="/parts/receipts/1/line/3/"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"></form>
-            <form id="ld-3" method="post" action="/parts/receipts/1/line/3/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"><input type="hidden" name="action" value="delete"></form>
+            <form id="l-3" method="post" action="/parts/receipts/1/line/3/"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"></form>
+            <form id="ld-3" method="post" action="/parts/receipts/1/line/3/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"><input type="hidden" name="action" value="delete"></form>
             <input form="l-3" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
           </td>
           <td><input form="l-3" name="part_code" value="1618038080" class="atf-input" style="width:9rem"></td>
