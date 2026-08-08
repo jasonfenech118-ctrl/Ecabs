@@ -977,6 +977,54 @@ class ViewTests(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertTrue(r.content.startswith(b"%PDF-"))
 
+    def test_claim_can_hold_several_statuses(self):
+        """Several statuses tick on one claim; a finishing one closes it."""
+        claim = Claim.objects.create(
+            vehicle_registration="ECB-900", status=Claim.Status.OPEN,
+            submitted_at=timezone.now(), created_by=self.user)
+
+        # Tick two at once from the open-claims table.
+        self.client.post(reverse("claim_set_status", args=[claim.pk]), {
+            "status": [Claim.Status.AWAITING_SURVEY, Claim.Status.AWAITING_INSURER],
+            "next": reverse("claim_group", args=["open"]),
+        })
+        claim.refresh_from_db()
+        self.assertEqual(claim.status, Claim.Status.AWAITING_SURVEY)
+        self.assertEqual(
+            set(claim.status_slugs),
+            {Claim.Status.AWAITING_SURVEY, Claim.Status.AWAITING_INSURER},
+        )
+        self.assertFalse(claim.is_finished)
+
+        # Both statuses find it, and it is still an open claim.
+        for slug in (Claim.Status.AWAITING_SURVEY, Claim.Status.AWAITING_INSURER):
+            self.assertContains(
+                self.client.get(reverse("claim_list"), {"status": slug}),
+                claim.reference)
+        self.assertContains(
+            self.client.get(reverse("claim_group", args=["open"])), claim.reference)
+
+        # Ticking a finishing status closes it, even alongside an active one.
+        self.client.post(reverse("claim_set_status", args=[claim.pk]), {
+            "status": [Claim.Status.AWAITING_INSURER, Claim.Status.SETTLED],
+            "next": reverse("claim_group", args=["open"]),
+        })
+        claim.refresh_from_db()
+        self.assertTrue(claim.is_finished)
+        self.assertNotContains(
+            self.client.get(reverse("claim_group", args=["open"])), claim.reference)
+        self.assertContains(
+            self.client.get(reverse("claim_group", args=["closed"])), claim.reference)
+
+        # Unticking it reopens the claim — no leftovers from the previous set.
+        self.client.post(reverse("claim_set_status", args=[claim.pk]), {
+            "status": [Claim.Status.OPEN],
+            "next": reverse("claim_group", args=["open"]),
+        })
+        claim.refresh_from_db()
+        self.assertEqual(claim.status_slugs, [Claim.Status.OPEN])
+        self.assertFalse(claim.is_finished)
+
     def test_claims_master_import(self):
         """The master tracker imports into claims whose own arithmetic matches
         the sheet's total, re-imports without duplicating, and flags a row whose

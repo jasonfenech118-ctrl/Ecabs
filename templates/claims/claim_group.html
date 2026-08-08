@@ -51,11 +51,21 @@
             <form method="post" action="{% url 'claim_set_status' c.pk %}" style="margin:0">
               {% csrf_token %}
               <input type="hidden" name="next" value="{{ request.get_full_path }}">
-              <select name="status" class="status-select badge {{ c.status }}" onchange="this.form.submit()" aria-label="Status">
-                {% for value, label in statuses %}
-                <option value="{{ value }}" {% if value == c.status %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-              </select>
+              <details class="status-pick">
+                <summary class="badge {{ c.status }}" title="Tick every status that applies">
+                  {% for label in c.status_labels %}{{ label }}{% if not forloop.last %} + {% endif %}{% endfor %} ▾
+                </summary>
+                <div class="status-pick-menu">
+                  {% for value, label in statuses %}
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="{{ value }}"
+                           {% if value in c.status_slugs %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                  </label>
+                  {% endfor %}
+                  <button type="submit" class="btn btn-sm btn-primary" style="width:100%; margin-top:.35rem">Apply</button>
+                </div>
+              </details>
             </form>
             {% if c.urgent %}<span class="badge overdue" style="margin-top:.2rem">URGENT</span>{% endif %}
           </td>

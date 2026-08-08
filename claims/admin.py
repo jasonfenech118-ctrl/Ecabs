@@ -6,6 +6,7 @@ from .models import (
     AccidentRecord,
     BillingItem,
     Claim,
+    ClaimExtraStatus,
     ClaimStatus,
     ClientInsurer,
     Company,
@@ -70,6 +71,12 @@ class AccidentRecordAdmin(admin.ModelAdmin):
     list_filter = ("fault", "tp_insurance")
     search_fields = ("our_reg", "tp_reg", "driver_name", "tp_owner_name")
     date_hierarchy = "date_of_acc"
+
+
+@admin.register(ClaimExtraStatus)
+class ClaimExtraStatusAdmin(admin.ModelAdmin):
+    list_display = ("claim", "slug")
+    search_fields = ("claim__reference", "slug")
 
 
 @admin.register(ClaimStatus)

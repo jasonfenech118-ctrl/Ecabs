@@ -74,9 +74,24 @@ FINISHED_STATUSES = [
 
 def open_claims_qs(base=None):
     """Claims still being worked: anything that isn't a draft or finished —
-    so it also includes claims on a custom status."""
+    so it also includes claims on a custom status.
+
+    A claim can carry several statuses, and ticking a finishing one closes it,
+    so the extra statuses are checked too."""
     qs = base if base is not None else Claim.objects.all()
-    return qs.exclude(status=Claim.Status.DRAFT).exclude(status__in=FINISHED_STATUSES)
+    return (qs.exclude(status=Claim.Status.DRAFT)
+              .exclude(status__in=FINISHED_STATUSES)
+              .exclude(extra_statuses__slug__in=FINISHED_STATUSES)
+              .distinct())
+
+
+def finished_claims_qs(base=None):
+    """Finished claims — settled, closed or rejected on any of their statuses."""
+    qs = base if base is not None else Claim.objects.all()
+    return qs.filter(
+        Q(status__in=FINISHED_STATUSES)
+        | Q(extra_statuses__slug__in=FINISHED_STATUSES)
+    ).distinct()
 
 
 # Sort options for the claim sheets. Each: key, label, DB ordering.
@@ -1461,7 +1476,10 @@ def _filtered_claims(request):
             | Q(accident_location__icontains=q)
         )
     if status:
-        qs = qs.filter(status=status)
+        # Match the main status or any other one ticked on the claim.
+        qs = qs.filter(
+            Q(status=status) | Q(extra_statuses__slug=status)
+        ).distinct()
     flag = request.GET.get("flag", "").strip()
     if flag == "overdue":
         qs = open_claims_qs(qs).filter(chase_on__lt=timezone.localdate())
@@ -1497,7 +1515,7 @@ def claim_group(request, group):
         title = "Open claims"
         subtitle = "Claims still being worked — anything not a draft or finished"
     elif group == "closed":
-        qs = Claim.objects.filter(status__in=FINISHED_STATUSES)
+        qs = finished_claims_qs()
         title = "Closed claims"
         subtitle = "Finished claims — settled, closed or rejected"
     elif group == "overdue":
@@ -1736,14 +1754,16 @@ def claim_detail(request, pk, tab="overview"):
 @require_POST
 def claim_set_status(request, pk):
     claim = get_object_or_404(Claim, pk=pk)
-    status = request.POST.get("status")
     valid = {v for v, _ in claim_status_choices()}
-    if status not in valid:
+    # Several statuses can be ticked; the first is the claim's main one.
+    chosen = [s for s in request.POST.getlist("status") if s in valid]
+    if not chosen:
         return HttpResponseBadRequest("Unknown status")
-    claim.status = status
-    if status == Claim.Status.OPEN and claim.submitted_at is None:
+    claim.set_statuses(chosen)
+    if Claim.Status.OPEN in chosen and claim.submitted_at is None:
         claim.submitted_at = timezone.now()
     claim.save()
+    claim.set_statuses(chosen)  # again now the claim has a pk (new claims)
     # A plain form submit from a list passes ?next and wants a redirect; the
     # HTMX control on the detail page wants the refreshed partial.
     nxt = request.POST.get("next")
@@ -2292,16 +2312,16 @@ def _status_summary():
         total = sum((c.outstanding_amount for c in matched), Decimal("0"))
         return len(matched), total
 
-    finished = set(FINISHED_STATUSES)
     rows = []
     for value, label in claim_status_choices():
-        count, outstanding = agg(lambda c, v=value: c.status == v)
+        # A claim shows under every status it carries, not just its main one.
+        count, outstanding = agg(lambda c, v=value: v in c.status_slugs)
         rows.append(
             {"label": label, "count": count, "outstanding": outstanding,
              "query": f"status={value}"}
         )
     count, outstanding = agg(
-        lambda c: c.status != Claim.Status.DRAFT and c.status not in finished
+        lambda c: c.status != Claim.Status.DRAFT and not c.is_finished
         and c.chase_on and c.chase_on < today
     )
     rows.append(
@@ -2566,11 +2586,10 @@ def data_dashboard(request):
     claims = list(Claim.objects.all())
     today = timezone.localdate()
 
-    # KPIs
-    finished = set(FINISHED_STATUSES)
-    is_open = lambda c: c.status != Claim.Status.DRAFT and c.status not in finished
+    # KPIs — a claim counts as finished once any of its statuses is finishing.
+    is_open = lambda c: c.status != Claim.Status.DRAFT and not c.is_finished
     open_n = sum(1 for c in claims if is_open(c))
-    closed_n = sum(1 for c in claims if c.status in FINISHED_STATUSES)
+    closed_n = sum(1 for c in claims if c.is_finished)
     draft_n = sum(1 for c in claims if c.status == Claim.Status.DRAFT)
     overdue_n = sum(
         1 for c in claims

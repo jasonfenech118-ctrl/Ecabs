@@ -573,6 +573,45 @@ class Claim(models.Model):
         cs = ClaimStatus.objects.filter(slug=self.status).first()
         return cs.name if cs else self.status.replace("_", " ").title()
 
+    # --- Several statuses at once -------------------------------------------
+    # A claim carries a main status plus any others staff ticked; the main one
+    # still drives the workflow, while the lists read the whole set.
+
+    @property
+    def status_slugs(self):
+        """Every status on this claim, main one first."""
+        slugs = [self.status]
+        if self.pk:
+            slugs += [e.slug for e in self.extra_statuses.all() if e.slug != self.status]
+        return slugs
+
+    @property
+    def status_labels(self):
+        """Display labels for every status on the claim."""
+        builtin = dict(self.Status.choices)
+        custom = {c.slug: c.name for c in ClaimStatus.objects.all()}
+        return [builtin.get(s) or custom.get(s) or s.replace("_", " ").title()
+                for s in self.status_slugs]
+
+    @property
+    def is_finished(self):
+        """Finished once any status on the claim is a finishing one — ticking
+        Settled closes it even while another status is still ticked."""
+        finished = {self.Status.SETTLED, self.Status.CLOSED, self.Status.REJECTED}
+        return any(s in finished for s in self.status_slugs)
+
+    def set_statuses(self, slugs):
+        """Replace the claim's statuses with the ticked set. The first is the
+        main status; the rest are kept alongside it."""
+        slugs = [s for s in dict.fromkeys(slugs) if s]
+        if not slugs:
+            return
+        self.status = slugs[0]
+        if self.pk:
+            self.extra_statuses.exclude(slug__in=slugs[1:]).delete()
+            for slug in slugs[1:]:
+                ClaimExtraStatus.objects.get_or_create(claim=self, slug=slug)
+
     @property
     def repairs_total(self):
         """Repair costs only (labour, spray+material, parts, others) — no LOE.
@@ -806,6 +845,35 @@ class OtherCharge(models.Model):
 
     def __str__(self):
         return f"{self.description} — €{self.amount}"
+
+
+class ClaimExtraStatus(models.Model):
+    """An additional status ticked on a claim, beyond its main one.
+
+    A claim is often waiting on more than one thing at once (a survey *and* the
+    insurer), so staff tick every status that applies. Kept as rows rather than
+    a list on the claim so the open/closed lists can filter on them in SQL.
+    """
+
+    claim = models.ForeignKey(
+        Claim, on_delete=models.CASCADE, related_name="extra_statuses"
+    )
+    slug = models.CharField(max_length=40, db_index=True)
+
+    class Meta:
+        unique_together = ("claim", "slug")
+        ordering = ["slug"]
+
+    def __str__(self):
+        return self.slug
+
+    @property
+    def label(self):
+        builtin = dict(Claim.Status.choices)
+        if self.slug in builtin:
+            return builtin[self.slug]
+        custom = ClaimStatus.objects.filter(slug=self.slug).first()
+        return custom.name if custom else self.slug.replace("_", " ").title()
 
 
 class DailyRate(models.Model):

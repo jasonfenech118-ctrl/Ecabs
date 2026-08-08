@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "CL5dibaHygbjgorcSW61W0QYy9031GkKjG2eGL7hEOEUo9tUgGj7itwmhGOGmw9z"}'
+<body hx-headers='{"X-CSRFToken": "0MxTMpNPYrlt66G4IUZlWZbgqSPZmU6tcAWIvaUDktE5SdChEHXSHc18bTpgVB3E"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -190,25 +190,59 @@
           <td><a href="claim-6.html">CLM-2026-0006</a></td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/6/status/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="CL5dibaHygbjgorcSW61W0QYy9031GkKjG2eGL7hEOEUo9tUgGj7itwmhGOGmw9z">
+              <input type="hidden" name="csrfmiddlewaretoken" value="0MxTMpNPYrlt66G4IUZlWZbgqSPZmU6tcAWIvaUDktE5SdChEHXSHc18bTpgVB3E">
               <input type="hidden" name="next" value="/claims/group/closed/">
-              <select name="status" class="status-select badge closed" onchange="this.form.submit()" aria-label="Status">
-                
-                <option value="draft" >Draft</option>
-                
-                <option value="open" >Open</option>
-                
-                <option value="awaiting_survey" >Awaiting survey</option>
-                
-                <option value="awaiting_insurer" >Awaiting insurer</option>
-                
-                <option value="settled" >Settled</option>
-                
-                <option value="closed" selected>Closed</option>
-                
-                <option value="rejected" >Rejected</option>
-                
-              </select>
+              <details class="status-pick">
+                <summary class="badge closed" title="Tick every status that applies">
+                  Closed ▾
+                </summary>
+                <div class="status-pick-menu">
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="draft"
+                           >
+                    <span>Draft</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="open"
+                           >
+                    <span>Open</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="awaiting_survey"
+                           >
+                    <span>Awaiting survey</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="awaiting_insurer"
+                           >
+                    <span>Awaiting insurer</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="settled"
+                           >
+                    <span>Settled</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="closed"
+                           checked>
+                    <span>Closed</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="rejected"
+                           >
+                    <span>Rejected</span>
+                  </label>
+                  
+                  <button type="submit" class="btn btn-sm btn-primary" style="width:100%; margin-top:.35rem">Apply</button>
+                </div>
+              </details>
             </form>
             
           </td>
@@ -219,7 +253,7 @@
           <td>—</td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/6/chase/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="CL5dibaHygbjgorcSW61W0QYy9031GkKjG2eGL7hEOEUo9tUgGj7itwmhGOGmw9z">
+              <input type="hidden" name="csrfmiddlewaretoken" value="0MxTMpNPYrlt66G4IUZlWZbgqSPZmU6tcAWIvaUDktE5SdChEHXSHc18bTpgVB3E">
               <input type="hidden" name="next" value="/claims/group/closed/">
               <input type="date" name="chase_on" value=""
                      class="chase-input "
@@ -240,25 +274,59 @@
           <td><a href="claim-7.html">CLM-2026-0007</a></td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/7/status/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="CL5dibaHygbjgorcSW61W0QYy9031GkKjG2eGL7hEOEUo9tUgGj7itwmhGOGmw9z">
+              <input type="hidden" name="csrfmiddlewaretoken" value="0MxTMpNPYrlt66G4IUZlWZbgqSPZmU6tcAWIvaUDktE5SdChEHXSHc18bTpgVB3E">
               <input type="hidden" name="next" value="/claims/group/closed/">
-              <select name="status" class="status-select badge closed" onchange="this.form.submit()" aria-label="Status">
-                
-                <option value="draft" >Draft</option>
-                
-                <option value="open" >Open</option>
-                
-                <option value="awaiting_survey" >Awaiting survey</option>
-                
-                <option value="awaiting_insurer" >Awaiting insurer</option>
-                
-                <option value="settled" >Settled</option>
-                
-                <option value="closed" selected>Closed</option>
-                
-                <option value="rejected" >Rejected</option>
-                
-              </select>
+              <details class="status-pick">
+                <summary class="badge closed" title="Tick every status that applies">
+                  Closed ▾
+                </summary>
+                <div class="status-pick-menu">
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="draft"
+                           >
+                    <span>Draft</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="open"
+                           >
+                    <span>Open</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="awaiting_survey"
+                           >
+                    <span>Awaiting survey</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="awaiting_insurer"
+                           >
+                    <span>Awaiting insurer</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="settled"
+                           >
+                    <span>Settled</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="closed"
+                           checked>
+                    <span>Closed</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="rejected"
+                           >
+                    <span>Rejected</span>
+                  </label>
+                  
+                  <button type="submit" class="btn btn-sm btn-primary" style="width:100%; margin-top:.35rem">Apply</button>
+                </div>
+              </details>
             </form>
             
           </td>
@@ -269,7 +337,7 @@
           <td>—</td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/7/chase/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="CL5dibaHygbjgorcSW61W0QYy9031GkKjG2eGL7hEOEUo9tUgGj7itwmhGOGmw9z">
+              <input type="hidden" name="csrfmiddlewaretoken" value="0MxTMpNPYrlt66G4IUZlWZbgqSPZmU6tcAWIvaUDktE5SdChEHXSHc18bTpgVB3E">
               <input type="hidden" name="next" value="/claims/group/closed/">
               <input type="date" name="chase_on" value=""
                      class="chase-input "
@@ -279,7 +347,7 @@
           <td class="right" onclick="event.stopPropagation()">
             
               <form method="post" action="/claims/7/estimate/" style="margin:0">
-                <input type="hidden" name="csrfmiddlewaretoken" value="CL5dibaHygbjgorcSW61W0QYy9031GkKjG2eGL7hEOEUo9tUgGj7itwmhGOGmw9z">
+                <input type="hidden" name="csrfmiddlewaretoken" value="0MxTMpNPYrlt66G4IUZlWZbgqSPZmU6tcAWIvaUDktE5SdChEHXSHc18bTpgVB3E">
                 <input type="hidden" name="next" value="/claims/group/closed/">
                 <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
                        value="" placeholder="€"
@@ -296,25 +364,59 @@
           <td><a href="claim-8.html">CLM-2026-0008</a></td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/8/status/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="CL5dibaHygbjgorcSW61W0QYy9031GkKjG2eGL7hEOEUo9tUgGj7itwmhGOGmw9z">
+              <input type="hidden" name="csrfmiddlewaretoken" value="0MxTMpNPYrlt66G4IUZlWZbgqSPZmU6tcAWIvaUDktE5SdChEHXSHc18bTpgVB3E">
               <input type="hidden" name="next" value="/claims/group/closed/">
-              <select name="status" class="status-select badge rejected" onchange="this.form.submit()" aria-label="Status">
-                
-                <option value="draft" >Draft</option>
-                
-                <option value="open" >Open</option>
-                
-                <option value="awaiting_survey" >Awaiting survey</option>
-                
-                <option value="awaiting_insurer" >Awaiting insurer</option>
-                
-                <option value="settled" >Settled</option>
-                
-                <option value="closed" >Closed</option>
-                
-                <option value="rejected" selected>Rejected</option>
-                
-              </select>
+              <details class="status-pick">
+                <summary class="badge rejected" title="Tick every status that applies">
+                  Rejected ▾
+                </summary>
+                <div class="status-pick-menu">
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="draft"
+                           >
+                    <span>Draft</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="open"
+                           >
+                    <span>Open</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="awaiting_survey"
+                           >
+                    <span>Awaiting survey</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="awaiting_insurer"
+                           >
+                    <span>Awaiting insurer</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="settled"
+                           >
+                    <span>Settled</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="closed"
+                           >
+                    <span>Closed</span>
+                  </label>
+                  
+                  <label class="status-pick-opt">
+                    <input type="checkbox" name="status" value="rejected"
+                           checked>
+                    <span>Rejected</span>
+                  </label>
+                  
+                  <button type="submit" class="btn btn-sm btn-primary" style="width:100%; margin-top:.35rem">Apply</button>
+                </div>
+              </details>
             </form>
             
           </td>
@@ -325,7 +427,7 @@
           <td>—</td>
           <td onclick="event.stopPropagation()">
             <form method="post" action="/claims/8/chase/" style="margin:0">
-              <input type="hidden" name="csrfmiddlewaretoken" value="CL5dibaHygbjgorcSW61W0QYy9031GkKjG2eGL7hEOEUo9tUgGj7itwmhGOGmw9z">
+              <input type="hidden" name="csrfmiddlewaretoken" value="0MxTMpNPYrlt66G4IUZlWZbgqSPZmU6tcAWIvaUDktE5SdChEHXSHc18bTpgVB3E">
               <input type="hidden" name="next" value="/claims/group/closed/">
               <input type="date" name="chase_on" value=""
                      class="chase-input "
@@ -335,7 +437,7 @@
           <td class="right" onclick="event.stopPropagation()">
             
               <form method="post" action="/claims/8/estimate/" style="margin:0">
-                <input type="hidden" name="csrfmiddlewaretoken" value="CL5dibaHygbjgorcSW61W0QYy9031GkKjG2eGL7hEOEUo9tUgGj7itwmhGOGmw9z">
+                <input type="hidden" name="csrfmiddlewaretoken" value="0MxTMpNPYrlt66G4IUZlWZbgqSPZmU6tcAWIvaUDktE5SdChEHXSHc18bTpgVB3E">
                 <input type="hidden" name="next" value="/claims/group/closed/">
                 <input type="number" step="0.01" name="estimate_amount" class="estimate-input"
                        value="" placeholder="€"
