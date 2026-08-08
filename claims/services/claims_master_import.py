@@ -249,13 +249,27 @@ def parse_master_sheet(fileobj):
                     - (row.get("amount_paid") or Decimal("0"))
                     - (row.get("offset_amount") or Decimal("0")))
         row["computed_outstanding"] = computed
+        received = ((row.get("amount_paid") or Decimal("0"))
+                    + (row.get("offset_amount") or Decimal("0")))
+        # Paid off: a settlement can cover more than the itemised recovery, so
+        # nothing is owed even though the subtraction goes negative.
+        row["paid_in_full"] = received > 0 and computed <= 0
+
         sheet_total = row.get("sheet_total")
         if sheet_total is not None and abs(computed - sheet_total) > Decimal("0.05"):
-            problems.append({
-                "row": offset, "severity": "warning",
-                "issue": (f"Sheet total €{sheet_total} but the figures give "
-                          f"€{computed} — check {row['vehicle_registration']}."),
-            })
+            if row["paid_in_full"]:
+                problems.append({
+                    "row": offset, "severity": "info",
+                    "issue": (f"{row['vehicle_registration']} is paid in full "
+                              f"(€{received} received) — marked settled, nothing owed. "
+                              f"The sheet still shows €{sheet_total}."),
+                })
+            else:
+                problems.append({
+                    "row": offset, "severity": "warning",
+                    "issue": (f"Sheet total €{sheet_total} but the figures give "
+                              f"€{computed} — check {row['vehicle_registration']}."),
+                })
 
         key = _natural_key(row)
         if key in seen:
@@ -326,8 +340,14 @@ def import_master_sheet(fileobj, commit=False, user=None):
                 setattr(claim, field, value)
 
         # These are live claims being worked, not drafts, so they get a case
-        # number; anything already settled/closed keeps the status it has.
-        if claim.status == Claim.Status.DRAFT:
+        # number. A claim that has been paid off is settled; the rest stay on
+        # whatever status they already carry.
+        if row["paid_in_full"]:
+            if claim.status in (Claim.Status.DRAFT, Claim.Status.OPEN,
+                                Claim.Status.AWAITING_SURVEY,
+                                Claim.Status.AWAITING_INSURER):
+                claim.status = Claim.Status.SETTLED
+        elif claim.status == Claim.Status.DRAFT:
             claim.status = Claim.Status.OPEN
         if claim.submitted_at is None:
             from django.utils import timezone

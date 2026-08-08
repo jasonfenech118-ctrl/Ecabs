@@ -530,12 +530,24 @@ class Claim(models.Model):
 
     @property
     def outstanding_amount(self):
-        """Still owed: total claim minus what was paid and offset."""
-        return (
+        """Still owed: total claim minus what was paid and offset.
+
+        Never negative — when a settlement covers more than the itemised
+        recovery the claim is simply paid off, and counting the surplus as a
+        negative debt would understate what the rest of the register is owed.
+        """
+        owed = (
             self.total_claim_amount
             - (self.amount_paid or Decimal("0"))
             - (self.offset_amount or Decimal("0"))
         )
+        return owed if owed > 0 else Decimal("0")
+
+    @property
+    def is_paid_in_full(self):
+        """Settled: money came in and nothing is left owing."""
+        received = (self.amount_paid or Decimal("0")) + (self.offset_amount or Decimal("0"))
+        return received > 0 and self.outstanding_amount <= 0
 
     @property
     def bill_is_actual(self):

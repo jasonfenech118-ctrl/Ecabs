@@ -1015,7 +1015,8 @@ class ViewTests(TestCase):
             "", "500136", 100, 0, 0, 742.48, "4 days - € 185.62", 35, 0, 0, 0,
             877.48,
         ])
-        # Incoherent: the sheet's total disagrees with its own figures.
+        # Paid in full: the settlement covers more than the itemised recovery,
+        # so nothing is owed even though the sheet still shows a total.
         ws.append([
             "", "GQZ976", "ALH001", "2026-04-25", "M20262065", "C34-302964",
             "Atlas", "Etars", "", "", "", "", "", "", "", "", 0, 0, 0, 402.54,
@@ -1030,8 +1031,9 @@ class ViewTests(TestCase):
         self.assertEqual(dry["rows"], 3)
         self.assertEqual(dry["created"], 3)
         self.assertEqual(Claim.objects.count(), 0)  # dry run writes nothing
-        self.assertEqual(len(dry["warnings"]), 1)
-        self.assertIn("GQZ976", dry["warnings"][0]["issue"])
+        # Paid off, so it is reported as settled rather than as a bad sum.
+        self.assertEqual(dry["warnings"], [])
+        self.assertTrue(any("paid in full" in p["issue"] for p in dry["problems"]))
 
         buf.seek(0)
         report = import_master_sheet(buf, commit=True, user=self.user)
@@ -1051,6 +1053,12 @@ class ViewTests(TestCase):
         self.assertEqual(second.loss_of_earnings, Decimal("742.48"))
         self.assertEqual(second.other_charges_total, Decimal("35.00"))
         self.assertEqual(second.outstanding_amount, Decimal("877.48"))
+
+        # A paid-off claim is settled and owes nothing — never a negative bill.
+        paid = Claim.objects.get(vehicle_registration="GQZ976")
+        self.assertEqual(paid.status, Claim.Status.SETTLED)
+        self.assertEqual(paid.outstanding_amount, Decimal("0"))
+        self.assertTrue(paid.is_paid_in_full)
 
         # Re-importing the same sheet updates rather than duplicates.
         buf.seek(0)
