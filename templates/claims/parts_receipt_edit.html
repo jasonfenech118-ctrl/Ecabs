@@ -5,15 +5,16 @@
 <div class="page-head no-print">
   <div>
     <h1>{{ rec.receipt_no|default:"New receipt" }}</h1>
-    <div class="sub">Add the parts, then open the PDF receipt</div>
+    <div class="sub">Fill in the details and the parts, then press Save</div>
   </div>
   <div class="row" style="gap:.5rem">
     <a href="{% url 'parts_receipts' %}" class="btn">← All receipts</a>
-    <a href="{% url 'parts_receipt_pdf' rec.pk %}" target="_blank" rel="noopener" class="btn btn-primary">📄 Open PDF</a>
+    <button type="submit" form="receipt-form" class="btn btn-primary">💾 Save</button>
+    <a href="{% url 'parts_receipt_pdf' rec.pk %}" target="_blank" rel="noopener" class="btn">📄 Open PDF</a>
   </div>
 </div>
 
-<form method="post" action="{% url 'parts_receipt_edit' rec.pk %}">
+<form id="receipt-form" method="post" action="{% url 'parts_receipt_edit' rec.pk %}">
   {% csrf_token %}
 
   <div class="grid-2">
@@ -63,52 +64,45 @@
   </div>
 
   <div class="card mt">
-    <label class="field"><span>Notes</span><textarea name="notes" rows="2">{{ rec.notes }}</textarea></label>
-    <button type="submit" class="btn btn-primary mt">Save receipt details</button>
+    <div class="row" style="justify-content:space-between; align-items:center">
+      <h3 style="margin:0">Parts</h3>
+      <button type="submit" name="add_line" value="1" class="btn btn-sm">＋ Add part</button>
+    </div>
+    <p class="muted" style="font-size:.8rem; margin:.3rem 0 .5rem">Prices are <strong>VAT-exclusive</strong>; VAT is added at the bottom. Line total = qty × unit price. Everything saves together with the <strong>Save</strong> button.</p>
+    <div class="table-wrap">
+      <table class="list at-fault">
+        <thead>
+          <tr><th style="width:5rem">Qty</th><th>Part code</th><th>Description</th><th class="right">Unit price €</th><th class="right">Total €</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for ln in rec.lines.all %}
+          <tr>
+            <td><input name="line_{{ ln.pk }}_quantity" type="number" step="0.01" min="0" value="{{ ln.quantity }}" class="atf-input atf-num"></td>
+            <td><input name="line_{{ ln.pk }}_part_code" value="{{ ln.part_code }}" class="atf-input" style="width:9rem"></td>
+            <td><input name="line_{{ ln.pk }}_description" value="{{ ln.description }}" class="atf-input" style="min-width:220px"></td>
+            <td><input name="line_{{ ln.pk }}_unit_price" type="number" step="0.01" min="0" value="{{ ln.unit_price }}" class="atf-input atf-num" placeholder="€"></td>
+            <td class="right"><strong>€{{ ln.line_total|floatformat:2|intcomma }}</strong></td>
+            <td style="white-space:nowrap">
+              <button type="submit" name="delete_pk" value="{{ ln.pk }}" class="btn btn-sm btn-danger" title="Delete this part"
+                      onclick="return confirm('Delete this part? (other changes are saved too)')">✕</button>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="empty">No parts yet — press “Add part”.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <label class="field mt"><span>Notes</span><textarea name="notes" rows="2">{{ rec.notes }}</textarea></label>
+
+    <div class="inv-totals">
+      <div><span>Subtotal</span><strong>€{{ rec.subtotal|floatformat:2|intcomma }}</strong></div>
+      <div><span>VAT ({{ rec.vat_rate }}%)</span><strong>€{{ rec.vat_amount|floatformat:2|intcomma }}</strong></div>
+      <div class="inv-due"><span>Total</span><strong>€{{ rec.total|floatformat:2|intcomma }}</strong></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt">💾 Save receipt &amp; parts</button>
   </div>
 </form>
-
-<div class="card mt">
-  <div class="row" style="justify-content:space-between; align-items:center">
-    <h3 style="margin:0">Parts</h3>
-    <form method="post" action="{% url 'parts_receipt_line_add' rec.pk %}">{% csrf_token %}
-      <button type="submit" class="btn btn-sm btn-primary">＋ Add part</button>
-    </form>
-  </div>
-  <p class="muted" style="font-size:.8rem; margin:.3rem 0 .5rem">Prices are <strong>VAT-exclusive</strong>; VAT is added at the bottom. Line total = qty × unit price.</p>
-  <div class="table-wrap">
-    <table class="list at-fault">
-      <thead>
-        <tr><th style="width:5rem">Qty</th><th>Part code</th><th>Description</th><th class="right">Unit price €</th><th class="right">Total €</th><th></th></tr>
-      </thead>
-      <tbody>
-        {% for ln in rec.lines.all %}
-        <tr>
-          <td>
-            <form id="l-{{ ln.pk }}" method="post" action="{% url 'parts_receipt_line_update' rec.pk ln.pk %}">{% csrf_token %}</form>
-            <form id="ld-{{ ln.pk }}" method="post" action="{% url 'parts_receipt_line_update' rec.pk ln.pk %}" onsubmit="return confirm('Delete this part?')">{% csrf_token %}<input type="hidden" name="action" value="delete"></form>
-            <input form="l-{{ ln.pk }}" name="quantity" type="number" step="0.01" min="0" value="{{ ln.quantity }}" class="atf-input atf-num">
-          </td>
-          <td><input form="l-{{ ln.pk }}" name="part_code" value="{{ ln.part_code }}" class="atf-input" style="width:9rem"></td>
-          <td><input form="l-{{ ln.pk }}" name="description" value="{{ ln.description }}" class="atf-input" style="min-width:220px"></td>
-          <td><input form="l-{{ ln.pk }}" name="unit_price" type="number" step="0.01" min="0" value="{{ ln.unit_price }}" class="atf-input atf-num" placeholder="€"></td>
-          <td class="right"><strong>€{{ ln.line_total|floatformat:2|intcomma }}</strong></td>
-          <td style="white-space:nowrap">
-            <button form="l-{{ ln.pk }}" type="submit" class="btn btn-sm btn-primary">Save</button>
-            <button form="ld-{{ ln.pk }}" type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
-          </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="6" class="empty">No parts yet — press “Add part”.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  <div class="inv-totals">
-    <div><span>Subtotal</span><strong>€{{ rec.subtotal|floatformat:2|intcomma }}</strong></div>
-    <div><span>VAT ({{ rec.vat_rate }}%)</span><strong>€{{ rec.vat_amount|floatformat:2|intcomma }}</strong></div>
-    <div class="inv-due"><span>Total</span><strong>€{{ rec.total|floatformat:2|intcomma }}</strong></div>
-  </div>
-</div>
 {% endblock %}

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"}'
+<body hx-headers='{"X-CSRFToken": "vMbQMeaYLu7niXZ2H9wNbWpO1e874Sl4PmZzkVqcGKAoRWmji0ww1oatWtdBenNf"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -137,16 +137,17 @@
 <div class="page-head no-print">
   <div>
     <h1>PR01001</h1>
-    <div class="sub">Add the parts, then open the PDF receipt</div>
+    <div class="sub">Fill in the details and the parts, then press Save</div>
   </div>
   <div class="row" style="gap:.5rem">
     <a href="parts-receipts.html" class="btn">← All receipts</a>
-    <a href="parts-receipt-1.pdf" target="_blank" rel="noopener" class="btn btn-primary">📄 Open PDF</a>
+    <button type="submit" form="receipt-form" class="btn btn-primary">💾 Save</button>
+    <a href="parts-receipt-1.pdf" target="_blank" rel="noopener" class="btn">📄 Open PDF</a>
   </div>
 </div>
 
-<form method="post" action="/parts/receipts/1/">
-  <input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT">
+<form id="receipt-form" method="post" action="/parts/receipts/1/">
+  <input type="hidden" name="csrfmiddlewaretoken" value="vMbQMeaYLu7niXZ2H9wNbWpO1e874Sl4PmZzkVqcGKAoRWmji0ww1oatWtdBenNf">
 
   <div class="grid-2">
     <div class="card">
@@ -210,84 +211,69 @@ Malta</textarea></label>
   </div>
 
   <div class="card mt">
-    <label class="field"><span>Notes</span><textarea name="notes" rows="2"></textarea></label>
-    <button type="submit" class="btn btn-primary mt">Save receipt details</button>
+    <div class="row" style="justify-content:space-between; align-items:center">
+      <h3 style="margin:0">Parts</h3>
+      <button type="submit" name="add_line" value="1" class="btn btn-sm">＋ Add part</button>
+    </div>
+    <p class="muted" style="font-size:.8rem; margin:.3rem 0 .5rem">Prices are <strong>VAT-exclusive</strong>; VAT is added at the bottom. Line total = qty × unit price. Everything saves together with the <strong>Save</strong> button.</p>
+    <div class="table-wrap">
+      <table class="list at-fault">
+        <thead>
+          <tr><th style="width:5rem">Qty</th><th>Part code</th><th>Description</th><th class="right">Unit price €</th><th class="right">Total €</th><th></th></tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td><input name="line_1_quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num"></td>
+            <td><input name="line_1_part_code" value="1618037980" class="atf-input" style="width:9rem"></td>
+            <td><input name="line_1_description" value="FRT BUMPER BRCKT SET" class="atf-input" style="min-width:220px"></td>
+            <td><input name="line_1_unit_price" type="number" step="0.01" min="0" value="25.95" class="atf-input atf-num" placeholder="€"></td>
+            <td class="right"><strong>€25.95</strong></td>
+            <td style="white-space:nowrap">
+              <button type="submit" name="delete_pk" value="1" class="btn btn-sm btn-danger" title="Delete this part"
+                      onclick="return confirm('Delete this part? (other changes are saved too)')">✕</button>
+            </td>
+          </tr>
+          
+          <tr>
+            <td><input name="line_2_quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num"></td>
+            <td><input name="line_2_part_code" value="98120622" class="atf-input" style="width:9rem"></td>
+            <td><input name="line_2_description" value="FRT BUMPER GRILLE IN" class="atf-input" style="min-width:220px"></td>
+            <td><input name="line_2_unit_price" type="number" step="0.01" min="0" value="62.97" class="atf-input atf-num" placeholder="€"></td>
+            <td class="right"><strong>€62.97</strong></td>
+            <td style="white-space:nowrap">
+              <button type="submit" name="delete_pk" value="2" class="btn btn-sm btn-danger" title="Delete this part"
+                      onclick="return confirm('Delete this part? (other changes are saved too)')">✕</button>
+            </td>
+          </tr>
+          
+          <tr>
+            <td><input name="line_3_quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num"></td>
+            <td><input name="line_3_part_code" value="1618038080" class="atf-input" style="width:9rem"></td>
+            <td><input name="line_3_description" value="FRT BUMPER FOG PLUGS" class="atf-input" style="min-width:220px"></td>
+            <td><input name="line_3_unit_price" type="number" step="0.01" min="0" value="43.28" class="atf-input atf-num" placeholder="€"></td>
+            <td class="right"><strong>€43.28</strong></td>
+            <td style="white-space:nowrap">
+              <button type="submit" name="delete_pk" value="3" class="btn btn-sm btn-danger" title="Delete this part"
+                      onclick="return confirm('Delete this part? (other changes are saved too)')">✕</button>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+
+    <label class="field mt"><span>Notes</span><textarea name="notes" rows="2"></textarea></label>
+
+    <div class="inv-totals">
+      <div><span>Subtotal</span><strong>€132.20</strong></div>
+      <div><span>VAT (18.00%)</span><strong>€23.80</strong></div>
+      <div class="inv-due"><span>Total</span><strong>€156.00</strong></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt">💾 Save receipt &amp; parts</button>
   </div>
 </form>
-
-<div class="card mt">
-  <div class="row" style="justify-content:space-between; align-items:center">
-    <h3 style="margin:0">Parts</h3>
-    <form method="post" action="/parts/receipts/1/line/add/"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT">
-      <button type="submit" class="btn btn-sm btn-primary">＋ Add part</button>
-    </form>
-  </div>
-  <p class="muted" style="font-size:.8rem; margin:.3rem 0 .5rem">Prices are <strong>VAT-exclusive</strong>; VAT is added at the bottom. Line total = qty × unit price.</p>
-  <div class="table-wrap">
-    <table class="list at-fault">
-      <thead>
-        <tr><th style="width:5rem">Qty</th><th>Part code</th><th>Description</th><th class="right">Unit price €</th><th class="right">Total €</th><th></th></tr>
-      </thead>
-      <tbody>
-        
-        <tr>
-          <td>
-            <form id="l-1" method="post" action="/parts/receipts/1/line/1/"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"></form>
-            <form id="ld-1" method="post" action="/parts/receipts/1/line/1/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"><input type="hidden" name="action" value="delete"></form>
-            <input form="l-1" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
-          </td>
-          <td><input form="l-1" name="part_code" value="1618037980" class="atf-input" style="width:9rem"></td>
-          <td><input form="l-1" name="description" value="FRT BUMPER BRCKT SET" class="atf-input" style="min-width:220px"></td>
-          <td><input form="l-1" name="unit_price" type="number" step="0.01" min="0" value="25.95" class="atf-input atf-num" placeholder="€"></td>
-          <td class="right"><strong>€25.95</strong></td>
-          <td style="white-space:nowrap">
-            <button form="l-1" type="submit" class="btn btn-sm btn-primary">Save</button>
-            <button form="ld-1" type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
-          </td>
-        </tr>
-        
-        <tr>
-          <td>
-            <form id="l-2" method="post" action="/parts/receipts/1/line/2/"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"></form>
-            <form id="ld-2" method="post" action="/parts/receipts/1/line/2/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"><input type="hidden" name="action" value="delete"></form>
-            <input form="l-2" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
-          </td>
-          <td><input form="l-2" name="part_code" value="98120622" class="atf-input" style="width:9rem"></td>
-          <td><input form="l-2" name="description" value="FRT BUMPER GRILLE IN" class="atf-input" style="min-width:220px"></td>
-          <td><input form="l-2" name="unit_price" type="number" step="0.01" min="0" value="62.97" class="atf-input atf-num" placeholder="€"></td>
-          <td class="right"><strong>€62.97</strong></td>
-          <td style="white-space:nowrap">
-            <button form="l-2" type="submit" class="btn btn-sm btn-primary">Save</button>
-            <button form="ld-2" type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
-          </td>
-        </tr>
-        
-        <tr>
-          <td>
-            <form id="l-3" method="post" action="/parts/receipts/1/line/3/"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"></form>
-            <form id="ld-3" method="post" action="/parts/receipts/1/line/3/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="teSFjZoD3kAW1S1liZ3NBmmWgseeMXDB4qBTb2NTme6qPF1ZtSWd9rrK7R5O4PZT"><input type="hidden" name="action" value="delete"></form>
-            <input form="l-3" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
-          </td>
-          <td><input form="l-3" name="part_code" value="1618038080" class="atf-input" style="width:9rem"></td>
-          <td><input form="l-3" name="description" value="FRT BUMPER FOG PLUGS" class="atf-input" style="min-width:220px"></td>
-          <td><input form="l-3" name="unit_price" type="number" step="0.01" min="0" value="43.28" class="atf-input atf-num" placeholder="€"></td>
-          <td class="right"><strong>€43.28</strong></td>
-          <td style="white-space:nowrap">
-            <button form="l-3" type="submit" class="btn btn-sm btn-primary">Save</button>
-            <button form="ld-3" type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
-          </td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </div>
-
-  <div class="inv-totals">
-    <div><span>Subtotal</span><strong>€132.20</strong></div>
-    <div><span>VAT (18.00%)</span><strong>€23.80</strong></div>
-    <div class="inv-due"><span>Total</span><strong>€156.00</strong></div>
-  </div>
-</div>
 
   </main>
 </div>

@@ -918,6 +918,31 @@ def sales_invoice_edit(request, pk):
 
         inv.updated_by = request.user
         inv.save()
+
+        # Save every line's values from the same form.
+        for line in inv.lines.all():
+            p = f"line_{line.pk}_"
+            line.description = request.POST.get(p + "description", line.description)
+            for f in ("quantity", "original_amount_incl_vat", "discount_amount_incl_vat"):
+                val = (request.POST.get(p + f) or "").strip()
+                if val:
+                    try:
+                        setattr(line, f, Decimal(val))
+                    except InvalidOperation:
+                        pass
+                else:
+                    setattr(line, f, Decimal("0"))
+            line.save()
+
+        # Structural buttons on the same form: delete a row, or add a blank one.
+        del_pk = (request.POST.get("delete_pk") or "").strip()
+        if del_pk.isdigit():
+            inv.lines.filter(pk=int(del_pk)).delete()
+        if request.POST.get("add_line"):
+            last = inv.lines.order_by("-order").first()
+            SalesInvoiceLine.objects.create(
+                invoice=inv, order=(last.order + 1) if last else 0)
+
         return redirect("sales_invoice_edit", pk=inv.pk)
 
     import json
@@ -930,44 +955,6 @@ def sales_invoice_edit(request, pk):
         "clients_json": clients_json,
         "claims": Claim.objects.order_by("-id")[:500],
     })
-
-
-@login_required
-@require_POST
-def sales_invoice_line_add(request, pk):
-    """Add a blank line to the invoice."""
-    inv = get_object_or_404(SalesInvoice, pk=pk)
-    last = inv.lines.order_by("-order").first()
-    SalesInvoiceLine.objects.create(
-        invoice=inv, order=(last.order + 1) if last else 0)
-    inv.updated_by = request.user
-    inv.save(update_fields=["updated_by", "updated_at"])
-    return redirect("sales_invoice_edit", pk=inv.pk)
-
-
-@login_required
-@require_POST
-def sales_invoice_line_update(request, pk, line_pk):
-    """Inline save or delete of one invoice line."""
-    inv = get_object_or_404(SalesInvoice, pk=pk)
-    line = get_object_or_404(SalesInvoiceLine, pk=line_pk, invoice=inv)
-    if request.POST.get("action") == "delete":
-        line.delete()
-    else:
-        line.description = request.POST.get("description", line.description)
-        for f in ("quantity", "original_amount_incl_vat", "discount_amount_incl_vat"):
-            raw = (request.POST.get(f) or "").strip()
-            if raw:
-                try:
-                    setattr(line, f, Decimal(raw))
-                except InvalidOperation:
-                    pass
-            else:
-                setattr(line, f, Decimal("0"))
-        line.save()
-    inv.updated_by = request.user
-    inv.save(update_fields=["updated_by", "updated_at"])
-    return redirect("sales_invoice_edit", pk=inv.pk)
 
 
 @login_required
@@ -1076,7 +1063,9 @@ def parts_receipt_new(request):
 
 @login_required
 def parts_receipt_edit(request, pk):
-    """Edit a parts receipt: header fields, the linked claim, and inline lines."""
+    """Edit a parts receipt. One Save button stores the header and every part
+    line together; the same form's "add" / "delete" buttons change the rows
+    without losing the values already typed."""
     rec = get_object_or_404(PartsReceipt, pk=pk)
     if request.method == "POST":
         for f in PARTS_HEADER_FIELDS:
@@ -1101,51 +1090,38 @@ def parts_receipt_edit(request, pk):
 
         rec.updated_by = request.user
         rec.save()
+
+        # Save every part line's values from the same form.
+        for line in rec.lines.all():
+            p = f"line_{line.pk}_"
+            line.part_code = request.POST.get(p + "part_code", line.part_code)
+            line.description = request.POST.get(p + "description", line.description)
+            for f in ("quantity", "unit_price"):
+                val = (request.POST.get(p + f) or "").strip()
+                if val:
+                    try:
+                        setattr(line, f, Decimal(val))
+                    except InvalidOperation:
+                        pass
+                else:
+                    setattr(line, f, Decimal("0"))
+            line.save()
+
+        # Structural buttons on the same form: delete a row, or add a blank one.
+        del_pk = (request.POST.get("delete_pk") or "").strip()
+        if del_pk.isdigit():
+            rec.lines.filter(pk=int(del_pk)).delete()
+        if request.POST.get("add_line"):
+            last = rec.lines.order_by("-order").first()
+            PartsReceiptLine.objects.create(
+                receipt=rec, order=(last.order + 1) if last else 0)
+
         return redirect("parts_receipt_edit", pk=rec.pk)
 
     return render(request, "claims/parts_receipt_edit.html", {
         "rec": rec,
         "claims": open_claims_qs().order_by("-id")[:500],
     })
-
-
-@login_required
-@require_POST
-def parts_receipt_line_add(request, pk):
-    """Add a blank part line to the receipt."""
-    rec = get_object_or_404(PartsReceipt, pk=pk)
-    last = rec.lines.order_by("-order").first()
-    PartsReceiptLine.objects.create(
-        receipt=rec, order=(last.order + 1) if last else 0)
-    rec.updated_by = request.user
-    rec.save(update_fields=["updated_by", "updated_at"])
-    return redirect("parts_receipt_edit", pk=rec.pk)
-
-
-@login_required
-@require_POST
-def parts_receipt_line_update(request, pk, line_pk):
-    """Inline save or delete of one part line."""
-    rec = get_object_or_404(PartsReceipt, pk=pk)
-    line = get_object_or_404(PartsReceiptLine, pk=line_pk, receipt=rec)
-    if request.POST.get("action") == "delete":
-        line.delete()
-    else:
-        line.part_code = request.POST.get("part_code", line.part_code)
-        line.description = request.POST.get("description", line.description)
-        for f in ("quantity", "unit_price"):
-            raw = (request.POST.get(f) or "").strip()
-            if raw:
-                try:
-                    setattr(line, f, Decimal(raw))
-                except InvalidOperation:
-                    pass
-            else:
-                setattr(line, f, Decimal("0"))
-        line.save()
-    rec.updated_by = request.user
-    rec.save(update_fields=["updated_by", "updated_at"])
-    return redirect("parts_receipt_edit", pk=rec.pk)
 
 
 @login_required

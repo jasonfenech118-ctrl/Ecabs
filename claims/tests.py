@@ -939,16 +939,31 @@ class ViewTests(TestCase):
         self.assertEqual(rec.claim_id, claim.pk)
         self.assertEqual(rec.vehicle_reg, "ECB101")
 
+        # One Save button adds a blank line at the same time as the header.
         self.client.post(reverse("parts_receipt_edit", args=[rec.pk]), {
             "receipt_no": "PR01001", "receipt_date": "2023-05-17",
             "supplier": "Michael Attard Ltd", "reference": "ecabshir",
             "vehicle_reg": "ECB101", "vat_rate": "18", "status": "sent",
+            "add_line": "1",
         })
-        PartsReceiptLine.objects.create(
-            receipt=rec, part_code="1618037980", description="Bracket set",
-            quantity=Decimal("1"), unit_price=Decimal("25.95"))
-        PartsReceiptLine.objects.create(
-            receipt=rec, part_code="98120622", description="Grille",
+        rec.refresh_from_db()
+        line1 = rec.lines.get()
+
+        # Save the line's values via the same form, and add a second line.
+        self.client.post(reverse("parts_receipt_edit", args=[rec.pk]), {
+            "receipt_no": "PR01001", "receipt_date": "2023-05-17", "vat_rate": "18",
+            f"line_{line1.pk}_part_code": "1618037980",
+            f"line_{line1.pk}_description": "Bracket set",
+            f"line_{line1.pk}_quantity": "1",
+            f"line_{line1.pk}_unit_price": "25.95",
+            "add_line": "1",
+        })
+        line1.refresh_from_db()
+        self.assertEqual(line1.part_code, "1618037980")
+        self.assertEqual(line1.unit_price, Decimal("25.95"))
+        line2 = rec.lines.exclude(pk=line1.pk).get()
+        PartsReceiptLine.objects.filter(pk=line2.pk).update(
+            part_code="98120622", description="Grille",
             quantity=Decimal("2"), unit_price=Decimal("62.97"))
 
         rec.refresh_from_db()

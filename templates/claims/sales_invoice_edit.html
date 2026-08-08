@@ -9,11 +9,12 @@
   </div>
   <div class="row" style="gap:.5rem">
     <a href="{% url 'sales_invoices' %}" class="btn">← All invoices</a>
-    <a href="{% url 'sales_invoice_pdf' inv.pk %}" target="_blank" rel="noopener" class="btn btn-primary">📄 Open PDF</a>
+    <button type="submit" form="invoice-form" class="btn btn-primary">💾 Save</button>
+    <a href="{% url 'sales_invoice_pdf' inv.pk %}" target="_blank" rel="noopener" class="btn">📄 Open PDF</a>
   </div>
 </div>
 
-<form method="post" action="{% url 'sales_invoice_edit' inv.pk %}">
+<form id="invoice-form" method="post" action="{% url 'sales_invoice_edit' inv.pk %}">
   {% csrf_token %}
 
   <div class="grid-2">
@@ -84,55 +85,50 @@
       </div>
     </div>
     <label class="field"><span>Remarks</span><textarea name="remarks" rows="2">{{ inv.remarks }}</textarea></label>
-    <button type="submit" class="btn btn-primary mt">Save invoice details</button>
+  </div>
+
+  <div class="card mt">
+    <div class="row" style="justify-content:space-between; align-items:center">
+      <h3 style="margin:0">Lines</h3>
+      <button type="submit" name="add_line" value="1" class="btn btn-sm">＋ Add line</button>
+    </div>
+    <p class="muted" style="font-size:.8rem; margin:.3rem 0 .5rem">Prices are <strong>VAT-inclusive</strong>. Price with discount = original − discount. Everything saves together with the <strong>Save</strong> button.</p>
+    <div class="table-wrap">
+      <table class="list at-fault">
+        <thead>
+          <tr><th style="width:5rem">Amount</th><th>Description</th><th class="right">Original incl. VAT</th><th class="right">Discount incl. VAT</th><th class="right">Price w/ discount</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for ln in inv.lines.all %}
+          <tr>
+            <td><input name="line_{{ ln.pk }}_quantity" type="number" step="0.01" min="0" value="{{ ln.quantity }}" class="atf-input atf-num"></td>
+            <td><input name="line_{{ ln.pk }}_description" value="{{ ln.description }}" class="atf-input" style="min-width:240px"></td>
+            <td><input name="line_{{ ln.pk }}_original_amount_incl_vat" type="number" step="0.01" min="0" value="{{ ln.original_amount_incl_vat }}" class="atf-input atf-num" placeholder="€"></td>
+            <td><input name="line_{{ ln.pk }}_discount_amount_incl_vat" type="number" step="0.01" min="0" value="{{ ln.discount_amount_incl_vat }}" class="atf-input atf-num" placeholder="€"></td>
+            <td class="right"><strong>€{{ ln.price_with_discount|floatformat:2|intcomma }}</strong></td>
+            <td style="white-space:nowrap">
+              <button type="submit" name="delete_pk" value="{{ ln.pk }}" class="btn btn-sm btn-danger" title="Delete this line"
+                      onclick="return confirm('Delete this line? (other changes are saved too)')">✕</button>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="empty">No lines yet — press “Add line”.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="inv-totals">
+      <div><span>Total Discount</span><strong>€{{ inv.total_discount|floatformat:2|intcomma }}</strong></div>
+      <div><span>Net</span><strong>€{{ inv.net|floatformat:2|intcomma }}</strong></div>
+      <div><span>VAT ({{ inv.vat_rate }}%)</span><strong>€{{ inv.vat_amount|floatformat:2|intcomma }}</strong></div>
+      <div class="inv-due"><span>Total</span><strong>€{{ inv.total|floatformat:2|intcomma }}</strong></div>
+      <div><span>{% if inv.is_paid %}Paid{% else %}Pending{% endif %}</span><strong>{% if inv.is_paid %}✓ paid{% else %}€{{ inv.total|floatformat:2|intcomma }}{% endif %}</strong></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt">💾 Save invoice &amp; lines</button>
   </div>
 </form>
-
-<div class="card mt">
-  <div class="row" style="justify-content:space-between; align-items:center">
-    <h3 style="margin:0">Lines</h3>
-    <form method="post" action="{% url 'sales_invoice_line_add' inv.pk %}">{% csrf_token %}
-      <button type="submit" class="btn btn-sm btn-primary">＋ Add line</button>
-    </form>
-  </div>
-  <p class="muted" style="font-size:.8rem; margin:.3rem 0 .5rem">Prices are <strong>VAT-inclusive</strong>. Price with discount = original − discount.</p>
-  <div class="table-wrap">
-    <table class="list at-fault">
-      <thead>
-        <tr><th style="width:5rem">Amount</th><th>Description</th><th class="right">Original incl. VAT</th><th class="right">Discount incl. VAT</th><th class="right">Price w/ discount</th><th></th></tr>
-      </thead>
-      <tbody>
-        {% for ln in inv.lines.all %}
-        <tr>
-          <td>
-            <form id="l-{{ ln.pk }}" method="post" action="{% url 'sales_invoice_line_update' inv.pk ln.pk %}">{% csrf_token %}</form>
-            <form id="ld-{{ ln.pk }}" method="post" action="{% url 'sales_invoice_line_update' inv.pk ln.pk %}" onsubmit="return confirm('Delete this line?')">{% csrf_token %}<input type="hidden" name="action" value="delete"></form>
-            <input form="l-{{ ln.pk }}" name="quantity" type="number" step="0.01" min="0" value="{{ ln.quantity }}" class="atf-input atf-num">
-          </td>
-          <td><input form="l-{{ ln.pk }}" name="description" value="{{ ln.description }}" class="atf-input" style="min-width:240px"></td>
-          <td><input form="l-{{ ln.pk }}" name="original_amount_incl_vat" type="number" step="0.01" min="0" value="{{ ln.original_amount_incl_vat }}" class="atf-input atf-num" placeholder="€"></td>
-          <td><input form="l-{{ ln.pk }}" name="discount_amount_incl_vat" type="number" step="0.01" min="0" value="{{ ln.discount_amount_incl_vat }}" class="atf-input atf-num" placeholder="€"></td>
-          <td class="right"><strong>€{{ ln.price_with_discount|floatformat:2|intcomma }}</strong></td>
-          <td style="white-space:nowrap">
-            <button form="l-{{ ln.pk }}" type="submit" class="btn btn-sm btn-primary">Save</button>
-            <button form="ld-{{ ln.pk }}" type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
-          </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="6" class="empty">No lines yet — press “Add line”.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  <div class="inv-totals">
-    <div><span>Total Discount</span><strong>€{{ inv.total_discount|floatformat:2|intcomma }}</strong></div>
-    <div><span>Net</span><strong>€{{ inv.net|floatformat:2|intcomma }}</strong></div>
-    <div><span>VAT ({{ inv.vat_rate }}%)</span><strong>€{{ inv.vat_amount|floatformat:2|intcomma }}</strong></div>
-    <div class="inv-due"><span>Total</span><strong>€{{ inv.total|floatformat:2|intcomma }}</strong></div>
-    <div><span>{% if inv.is_paid %}Paid{% else %}Pending{% endif %}</span><strong>{% if inv.is_paid %}✓ paid{% else %}€{{ inv.total|floatformat:2|intcomma }}{% endif %}</strong></div>
-  </div>
-</div>
 
 <script>
 // Choosing a client fills the bill-to fields from the register (still editable).
