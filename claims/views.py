@@ -768,7 +768,6 @@ def garage_invoice_line_update(request, pk, line_pk):
     if request.POST.get("action") == "delete":
         line.delete()
     else:
-        line.line_date = _parse_date(request.POST.get("line_date"))
         line.reg_no = request.POST.get("reg_no", line.reg_no)
         line.description = request.POST.get("description", line.description)
         for f in ("unit_price", "amount"):
