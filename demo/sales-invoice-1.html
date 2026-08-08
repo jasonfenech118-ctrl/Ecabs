@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "QVpJ3pPzY4wTPHLi1wn1vUPIrtn84GGuYRy3HYJv5Fp2avMjUkCHdyDCobsZfuoY"}'
+<body hx-headers='{"X-CSRFToken": "zexJuTpzfWFNcGtKBxG1uqWe3KI2VhgXnUsTjLtIJATGvu8bYSH0qzPFahBu8yH3"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -93,6 +93,9 @@
         <a href="sales-invoices.html" class="active">
           <span class="nav-icon">🧾</span> Sales invoices
         </a>
+        <a href="parts-receipts.html" class="">
+          <span class="nav-icon">🔩</span> Parts receipts
+        </a>
         <a href="#" class="">
           <span class="nav-icon">📈</span> Metrics
         </a>
@@ -143,7 +146,7 @@
 </div>
 
 <form method="post" action="/sales/invoices/1/">
-  <input type="hidden" name="csrfmiddlewaretoken" value="QVpJ3pPzY4wTPHLi1wn1vUPIrtn84GGuYRy3HYJv5Fp2avMjUkCHdyDCobsZfuoY">
+  <input type="hidden" name="csrfmiddlewaretoken" value="zexJuTpzfWFNcGtKBxG1uqWe3KI2VhgXnUsTjLtIJATGvu8bYSH0qzPFahBu8yH3">
 
   <div class="grid-2">
     <div class="card">
@@ -246,7 +249,7 @@ Malta</textarea></label>
 <div class="card mt">
   <div class="row" style="justify-content:space-between; align-items:center">
     <h3 style="margin:0">Lines</h3>
-    <form method="post" action="/sales/invoices/1/line/add/"><input type="hidden" name="csrfmiddlewaretoken" value="QVpJ3pPzY4wTPHLi1wn1vUPIrtn84GGuYRy3HYJv5Fp2avMjUkCHdyDCobsZfuoY">
+    <form method="post" action="/sales/invoices/1/line/add/"><input type="hidden" name="csrfmiddlewaretoken" value="zexJuTpzfWFNcGtKBxG1uqWe3KI2VhgXnUsTjLtIJATGvu8bYSH0qzPFahBu8yH3">
       <button type="submit" class="btn btn-sm btn-primary">＋ Add line</button>
     </form>
   </div>
@@ -260,8 +263,8 @@ Malta</textarea></label>
         
         <tr>
           <td>
-            <form id="l-1" method="post" action="/sales/invoices/1/line/1/"><input type="hidden" name="csrfmiddlewaretoken" value="QVpJ3pPzY4wTPHLi1wn1vUPIrtn84GGuYRy3HYJv5Fp2avMjUkCHdyDCobsZfuoY"></form>
-            <form id="ld-1" method="post" action="/sales/invoices/1/line/1/" onsubmit="return confirm('Delete this line?')"><input type="hidden" name="csrfmiddlewaretoken" value="QVpJ3pPzY4wTPHLi1wn1vUPIrtn84GGuYRy3HYJv5Fp2avMjUkCHdyDCobsZfuoY"><input type="hidden" name="action" value="delete"></form>
+            <form id="l-1" method="post" action="/sales/invoices/1/line/1/"><input type="hidden" name="csrfmiddlewaretoken" value="zexJuTpzfWFNcGtKBxG1uqWe3KI2VhgXnUsTjLtIJATGvu8bYSH0qzPFahBu8yH3"></form>
+            <form id="ld-1" method="post" action="/sales/invoices/1/line/1/" onsubmit="return confirm('Delete this line?')"><input type="hidden" name="csrfmiddlewaretoken" value="zexJuTpzfWFNcGtKBxG1uqWe3KI2VhgXnUsTjLtIJATGvu8bYSH0qzPFahBu8yH3"><input type="hidden" name="action" value="delete"></form>
             <input form="l-1" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
           </td>
           <td><input form="l-1" name="description" value="Front bumper bracket set" class="atf-input" style="min-width:240px"></td>
@@ -276,8 +279,8 @@ Malta</textarea></label>
         
         <tr>
           <td>
-            <form id="l-2" method="post" action="/sales/invoices/1/line/2/"><input type="hidden" name="csrfmiddlewaretoken" value="QVpJ3pPzY4wTPHLi1wn1vUPIrtn84GGuYRy3HYJv5Fp2avMjUkCHdyDCobsZfuoY"></form>
-            <form id="ld-2" method="post" action="/sales/invoices/1/line/2/" onsubmit="return confirm('Delete this line?')"><input type="hidden" name="csrfmiddlewaretoken" value="QVpJ3pPzY4wTPHLi1wn1vUPIrtn84GGuYRy3HYJv5Fp2avMjUkCHdyDCobsZfuoY"><input type="hidden" name="action" value="delete"></form>
+            <form id="l-2" method="post" action="/sales/invoices/1/line/2/"><input type="hidden" name="csrfmiddlewaretoken" value="zexJuTpzfWFNcGtKBxG1uqWe3KI2VhgXnUsTjLtIJATGvu8bYSH0qzPFahBu8yH3"></form>
+            <form id="ld-2" method="post" action="/sales/invoices/1/line/2/" onsubmit="return confirm('Delete this line?')"><input type="hidden" name="csrfmiddlewaretoken" value="zexJuTpzfWFNcGtKBxG1uqWe3KI2VhgXnUsTjLtIJATGvu8bYSH0qzPFahBu8yH3"><input type="hidden" name="action" value="delete"></form>
             <input form="l-2" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
           </td>
           <td><input form="l-2" name="description" value="Front bumper grille" class="atf-input" style="min-width:240px"></td>
@@ -292,8 +295,8 @@ Malta</textarea></label>
         
         <tr>
           <td>
-            <form id="l-3" method="post" action="/sales/invoices/1/line/3/"><input type="hidden" name="csrfmiddlewaretoken" value="QVpJ3pPzY4wTPHLi1wn1vUPIrtn84GGuYRy3HYJv5Fp2avMjUkCHdyDCobsZfuoY"></form>
-            <form id="ld-3" method="post" action="/sales/invoices/1/line/3/" onsubmit="return confirm('Delete this line?')"><input type="hidden" name="csrfmiddlewaretoken" value="QVpJ3pPzY4wTPHLi1wn1vUPIrtn84GGuYRy3HYJv5Fp2avMjUkCHdyDCobsZfuoY"><input type="hidden" name="action" value="delete"></form>
+            <form id="l-3" method="post" action="/sales/invoices/1/line/3/"><input type="hidden" name="csrfmiddlewaretoken" value="zexJuTpzfWFNcGtKBxG1uqWe3KI2VhgXnUsTjLtIJATGvu8bYSH0qzPFahBu8yH3"></form>
+            <form id="ld-3" method="post" action="/sales/invoices/1/line/3/" onsubmit="return confirm('Delete this line?')"><input type="hidden" name="csrfmiddlewaretoken" value="zexJuTpzfWFNcGtKBxG1uqWe3KI2VhgXnUsTjLtIJATGvu8bYSH0qzPFahBu8yH3"><input type="hidden" name="action" value="delete"></form>
             <input form="l-3" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
           </td>
           <td><input form="l-3" name="description" value="Front bumper fog plugs" class="atf-input" style="min-width:240px"></td>

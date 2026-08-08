@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load humanize static %}
+{% block title %}{{ rec.receipt_no|default:"Receipt" }} — eCabs parts{% endblock %}
+{% block content %}
+<div class="page-head no-print">
+  <div>
+    <h1>{{ rec.receipt_no|default:"New receipt" }}</h1>
+    <div class="sub">Add the parts, then open the PDF receipt</div>
+  </div>
+  <div class="row" style="gap:.5rem">
+    <a href="{% url 'parts_receipts' %}" class="btn">← All receipts</a>
+    <a href="{% url 'parts_receipt_pdf' rec.pk %}" target="_blank" rel="noopener" class="btn btn-primary">📄 Open PDF</a>
+  </div>
+</div>
+
+<form method="post" action="{% url 'parts_receipt_edit' rec.pk %}">
+  {% csrf_token %}
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Receipt details</h3>
+      <label class="field"><span>For claim <span class="muted">(open claims — optional)</span></span>
+        <select name="claim">
+          <option value="">— no claim —</option>
+          {% for c in claims %}
+          <option value="{{ c.pk }}" {% if rec.claim_id == c.pk %}selected{% endif %}>{{ c.reference }}{% if c.vehicle_registration %} · {{ c.vehicle_registration }}{% endif %}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <div class="row" style="gap:.6rem">
+        <label class="field" style="flex:1"><span>Receipt No.</span><input name="receipt_no" value="{{ rec.receipt_no }}"></label>
+        <label class="field" style="flex:1"><span>Receipt Date <span class="muted">(type it)</span></span><input type="date" name="receipt_date" value="{{ rec.receipt_date|date:'Y-m-d' }}"></label>
+      </div>
+      <div class="row" style="gap:.6rem">
+        <label class="field" style="flex:1"><span>Vehicle reg</span><input name="vehicle_reg" value="{{ rec.vehicle_reg }}"></label>
+        <label class="field" style="width:110px"><span>VAT rate %</span><input type="number" step="0.01" min="0" name="vat_rate" value="{{ rec.vat_rate }}"></label>
+      </div>
+      <label class="field"><span>Supplier</span><input name="supplier" value="{{ rec.supplier }}" placeholder="e.g. Michael Attard Ltd"></label>
+      <label class="field"><span>Reference</span><input name="reference" value="{{ rec.reference }}"></label>
+      <label class="field"><span>Status</span>
+        <select name="status">
+          {% for val, lbl in rec.Status.choices %}
+          <option value="{{ val }}" {% if rec.status == val %}selected{% endif %}>{{ lbl }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <div class="card">
+      <h3>eCabs (issuer)</h3>
+      <label class="field"><span>Issuer name</span><input name="issuer_name" value="{{ rec.issuer_name }}"></label>
+      <label class="field"><span>Address</span><textarea name="issuer_address" rows="4">{{ rec.issuer_address }}</textarea></label>
+      <div class="row" style="gap:.6rem">
+        <label class="field" style="flex:1"><span>Email</span><input name="issuer_email" value="{{ rec.issuer_email }}"></label>
+        <label class="field" style="flex:1"><span>Phone No.</span><input name="issuer_phone" value="{{ rec.issuer_phone }}"></label>
+      </div>
+      <div class="row" style="gap:.6rem">
+        <label class="field" style="flex:1"><span>VAT Registration No.</span><input name="issuer_vat" value="{{ rec.issuer_vat }}"></label>
+        <label class="field" style="width:110px"><span>EXO Number</span><input name="issuer_exo" value="{{ rec.issuer_exo }}"></label>
+      </div>
+      <label class="field"><span>Home Page</span><input name="issuer_website" value="{{ rec.issuer_website }}"></label>
+    </div>
+  </div>
+
+  <div class="card mt">
+    <label class="field"><span>Notes</span><textarea name="notes" rows="2">{{ rec.notes }}</textarea></label>
+    <button type="submit" class="btn btn-primary mt">Save receipt details</button>
+  </div>
+</form>
+
+<div class="card mt">
+  <div class="row" style="justify-content:space-between; align-items:center">
+    <h3 style="margin:0">Parts</h3>
+    <form method="post" action="{% url 'parts_receipt_line_add' rec.pk %}">{% csrf_token %}
+      <button type="submit" class="btn btn-sm btn-primary">＋ Add part</button>
+    </form>
+  </div>
+  <p class="muted" style="font-size:.8rem; margin:.3rem 0 .5rem">Prices are <strong>VAT-exclusive</strong>; VAT is added at the bottom. Line total = qty × unit price.</p>
+  <div class="table-wrap">
+    <table class="list at-fault">
+      <thead>
+        <tr><th style="width:5rem">Qty</th><th>Part code</th><th>Description</th><th class="right">Unit price €</th><th class="right">Total €</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for ln in rec.lines.all %}
+        <tr>
+          <td>
+            <form id="l-{{ ln.pk }}" method="post" action="{% url 'parts_receipt_line_update' rec.pk ln.pk %}">{% csrf_token %}</form>
+            <form id="ld-{{ ln.pk }}" method="post" action="{% url 'parts_receipt_line_update' rec.pk ln.pk %}" onsubmit="return confirm('Delete this part?')">{% csrf_token %}<input type="hidden" name="action" value="delete"></form>
+            <input form="l-{{ ln.pk }}" name="quantity" type="number" step="0.01" min="0" value="{{ ln.quantity }}" class="atf-input atf-num">
+          </td>
+          <td><input form="l-{{ ln.pk }}" name="part_code" value="{{ ln.part_code }}" class="atf-input" style="width:9rem"></td>
+          <td><input form="l-{{ ln.pk }}" name="description" value="{{ ln.description }}" class="atf-input" style="min-width:220px"></td>
+          <td><input form="l-{{ ln.pk }}" name="unit_price" type="number" step="0.01" min="0" value="{{ ln.unit_price }}" class="atf-input atf-num" placeholder="€"></td>
+          <td class="right"><strong>€{{ ln.line_total|floatformat:2|intcomma }}</strong></td>
+          <td style="white-space:nowrap">
+            <button form="l-{{ ln.pk }}" type="submit" class="btn btn-sm btn-primary">Save</button>
+            <button form="ld-{{ ln.pk }}" type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="empty">No parts yet — press “Add part”.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="inv-totals">
+    <div><span>Subtotal</span><strong>€{{ rec.subtotal|floatformat:2|intcomma }}</strong></div>
+    <div><span>VAT ({{ rec.vat_rate }}%)</span><strong>€{{ rec.vat_amount|floatformat:2|intcomma }}</strong></div>
+    <div class="inv-due"><span>Total</span><strong>€{{ rec.total|floatformat:2|intcomma }}</strong></div>
+  </div>
+</div>
+{% endblock %}

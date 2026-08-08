@@ -1341,3 +1341,110 @@ class SalesInvoiceLine(models.Model):
     def price_with_discount(self):
         return (self.original_amount_incl_vat or Decimal("0")) - (
             self.discount_amount_incl_vat or Decimal("0"))
+
+
+# --- Parts receipts -----------------------------------------------------------
+
+class PartsReceipt(models.Model):
+    """An eCabs-branded receipt for parts, in the ECABS invoice layout. Stands
+    on its own but can be linked to an open claim, so parts for a repair can be
+    receipted without building a full claim. Prices are VAT-exclusive; VAT is
+    added at the bottom."""
+
+    # Optional link to the claim the parts are for.
+    claim = models.ForeignKey(
+        "Claim", on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="parts_receipts",
+    )
+
+    # Issuer — eCabs. Same defaults as the sales invoice, editable per receipt.
+    issuer_name = models.CharField(
+        "Issuer name", max_length=160, default="eCabs Operators Company Ltd.")
+    issuer_address = models.TextField(
+        "Issuer address",
+        default="eCabs Head Office\nTriq Santu Wistin\nSTJ 3180 San Giljan\nMalta")
+    issuer_email = models.CharField("Email", max_length=200, default="finance@ecabs.com.mt")
+    issuer_website = models.CharField(
+        "Home Page", max_length=200, default="https://www.ecabs.com.mt/")
+    issuer_phone = models.CharField("Phone No.", max_length=60, default="21383838")
+    issuer_vat = models.CharField("VAT Registration No.", max_length=60, default="MT21583611")
+    issuer_exo = models.CharField("EXO Number", max_length=40, default="4270")
+
+    receipt_no = models.CharField("Receipt No.", max_length=40, blank=True)
+    # Manual date — never auto-filled (house rule for all documents).
+    receipt_date = models.DateField("Receipt Date", null=True, blank=True)
+    vehicle_reg = models.CharField("Vehicle reg", max_length=20, blank=True)
+    supplier = models.CharField("Supplier", max_length=160, blank=True)
+    reference = models.CharField("Reference", max_length=120, blank=True)
+
+    vat_rate = models.DecimalField("VAT rate %", max_digits=5, decimal_places=2, default=18)
+
+    class Status(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        SENT = "sent", "Sent"
+        PAID = "paid", "Paid"
+
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.DRAFT, db_index=True)
+
+    notes = models.TextField("Notes", blank=True)
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="+",
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="+", verbose_name="Last edited by",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-id"]
+
+    def __str__(self):
+        return f"{self.receipt_no or 'Receipt'} — {self.supplier or self.vehicle_reg or '—'}"
+
+    def get_absolute_url(self):
+        return reverse("parts_receipt_edit", args=[self.pk])
+
+    # Lines are VAT-exclusive; VAT is added at the bottom.
+    @property
+    def subtotal(self):
+        return sum((ln.line_total for ln in self.lines.all()), Decimal("0"))
+
+    @property
+    def vat_amount(self):
+        return (self.subtotal * (self.vat_rate or Decimal("0")) / Decimal("100")).quantize(Decimal("0.01"))
+
+    @property
+    def total(self):
+        return self.subtotal + self.vat_amount
+
+    @property
+    def is_paid(self):
+        return self.status == self.Status.PAID
+
+
+class PartsReceiptLine(models.Model):
+    """One part on a parts receipt — code, description, quantity and unit price
+    (VAT-exclusive). Line total is quantity × unit price."""
+
+    receipt = models.ForeignKey(
+        PartsReceipt, on_delete=models.CASCADE, related_name="lines")
+    part_code = models.CharField("Part code", max_length=60, blank=True)
+    description = models.CharField("Description", max_length=255, blank=True)
+    quantity = models.DecimalField("Qty", max_digits=10, decimal_places=2, default=1)
+    unit_price = models.DecimalField("Unit price", max_digits=12, decimal_places=2, default=0)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return self.description or self.part_code or f"Line {self.pk}"
+
+    @property
+    def line_total(self):
+        return (self.quantity or Decimal("0")) * (self.unit_price or Decimal("0"))

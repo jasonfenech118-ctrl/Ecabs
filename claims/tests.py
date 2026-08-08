@@ -921,6 +921,47 @@ class ViewTests(TestCase):
         self.assertEqual(r["Content-Type"], "application/pdf")
         self.assertTrue(r.content.startswith(b"%PDF-"))
 
+    def test_parts_receipt_standalone_and_claim_link(self):
+        """Parts receipt: optional open-claim link, VAT-exclusive lines with VAT
+        added at the bottom, and a PDF in the ECABS layout."""
+        from datetime import date
+        from decimal import Decimal
+
+        from claims.models import PartsReceipt, PartsReceiptLine
+
+        claim = Claim.objects.create(
+            vehicle_registration="ECB101", status=Claim.Status.OPEN,
+            submitted_at=timezone.now(), created_by=self.user)
+
+        # New receipt pre-filled from the open claim.
+        self.client.post(reverse("parts_receipt_new"), {"claim": claim.pk})
+        rec = PartsReceipt.objects.get()
+        self.assertEqual(rec.claim_id, claim.pk)
+        self.assertEqual(rec.vehicle_reg, "ECB101")
+
+        self.client.post(reverse("parts_receipt_edit", args=[rec.pk]), {
+            "receipt_no": "PR01001", "receipt_date": "2023-05-17",
+            "supplier": "Michael Attard Ltd", "reference": "ecabshir",
+            "vehicle_reg": "ECB101", "vat_rate": "18", "status": "sent",
+        })
+        PartsReceiptLine.objects.create(
+            receipt=rec, part_code="1618037980", description="Bracket set",
+            quantity=Decimal("1"), unit_price=Decimal("25.95"))
+        PartsReceiptLine.objects.create(
+            receipt=rec, part_code="98120622", description="Grille",
+            quantity=Decimal("2"), unit_price=Decimal("62.97"))
+
+        rec.refresh_from_db()
+        self.assertEqual(rec.receipt_date, date(2023, 5, 17))
+        # Subtotal 25.95 + 2×62.97 = 151.89; VAT 27.34; total 179.23.
+        self.assertEqual(rec.subtotal, Decimal("151.89"))
+        self.assertEqual(rec.vat_amount, Decimal("27.34"))
+        self.assertEqual(rec.total, Decimal("179.23"))
+
+        r = self.client.get(reverse("parts_receipt_pdf", args=[rec.pk]))
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.content.startswith(b"%PDF-"))
+
     def test_master_sheet_and_csv(self):
         from decimal import Decimal
 

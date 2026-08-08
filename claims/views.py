@@ -41,6 +41,8 @@ from .models import (
     GarageJobItem,
     GarageJobLabour,
     GeneralClaim,
+    PartsReceipt,
+    PartsReceiptLine,
     Reminder,
     RepairLine,
     RepairType,
@@ -1005,6 +1007,158 @@ def client_insurers(request):
     return render(request, "claims/client_insurers.html", {
         "clients": ClientInsurer.objects.filter(is_active=True),
     })
+
+
+# --- Parts receipts -----------------------------------------------------------
+
+PARTS_HEADER_FIELDS = (
+    "issuer_name", "issuer_address", "issuer_email", "issuer_website",
+    "issuer_phone", "issuer_vat", "issuer_exo",
+    "receipt_no", "vehicle_reg", "supplier", "reference", "notes",
+)
+
+
+def _next_receipt_no():
+    """Suggest the next parts-receipt number from the highest numeric suffix."""
+    import re
+
+    best = 1000
+    for raw in PartsReceipt.objects.values_list("receipt_no", flat=True):
+        m = re.search(r"(\d+)", raw or "")
+        if m:
+            best = max(best, int(m.group(1)))
+    return f"PR{best + 1:05d}"
+
+
+@login_required
+def parts_receipts(request):
+    """List of eCabs parts receipts, searchable and filterable by status."""
+    qs = (PartsReceipt.objects.select_related("claim", "created_by")
+          .prefetch_related("lines"))
+
+    status = (request.GET.get("status") or "").strip()
+    if status in dict(PartsReceipt.Status.choices):
+        qs = qs.filter(status=status)
+
+    q = (request.GET.get("q") or "").strip()
+    if q:
+        qs = qs.filter(
+            Q(receipt_no__icontains=q) | Q(supplier__icontains=q)
+            | Q(vehicle_reg__icontains=q) | Q(claim__reference__icontains=q)
+        )
+
+    return render(request, "claims/parts_receipts.html", {
+        "receipts": qs,
+        "status": status,
+        "q": q,
+        "statuses": PartsReceipt.Status.choices,
+    })
+
+
+@login_required
+@require_POST
+def parts_receipt_new(request):
+    """Start a new parts receipt, optionally pre-filled from an open claim."""
+    rec = PartsReceipt(
+        receipt_no=_next_receipt_no(),
+        created_by=request.user,
+        updated_by=request.user,
+    )
+    claim_id = (request.POST.get("claim") or "").strip()
+    if claim_id.isdigit():
+        claim = Claim.objects.filter(pk=int(claim_id)).first()
+        if claim:
+            rec.claim = claim
+            rec.vehicle_reg = claim.vehicle_registration or ""
+    rec.save()
+    return redirect("parts_receipt_edit", pk=rec.pk)
+
+
+@login_required
+def parts_receipt_edit(request, pk):
+    """Edit a parts receipt: header fields, the linked claim, and inline lines."""
+    rec = get_object_or_404(PartsReceipt, pk=pk)
+    if request.method == "POST":
+        for f in PARTS_HEADER_FIELDS:
+            setattr(rec, f, request.POST.get(f, getattr(rec, f)))
+
+        claim_id = (request.POST.get("claim") or "").strip()
+        rec.claim = (Claim.objects.filter(pk=int(claim_id)).first()
+                     if claim_id.isdigit() else None)
+
+        rec.receipt_date = _parse_date(request.POST.get("receipt_date"))
+
+        raw = (request.POST.get("vat_rate") or "").strip()
+        if raw:
+            try:
+                rec.vat_rate = Decimal(raw)
+            except InvalidOperation:
+                pass
+
+        status = request.POST.get("status")
+        if status in dict(PartsReceipt.Status.choices):
+            rec.status = status
+
+        rec.updated_by = request.user
+        rec.save()
+        return redirect("parts_receipt_edit", pk=rec.pk)
+
+    return render(request, "claims/parts_receipt_edit.html", {
+        "rec": rec,
+        "claims": open_claims_qs().order_by("-id")[:500],
+    })
+
+
+@login_required
+@require_POST
+def parts_receipt_line_add(request, pk):
+    """Add a blank part line to the receipt."""
+    rec = get_object_or_404(PartsReceipt, pk=pk)
+    last = rec.lines.order_by("-order").first()
+    PartsReceiptLine.objects.create(
+        receipt=rec, order=(last.order + 1) if last else 0)
+    rec.updated_by = request.user
+    rec.save(update_fields=["updated_by", "updated_at"])
+    return redirect("parts_receipt_edit", pk=rec.pk)
+
+
+@login_required
+@require_POST
+def parts_receipt_line_update(request, pk, line_pk):
+    """Inline save or delete of one part line."""
+    rec = get_object_or_404(PartsReceipt, pk=pk)
+    line = get_object_or_404(PartsReceiptLine, pk=line_pk, receipt=rec)
+    if request.POST.get("action") == "delete":
+        line.delete()
+    else:
+        line.part_code = request.POST.get("part_code", line.part_code)
+        line.description = request.POST.get("description", line.description)
+        for f in ("quantity", "unit_price"):
+            raw = (request.POST.get(f) or "").strip()
+            if raw:
+                try:
+                    setattr(line, f, Decimal(raw))
+                except InvalidOperation:
+                    pass
+            else:
+                setattr(line, f, Decimal("0"))
+        line.save()
+    rec.updated_by = request.user
+    rec.save(update_fields=["updated_by", "updated_at"])
+    return redirect("parts_receipt_edit", pk=rec.pk)
+
+
+@login_required
+def parts_receipt_pdf(request, pk):
+    """Render the parts receipt as a PDF in the ECABS layout."""
+    rec = get_object_or_404(PartsReceipt, pk=pk)
+    from .services.parts_receipt_pdf import build_parts_receipt_pdf
+
+    pdf = build_parts_receipt_pdf(rec)
+    resp = HttpResponse(pdf, content_type="application/pdf")
+    name = (rec.receipt_no or "receipt").replace(" ", "_").replace(".", "")
+    resp["Content-Disposition"] = f'inline; filename="{name}.pdf"'
+    return resp
 
 
 # --- Accident list (master register) -----------------------------------------

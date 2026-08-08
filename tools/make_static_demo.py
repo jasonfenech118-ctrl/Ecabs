@@ -64,13 +64,17 @@ def build_url_map():
     }
     for pk in Vehicle.objects.values_list("pk", flat=True):
         urls[f"/vehicles/{pk}/"] = f"vehicle-{pk}.html"
-    from claims.models import SalesInvoice
+    from claims.models import PartsReceipt, SalesInvoice
 
     urls["/sales/invoices/"] = "sales-invoices.html"
     urls["/sales/clients/"] = "sales-clients.html"
     for pk in SalesInvoice.objects.values_list("pk", flat=True):
         urls[f"/sales/invoices/{pk}/"] = f"sales-invoice-{pk}.html"
         urls[f"/sales/invoices/{pk}/pdf/"] = f"sales-invoice-{pk}.pdf"
+    urls["/parts/receipts/"] = "parts-receipts.html"
+    for pk in PartsReceipt.objects.values_list("pk", flat=True):
+        urls[f"/parts/receipts/{pk}/"] = f"parts-receipt-{pk}.html"
+        urls[f"/parts/receipts/{pk}/pdf/"] = f"parts-receipt-{pk}.pdf"
     company_pks = list(Company.objects.values_list("pk", flat=True))
     for claim in Claim.objects.all():
         pk = claim.pk
@@ -297,6 +301,27 @@ def seed_samples(user):
                 invoice=inv, quantity=1, description=desc,
                 original_amount_incl_vat=Decimal(amt), order=i)
 
+    # A parts receipt (eCabs-branded), linked to an open claim, showing the
+    # detailed part-code lines from a supplier receipt.
+    from claims.models import PartsReceipt, PartsReceiptLine
+
+    if not PartsReceipt.objects.exists():
+        open_claim = Claim.objects.exclude(
+            status=Claim.Status.DRAFT).order_by("id").first()
+        rec = PartsReceipt.objects.create(
+            receipt_no="PR01001", receipt_date=date(2026, 5, 17),
+            supplier="Michael Attard Ltd", reference="ecabshir",
+            vehicle_reg=open_claim.vehicle_registration if open_claim else "ECB101",
+            claim=open_claim, status="sent", created_by=user, updated_by=user)
+        for i, (code, desc, price) in enumerate([
+            ("1618037980", "FRT BUMPER BRCKT SET", "25.95"),
+            ("98120622", "FRT BUMPER GRILLE IN", "62.97"),
+            ("1618038080", "FRT BUMPER FOG PLUGS", "43.28"),
+        ]):
+            PartsReceiptLine.objects.create(
+                receipt=rec, part_code=code, description=desc,
+                quantity=1, unit_price=Decimal(price), order=i)
+
 
 def main():
     # A throwaway login for rendering, and one blank draft so the
@@ -349,6 +374,13 @@ def main():
 
     for inv in SalesInvoice.objects.all():
         (OUT / f"sales-invoice-{inv.pk}.pdf").write_bytes(build_sales_invoice_pdf(inv))
+        pdfs += 1
+
+    from claims.models import PartsReceipt
+    from claims.services.parts_receipt_pdf import build_parts_receipt_pdf
+
+    for rec in PartsReceipt.objects.all():
+        (OUT / f"parts-receipt-{rec.pk}.pdf").write_bytes(build_parts_receipt_pdf(rec))
         pdfs += 1
 
     bundle_static()

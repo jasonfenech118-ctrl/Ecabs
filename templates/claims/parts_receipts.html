@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load humanize static %}
+{% block title %}Parts receipts — eCabs{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Parts receipts</h1>
+    <div class="sub">eCabs-branded receipts for parts — standalone or linked to an open claim</div>
+  </div>
+  <form method="post" action="{% url 'parts_receipt_new' %}">{% csrf_token %}
+    <button type="submit" class="btn btn-primary">＋ New receipt</button>
+  </form>
+</div>
+
+<div class="card no-print">
+  <form method="get" class="row" style="gap:.6rem; align-items:flex-end; flex-wrap:wrap">
+    <label class="field" style="margin:0"><span>Search</span>
+      <input name="q" value="{{ q }}" placeholder="Receipt no, supplier, reg or claim…" style="min-width:220px">
+    </label>
+    <label class="field" style="margin:0"><span>Status</span>
+      <select name="status">
+        <option value="">All statuses</option>
+        {% for val, lbl in statuses %}<option value="{{ val }}" {% if status == val %}selected{% endif %}>{{ lbl }}</option>{% endfor %}
+      </select>
+    </label>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="{% url 'parts_receipts' %}" class="btn btn-sm">Reset</a>
+  </form>
+</div>
+
+<div class="card table-wrap mt">
+  <table class="list">
+    <thead>
+      <tr><th>Receipt No.</th><th>Date</th><th>Supplier</th><th>Vehicle</th><th>Claim</th><th class="right">Total</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for rec in receipts %}
+      <tr>
+        <td><a href="{{ rec.get_absolute_url }}"><strong>{{ rec.receipt_no|default:"(no number)" }}</strong></a></td>
+        <td>{{ rec.receipt_date|date:"d/m/Y"|default:"—" }}</td>
+        <td>{{ rec.supplier|default:"—" }}</td>
+        <td>{{ rec.vehicle_reg|default:"—" }}</td>
+        <td>{% if rec.claim %}<a href="{% url 'claim_detail' rec.claim.pk %}">{{ rec.claim.reference }}</a>{% else %}—{% endif %}</td>
+        <td class="right">€{{ rec.total|floatformat:2|intcomma }}</td>
+        <td><span class="pill pill-{{ rec.status }}">{{ rec.get_status_display }}</span></td>
+        <td style="white-space:nowrap">
+          <a href="{{ rec.get_absolute_url }}" class="btn btn-sm">Edit</a>
+          <a href="{% url 'parts_receipt_pdf' rec.pk %}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">PDF</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="empty">No receipts yet — press “New receipt”.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

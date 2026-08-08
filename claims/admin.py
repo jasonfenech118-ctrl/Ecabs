@@ -18,6 +18,8 @@ from .models import (
     GarageJobLabour,
     GeneralClaim,
     OtherCharge,
+    PartsReceipt,
+    PartsReceiptLine,
     Reminder,
     RepairType,
     SalesInvoice,
@@ -118,6 +120,20 @@ class ClientInsurerAdmin(admin.ModelAdmin):
     list_display = ("name", "customer_no", "vat_reg_no", "company_reg_no", "is_active")
     list_filter = ("is_active",)
     search_fields = ("name", "customer_no", "vat_reg_no")
+
+
+class PartsReceiptLineInline(admin.TabularInline):
+    model = PartsReceiptLine
+    extra = 0
+
+
+@admin.register(PartsReceipt)
+class PartsReceiptAdmin(admin.ModelAdmin):
+    list_display = ("receipt_no", "receipt_date", "supplier", "vehicle_reg", "status", "updated_by")
+    list_filter = ("status",)
+    search_fields = ("receipt_no", "supplier", "vehicle_reg", "claim__reference")
+    readonly_fields = ("created_by", "updated_by", "created_at", "updated_at")
+    inlines = [PartsReceiptLineInline]
 
 
 class OtherChargeInline(admin.TabularInline):

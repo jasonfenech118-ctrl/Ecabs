@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PR01001 — eCabs parts</title>
+  <link rel="stylesheet" href="static/css/app.css?v=2">
+  
+</head>
+<body hx-headers='{"X-CSRFToken": "EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"}'
+      class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
+
+<div class="layout">
+  <aside class="sidebar ">
+    <div class="sidebar-top">
+      
+      <a href="index.html" class="brand" title="Home">
+        <img src="static/img/vai-drive.jpg" alt="Vai Drive — home" class="brand-logo">
+      </a>
+      
+      <button type="button" class="nav-toggle" aria-label="Toggle menu"
+              onclick="this.closest('.sidebar').classList.toggle('open')">☰</button>
+    </div>
+    <nav>
+      
+      <div class="nav-sec nav-sec--main">
+        <span class="nav-group">Main</span>
+        <a href="index.html" class="">
+          <span class="nav-icon">⌂</span> Home
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">◈</span> Overview
+        </a>
+        <a href="dashboard.html" class="">
+          <span class="nav-icon">▦</span> Dashboard
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--claims">
+        <span class="nav-group">Claims</span>
+        <a href="claims.html" class="">
+          <span class="nav-icon">▤</span> All claims
+        </a>
+        <a href="claims-open.html" class="nav-sub ">
+          <span class="nav-icon">●</span> Open claims
+        </a>
+        <a href="claims-closed.html" class="nav-sub ">
+          <span class="nav-icon">○</span> Closed claims
+        </a>
+        <a href="claims-overdue.html" class="nav-sub ">
+          <span class="nav-icon">▲</span> Overdue
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">⚠</span> At fault
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">✦</span> General claims (Firefly)
+        </a>
+        <a href="#" class="nav-sub ">
+          <span class="nav-icon">⚙</span> Manage statuses
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--garage">
+        <span class="nav-group">ACR Garage</span>
+        <a href="#" class="">
+          <span class="nav-icon">🔧</span> Worklist
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">🧾</span> Invoices
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">📊</span> Garage metrics
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">⚙</span> Manage types
+        </a>
+        
+      </div>
+
+      <div class="nav-sec nav-sec--reports">
+        <span class="nav-group">Records &amp; reports</span>
+        <a href="#" class="">
+          <span class="nav-icon">▤</span> Accident list
+        </a>
+        <a href="master.html" class="">
+          <span class="nav-icon">▥</span> Master sheet
+        </a>
+        <a href="bills.html" class="">
+          <span class="nav-icon">€</span> Bills this month
+        </a>
+        <a href="sales-invoices.html" class="">
+          <span class="nav-icon">🧾</span> Sales invoices
+        </a>
+        <a href="parts-receipts.html" class="active">
+          <span class="nav-icon">🔩</span> Parts receipts
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">📈</span> Metrics
+        </a>
+        <a href="data.html" class="">
+          <span class="nav-icon">◔</span> Data
+        </a>
+      </div>
+
+      <div class="nav-sec nav-sec--manage">
+        <span class="nav-group">Manage</span>
+        <a href="vehicles.html" class="">
+          <span class="nav-icon">⬖</span> Vehicles
+        </a>
+        <a href="reminders.html" class="">
+          <span class="nav-icon">◷</span> Reminders
+        </a>
+        <a href="#" class="">
+          <span class="nav-icon">☰</span> Audit trail
+        </a>
+        
+      </div>
+      
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-name">👤 Vai Drive Staff</span>
+      <div class="sidebar-footer-actions">
+        <a href="#" class="link-btn">Change password</a>
+        <a class="link-btn" href="login.html">Sign out</a>
+      </div>
+    </div>
+  </aside>
+  <main class="main">
+    
+    
+      <div class="home-btn-bar no-print"><a href="index.html" class="home-btn">⌂ Home</a></div>
+    
+    
+    
+<div class="page-head no-print">
+  <div>
+    <h1>PR01001</h1>
+    <div class="sub">Add the parts, then open the PDF receipt</div>
+  </div>
+  <div class="row" style="gap:.5rem">
+    <a href="parts-receipts.html" class="btn">← All receipts</a>
+    <a href="parts-receipt-1.pdf" target="_blank" rel="noopener" class="btn btn-primary">📄 Open PDF</a>
+  </div>
+</div>
+
+<form method="post" action="/parts/receipts/1/">
+  <input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk">
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Receipt details</h3>
+      <label class="field"><span>For claim <span class="muted">(open claims — optional)</span></span>
+        <select name="claim">
+          <option value="">— no claim —</option>
+          
+          <option value="5" >CLM-2026-0005 · ECB512</option>
+          
+          <option value="4" >CLM-2026-0004 · ECB407</option>
+          
+          <option value="3" >CLM-2026-0003 · ECB330</option>
+          
+          <option value="2" >CLM-2026-0002 · ECB214</option>
+          
+          <option value="1" selected>CLM-2026-0001 · ECB101</option>
+          
+        </select>
+      </label>
+      <div class="row" style="gap:.6rem">
+        <label class="field" style="flex:1"><span>Receipt No.</span><input name="receipt_no" value="PR01001"></label>
+        <label class="field" style="flex:1"><span>Receipt Date <span class="muted">(type it)</span></span><input type="date" name="receipt_date" value="2026-05-17"></label>
+      </div>
+      <div class="row" style="gap:.6rem">
+        <label class="field" style="flex:1"><span>Vehicle reg</span><input name="vehicle_reg" value="ECB101"></label>
+        <label class="field" style="width:110px"><span>VAT rate %</span><input type="number" step="0.01" min="0" name="vat_rate" value="18.00"></label>
+      </div>
+      <label class="field"><span>Supplier</span><input name="supplier" value="Michael Attard Ltd" placeholder="e.g. Michael Attard Ltd"></label>
+      <label class="field"><span>Reference</span><input name="reference" value="ecabshir"></label>
+      <label class="field"><span>Status</span>
+        <select name="status">
+          
+          <option value="draft" >Draft</option>
+          
+          <option value="sent" selected>Sent</option>
+          
+          <option value="paid" >Paid</option>
+          
+        </select>
+      </label>
+    </div>
+
+    <div class="card">
+      <h3>eCabs (issuer)</h3>
+      <label class="field"><span>Issuer name</span><input name="issuer_name" value="eCabs Operators Company Ltd."></label>
+      <label class="field"><span>Address</span><textarea name="issuer_address" rows="4">eCabs Head Office
+Triq Santu Wistin
+STJ 3180 San Giljan
+Malta</textarea></label>
+      <div class="row" style="gap:.6rem">
+        <label class="field" style="flex:1"><span>Email</span><input name="issuer_email" value="finance@ecabs.com.mt"></label>
+        <label class="field" style="flex:1"><span>Phone No.</span><input name="issuer_phone" value="21383838"></label>
+      </div>
+      <div class="row" style="gap:.6rem">
+        <label class="field" style="flex:1"><span>VAT Registration No.</span><input name="issuer_vat" value="MT21583611"></label>
+        <label class="field" style="width:110px"><span>EXO Number</span><input name="issuer_exo" value="4270"></label>
+      </div>
+      <label class="field"><span>Home Page</span><input name="issuer_website" value="https://www.ecabs.com.mt/"></label>
+    </div>
+  </div>
+
+  <div class="card mt">
+    <label class="field"><span>Notes</span><textarea name="notes" rows="2"></textarea></label>
+    <button type="submit" class="btn btn-primary mt">Save receipt details</button>
+  </div>
+</form>
+
+<div class="card mt">
+  <div class="row" style="justify-content:space-between; align-items:center">
+    <h3 style="margin:0">Parts</h3>
+    <form method="post" action="/parts/receipts/1/line/add/"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk">
+      <button type="submit" class="btn btn-sm btn-primary">＋ Add part</button>
+    </form>
+  </div>
+  <p class="muted" style="font-size:.8rem; margin:.3rem 0 .5rem">Prices are <strong>VAT-exclusive</strong>; VAT is added at the bottom. Line total = qty × unit price.</p>
+  <div class="table-wrap">
+    <table class="list at-fault">
+      <thead>
+        <tr><th style="width:5rem">Qty</th><th>Part code</th><th>Description</th><th class="right">Unit price €</th><th class="right">Total €</th><th></th></tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>
+            <form id="l-1" method="post" action="/parts/receipts/1/line/1/"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"></form>
+            <form id="ld-1" method="post" action="/parts/receipts/1/line/1/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"><input type="hidden" name="action" value="delete"></form>
+            <input form="l-1" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
+          </td>
+          <td><input form="l-1" name="part_code" value="1618037980" class="atf-input" style="width:9rem"></td>
+          <td><input form="l-1" name="description" value="FRT BUMPER BRCKT SET" class="atf-input" style="min-width:220px"></td>
+          <td><input form="l-1" name="unit_price" type="number" step="0.01" min="0" value="25.95" class="atf-input atf-num" placeholder="€"></td>
+          <td class="right"><strong>€25.95</strong></td>
+          <td style="white-space:nowrap">
+            <button form="l-1" type="submit" class="btn btn-sm btn-primary">Save</button>
+            <button form="ld-1" type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>
+            <form id="l-2" method="post" action="/parts/receipts/1/line/2/"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"></form>
+            <form id="ld-2" method="post" action="/parts/receipts/1/line/2/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"><input type="hidden" name="action" value="delete"></form>
+            <input form="l-2" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
+          </td>
+          <td><input form="l-2" name="part_code" value="98120622" class="atf-input" style="width:9rem"></td>
+          <td><input form="l-2" name="description" value="FRT BUMPER GRILLE IN" class="atf-input" style="min-width:220px"></td>
+          <td><input form="l-2" name="unit_price" type="number" step="0.01" min="0" value="62.97" class="atf-input atf-num" placeholder="€"></td>
+          <td class="right"><strong>€62.97</strong></td>
+          <td style="white-space:nowrap">
+            <button form="l-2" type="submit" class="btn btn-sm btn-primary">Save</button>
+            <button form="ld-2" type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>
+            <form id="l-3" method="post" action="/parts/receipts/1/line/3/"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"></form>
+            <form id="ld-3" method="post" action="/parts/receipts/1/line/3/" onsubmit="return confirm('Delete this part?')"><input type="hidden" name="csrfmiddlewaretoken" value="EOvIVkWWi1HrdswTFaRTXZT1kj2vnXtesuqSKc05MFVkwgbk2vSST8MsrQVXAeUk"><input type="hidden" name="action" value="delete"></form>
+            <input form="l-3" name="quantity" type="number" step="0.01" min="0" value="1.00" class="atf-input atf-num">
+          </td>
+          <td><input form="l-3" name="part_code" value="1618038080" class="atf-input" style="width:9rem"></td>
+          <td><input form="l-3" name="description" value="FRT BUMPER FOG PLUGS" class="atf-input" style="min-width:220px"></td>
+          <td><input form="l-3" name="unit_price" type="number" step="0.01" min="0" value="43.28" class="atf-input atf-num" placeholder="€"></td>
+          <td class="right"><strong>€43.28</strong></td>
+          <td style="white-space:nowrap">
+            <button form="l-3" type="submit" class="btn btn-sm btn-primary">Save</button>
+            <button form="ld-3" type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <div class="inv-totals">
+    <div><span>Subtotal</span><strong>€132.20</strong></div>
+    <div><span>VAT (18.00%)</span><strong>€23.80</strong></div>
+    <div class="inv-due"><span>Total</span><strong>€156.00</strong></div>
+  </div>
+</div>
+
+  </main>
+</div>
+
+
+<div id="reminder-popup" class="modal-overlay no-print" hidden>
+  <div class="modal-card">
+    <h2 class="modal-title"><span class="nav-icon">◷</span> Reminders due</h2>
+    <ul class="popup-list">
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB330</strong></div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Insurance payment — ECB407</strong></div>
+        <div class="muted popup-meta">Due 20 Jul 2026</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
+        <div class="muted popup-meta">Due 28 Jul 2026 · CLM-2026-0005</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
+        <div class="muted popup-meta">Due 04 Aug 2026 · CLM-2026-0004</div>
+      </li>
+      
+    </ul>
+    
+    <div class="modal-actions">
+      <a href="reminders.html" class="btn btn-primary">View all reminders</a>
+      <button type="button" class="btn" onclick="dismissReminderPopup()">Dismiss</button>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    // Show once per browser session so it doesn't nag on every page.
+    var seenKey = 'reminderPopupSeen';
+    var el = document.getElementById('reminder-popup');
+    if (el && !sessionStorage.getItem(seenKey)) {
+      el.hidden = false;
+      sessionStorage.setItem(seenKey, '1');
+    }
+  })();
+  function dismissReminderPopup() {
+    var el = document.getElementById('reminder-popup');
+    if (el) el.hidden = true;
+  }
+</script>
+
+
+</body>
+</html>

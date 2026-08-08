@@ -112,6 +112,9 @@
         <a href="{% url 'sales_invoices' %}" class="{% if 'sales_invoice' in request.resolver_match.url_name or request.resolver_match.url_name == 'client_insurers' %}active{% endif %}">
           <span class="nav-icon">🧾</span> Sales invoices
         </a>
+        <a href="{% url 'parts_receipts' %}" class="{% if 'parts_receipt' in request.resolver_match.url_name %}active{% endif %}">
+          <span class="nav-icon">🔩</span> Parts receipts
+        </a>
         <a href="{% url 'metrics' %}" class="{% if request.resolver_match.url_name == 'metrics' %}active{% endif %}">
           <span class="nav-icon">📈</span> Metrics
         </a>

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "xF9EUKstdN4NCgBP2HZTa3bfjE4Dr7xNFBiYyjmpkoXWX4CQVvezSHZ9gm9uCVfh"}'
+<body hx-headers='{"X-CSRFToken": "VmAL1zijiqLXvuv60WH40EBIWfV2uT54J2vVQrmsM4ZQOiaxnhI3WNu93MOuHawa"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -93,6 +93,9 @@
         <a href="sales-invoices.html" class="active">
           <span class="nav-icon">🧾</span> Sales invoices
         </a>
+        <a href="parts-receipts.html" class="">
+          <span class="nav-icon">🔩</span> Parts receipts
+        </a>
         <a href="#" class="">
           <span class="nav-icon">📈</span> Metrics
         </a>
@@ -142,7 +145,7 @@
 <div class="card">
   <h3 id="add">Add a client</h3>
   <form method="post" action="/sales/clients/">
-    <input type="hidden" name="csrfmiddlewaretoken" value="xF9EUKstdN4NCgBP2HZTa3bfjE4Dr7xNFBiYyjmpkoXWX4CQVvezSHZ9gm9uCVfh">
+    <input type="hidden" name="csrfmiddlewaretoken" value="VmAL1zijiqLXvuv60WH40EBIWfV2uT54J2vVQrmsM4ZQOiaxnhI3WNu93MOuHawa">
     <div class="grid-2">
       <div>
         <label class="field"><span>Client name</span><input name="name" required placeholder="e.g. PWO S.p.A. Malta Branch"></label>
@@ -183,7 +186,7 @@ Malta"
             data-company_reg_no="OC 1562" data-email=""
             data-default_payment_terms="Net 15 days">Edit</button>
           <form method="post" action="/sales/clients/" style="display:inline" onsubmit="return confirm('Remove this client from the register?')">
-            <input type="hidden" name="csrfmiddlewaretoken" value="xF9EUKstdN4NCgBP2HZTa3bfjE4Dr7xNFBiYyjmpkoXWX4CQVvezSHZ9gm9uCVfh"><input type="hidden" name="pk" value="1"><input type="hidden" name="action" value="delete">
+            <input type="hidden" name="csrfmiddlewaretoken" value="VmAL1zijiqLXvuv60WH40EBIWfV2uT54J2vVQrmsM4ZQOiaxnhI3WNu93MOuHawa"><input type="hidden" name="pk" value="1"><input type="hidden" name="action" value="delete">
             <button type="submit" class="btn btn-sm btn-danger" title="Remove">✕</button>
           </form>
         </td>
