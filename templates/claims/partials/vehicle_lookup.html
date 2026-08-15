@@ -1,6 +1,8 @@
 {% load static %}
-{# Registration suggestions plus the make/model behind each one, so a vehicle
-   already on the Vehicles page doesn't have to be described again. #}
+{% comment %}
+Registration suggestions plus the make/model behind each one, so a vehicle
+already on the Vehicles page doesn't have to be described again.
+{% endcomment %}
 <datalist id="vehicle-regs">
   {% for v in active_vehicles %}<option value="{{ v.registration }}">{{ v.make_model }}</option>{% endfor %}
 </datalist>
