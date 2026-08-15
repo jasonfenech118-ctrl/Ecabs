@@ -41,6 +41,7 @@ from .models import (
     GarageJobItem,
     GarageJobLabour,
     GeneralClaim,
+    next_document_number,
     PartsReceipt,
     PartsReceiptLine,
     Reminder,
@@ -462,15 +463,9 @@ def garage_job_update(request, pk):
 # --- Garage invoices ---------------------------------------------------------
 
 def _next_invoice_no():
-    """Suggest the next INV number from the highest numeric suffix seen."""
-    import re
-
-    best = 1052
-    for raw in GarageInvoice.objects.values_list("invoice_no", flat=True):
-        m = re.search(r"(\d+)", raw or "")
-        if m:
-            best = max(best, int(m.group(1)))
-    return f"INV NO. {best + 1}"
+    """The next INV number. Never reused, even after an invoice is deleted."""
+    return next_document_number(
+        "garage_invoice", GarageInvoice, "invoice_no", 1052, "INV NO. {}")
 
 
 @login_required
@@ -838,16 +833,9 @@ SALES_HEADER_FIELDS = (
 
 
 def _next_sales_invoice_no():
-    """Suggest the next invoice number from the highest numeric suffix seen,
-    keeping the ECABS PSIN######## shape."""
-    import re
-
-    best = 1920245
-    for raw in SalesInvoice.objects.values_list("invoice_no", flat=True):
-        m = re.search(r"(\d+)", raw or "")
-        if m:
-            best = max(best, int(m.group(1)))
-    return f"PSIN{best + 1:08d}"
+    """The next ECABS PSIN######## number. Never reused."""
+    return next_document_number(
+        "sales_invoice", SalesInvoice, "invoice_no", 1920245, "PSIN{:08d}")
 
 
 @login_required
@@ -1043,15 +1031,9 @@ PARTS_HEADER_FIELDS = (
 
 
 def _next_receipt_no():
-    """Suggest the next parts-receipt number from the highest numeric suffix."""
-    import re
-
-    best = 1000
-    for raw in PartsReceipt.objects.values_list("receipt_no", flat=True):
-        m = re.search(r"(\d+)", raw or "")
-        if m:
-            best = max(best, int(m.group(1)))
-    return f"PR{best + 1:05d}"
+    """The next parts-receipt number. Never reused."""
+    return next_document_number(
+        "parts_receipt", PartsReceipt, "receipt_no", 1000, "PR{:05d}")
 
 
 @login_required

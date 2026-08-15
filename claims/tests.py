@@ -1823,6 +1823,38 @@ class GarageInvoicePrivacyTests(TestCase):
         r2 = self.client.get(reverse("garage_invoices"), {"owner": "all", "status": "draft"})
         self.assertNotContains(r2, inv.invoice_no)
 
+    def test_invoice_numbers_are_never_reused(self):
+        """Deleting an invoice must not hand its number to the next one."""
+        from django.db import IntegrityError
+
+        from .models import GarageInvoice
+
+        self.client.force_login(self.francis)
+        numbers = []
+        for _ in range(3):
+            self.client.post(reverse("garage_invoice_new"))
+            numbers.append(GarageInvoice.objects.order_by("-id").first().invoice_no)
+        self.assertEqual(len(set(numbers)), 3)  # all different
+
+        # Delete the newest, make another — the number must move on, not repeat.
+        newest = GarageInvoice.objects.order_by("-id").first()
+        self.client.post(reverse("garage_invoice_delete", args=[newest.pk]))
+        self.client.post(reverse("garage_invoice_new"))
+        self.assertNotIn(
+            GarageInvoice.objects.order_by("-id").first().invoice_no, numbers)
+
+        # Even wiping every invoice must not wind the counter back.
+        highest = GarageInvoice.objects.order_by("-id").first().invoice_no
+        GarageInvoice.objects.all().delete()
+        self.client.post(reverse("garage_invoice_new"))
+        self.assertNotEqual(
+            GarageInvoice.objects.order_by("-id").first().invoice_no, highest)
+
+        # And the database refuses a duplicate outright.
+        taken = GarageInvoice.objects.order_by("-id").first().invoice_no
+        with self.assertRaises(IntegrityError):
+            GarageInvoice.objects.create(invoice_no=taken)
+
     def test_invoice_delete(self):
         """A garage invoice can be deleted, and its lines go with it."""
         from decimal import Decimal

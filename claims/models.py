@@ -847,6 +847,48 @@ class OtherCharge(models.Model):
         return f"{self.description} — €{self.amount}"
 
 
+class NumberSequence(models.Model):
+    """The high-water mark for a document's running number.
+
+    Numbers used to be "the highest one on file, plus one", which handed the
+    same number out again once the newest document was deleted. This counter
+    only ever moves forward, so an invoice number is never reused.
+    """
+
+    key = models.CharField(max_length=40, unique=True)
+    last_value = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["key"]
+
+    def __str__(self):
+        return f"{self.key} → {self.last_value}"
+
+
+def next_document_number(key, model, field, start, fmt):
+    """Hand out the next unused number for a document type.
+
+    Takes the highest of the counter and anything already on file (so numbers
+    typed in by hand, or rows loaded from the old spreadsheets, are respected),
+    then steps past it and remembers that.
+    """
+    import re
+
+    from django.db import transaction
+
+    with transaction.atomic():
+        seq, _ = (NumberSequence.objects.select_for_update()
+                  .get_or_create(key=key, defaults={"last_value": start}))
+        highest = max(seq.last_value, start)
+        for raw in model.objects.values_list(field, flat=True):
+            match = re.search(r"(\d+)", raw or "")
+            if match:
+                highest = max(highest, int(match.group(1)))
+        seq.last_value = highest + 1
+        seq.save(update_fields=["last_value"])
+        return fmt.format(seq.last_value)
+
+
 class ClaimExtraStatus(models.Model):
     """An additional status ticked on a claim, beyond its main one.
 
@@ -1119,6 +1161,13 @@ class GarageInvoice(models.Model):
 
     class Meta:
         ordering = ["-id"]
+        constraints = [
+            # Two invoices must never carry the same number; blanks are fine.
+            models.UniqueConstraint(
+                fields=["invoice_no"], condition=~models.Q(invoice_no=""),
+                name="unique_garage_invoice_no",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.invoice_no or 'Invoice'} — {self.bill_to or '—'}"
@@ -1372,6 +1421,12 @@ class SalesInvoice(models.Model):
 
     class Meta:
         ordering = ["-id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["invoice_no"], condition=~models.Q(invoice_no=""),
+                name="unique_sales_invoice_no",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.invoice_no or 'Invoice'} — {self.bill_to_name or '—'}"
@@ -1493,6 +1548,12 @@ class PartsReceipt(models.Model):
 
     class Meta:
         ordering = ["-id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["receipt_no"], condition=~models.Q(receipt_no=""),
+                name="unique_parts_receipt_no",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.receipt_no or 'Receipt'} — {self.supplier or self.vehicle_reg or '—'}"
