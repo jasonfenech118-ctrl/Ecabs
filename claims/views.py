@@ -656,33 +656,27 @@ def garage_job_to_invoice(request, pk):
     items = list(job.items.all())
     labour = list(job.labour.all())
     order = 0
+    # Fastdrop shows Date + Reg on each line, so seed them on the first line;
+    # the header vehicle_reg covers the leaner layout for everyone else.
+    def _first(o):
+        return {"line_date": job.accident_date, "reg_no": job.plate_no} if o == 0 else {}
     if items or labour:
         # One invoice line per itemised repair (type + price)…
         for it in items:
             GarageInvoiceLine.objects.create(
-                invoice=inv,
-                description=it.label,
-                amount=it.price or Decimal("0"),
-                order=order,
-            )
+                invoice=inv, description=it.label,
+                amount=it.price or Decimal("0"), order=order, **_first(order))
             order += 1
         # …and one per labour line (hours × rate).
         for lb in labour:
             GarageInvoiceLine.objects.create(
-                invoice=inv,
-                description=lb.label,
-                unit_price=lb.rate,
-                amount=lb.cost,
-                order=order,
-            )
+                invoice=inv, description=lb.label, unit_price=lb.rate,
+                amount=lb.cost, order=order, **_first(order))
             order += 1
     else:
         GarageInvoiceLine.objects.create(
-            invoice=inv,
-            description=job.make or "Repairs",
-            amount=job.total or Decimal("0"),
-            order=0,
-        )
+            invoice=inv, description=job.make or "Repairs",
+            amount=job.total or Decimal("0"), order=0, **_first(0))
     return redirect("garage_invoice_edit", pk=inv.pk)
 
 
@@ -779,6 +773,12 @@ def garage_invoice_line_update(request, pk, line_pk):
         line.delete()
     else:
         line.description = request.POST.get("description", line.description)
+        # Fastdrop invoices carry a Date and Reg No per line; only touch them
+        # when the fields are actually on the form.
+        if "line_date" in request.POST:
+            line.line_date = _parse_date(request.POST.get("line_date"))
+        if "reg_no" in request.POST:
+            line.reg_no = request.POST.get("reg_no", line.reg_no)
         for f in ("unit_price", "amount"):
             raw = (request.POST.get(f) or "").strip()
             if raw:

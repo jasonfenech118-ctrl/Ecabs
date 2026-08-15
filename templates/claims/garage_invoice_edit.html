@@ -45,7 +45,11 @@
         <label class="field" style="flex:1"><span>Invoice No</span><input name="invoice_no" value="{{ inv.invoice_no }}"></label>
         <label class="field" style="flex:1"><span>Invoice date <span class="muted">(type it)</span></span><input type="date" name="invoice_date" value="{{ inv.invoice_date|date:'Y-m-d' }}"></label>
       </div>
+      {% if not inv.is_fastdrop %}
       <label class="field"><span>Registration No <span class="muted">(the vehicle this invoice is for)</span></span><input name="vehicle_reg" value="{{ inv.vehicle_reg }}" placeholder="e.g. ABC 123" style="text-transform:uppercase"></label>
+      {% else %}
+      <p class="muted" style="font-size:.8rem; margin:.2rem 0">Fastdrop invoice — Date &amp; Reg No are entered on each repair line below.</p>
+      {% endif %}
       <label class="field"><span>Status</span>
         <select name="status">
           {% for val, lbl in inv.Status.choices %}
@@ -95,7 +99,7 @@
   <div class="table-wrap">
     <table class="list at-fault">
       <thead>
-        <tr><th>Description</th><th class="right">Unit price</th><th class="right">Total €</th><th></th></tr>
+        <tr>{% if inv.is_fastdrop %}<th>Date</th><th>Reg No</th>{% endif %}<th>Description</th><th class="right">Unit price</th><th class="right">Total €</th><th></th></tr>
       </thead>
       <tbody>
         {% for ln in inv.lines.all %}
@@ -103,7 +107,11 @@
           <td>
             <form id="l-{{ ln.pk }}" method="post" action="{% url 'garage_invoice_line_update' inv.pk ln.pk %}">{% csrf_token %}</form>
             <form id="ld-{{ ln.pk }}" method="post" action="{% url 'garage_invoice_line_update' inv.pk ln.pk %}" onsubmit="return confirm('Delete this line?')">{% csrf_token %}<input type="hidden" name="action" value="delete"></form>
-            <input form="l-{{ ln.pk }}" name="description" value="{{ ln.description }}" class="atf-input" style="min-width:260px"></td>
+            {% if inv.is_fastdrop %}<input form="l-{{ ln.pk }}" type="date" name="line_date" value="{{ ln.line_date|date:'Y-m-d' }}" class="atf-input">{% else %}<input form="l-{{ ln.pk }}" name="description" value="{{ ln.description }}" class="atf-input" style="min-width:260px">{% endif %}</td>
+          {% if inv.is_fastdrop %}
+          <td><input form="l-{{ ln.pk }}" name="reg_no" value="{{ ln.reg_no }}" class="atf-input" style="width:6rem"></td>
+          <td><input form="l-{{ ln.pk }}" name="description" value="{{ ln.description }}" class="atf-input" style="min-width:220px"></td>
+          {% endif %}
           <td><input form="l-{{ ln.pk }}" name="unit_price" type="number" step="0.01" min="0" value="{{ ln.unit_price|default_if_none:'' }}" class="atf-input atf-num" placeholder="—"></td>
           <td><input form="l-{{ ln.pk }}" name="amount" type="number" step="0.01" min="0" value="{{ ln.amount }}" class="atf-input atf-num" placeholder="€"></td>
           <td style="white-space:nowrap">
@@ -112,7 +120,7 @@
           </td>
         </tr>
         {% empty %}
-        <tr><td colspan="4" class="empty">No lines yet — press “Add line”.</td></tr>
+        <tr><td colspan="{% if inv.is_fastdrop %}6{% else %}4{% endif %}" class="empty">No lines yet — press “Add line”.</td></tr>
         {% endfor %}
       </tbody>
     </table>

@@ -125,10 +125,15 @@ def build_garage_invoice_pdf(inv):
         Spacer(1, 8),
         _p("Invoice No:", 8, MUTED, align=2),
         _p(inv.invoice_no or "—", 9, ORANGE, bold=True, align=2),
-        Spacer(1, 8),
-        _p("Registration No:", 8, MUTED, align=2),
-        _p((inv.vehicle_reg or "—").upper(), 9, INK, bold=True, align=2),
     ]
+    # Fastdrop keeps the registration per repair line; everyone else shows one
+    # registration up in the header.
+    if not inv.is_fastdrop:
+        meta += [
+            Spacer(1, 8),
+            _p("Registration No:", 8, MUTED, align=2),
+            _p((inv.vehicle_reg or "—").upper(), 9, INK, bold=True, align=2),
+        ]
     header = Table(
         [[_logo_flowable(), issuer, meta]],
         colWidths=[42 * mm, 78 * mm, 58 * mm],
@@ -161,21 +166,41 @@ def build_garage_invoice_pdf(inv):
     story += [bill, Spacer(1, 10)]
 
     # --- Line items ----------------------------------------------------------
-    head = [_p("Description", 8, colors.white, bold=True),
-            _p("Unit Price", 8, colors.white, bold=True, align=2),
-            _p("Total", 8, colors.white, bold=True, align=2)]
-    rows = [head]
-    for ln in inv.lines.all():
-        rows.append([
-            _p(ln.description, 8),
-            _p(_euro(ln.unit_price) if ln.unit_price is not None else "", 8, align=2),
-            _p(_euro(ln.amount), 8, align=2),
-        ])
-    # pad to a minimum height like the paper form
-    while len(rows) < 12:
-        rows.append(["", "", ""])
+    # Fastdrop keeps the old Date + Reg No columns; everyone else is lean.
+    if inv.is_fastdrop:
+        head = [_p("Date", 8, colors.white, bold=True),
+                _p("Reg No", 8, colors.white, bold=True),
+                _p("Description", 8, colors.white, bold=True),
+                _p("Unit Price", 8, colors.white, bold=True, align=2),
+                _p("Total", 8, colors.white, bold=True, align=2)]
+        rows = [head]
+        for ln in inv.lines.all():
+            rows.append([
+                _p(ln.line_date.strftime("%d/%m/%Y") if ln.line_date else "", 8),
+                _p(ln.reg_no, 8),
+                _p(ln.description, 8),
+                _p(_euro(ln.unit_price) if ln.unit_price is not None else "", 8, align=2),
+                _p(_euro(ln.amount), 8, align=2),
+            ])
+        while len(rows) < 12:
+            rows.append(["", "", "", "", ""])
+        col_widths = [22 * mm, 20 * mm, 92 * mm, 22 * mm, 22 * mm]
+    else:
+        head = [_p("Description", 8, colors.white, bold=True),
+                _p("Unit Price", 8, colors.white, bold=True, align=2),
+                _p("Total", 8, colors.white, bold=True, align=2)]
+        rows = [head]
+        for ln in inv.lines.all():
+            rows.append([
+                _p(ln.description, 8),
+                _p(_euro(ln.unit_price) if ln.unit_price is not None else "", 8, align=2),
+                _p(_euro(ln.amount), 8, align=2),
+            ])
+        while len(rows) < 12:
+            rows.append(["", "", ""])
+        col_widths = [134 * mm, 22 * mm, 22 * mm]
 
-    tbl = Table(rows, colWidths=[134 * mm, 22 * mm, 22 * mm], repeatRows=1)
+    tbl = Table(rows, colWidths=col_widths, repeatRows=1)
     style = [
         ("BACKGROUND", (0, 0), (-1, 0), HEAD_BG),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#cccccc")),
