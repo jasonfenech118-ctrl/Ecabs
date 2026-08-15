@@ -1,0 +1,11 @@
+{% load static %}
+{# Registration suggestions plus the make/model behind each one, so a vehicle
+   already on the Vehicles page doesn't have to be described again. #}
+<datalist id="vehicle-regs">
+  {% for v in active_vehicles %}<option value="{{ v.registration }}">{{ v.make_model }}</option>{% endfor %}
+</datalist>
+{{ vehicle_lookup_json|json_script:"vehicle-makes" }}
+<script>
+  window.VEHICLE_MAKES = JSON.parse(document.getElementById("vehicle-makes").textContent);
+</script>
+<script src="{% static 'js/vehicle-lookup.js' %}" defer></script>

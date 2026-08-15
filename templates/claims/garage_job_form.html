@@ -26,14 +26,17 @@
     </div>
     <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">Choose <strong>Fast drop</strong> for group repairs, or <strong>My own garage</strong> for a private customer. The main office can see this on the worklist before any invoice is raised — and it carries onto the invoice.</p>
   </div>
+  {% include "claims/partials/vehicle_lookup.html" %}
   <div class="card">
     <div class="grid-2">
       <label class="field"><span>Accident date</span><input type="date" name="accident_date" value="{{ job.accident_date|date:'Y-m-d' }}"></label>
       <label class="field"><span>Survey date</span><input type="date" name="survey_date" value="{{ job.survey_date|date:'Y-m-d' }}"></label>
-      <label class="field"><span>No plate</span><input name="plate_no" value="{{ job.plate_no }}"></label>
+      <label class="field"><span>No plate</span><input name="plate_no" id="id_plate_no" value="{{ job.plate_no }}"
+             list="vehicle-regs" data-vehicle-reg="1"
+             data-fill-make="#id_make" data-fill-model="#id_model"></label>
       <label class="field"><span>Client</span><input name="client" value="{{ job.client }}"></label>
-      <label class="field"><span>Make</span><input name="make" value="{{ job.make }}"></label>
-      <label class="field"><span>Model</span><input name="model" value="{{ job.model }}"></label>
+      <label class="field"><span>Make</span><input name="make" id="id_make" value="{{ job.make }}"></label>
+      <label class="field"><span>Model</span><input name="model" id="id_model" value="{{ job.model }}"></label>
       <label class="field"><span>Claim No</span><input name="claim_no" value="{{ job.claim_no }}"></label>
       <label class="field"><span>Surveyor</span><input name="surveyor" value="{{ job.surveyor }}"></label>
       <label class="field"><span>Insurance</span><input name="insurance" value="{{ job.insurance }}"></label>

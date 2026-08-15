@@ -21,9 +21,7 @@
       hx-indicator="#save-status">
   {% csrf_token %}
 
-  <datalist id="vehicle-regs">
-    {% for v in active_vehicles %}<option value="{{ v.registration }}">{{ v.make_model }}</option>{% endfor %}
-  </datalist>
+  {% include "claims/partials/vehicle_lookup.html" %}
 
   <fieldset>
     <legend>Vehicle</legend>

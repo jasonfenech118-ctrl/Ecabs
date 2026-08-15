@@ -105,6 +105,19 @@ CLAIM_SORTS = [
 ]
 
 
+def _vehicle_lookup_context():
+    """Active fleet vehicles plus a registration → make/model map, so a form
+    can fill in details already saved on the Vehicles page."""
+    vehicles = list(Vehicle.objects.filter(status=Vehicle.Status.ACTIVE))
+    return {
+        "active_vehicles": vehicles,
+        "vehicle_lookup_json": {
+            v.registration.upper(): v.make_model
+            for v in vehicles if v.registration and v.make_model
+        },
+    }
+
+
 def _apply_sort(qs, request):
     key = request.GET.get("sort", "date_desc")
     order = next((o for k, _, o in CLAIM_SORTS if k == key), CLAIM_SORTS[0][2])
@@ -362,6 +375,7 @@ def garage_job_form(request, pk=None):
     return render(request, "claims/garage_job_form.html", {
         "job": job,
         "repair_types": RepairType.objects.filter(is_active=True),
+        **_vehicle_lookup_context(),
     })
 
 
@@ -1606,15 +1620,14 @@ def claim_new(request):
 def claim_edit(request, pk):
     claim = get_object_or_404(Claim, pk=pk)
     form = ClaimForm(instance=claim)
-    active_vehicles = Vehicle.objects.filter(status=Vehicle.Status.ACTIVE)
     return render(
         request,
         "claims/claim_form.html",
         {
             "claim": claim,
             "form": form,
-            "active_vehicles": active_vehicles,
             "daily_rates": DailyRate.objects.filter(is_active=True),
+            **_vehicle_lookup_context(),
         },
     )
 

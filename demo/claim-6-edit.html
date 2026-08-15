@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "z9PbLGAc4whd0m45qmRELelcWB4WriIOTACfP8cJRT65fep1LXGJbFR6CkJVIikZ"}'
+<body hx-headers='{"X-CSRFToken": "WxceZ8WK2XeOC8nLv4uDj4chyjrZ9rcOJQ8V5L6P0IjXLDJIK8RUy3ynDiIfjaj6"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -152,18 +152,27 @@
       hx-target="#save-status"
       hx-swap="innerHTML"
       hx-indicator="#save-status">
-  <input type="hidden" name="csrfmiddlewaretoken" value="z9PbLGAc4whd0m45qmRELelcWB4WriIOTACfP8cJRT65fep1LXGJbFR6CkJVIikZ">
+  <input type="hidden" name="csrfmiddlewaretoken" value="WxceZ8WK2XeOC8nLv4uDj4chyjrZ9rcOJQ8V5L6P0IjXLDJIK8RUy3ynDiIfjaj6">
 
-  <datalist id="vehicle-regs">
-    <option value="ECB101">Toyota Corolla Hybrid</option><option value="ECB214">Peugeot 108</option><option value="ECB330">Kymco Agility 125i</option><option value="ECB407">Peugeot 108</option>
-  </datalist>
+  
+{# Registration suggestions plus the make/model behind each one, so a vehicle
+   already on the Vehicles page doesn't have to be described again. #}
+<datalist id="vehicle-regs">
+  <option value="ECB101">Toyota Corolla Hybrid</option><option value="ECB214">Peugeot 108</option><option value="ECB330">Kymco Agility 125i</option><option value="ECB407">Peugeot 108</option>
+</datalist>
+<script id="vehicle-makes" type="application/json">{"ECB101": "Toyota Corolla Hybrid", "ECB214": "Peugeot 108", "ECB330": "Kymco Agility 125i", "ECB407": "Peugeot 108"}</script>
+<script>
+  window.VEHICLE_MAKES = JSON.parse(document.getElementById("vehicle-makes").textContent);
+</script>
+<script src="static/js/vehicle-lookup.js" defer></script>
+
 
   <fieldset>
     <legend>Vehicle</legend>
     <div class="form-grid">
       <div class="field ">
   <label for="id_vehicle_registration">Vehicle registration</label>
-  <input type="text" name="vehicle_registration" value="ECB101" list="vehicle-regs" maxlength="20" id="id_vehicle_registration">
+  <input type="text" name="vehicle_registration" value="ECB101" list="vehicle-regs" data-vehicle-reg="1" data-fill-make-model="#id_vehicle_make_model" maxlength="20" id="id_vehicle_registration">
   
 </div>
 

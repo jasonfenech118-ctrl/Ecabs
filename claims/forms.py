@@ -89,8 +89,13 @@ class ClaimForm(forms.ModelForm):
             "liability_chase_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
             "description": forms.Textarea(attrs={"rows": 5}),
             "drivable": forms.NullBooleanSelect(),
-            # Suggests active fleet vehicles via the datalist in claim_form.html.
-            "vehicle_registration": forms.TextInput(attrs={"list": "vehicle-regs"}),
+            # Suggests active fleet vehicles, and fills the make/model from the
+            # Vehicles page so it isn't typed again (see vehicle-lookup.js).
+            "vehicle_registration": forms.TextInput(attrs={
+                "list": "vehicle-regs",
+                "data-vehicle-reg": "1",
+                "data-fill-make-model": "#id_vehicle_make_model",
+            }),
         }
 
     def __init__(self, *args, **kwargs):
