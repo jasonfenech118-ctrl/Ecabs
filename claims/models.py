@@ -942,7 +942,7 @@ class GarageJob(models.Model):
     )
 
     class ForKind(models.TextChoices):
-        GROUP = "group", "Vai Drive"
+        GROUP = "group", "Fast drop"
         PERSONAL = "personal", "My own garage"
 
     for_kind = models.CharField(
@@ -1098,7 +1098,7 @@ class GarageInvoice(models.Model):
     )
 
     class ForKind(models.TextChoices):
-        GROUP = "group", "Vai Drive"
+        GROUP = "group", "Fast drop"
         PERSONAL = "personal", "My own garage"
 
     for_kind = models.CharField(
