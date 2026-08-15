@@ -811,6 +811,22 @@ def garage_invoice_pdf(request, pk):
     return resp
 
 
+@login_required
+@require_POST
+def garage_invoice_delete(request, pk):
+    """Delete a garage invoice (and its lines). A garage user may only delete
+    their own."""
+    from django.contrib import messages
+
+    inv = _get_owned_invoice(request, pk)
+    if inv is None:
+        return redirect("garage_invoices")
+    label = inv.invoice_no or "Invoice"
+    inv.delete()
+    messages.success(request, f"Deleted {label}.")
+    return redirect("garage_invoices")
+
+
 # --- ECABS sales invoices -----------------------------------------------------
 
 SALES_HEADER_FIELDS = (
@@ -979,6 +995,19 @@ def sales_invoice_pdf(request, pk):
 
 
 @login_required
+@require_POST
+def sales_invoice_delete(request, pk):
+    """Delete a sales invoice and its lines."""
+    from django.contrib import messages
+
+    inv = get_object_or_404(SalesInvoice, pk=pk)
+    label = inv.invoice_no or "Invoice"
+    inv.delete()
+    messages.success(request, f"Deleted {label}.")
+    return redirect("sales_invoices")
+
+
+@login_required
 def client_insurers(request):
     """The third-party insurer / client register: add and edit the clients that
     ECABS bills, so their bill-to details auto-fill on an invoice."""
@@ -1143,6 +1172,19 @@ def parts_receipt_pdf(request, pk):
     name = (rec.receipt_no or "receipt").replace(" ", "_").replace(".", "")
     resp["Content-Disposition"] = f'inline; filename="{name}.pdf"'
     return resp
+
+
+@login_required
+@require_POST
+def parts_receipt_delete(request, pk):
+    """Delete a parts receipt and its lines."""
+    from django.contrib import messages
+
+    rec = get_object_or_404(PartsReceipt, pk=pk)
+    label = rec.receipt_no or "Receipt"
+    rec.delete()
+    messages.success(request, f"Deleted {label}.")
+    return redirect("parts_receipts")
 
 
 # --- Accident list (master register) -----------------------------------------

@@ -1823,6 +1823,27 @@ class GarageInvoicePrivacyTests(TestCase):
         r2 = self.client.get(reverse("garage_invoices"), {"owner": "all", "status": "draft"})
         self.assertNotContains(r2, inv.invoice_no)
 
+    def test_invoice_delete(self):
+        """A garage invoice can be deleted, and its lines go with it."""
+        from decimal import Decimal
+
+        from .models import GarageInvoice, GarageInvoiceLine
+
+        inv = self._new_invoice_as(self.francis)
+        GarageInvoiceLine.objects.create(invoice=inv, description="Labour",
+                                         amount=Decimal("100"), order=0)
+        self.client.force_login(self.francis)
+        # GET must not delete — only POST.
+        self.assertEqual(
+            self.client.get(reverse("garage_invoice_delete", args=[inv.pk])).status_code,
+            405)
+        self.assertTrue(GarageInvoice.objects.filter(pk=inv.pk).exists())
+
+        r = self.client.post(reverse("garage_invoice_delete", args=[inv.pk]))
+        self.assertRedirects(r, reverse("garage_invoices"))
+        self.assertFalse(GarageInvoice.objects.filter(pk=inv.pk).exists())
+        self.assertEqual(GarageInvoiceLine.objects.count(), 0)
+
     def test_job_to_invoice_prefills(self):
         from decimal import Decimal
 

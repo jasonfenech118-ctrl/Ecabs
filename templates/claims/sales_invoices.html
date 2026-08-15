@@ -48,6 +48,9 @@
         <td style="white-space:nowrap">
           <a href="{{ inv.get_absolute_url }}" class="btn btn-sm">Edit</a>
           <a href="{% url 'sales_invoice_pdf' inv.pk %}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">PDF</a>
+          <form method="post" action="{% url 'sales_invoice_delete' inv.pk %}" style="display:inline" onsubmit="return confirm('Delete {{ inv.invoice_no|default:'this invoice'|escapejs }}? This cannot be undone.')">
+            {% csrf_token %}<button type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
+          </form>
         </td>
       </tr>
       {% empty %}

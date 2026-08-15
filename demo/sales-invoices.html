@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "HhZtBgfaoTZogZ0Vcii9RRch90hX1qaeD6vNKuQgu9Ka9Cp0UTEHO5YIFAhPh6hQ"}'
+<body hx-headers='{"X-CSRFToken": "nRgxSfqeRlV0XnYco7oWtNLowGqFkMEoXYE79PKIowRBJI6LF1S71Hat2Uj4bC7K"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -141,7 +141,7 @@
   </div>
   <div class="row" style="gap:.5rem">
     <a href="sales-clients.html" class="btn">👥 Client register</a>
-    <form method="post" action="/sales/invoices/new/"><input type="hidden" name="csrfmiddlewaretoken" value="HhZtBgfaoTZogZ0Vcii9RRch90hX1qaeD6vNKuQgu9Ka9Cp0UTEHO5YIFAhPh6hQ">
+    <form method="post" action="/sales/invoices/new/"><input type="hidden" name="csrfmiddlewaretoken" value="nRgxSfqeRlV0XnYco7oWtNLowGqFkMEoXYE79PKIowRBJI6LF1S71Hat2Uj4bC7K">
       <button type="submit" class="btn btn-primary">＋ New invoice</button>
     </form>
   </div>
@@ -180,6 +180,9 @@
         <td style="white-space:nowrap">
           <a href="sales-invoice-1.html" class="btn btn-sm">Edit</a>
           <a href="sales-invoice-1.pdf" target="_blank" rel="noopener" class="btn btn-sm btn-primary">PDF</a>
+          <form method="post" action="/sales/invoices/1/delete/" style="display:inline" onsubmit="return confirm('Delete PSIN01920245? This cannot be undone.')">
+            <input type="hidden" name="csrfmiddlewaretoken" value="nRgxSfqeRlV0XnYco7oWtNLowGqFkMEoXYE79PKIowRBJI6LF1S71Hat2Uj4bC7K"><button type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
+          </form>
         </td>
       </tr>
       
