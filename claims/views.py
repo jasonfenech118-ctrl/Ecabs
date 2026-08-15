@@ -105,6 +105,12 @@ CLAIM_SORTS = [
 ]
 
 
+def _plate_key(value):
+    """A registration reduced to letters and digits, so "ALY 309", "aly-309"
+    and "ALY309" all look up the same vehicle."""
+    return "".join(ch for ch in (value or "") if ch.isalnum()).upper()
+
+
 def _vehicle_lookup_context():
     """Active fleet vehicles plus a registration → make/model map, so a form
     can fill in details already saved on the Vehicles page."""
@@ -112,7 +118,7 @@ def _vehicle_lookup_context():
     return {
         "active_vehicles": vehicles,
         "vehicle_lookup_json": {
-            v.registration.upper(): v.make_model
+            _plate_key(v.registration): v.make_model
             for v in vehicles if v.registration and v.make_model
         },
     }

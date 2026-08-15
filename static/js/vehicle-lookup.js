@@ -11,9 +11,12 @@
 (function () {
   "use strict";
 
+  /* Match on letters and digits only, so "ALY 309", "aly-309" and "ALY309"
+     all find the same vehicle. */
   function lookup(reg) {
     var map = window.VEHICLE_MAKES || {};
-    return map[(reg || "").trim().toUpperCase()] || "";
+    var key = (reg || "").replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+    return map[key] || "";
   }
 
   function fill(el, value) {
