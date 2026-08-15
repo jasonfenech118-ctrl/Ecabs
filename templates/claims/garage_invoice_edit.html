@@ -40,10 +40,12 @@
       <label class="field"><span>Contact details</span><input name="issuer_contact" value="{{ inv.issuer_contact }}"></label>
       <label class="field"><span>VAT No</span><input name="issuer_vat" value="{{ inv.issuer_vat }}"></label>
       <label class="field"><span>Email</span><input name="issuer_email" value="{{ inv.issuer_email }}"></label>
+      <label class="field"><span>IBAN <span class="muted">(for the “kindly pay” note)</span></span><input name="issuer_iban" value="{{ inv.issuer_iban }}"></label>
       <div class="row" style="gap:.6rem">
         <label class="field" style="flex:1"><span>Invoice No</span><input name="invoice_no" value="{{ inv.invoice_no }}"></label>
         <label class="field" style="flex:1"><span>Invoice date <span class="muted">(type it)</span></span><input type="date" name="invoice_date" value="{{ inv.invoice_date|date:'Y-m-d' }}"></label>
       </div>
+      <label class="field"><span>Registration No <span class="muted">(the vehicle this invoice is for)</span></span><input name="vehicle_reg" value="{{ inv.vehicle_reg }}" placeholder="e.g. ABC 123" style="text-transform:uppercase"></label>
       <label class="field"><span>Status</span>
         <select name="status">
           {% for val, lbl in inv.Status.choices %}
@@ -93,7 +95,7 @@
   <div class="table-wrap">
     <table class="list at-fault">
       <thead>
-        <tr><th>Reg No</th><th>Description</th><th class="right">Unit price</th><th class="right">Total €</th><th></th></tr>
+        <tr><th>Description</th><th class="right">Unit price</th><th class="right">Total €</th><th></th></tr>
       </thead>
       <tbody>
         {% for ln in inv.lines.all %}
@@ -101,8 +103,7 @@
           <td>
             <form id="l-{{ ln.pk }}" method="post" action="{% url 'garage_invoice_line_update' inv.pk ln.pk %}">{% csrf_token %}</form>
             <form id="ld-{{ ln.pk }}" method="post" action="{% url 'garage_invoice_line_update' inv.pk ln.pk %}" onsubmit="return confirm('Delete this line?')">{% csrf_token %}<input type="hidden" name="action" value="delete"></form>
-            <input form="l-{{ ln.pk }}" name="reg_no" value="{{ ln.reg_no }}" class="atf-input" style="width:6rem"></td>
-          <td><input form="l-{{ ln.pk }}" name="description" value="{{ ln.description }}" class="atf-input" style="min-width:260px"></td>
+            <input form="l-{{ ln.pk }}" name="description" value="{{ ln.description }}" class="atf-input" style="min-width:260px"></td>
           <td><input form="l-{{ ln.pk }}" name="unit_price" type="number" step="0.01" min="0" value="{{ ln.unit_price|default_if_none:'' }}" class="atf-input atf-num" placeholder="—"></td>
           <td><input form="l-{{ ln.pk }}" name="amount" type="number" step="0.01" min="0" value="{{ ln.amount }}" class="atf-input atf-num" placeholder="€"></td>
           <td style="white-space:nowrap">
@@ -111,7 +112,7 @@
           </td>
         </tr>
         {% empty %}
-        <tr><td colspan="5" class="empty">No lines yet — press “Add line”.</td></tr>
+        <tr><td colspan="4" class="empty">No lines yet — press “Add line”.</td></tr>
         {% endfor %}
       </tbody>
     </table>

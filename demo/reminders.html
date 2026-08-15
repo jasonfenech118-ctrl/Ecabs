@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/app.css?v=2">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "nqZmVI4jYmxlModCt4MeVKTzLt3ZhSA6zeobEtb7koQXyv9PpRKLGXJrwuDgQzxh"}'
+<body hx-headers='{"X-CSRFToken": "ORBd6Vu7jA33yBSK8nw3Uzj8nZydxLVl8LxstzQWPllJNoVuEjlaP0uV6K77fdqp"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -145,7 +145,7 @@
 <details class="inline-form" >
   <summary>Add reminder</summary>
   <form method="post" action="/reminders/add/" class="card">
-    <input type="hidden" name="csrfmiddlewaretoken" value="nqZmVI4jYmxlModCt4MeVKTzLt3ZhSA6zeobEtb7koQXyv9PpRKLGXJrwuDgQzxh">
+    <input type="hidden" name="csrfmiddlewaretoken" value="ORBd6Vu7jA33yBSK8nw3Uzj8nZydxLVl8LxstzQWPllJNoVuEjlaP0uV6K77fdqp">
     <div class="form-grid">
       <div class="field ">
   <label for="id_title">Title</label>
@@ -288,28 +288,6 @@
   <td><a href="claim-5.html">CLM-2026-0005</a></td>
   <td>
     <span class="badge overdue">overdue</span> 
-    28 Jul 2026 09:00
-  </td>
-  <td class="muted">—</td>
-</tr>
-
-
-  <tr id="reminder-6">
-  <td>
-    <form hx-post="/reminders/6/toggle/"
-          hx-target="#reminder-6" hx-swap="outerHTML">
-      <input type="hidden" name="scope" value="global">
-      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
-              aria-label="Mark done">
-    </form>
-  </td>
-  <td class="">
-    Chase CLM-2026-0004: Chase Elmo — no response <span class="badge in">auto</span>
-    
-  </td>
-  <td><a href="claim-4.html">CLM-2026-0004</a></td>
-  <td>
-    <span class="badge overdue">overdue</span> 
     04 Aug 2026 09:00
   </td>
   <td class="muted">—</td>
@@ -360,6 +338,28 @@
 </tr>
 
 
+  <tr id="reminder-6">
+  <td>
+    <form hx-post="/reminders/6/toggle/"
+          hx-target="#reminder-6" hx-swap="outerHTML">
+      <input type="hidden" name="scope" value="global">
+      <input type="checkbox" onchange="this.form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}))"
+              aria-label="Mark done">
+    </form>
+  </td>
+  <td class="">
+    Chase CLM-2026-0004: Chase Elmo — no response <span class="badge in">auto</span>
+    
+  </td>
+  <td><a href="claim-4.html">CLM-2026-0004</a></td>
+  <td>
+    <span class="badge overdue">overdue</span> 
+    11 Aug 2026 09:00
+  </td>
+  <td class="muted">—</td>
+</tr>
+
+
   <tr id="reminder-8">
   <td>
     <form hx-post="/reminders/8/toggle/"
@@ -376,7 +376,7 @@
   <td><a href="claim-2.html">CLM-2026-0002</a></td>
   <td>
     <span class="badge overdue">overdue</span> 
-    08 Aug 2026 09:00
+    15 Aug 2026 09:00
   </td>
   <td class="muted">—</td>
 </tr>
@@ -398,7 +398,7 @@
   <td><a href="claim-2.html">CLM-2026-0002</a></td>
   <td>
     
-    11 Aug 2026 09:00
+    18 Aug 2026 09:00
   </td>
   <td class="muted">—</td>
 </tr>
@@ -420,7 +420,7 @@
   <td><a href="claim-1.html">CLM-2026-0001</a></td>
   <td>
     
-    14 Aug 2026 09:00
+    21 Aug 2026 09:00
   </td>
   <td class="muted">—</td>
 </tr>
@@ -453,12 +453,7 @@
       
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0005: O/S payment from Argus</strong></div>
-        <div class="muted popup-meta">Due 28 Jul 2026 · CLM-2026-0005</div>
-      </li>
-      
-      <li>
-        <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
-        <div class="muted popup-meta">Due 04 Aug 2026 · CLM-2026-0004</div>
+        <div class="muted popup-meta">Due 04 Aug 2026 · CLM-2026-0005</div>
       </li>
       
       <li>
@@ -472,8 +467,13 @@
       </li>
       
       <li>
+        <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
+        <div class="muted popup-meta">Due 11 Aug 2026 · CLM-2026-0004</div>
+      </li>
+      
+      <li>
         <div class="popup-line"><strong>Chase payment — CLM-2026-0002</strong></div>
-        <div class="muted popup-meta">Due 08 Aug 2026 · CLM-2026-0002</div>
+        <div class="muted popup-meta">Due 15 Aug 2026 · CLM-2026-0002</div>
       </li>
       
     </ul>

@@ -125,6 +125,9 @@ def build_garage_invoice_pdf(inv):
         Spacer(1, 8),
         _p("Invoice No:", 8, MUTED, align=2),
         _p(inv.invoice_no or "—", 9, ORANGE, bold=True, align=2),
+        Spacer(1, 8),
+        _p("Registration No:", 8, MUTED, align=2),
+        _p((inv.vehicle_reg or "—").upper(), 9, INK, bold=True, align=2),
     ]
     header = Table(
         [[_logo_flowable(), issuer, meta]],
@@ -158,23 +161,21 @@ def build_garage_invoice_pdf(inv):
     story += [bill, Spacer(1, 10)]
 
     # --- Line items ----------------------------------------------------------
-    head = [_p("Reg No", 8, colors.white, bold=True),
-            _p("Description", 8, colors.white, bold=True),
+    head = [_p("Description", 8, colors.white, bold=True),
             _p("Unit Price", 8, colors.white, bold=True, align=2),
             _p("Total", 8, colors.white, bold=True, align=2)]
     rows = [head]
     for ln in inv.lines.all():
         rows.append([
-            _p(ln.reg_no, 8),
             _p(ln.description, 8),
             _p(_euro(ln.unit_price) if ln.unit_price is not None else "", 8, align=2),
             _p(_euro(ln.amount), 8, align=2),
         ])
     # pad to a minimum height like the paper form
     while len(rows) < 12:
-        rows.append(["", "", "", ""])
+        rows.append(["", "", ""])
 
-    tbl = Table(rows, colWidths=[24 * mm, 110 * mm, 22 * mm, 22 * mm], repeatRows=1)
+    tbl = Table(rows, colWidths=[134 * mm, 22 * mm, 22 * mm], repeatRows=1)
     style = [
         ("BACKGROUND", (0, 0), (-1, 0), HEAD_BG),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#cccccc")),
@@ -228,6 +229,24 @@ def build_garage_invoice_pdf(inv):
         ("LEFTPADDING", (0, 0), (-1, -1), 0),
     ]))
     story += [bottom]
+
+    # --- Payment note: kindly settle to this account -------------------------
+    if inv.issuer_iban:
+        pay = Table([[[
+            _p("Kindly settle this invoice by bank transfer to:", 8.5, INK, bold=True),
+            Spacer(1, 3),
+            _p(f"Account holder&nbsp;&nbsp;&nbsp;{inv.payable_to}", 8, INK),
+            _p(f"IBAN&nbsp;&nbsp;&nbsp;<b>{inv.issuer_iban}</b>", 8, INK),
+        ]]], colWidths=[178 * mm])
+        pay.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#fbe9e1")),
+            ("BOX", (0, 0), (-1, -1), 0.6, ORANGE),
+            ("LEFTPADDING", (0, 0), (-1, -1), 8),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+        ]))
+        story += [Spacer(1, 12), pay]
 
     doc.build(story, canvasmaker=_CleanCanvas)
     return buf.getvalue()

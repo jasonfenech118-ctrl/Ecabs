@@ -648,6 +648,7 @@ def garage_job_to_invoice(request, pk):
     inv = GarageInvoice.objects.create(
         invoice_no=_next_invoice_no(),
         bill_to=job.client,
+        vehicle_reg=job.plate_no,
         for_kind=job.for_kind,
         created_by=request.user,
         updated_by=request.user,
@@ -660,8 +661,6 @@ def garage_job_to_invoice(request, pk):
         for it in items:
             GarageInvoiceLine.objects.create(
                 invoice=inv,
-                line_date=job.accident_date if order == 0 else None,
-                reg_no=job.plate_no if order == 0 else "",
                 description=it.label,
                 amount=it.price or Decimal("0"),
                 order=order,
@@ -671,8 +670,6 @@ def garage_job_to_invoice(request, pk):
         for lb in labour:
             GarageInvoiceLine.objects.create(
                 invoice=inv,
-                line_date=job.accident_date if order == 0 else None,
-                reg_no=job.plate_no if order == 0 else "",
                 description=lb.label,
                 unit_price=lb.rate,
                 amount=lb.cost,
@@ -682,8 +679,6 @@ def garage_job_to_invoice(request, pk):
     else:
         GarageInvoiceLine.objects.create(
             invoice=inv,
-            line_date=job.accident_date,
-            reg_no=job.plate_no,
             description=job.make or "Repairs",
             amount=job.total or Decimal("0"),
             order=0,
@@ -719,9 +714,9 @@ def garage_invoice_edit(request, pk):
         return redirect("garage_invoices")
     if request.method == "POST":
         for f in ("issuer_name", "payable_to", "issuer_contact", "issuer_vat",
-                  "issuer_email", "invoice_no", "bill_to", "bill_contact_name",
-                  "bill_company_name", "bill_address", "bill_email", "bill_vat",
-                  "remarks"):
+                  "issuer_email", "issuer_iban", "invoice_no", "vehicle_reg",
+                  "bill_to", "bill_contact_name", "bill_company_name",
+                  "bill_address", "bill_email", "bill_vat", "remarks"):
             setattr(inv, f, request.POST.get(f, getattr(inv, f)))
         inv.invoice_date = _parse_date(request.POST.get("invoice_date"))
         for f in ("discount_pct", "vat_rate"):
@@ -783,7 +778,6 @@ def garage_invoice_line_update(request, pk, line_pk):
     if request.POST.get("action") == "delete":
         line.delete()
     else:
-        line.reg_no = request.POST.get("reg_no", line.reg_no)
         line.description = request.POST.get("description", line.description)
         for f in ("unit_price", "amount"):
             raw = (request.POST.get(f) or "").strip()

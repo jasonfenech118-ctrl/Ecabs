@@ -1835,8 +1835,8 @@ class GarageInvoicePrivacyTests(TestCase):
         self.client.post(reverse("garage_job_to_invoice", args=[job.pk]))
         inv = GarageInvoice.objects.filter(created_by=self.mario).order_by("-id").first()
         self.assertEqual(inv.bill_to, "FASTDROP")
+        self.assertEqual(inv.vehicle_reg, "GLY555")  # plate now sits in the header
         line = inv.lines.first()
-        self.assertEqual(line.reg_no, "GLY555")
         self.assertEqual(str(line.amount), "300.00")
 
     def test_metrics_page(self):

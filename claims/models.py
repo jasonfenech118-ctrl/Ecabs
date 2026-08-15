@@ -1063,10 +1063,14 @@ class GarageInvoice(models.Model):
     issuer_contact = models.CharField("Contact details", max_length=120, default="9946 8105")
     issuer_vat = models.CharField("VAT No", max_length=60, default="1579 7311 MT")
     issuer_email = models.EmailField("Email", default="acrgarage@gmail.com")
+    issuer_iban = models.CharField(
+        "IBAN", max_length=40, default="MT90VALL22013000000040019330200")
 
     invoice_no = models.CharField("Invoice No", max_length=40, blank=True)
     # Manual date — never auto-filled (house rule for all documents).
     invoice_date = models.DateField("Invoice date", null=True, blank=True)
+    # One vehicle per invoice — shown in the header, not per repair line.
+    vehicle_reg = models.CharField("Registration No", max_length=20, blank=True)
 
     # Bill-to — the customer (hire company).
     bill_to = models.CharField("Bill to", max_length=160, blank=True)
