@@ -18,6 +18,7 @@
     <a href="{% url 'garage_job_form' j.pk %}" class="btn btn-sm btn-primary" title="Open / edit in form">Open</a>
     <form id="ga-{{ j.pk }}" method="post" action="{% url 'garage_job_update' j.pk %}" style="display:inline">{% csrf_token %}<input type="hidden" name="action" value="{% if is_closed %}reopen{% else %}close{% endif %}"><button type="submit" class="btn btn-sm">{% if is_closed %}Reopen{% else %}Close{% endif %}</button></form>
     <form method="post" action="{% url 'garage_job_to_invoice' j.pk %}" style="display:inline">{% csrf_token %}<button type="submit" class="btn btn-sm" title="Create an invoice from this job">→ Invoice</button></form>
+    <form method="post" action="{% url 'garage_job_update' j.pk %}" style="display:inline" onsubmit="return confirm('Delete this job for {{ j.plate_no|default:'this vehicle'|escapejs }}? This cannot be undone.')">{% csrf_token %}<input type="hidden" name="action" value="delete"><button type="submit" class="btn btn-sm btn-danger" title="Delete this job">✕</button></form>
     {% if j.updated_by %}<div class="muted" style="font-size:.68rem; margin-top:.15rem">by {{ j.updated_by.get_full_name|default:j.updated_by.username }}</div>{% endif %}
   </td>
 </tr>
