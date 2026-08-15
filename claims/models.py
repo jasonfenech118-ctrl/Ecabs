@@ -1197,10 +1197,14 @@ class GarageInvoice(models.Model):
 
     @property
     def is_fastdrop(self):
-        """Fastdrop invoices keep the old repair-line layout with a Date and a
-        Reg No on each line, instead of one registration in the header."""
-        hay = f"{self.bill_to} {self.bill_company_name}".lower()
-        return "fastdrop" in hay
+        """Fast drop invoices keep the old repair-line layout, with a Date and
+        a Reg No on each line instead of one registration in the header.
+
+        Driven by the "This invoice is for" toggle rather than the wording of
+        the bill-to, so an empty or differently spelled customer name can't
+        quietly switch the layout.
+        """
+        return self.for_kind == self.ForKind.GROUP
 
 
 class GarageInvoiceLine(models.Model):

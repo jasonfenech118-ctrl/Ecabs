@@ -1823,6 +1823,32 @@ class GarageInvoicePrivacyTests(TestCase):
         r2 = self.client.get(reverse("garage_invoices"), {"owner": "all", "status": "draft"})
         self.assertNotContains(r2, inv.invoice_no)
 
+    def test_fastdrop_layout_follows_the_toggle(self):
+        """A Fast drop invoice keeps the Date + Reg No columns even when the
+        bill-to is blank; an own-garage one uses the header registration."""
+        from .models import GarageInvoice
+
+        self.client.force_login(self.francis)
+        fastdrop = GarageInvoice.objects.create(
+            invoice_no="INV 9001", bill_to="", for_kind=GarageInvoice.ForKind.GROUP,
+            created_by=self.francis, updated_by=self.francis)
+        own = GarageInvoice.objects.create(
+            invoice_no="INV 9002", bill_to="Joe Borg",
+            for_kind=GarageInvoice.ForKind.PERSONAL,
+            created_by=self.francis, updated_by=self.francis)
+
+        self.assertTrue(fastdrop.is_fastdrop)
+        self.assertFalse(own.is_fastdrop)
+
+        page = self.client.get(fastdrop.get_absolute_url())
+        self.assertContains(page, ">Date<")
+        self.assertContains(page, ">Reg No<")
+        self.assertNotContains(page, 'name="vehicle_reg"')
+
+        page = self.client.get(own.get_absolute_url())
+        self.assertNotContains(page, ">Reg No<")
+        self.assertContains(page, 'name="vehicle_reg"')
+
     def test_invoice_numbers_are_never_reused(self):
         """Deleting an invoice must not hand its number to the next one."""
         from django.db import IntegrityError
