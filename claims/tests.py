@@ -1840,13 +1840,22 @@ class GarageInvoicePrivacyTests(TestCase):
         self.assertTrue(fastdrop.is_fastdrop)
         self.assertFalse(own.is_fastdrop)
 
+        from .models import GarageInvoiceLine
+
+        GarageInvoiceLine.objects.create(invoice=fastdrop, description="Labour", order=0)
+        GarageInvoiceLine.objects.create(invoice=own, description="Labour", order=0)
+
+        # Fast drop: reg and date are typed under the description, and there is
+        # no single registration in the header.
         page = self.client.get(fastdrop.get_absolute_url())
-        self.assertContains(page, ">Date<")
-        self.assertContains(page, ">Reg No<")
+        self.assertContains(page, 'name="reg_no"')
+        self.assertContains(page, 'name="line_date"')
         self.assertNotContains(page, 'name="vehicle_reg"')
 
+        # Own garage: plain lines, with the registration once in the header.
         page = self.client.get(own.get_absolute_url())
-        self.assertNotContains(page, ">Reg No<")
+        self.assertNotContains(page, 'name="reg_no"')
+        self.assertNotContains(page, 'name="line_date"')
         self.assertContains(page, 'name="vehicle_reg"')
 
     def test_invoice_numbers_are_never_reused(self):
