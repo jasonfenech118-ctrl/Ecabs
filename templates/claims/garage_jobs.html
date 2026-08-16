@@ -29,67 +29,36 @@
   </form>
 </div>
 
-{% comment %}Open and Closed are tabs, so only one list is on screen at a time.{% endcomment %}
+{% comment %}Open and finished jobs are separate lists, one on screen at a time.{% endcomment %}
 <div class="job-tabs" role="tablist">
-  <button type="button" class="job-tab is-active" role="tab" onclick="showJobs('open', this)">
+  <a href="?state=open{% if q %}&q={{ q|urlencode }}{% endif %}{% if for_kind != 'all' %}&for={{ for_kind }}{% endif %}"
+     class="job-tab {% if state != 'closed' %}is-active{% endif %}">
     Open <span class="job-tab-count">{{ open_jobs|length }}</span>
-  </button>
-  <button type="button" class="job-tab" role="tab" onclick="showJobs('closed', this)">
+  </a>
+  <a href="?state=closed{% if q %}&q={{ q|urlencode }}{% endif %}{% if for_kind != 'all' %}&for={{ for_kind }}{% endif %}"
+     class="job-tab {% if state == 'closed' %}is-active{% endif %}">
     Closed <span class="job-tab-count">{{ closed_jobs|length }}</span>
-  </button>
+  </a>
 </div>
+<p class="muted" style="margin:.2rem 0 .6rem">
+  {% if state == 'closed' %}{{ closed_jobs|length }} finished · €{{ closed_total|floatformat:2|intcomma }}
+  {% else %}{{ open_jobs|length }} in progress · €{{ open_total|floatformat:2|intcomma }}{% endif %}
+</p>
 
-<div id="jobs-open" class="job-panel">
-  <p class="muted" style="margin:.2rem 0 .6rem">{{ open_jobs|length }} job{{ open_jobs|length|pluralize }} · €{{ open_total|floatformat:2|intcomma }}</p>
-  <div class="card table-wrap">
-    <table class="list at-fault">
-      <thead>
-        <tr>
-          <th>For</th><th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th><th>Model</th>
-          <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th>
-          <th class="right">Total €</th><th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% include "claims/partials/garage_rows.html" with rows=open_jobs is_closed=False %}
-      </tbody>
-    </table>
-  </div>
+<div class="card table-wrap">
+  <table class="list at-fault">
+    <thead>
+      <tr>
+        <th>For</th><th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th><th>Model</th>
+        <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th>
+        <th class="right">Total €</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include "claims/partials/garage_rows.html" with rows=jobs is_closed=showing_closed %}
+    </tbody>
+  </table>
 </div>
-
-<div id="jobs-closed" class="job-panel" hidden>
-  <p class="muted" style="margin:.2rem 0 .6rem">{{ closed_jobs|length }} job{{ closed_jobs|length|pluralize }} · €{{ closed_total|floatformat:2|intcomma }}</p>
-  <div class="card table-wrap">
-    <table class="list at-fault">
-      <thead>
-        <tr>
-          <th>For</th><th>Accident date</th><th>Survey date</th><th>No plate</th><th>Client</th><th>Make</th><th>Model</th>
-          <th>Claim No</th><th>Surveyor</th><th>Insurance</th><th>Report received</th><th>Go ahead?</th>
-          <th class="right">Total €</th><th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% include "claims/partials/garage_rows.html" with rows=closed_jobs is_closed=True %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<script>
-  function showJobs(which, tab) {
-    document.getElementById('jobs-open').hidden = which !== 'open';
-    document.getElementById('jobs-closed').hidden = which !== 'closed';
-    document.querySelectorAll('.job-tab').forEach(function (t) { t.classList.remove('is-active'); });
-    tab.classList.add('is-active');
-    try { localStorage.setItem('garageJobsTab', which); } catch (e) {}
-  }
-  // Come back to the tab that was last open.
-  (function () {
-    var saved;
-    try { saved = localStorage.getItem('garageJobsTab'); } catch (e) {}
-    if (saved === 'closed') showJobs('closed', document.querySelectorAll('.job-tab')[1]);
-  })();
-</script>
 
 <p class="muted" style="font-size:.8rem; margin-top:1rem">The table is read-only. Use <strong>＋ New job</strong> to add one, or <strong>Open</strong> to edit a job in the form. A green <strong>Go ahead?</strong> means the insurer has approved the repair. <strong>→ Invoice</strong> starts an invoice from that job. Use <strong>Close</strong> once the job is finished.</p>
 {% endblock %}

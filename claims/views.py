@@ -325,10 +325,20 @@ def garage_jobs(request):
     def sum_total(items):
         return sum((j.effective_total for j in items), Decimal("0"))
 
+    # Open jobs and finished ones are separate lists, reached from the sidebar
+    # or the tabs — only one is on screen at a time.
+    state = (request.GET.get("state") or "open").strip()
+    if state not in ("open", "closed"):
+        state = "open"
+    shown = closed_jobs if state == "closed" else open_jobs
+
     return render(
         request,
         "claims/garage_jobs.html",
         {
+            "jobs": shown,
+            "state": state,
+            "showing_closed": state == "closed",
             "open_jobs": open_jobs,
             "closed_jobs": closed_jobs,
             "open_total": sum_total(open_jobs),

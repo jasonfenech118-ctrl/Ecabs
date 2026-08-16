@@ -37,8 +37,11 @@
         <button type="button" class="nav-cta nav-cta-btn" onclick="openInvoiceRoutes()">
           <span class="nav-icon">＋</span> Create invoice
         </button>
-        <a href="{% url 'garage_jobs' %}" class="{% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
-          <span class="nav-icon">🔧</span> My worklist
+        <a href="{% url 'garage_jobs' %}?state=open" class="{% if request.resolver_match.url_name == 'garage_jobs' and request.GET.state != 'closed' %}active{% endif %}">
+          <span class="nav-icon">🔧</span> Open jobs
+        </a>
+        <a href="{% url 'garage_jobs' %}?state=closed" class="{% if request.resolver_match.url_name == 'garage_jobs' and request.GET.state == 'closed' %}active{% endif %}">
+          <span class="nav-icon">✅</span> Closed jobs
         </a>
         <a href="{% url 'garage_invoices' %}?state=open" class="{% if 'invoice' in request.resolver_match.url_name and request.GET.state != 'closed' %}active{% endif %}">
           <span class="nav-icon">🧾</span> Open invoices

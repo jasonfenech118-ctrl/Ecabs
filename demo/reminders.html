@@ -10,7 +10,7 @@
   <meta name="app-build" content="fastdrop-columns">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "WxOv5Twbf0s5rAXHWuvkTNH1yF8u0RCohIxWXkSWoDeF1G2lU47F0SOz8hVgmKTT"}'
+<body hx-headers='{"X-CSRFToken": "G5SiousOHq7vC972eQH3denAiPtjf18wjfmTBrgR1vnsxNPu9KLu0xCUrAEJvftX"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -147,7 +147,7 @@
 <details class="inline-form" >
   <summary>Add reminder</summary>
   <form method="post" action="/reminders/add/" class="card">
-    <input type="hidden" name="csrfmiddlewaretoken" value="WxOv5Twbf0s5rAXHWuvkTNH1yF8u0RCohIxWXkSWoDeF1G2lU47F0SOz8hVgmKTT">
+    <input type="hidden" name="csrfmiddlewaretoken" value="G5SiousOHq7vC972eQH3denAiPtjf18wjfmTBrgR1vnsxNPu9KLu0xCUrAEJvftX">
     <div class="form-grid">
       <div class="field ">
   <label for="id_title">Title</label>
@@ -377,7 +377,7 @@
   </td>
   <td><a href="claim-2.html">CLM-2026-0002</a></td>
   <td>
-    
+    <span class="badge overdue">overdue</span> 
     16 Aug 2026 09:00
   </td>
   <td class="muted">—</td>
@@ -473,6 +473,11 @@
       <li>
         <div class="popup-line"><strong>Chase CLM-2026-0004: Chase Elmo — no response</strong></div>
         <div class="muted popup-meta">Due 12 Aug 2026 · CLM-2026-0004</div>
+      </li>
+      
+      <li>
+        <div class="popup-line"><strong>Chase payment — CLM-2026-0002</strong></div>
+        <div class="muted popup-meta">Due 16 Aug 2026 · CLM-2026-0002</div>
       </li>
       
     </ul>

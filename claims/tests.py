@@ -2153,7 +2153,7 @@ class AccidentListTests(TestCase):
         self.client.get(reverse("impersonate_garage"))
         wl = self.client.get(reverse("garage_jobs"))
         self.assertContains(wl, "Viewing as")
-        self.assertContains(wl, "My worklist")  # garage-user nav
+        self.assertContains(wl, "Open jobs")  # garage-user nav
         # confined like Mario
         self.assertRedirects(self.client.get(reverse("dashboard")),
                              reverse("garage_jobs"), fetch_redirect_response=False)
