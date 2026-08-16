@@ -697,6 +697,7 @@ def garage_job_to_invoice(request, pk):
         invoice_no=_next_invoice_no(),
         bill_to=job.client,
         vehicle_reg=job.plate_no,
+        claim_no=job.claim_no,
         for_kind=job.for_kind,
         created_by=request.user,
         updated_by=request.user,
@@ -762,7 +763,7 @@ def garage_invoice_edit(request, pk):
     if request.method == "POST":
         for f in ("issuer_name", "payable_to", "issuer_contact", "issuer_vat",
                   "issuer_email", "issuer_iban", "invoice_no", "vehicle_reg",
-                  "bill_to", "bill_contact_name", "bill_company_name",
+                  "claim_no", "bill_to", "bill_contact_name", "bill_company_name",
                   "bill_address", "bill_email", "bill_vat", "remarks"):
             setattr(inv, f, request.POST.get(f, getattr(inv, f)))
         inv.invoice_date = _parse_date(request.POST.get("invoice_date"))

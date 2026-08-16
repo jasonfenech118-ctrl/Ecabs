@@ -1129,6 +1129,8 @@ class GarageInvoice(models.Model):
     invoice_date = models.DateField("Invoice date", null=True, blank=True)
     # One vehicle per invoice — shown in the header, not per repair line.
     vehicle_reg = models.CharField("Registration No", max_length=20, blank=True)
+    # The insurer's claim number, carried over from the job it was billed from.
+    claim_no = models.CharField("Claim No", max_length=60, blank=True)
 
     # Bill-to — the customer (hire company).
     bill_to = models.CharField("Bill to", max_length=160, blank=True)

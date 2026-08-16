@@ -1970,6 +1970,34 @@ class GarageInvoicePrivacyTests(TestCase):
         self.assertFalse(GarageInvoice.objects.filter(pk=inv.pk).exists())
         self.assertEqual(GarageInvoiceLine.objects.count(), 0)
 
+    def test_invoice_keeps_claim_no_plate_and_details(self):
+        """Billing a job carries its claim number, plate and repair details
+        onto the invoice, so none of it has to be retyped."""
+        from decimal import Decimal
+
+        from .models import GarageInvoice, GarageJob, GarageJobItem, RepairType
+
+        repair = RepairType.objects.create(name="Spray")
+        job = GarageJob.objects.create(
+            garage=GarageJob.Garage.ACL, client="Elmo", plate_no="ABC123",
+            claim_no="M12346", for_kind=GarageJob.ForKind.PERSONAL,
+            total=Decimal("0"))
+        GarageJobItem.objects.create(
+            job=job, repair_type=repair, details="front bumper",
+            price=Decimal("120.00"), order=0)
+
+        self.client.force_login(self.mario)
+        self.client.post(reverse("garage_job_to_invoice", args=[job.pk]))
+        inv = GarageInvoice.objects.order_by("-id").first()
+
+        self.assertEqual(inv.vehicle_reg, "ABC123")
+        self.assertEqual(inv.claim_no, "M12346")
+        self.assertEqual(inv.lines.first().description, "Spray — front bumper")
+
+        page = self.client.get(inv.get_absolute_url())
+        self.assertContains(page, 'name="claim_no"')
+        self.assertContains(page, "M12346")
+
     def test_job_to_invoice_prefills(self):
         from decimal import Decimal
 

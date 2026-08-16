@@ -134,6 +134,12 @@ def build_garage_invoice_pdf(inv):
             _p("Registration No:", 8, MUTED, align=2),
             _p((inv.vehicle_reg or "—").upper(), 9, INK, bold=True, align=2),
         ]
+    if inv.claim_no:
+        meta += [
+            Spacer(1, 8),
+            _p("Claim No:", 8, MUTED, align=2),
+            _p(inv.claim_no, 9, INK, bold=True, align=2),
+        ]
     header = Table(
         [[_logo_flowable(), issuer, meta]],
         colWidths=[42 * mm, 78 * mm, 58 * mm],

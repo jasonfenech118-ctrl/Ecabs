@@ -53,8 +53,12 @@
         <label class="field" style="flex:1"><span>Invoice date <span class="muted">(type it)</span></span><input type="date" name="invoice_date" value="{{ inv.invoice_date|date:'Y-m-d' }}"></label>
       </div>
       {% if not inv.is_fastdrop %}
-      <label class="field"><span>Registration No <span class="muted">(the vehicle this invoice is for)</span></span><input name="vehicle_reg" value="{{ inv.vehicle_reg }}" placeholder="e.g. ABC 123" style="text-transform:uppercase"></label>
+      <div class="row" style="gap:.6rem">
+        <label class="field" style="flex:1"><span>Registration No <span class="muted">(the vehicle)</span></span><input name="vehicle_reg" value="{{ inv.vehicle_reg }}" placeholder="e.g. ABC 123" style="text-transform:uppercase"></label>
+        <label class="field" style="flex:1"><span>Claim No</span><input name="claim_no" value="{{ inv.claim_no }}" placeholder="e.g. M12346"></label>
+      </div>
       {% else %}
+      <label class="field"><span>Claim No</span><input name="claim_no" value="{{ inv.claim_no }}" placeholder="e.g. M12346"></label>
       <p class="muted" style="font-size:.8rem; margin:.2rem 0">Fast drop invoice — the Reg No and date are on each repair line below.</p>
       {% endif %}
       <label class="field"><span>Status</span>
