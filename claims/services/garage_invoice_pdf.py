@@ -134,6 +134,12 @@ def build_garage_invoice_pdf(inv):
             _p("Registration No:", 8, MUTED, align=2),
             _p((inv.vehicle_reg or "—").upper(), 9, INK, bold=True, align=2),
         ]
+    if inv.vehicle_make_model:
+        meta += [
+            Spacer(1, 8),
+            _p("Vehicle:", 8, MUTED, align=2),
+            _p(inv.vehicle_make_model, 9, INK, bold=True, align=2),
+        ]
     if inv.claim_no:
         meta += [
             Spacer(1, 8),

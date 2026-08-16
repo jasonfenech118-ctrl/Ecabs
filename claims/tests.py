@@ -1667,12 +1667,22 @@ class GarageJobTests(TestCase):
         self.assertEqual(job.accident_date, date(2026, 7, 1))
         self.assertEqual(str(job.total), "500.00")
         self.assertFalse(job.is_closed)
-        # edit via the same form, mark closed
+        # edit via the same form, close it with the "Save & close" button
         self.client.post(reverse("garage_job_form", args=[job.pk]),
-                         {"plate_no": "FRM123", "client": "Renamed", "is_closed": "on"})
+                         {"plate_no": "FRM123", "client": "Renamed", "close_toggle": "1"})
         job.refresh_from_db()
         self.assertEqual(job.client, "Renamed")
         self.assertTrue(job.is_closed)
+        # a plain Save keeps it closed (does not silently reopen)
+        self.client.post(reverse("garage_job_form", args=[job.pk]),
+                         {"plate_no": "FRM123", "client": "Renamed"})
+        job.refresh_from_db()
+        self.assertTrue(job.is_closed)
+        # the same button reopens it
+        self.client.post(reverse("garage_job_form", args=[job.pk]),
+                         {"plate_no": "FRM123", "client": "Renamed", "close_toggle": "1"})
+        job.refresh_from_db()
+        self.assertFalse(job.is_closed)
 
 
 class GarageAccessTests(TestCase):

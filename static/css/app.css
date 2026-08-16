@@ -237,6 +237,8 @@ input:focus, select:focus, textarea:focus {
 .at-fault td.atf-yes input.atf-input::placeholder { color: rgba(255,255,255,.7); }
 .btn-danger { color: #b91c1c; border-color: #fca5a5; }
 .btn-danger:hover { background: #fef2f2; }
+.btn-success { color: #15803d; border-color: #86efac; }
+.btn-success:hover { background: #f0fdf4; }
 
 /* --- Garage (ACR) theme ---------------------------------------------------- */
 :root { --garage: #F26522; --garage-dark: #d64f11; }
