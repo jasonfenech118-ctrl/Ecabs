@@ -5,10 +5,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Documents CLM-2026-0006 — Vai Drive Claims</title>
-  <link rel="stylesheet" href="static/css/app.css?v=2">
+  <link rel="stylesheet" href="static/css/app.css?v=3">
+  <!-- build: fastdrop-columns-2026-08 -->
+  <meta name="app-build" content="fastdrop-columns">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "e7QkIGZu0FVVjFSjDfZwlWyEuaBxyKsCO1BILxZesUdijJBM2VVaa6hRWW4UkY09"}'
+<body hx-headers='{"X-CSRFToken": "uPZNhC48r6NFPuB9MxKqg9emtV69fgU1T8ZS60uNQTTWNT1cC7MIQ0DoK18Sbns8"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -203,7 +205,7 @@
   <h3>Types of repair &amp; cost</h3>
   <p class="muted" style="margin:.2rem 0 .9rem; font-size:.85rem">Tick each repair carried out and enter its cost (net, ex-VAT). VAT @18% is added automatically on the receipt. Each ticked line appears separately on the statement.</p>
   <form method="post" action="/claims/6/repair-lines/">
-    <input type="hidden" name="csrfmiddlewaretoken" value="e7QkIGZu0FVVjFSjDfZwlWyEuaBxyKsCO1BILxZesUdijJBM2VVaa6hRWW4UkY09">
+    <input type="hidden" name="csrfmiddlewaretoken" value="uPZNhC48r6NFPuB9MxKqg9emtV69fgU1T8ZS60uNQTTWNT1cC7MIQ0DoK18Sbns8">
     <input type="hidden" name="company" value="3">
     <div class="repair-lines">
       
@@ -283,7 +285,7 @@
     <button type="submit" class="btn btn-sm btn-primary mt">Save repairs</button>
   </form>
   <form method="post" action="/claims/6/repair-type/add/" class="row" style="margin-top:.9rem; gap:.4rem">
-    <input type="hidden" name="csrfmiddlewaretoken" value="e7QkIGZu0FVVjFSjDfZwlWyEuaBxyKsCO1BILxZesUdijJBM2VVaa6hRWW4UkY09">
+    <input type="hidden" name="csrfmiddlewaretoken" value="uPZNhC48r6NFPuB9MxKqg9emtV69fgU1T8ZS60uNQTTWNT1cC7MIQ0DoK18Sbns8">
     <input type="hidden" name="company" value="3">
     <input name="name" placeholder="Add a new repair type…" maxlength="100" style="min-width:220px" required>
     <button type="submit" class="btn btn-sm">Add type</button>

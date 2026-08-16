@@ -5,10 +5,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sales invoices — eCabs</title>
-  <link rel="stylesheet" href="static/css/app.css?v=2">
+  <link rel="stylesheet" href="static/css/app.css?v=3">
+  <!-- build: fastdrop-columns-2026-08 -->
+  <meta name="app-build" content="fastdrop-columns">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "k3pQ64kUNlXLCutEdEXNIDhfpujEq4EiUXae9VkEfAf8Cyc7CkTrxN0sRgM1cicP"}'
+<body hx-headers='{"X-CSRFToken": "g4z5Wmr9AG2M9AvpngRlmQm7sUxlCptEFnzaLKROZt837ZVsdQTDWHL9J0z4yw1L"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -141,7 +143,7 @@
   </div>
   <div class="row" style="gap:.5rem">
     <a href="sales-clients.html" class="btn">👥 Client register</a>
-    <form method="post" action="/sales/invoices/new/"><input type="hidden" name="csrfmiddlewaretoken" value="k3pQ64kUNlXLCutEdEXNIDhfpujEq4EiUXae9VkEfAf8Cyc7CkTrxN0sRgM1cicP">
+    <form method="post" action="/sales/invoices/new/"><input type="hidden" name="csrfmiddlewaretoken" value="g4z5Wmr9AG2M9AvpngRlmQm7sUxlCptEFnzaLKROZt837ZVsdQTDWHL9J0z4yw1L">
       <button type="submit" class="btn btn-primary">＋ New invoice</button>
     </form>
   </div>
@@ -181,7 +183,7 @@
           <a href="sales-invoice-1.html" class="btn btn-sm">Edit</a>
           <a href="sales-invoice-1.pdf" target="_blank" rel="noopener" class="btn btn-sm btn-primary">PDF</a>
           <form method="post" action="/sales/invoices/1/delete/" style="display:inline" onsubmit="return confirm('Delete PSIN01920245? This cannot be undone.')">
-            <input type="hidden" name="csrfmiddlewaretoken" value="k3pQ64kUNlXLCutEdEXNIDhfpujEq4EiUXae9VkEfAf8Cyc7CkTrxN0sRgM1cicP"><button type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
+            <input type="hidden" name="csrfmiddlewaretoken" value="g4z5Wmr9AG2M9AvpngRlmQm7sUxlCptEFnzaLKROZt837ZVsdQTDWHL9J0z4yw1L"><button type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
           </form>
         </td>
       </tr>
