@@ -551,7 +551,10 @@ details.inline-form[open] summary::before { content: "− "; }
 .for-kind-badge { font-weight: 700; font-size: 1.02rem; }
 .for-kind-change { font-size: .78rem; color: #6b7280; border: 1px solid var(--border, #d1d5db);
   border-radius: 999px; padding: .1rem .55rem; }
-.for-kind-pick[open] .for-kind-change::after { content: " \2715"; }
+.for-kind-prompt { font-weight: 700; font-size: 1.02rem; }
+.for-kind-pick[open] .for-kind-badge { display: none; }
+.for-kind-pick:not([open]) .for-kind-prompt { display: none; }
+.for-kind-pick[open] .for-kind-change { display: none; }
 @media print { .for-kind-change { display: none; } }
 
 /* Status picker: tick every status that applies to a claim. */

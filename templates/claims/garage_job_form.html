@@ -19,6 +19,7 @@
     <details class="for-kind-pick" {% if not job.pk %}open{% endif %}>
       <summary>
         <span class="for-kind-badge">{% if job.for_kind == 'group' %}🏢 Fast drop{% else %}🔧 My own garage{% endif %}</span>
+        <span class="for-kind-prompt">This job is for</span>
         <span class="for-kind-change">Change</span>
       </summary>
       <div class="for-kind-row" style="margin-top:.6rem">
