@@ -31,16 +31,12 @@
     <nav>
       {% if is_garage_user %}
       <div class="nav-sec nav-sec--garage">
-        <span class="nav-group">Start something</span>
-        <a href="{% url 'garage_job_new' %}" class="nav-cta {% if request.resolver_match.url_name == 'garage_job_new' %}active{% endif %}">
-          <span class="nav-icon">＋</span> New job
-        </a>
+        <span class="nav-group">My work</span>
+        {% comment %}New jobs start from the worklist's own button; this opens
+        the route dialog, so it has to live here.{% endcomment %}
         <button type="button" class="nav-cta nav-cta-btn" onclick="openInvoiceRoutes()">
           <span class="nav-icon">＋</span> Create invoice
         </button>
-      </div>
-      <div class="nav-sec nav-sec--garage">
-        <span class="nav-group">My work</span>
         <a href="{% url 'garage_jobs' %}" class="{% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
           <span class="nav-icon">🔧</span> My worklist
         </a>
