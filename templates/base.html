@@ -40,8 +40,11 @@
         <a href="{% url 'garage_jobs' %}" class="{% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
           <span class="nav-icon">🔧</span> My worklist
         </a>
-        <a href="{% url 'garage_invoices' %}" class="{% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
-          <span class="nav-icon">🧾</span> My invoices
+        <a href="{% url 'garage_invoices' %}?state=open" class="{% if 'invoice' in request.resolver_match.url_name and request.GET.state != 'closed' %}active{% endif %}">
+          <span class="nav-icon">🧾</span> Open invoices
+        </a>
+        <a href="{% url 'garage_invoices' %}?state=closed" class="{% if 'invoice' in request.resolver_match.url_name and request.GET.state == 'closed' %}active{% endif %}">
+          <span class="nav-icon">✅</span> Closed invoices
         </a>
       </div>
       <div class="nav-sec nav-sec--garage">

@@ -546,7 +546,7 @@ details.inline-form[open] summary::before { content: "− "; }
 
 /* Worklist tabs: Open / Closed, one list on screen at a time. */
 .job-tabs { display: flex; gap: .35rem; margin: .2rem 0 .8rem; border-bottom: 2px solid var(--border, #e5e7eb); }
-.job-tab { font: inherit; font-weight: 700; cursor: pointer; background: none; border: 0;
+.job-tab { font: inherit; font-weight: 700; cursor: pointer; background: none; border: 0; text-decoration: none;
   border-bottom: 3px solid transparent; padding: .55rem .9rem; margin-bottom: -2px;
   color: #6b7280; display: inline-flex; align-items: center; gap: .4rem; }
 .job-tab:hover { color: #111827; }

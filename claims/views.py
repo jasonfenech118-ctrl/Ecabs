@@ -544,8 +544,27 @@ def garage_invoices(request):
             | Q(bill_company_name__icontains=q)
         )
 
+    # Open = still owed (draft or sent); closed = paid and done with. Picking a
+    # specific status from the filter wins over the tab, so choosing "Paid"
+    # while on Open doesn't come back empty.
+    paid = GarageInvoice.Status.PAID
+    state = (request.GET.get("state") or "open").strip()
+    if state not in ("open", "closed"):
+        state = "open"
+    open_invoices = [i for i in qs if i.status != paid]
+    closed_invoices = [i for i in qs if i.status == paid]
+    if status:
+        shown = list(qs)
+    else:
+        shown = closed_invoices if state == "closed" else open_invoices
+
     return render(request, "claims/garage_invoices.html", {
-        "invoices": qs,
+        "invoices": shown,
+        "state": state,
+        "open_count": len(open_invoices),
+        "closed_count": len(closed_invoices),
+        "open_total": sum((i.balance_due for i in open_invoices), Decimal("0")),
+        "closed_total": sum((i.balance_due for i in closed_invoices), Decimal("0")),
         "is_garage": garage,
         "owners": owners,
         "owner": owner,
