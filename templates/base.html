@@ -30,18 +30,33 @@
     </div>
     <nav>
       {% if is_garage_user %}
-      <a href="{% url 'garage_jobs' %}" class="{% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
-        <span class="nav-icon">🔧</span> My worklist
-      </a>
-      <a href="{% url 'garage_invoices' %}" class="{% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
-        <span class="nav-icon">🧾</span> My invoices
-      </a>
-      <a href="{% url 'garage_metrics' %}" class="{% if request.resolver_match.url_name == 'garage_metrics' %}active{% endif %}">
-        <span class="nav-icon">📊</span> My metrics
-      </a>
-      <a href="{% url 'repair_types_manage' %}" class="{% if request.resolver_match.url_name == 'repair_types_manage' %}active{% endif %}">
-        <span class="nav-icon">⚙</span> Manage types
-      </a>
+      <div class="nav-sec nav-sec--garage">
+        <span class="nav-group">Start something</span>
+        <a href="{% url 'garage_job_new' %}" class="nav-cta {% if request.resolver_match.url_name == 'garage_job_new' %}active{% endif %}">
+          <span class="nav-icon">＋</span> New job
+        </a>
+        <button type="button" class="nav-cta nav-cta-btn" onclick="openInvoiceRoutes()">
+          <span class="nav-icon">＋</span> Create invoice
+        </button>
+      </div>
+      <div class="nav-sec nav-sec--garage">
+        <span class="nav-group">My work</span>
+        <a href="{% url 'garage_jobs' %}" class="{% if request.resolver_match.url_name == 'garage_jobs' %}active{% endif %}">
+          <span class="nav-icon">🔧</span> My worklist
+        </a>
+        <a href="{% url 'garage_invoices' %}" class="{% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
+          <span class="nav-icon">🧾</span> My invoices
+        </a>
+      </div>
+      <div class="nav-sec nav-sec--garage">
+        <span class="nav-group">More</span>
+        <a href="{% url 'garage_metrics' %}" class="{% if request.resolver_match.url_name == 'garage_metrics' %}active{% endif %}">
+          <span class="nav-icon">📊</span> My metrics
+        </a>
+        <a href="{% url 'repair_types_manage' %}" class="{% if request.resolver_match.url_name == 'repair_types_manage' %}active{% endif %}">
+          <span class="nav-icon">⚙</span> Manage types
+        </a>
+      </div>
       {% else %}
       <div class="nav-sec nav-sec--main">
         <span class="nav-group">Main</span>
@@ -175,6 +190,47 @@
     {% block content %}{% endblock %}
   </main>
 </div>
+
+{% if is_garage_user %}
+{% comment %}Create invoice: pick the route first, then the right form opens.{% endcomment %}
+<div id="invoice-routes" class="modal-overlay no-print" hidden>
+  <div class="modal-card">
+    <h2 class="modal-title">Create invoice</h2>
+    <p class="muted" style="margin:0 0 .9rem">Who is this invoice for?</p>
+    <div class="route-grid">
+      <form method="post" action="{% url 'garage_invoice_new' %}">
+        {% csrf_token %}<input type="hidden" name="for_kind" value="group">
+        <button type="submit" class="route-card">
+          <span class="route-icon">🏢</span>
+          <strong>Fast drop</strong>
+          <span class="muted">Repairs billed to the hire company.<br>Reg No &amp; date on every line.</span>
+        </button>
+      </form>
+      <form method="post" action="{% url 'garage_invoice_new' %}">
+        {% csrf_token %}<input type="hidden" name="for_kind" value="personal">
+        <button type="submit" class="route-card">
+          <span class="route-icon">🔧</span>
+          <strong>My own garage</strong>
+          <span class="muted">Your private customers.<br>One registration in the header.</span>
+        </button>
+      </form>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn" onclick="closeInvoiceRoutes()">Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+  function openInvoiceRoutes() { document.getElementById('invoice-routes').hidden = false; }
+  function closeInvoiceRoutes() { document.getElementById('invoice-routes').hidden = true; }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeInvoiceRoutes();
+  });
+  document.getElementById('invoice-routes').addEventListener('click', function (e) {
+    if (e.target === this) closeInvoiceRoutes();
+  });
+</script>
+{% endif %}
 
 {% if due_reminders %}
 <div id="reminder-popup" class="modal-overlay no-print" hidden>

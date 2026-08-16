@@ -1860,6 +1860,28 @@ class GarageInvoicePrivacyTests(TestCase):
         r2 = self.client.get(reverse("garage_invoices"), {"owner": "all", "status": "draft"})
         self.assertNotContains(r2, inv.invoice_no)
 
+    def test_create_invoice_picks_the_route(self):
+        """The Create-invoice dialog starts the invoice on the chosen route, so
+        the right layout is in place before anything is typed."""
+        from .models import GarageInvoice
+
+        self.client.force_login(self.mario)
+        self.client.post(reverse("garage_invoice_new"), {"for_kind": "group"})
+        fastdrop = GarageInvoice.objects.order_by("-id").first()
+        self.assertEqual(fastdrop.for_kind, GarageInvoice.ForKind.GROUP)
+        self.assertTrue(fastdrop.is_fastdrop)
+
+        self.client.post(reverse("garage_invoice_new"), {"for_kind": "personal"})
+        own = GarageInvoice.objects.order_by("-id").first()
+        self.assertEqual(own.for_kind, GarageInvoice.ForKind.PERSONAL)
+        self.assertFalse(own.is_fastdrop)
+
+        # A junk route falls back to Fast drop rather than erroring.
+        self.client.post(reverse("garage_invoice_new"), {"for_kind": "nonsense"})
+        self.assertEqual(
+            GarageInvoice.objects.order_by("-id").first().for_kind,
+            GarageInvoice.ForKind.GROUP)
+
     def test_fastdrop_layout_follows_the_toggle(self):
         """A Fast drop invoice keeps the Date + Reg No columns even when the
         bill-to is blank; an own-garage one uses the header registration."""

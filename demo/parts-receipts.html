@@ -10,7 +10,7 @@
   <meta name="app-build" content="fastdrop-columns">
   
 </head>
-<body hx-headers='{"X-CSRFToken": "BgE9IJ6WhFEJ7nS6BjgcoyIzP0Z9kFGn0zEex7wBGsK05Mi9rTiuYp7B661SgMeu"}'
+<body hx-headers='{"X-CSRFToken": "JaIjNVxIZw5YUhiQhKG8rOs7GQlzw1iulOPgYJc4BrT67MOVjzAKnLBqqmkpG2fQ"}'
       class=""><div style="background:#fef3e2;color:#b45309;padding:.5rem 1rem;font-size:.85rem;text-align:center">Static preview — data entry, search and auto-save work when the Django server is running.</div>
 
 <div class="layout">
@@ -141,7 +141,7 @@
     <h1>Parts receipts</h1>
     <div class="sub">eCabs-branded receipts for parts — standalone or linked to an open claim</div>
   </div>
-  <form method="post" action="/parts/receipts/new/"><input type="hidden" name="csrfmiddlewaretoken" value="BgE9IJ6WhFEJ7nS6BjgcoyIzP0Z9kFGn0zEex7wBGsK05Mi9rTiuYp7B661SgMeu">
+  <form method="post" action="/parts/receipts/new/"><input type="hidden" name="csrfmiddlewaretoken" value="JaIjNVxIZw5YUhiQhKG8rOs7GQlzw1iulOPgYJc4BrT67MOVjzAKnLBqqmkpG2fQ">
     <button type="submit" class="btn btn-primary">＋ New receipt</button>
   </form>
 </div>
@@ -181,7 +181,7 @@
           <a href="parts-receipt-1.html" class="btn btn-sm">Edit</a>
           <a href="parts-receipt-1.pdf" target="_blank" rel="noopener" class="btn btn-sm btn-primary">PDF</a>
           <form method="post" action="/parts/receipts/1/delete/" style="display:inline" onsubmit="return confirm('Delete PR01001? This cannot be undone.')">
-            <input type="hidden" name="csrfmiddlewaretoken" value="BgE9IJ6WhFEJ7nS6BjgcoyIzP0Z9kFGn0zEex7wBGsK05Mi9rTiuYp7B661SgMeu"><button type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
+            <input type="hidden" name="csrfmiddlewaretoken" value="JaIjNVxIZw5YUhiQhKG8rOs7GQlzw1iulOPgYJc4BrT67MOVjzAKnLBqqmkpG2fQ"><button type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
           </form>
         </td>
       </tr>
@@ -192,6 +192,8 @@
 
   </main>
 </div>
+
+
 
 
 <div id="reminder-popup" class="modal-overlay no-print" hidden>

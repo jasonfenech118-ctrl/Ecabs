@@ -702,9 +702,14 @@ def garage_job_to_invoice(request, pk):
 @login_required
 @require_POST
 def garage_invoice_new(request):
-    """Start a new invoice with sensible defaults, then edit it."""
+    """Start a new invoice on the route chosen in the Create-invoice dialog,
+    so the right layout is in place before anything is typed."""
+    for_kind = request.POST.get("for_kind")
+    if for_kind not in dict(GarageInvoice.ForKind.choices):
+        for_kind = GarageInvoice.ForKind.GROUP
     inv = GarageInvoice.objects.create(
         invoice_no=_next_invoice_no(),
+        for_kind=for_kind,
         created_by=request.user,
         updated_by=request.user,
     )

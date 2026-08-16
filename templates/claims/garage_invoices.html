@@ -10,9 +10,13 @@
     <h1>Invoices</h1>
     <div class="sub">Invoices raised by ACR Garage for repairs carried out</div>
   </div>
+  {% if is_garage %}
+  <button type="button" class="btn btn-primary" onclick="openInvoiceRoutes()">＋ Create invoice</button>
+  {% else %}
   <form method="post" action="{% url 'garage_invoice_new' %}">{% csrf_token %}
     <button type="submit" class="btn btn-primary">＋ New invoice</button>
   </form>
+  {% endif %}
 </div>
 
 <div class="card no-print">
