@@ -14,17 +14,23 @@
 
 <form method="post" action="{% if job.pk %}{% url 'garage_job_form' job.pk %}{% else %}{% url 'garage_job_new' %}{% endif %}">
   {% csrf_token %}
+  {# Collapses to the chosen route once picked; "Change" brings them back. #}
   <div class="card" style="margin-bottom:1rem">
-    <h3>This job is for</h3>
-    <div class="for-kind-row">
-      {% for val, lbl in job.ForKind.choices %}
-      <label class="for-kind-opt {% if job.for_kind == val %}selected{% endif %}">
-        <input type="radio" name="for_kind" value="{{ val }}" {% if job.for_kind == val %}checked{% endif %}>
-        <span>{% if val == 'group' %}🏢 {% else %}🔧 {% endif %}{{ lbl }}</span>
-      </label>
-      {% endfor %}
-    </div>
-    <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">Choose <strong>Fast drop</strong> for group repairs, or <strong>My own garage</strong> for a private customer. The main office can see this on the worklist before any invoice is raised — and it carries onto the invoice.</p>
+    <details class="for-kind-pick" {% if not job.pk %}open{% endif %}>
+      <summary>
+        <span class="for-kind-badge">{% if job.for_kind == 'group' %}🏢 Fast drop{% else %}🔧 My own garage{% endif %}</span>
+        <span class="for-kind-change">Change</span>
+      </summary>
+      <div class="for-kind-row" style="margin-top:.6rem">
+        {% for val, lbl in job.ForKind.choices %}
+        <label class="for-kind-opt {% if job.for_kind == val %}selected{% endif %}">
+          <input type="radio" name="for_kind" value="{{ val }}" {% if job.for_kind == val %}checked{% endif %}>
+          <span>{% if val == 'group' %}🏢 {% else %}🔧 {% endif %}{{ lbl }}</span>
+        </label>
+        {% endfor %}
+      </div>
+      <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">Choose <strong>Fast drop</strong> for group repairs, or <strong>My own garage</strong> for a private customer. The main office can see this on the worklist before any invoice is raised — and it carries onto the invoice.</p>
+    </details>
   </div>
   {% include "claims/partials/vehicle_lookup.html" %}
   <div class="card">
