@@ -165,6 +165,10 @@ def _fleet_cost_budget():
         owner = (c.vehicle.owner or "").strip() or "Unassigned"
         paid = (c.insurance_amount or Decimal("0")) + (c.licence_amount or Decimal("0"))
         add(c.pay_date, owner, paid)
+        # A cancelled policy pays money back, so it comes off the month the
+        # refund landed (or the pay-date month when no refund date was given).
+        if c.insurance_refund:
+            add(c.refund_date or c.pay_date, owner, -c.insurance_refund)
     for a in VehicleAdditionalCost.objects.select_related("cost__vehicle"):
         owner = (a.cost.vehicle.owner or "").strip() or "Unassigned"
         add(a.date_added, owner, a.amount or Decimal("0"))
@@ -2074,11 +2078,14 @@ def vehicle_add(request):
             ins = _parse_decimal(request.POST.get("insurance_amount"))
             lic = _parse_decimal(request.POST.get("licence_amount"))
             pay = _parse_date(request.POST.get("pay_date"))
-            if ins is not None or lic is not None or pay is not None:
+            refund = _parse_decimal(request.POST.get("insurance_refund"))
+            refund_on = _parse_date(request.POST.get("refund_date"))
+            if any(v is not None for v in (ins, lic, pay, refund, refund_on)):
                 VehicleCost.objects.update_or_create(
                     vehicle=vehicle, year=year,
                     defaults={"insurance_amount": ins, "licence_amount": lic,
-                              "pay_date": pay},
+                              "pay_date": pay, "insurance_refund": refund,
+                              "refund_date": refund_on},
                 )
             messages.success(request, f"{vehicle.registration} added to the fleet.")
             if "add_another" in request.POST:
@@ -2129,13 +2136,14 @@ def vehicle_cost_save(request, pk):
         return redirect("vehicle_edit", pk=pk)
     year = int(raw_year)
     cost, _ = VehicleCost.objects.get_or_create(vehicle=vehicle, year=year)
-    for f in ("insurance_amount", "licence_amount"):
+    for f in ("insurance_amount", "licence_amount", "insurance_refund"):
         raw = (request.POST.get(f) or "").strip()
         try:
             setattr(cost, f, Decimal(raw) if raw else None)
         except InvalidOperation:
             setattr(cost, f, None)
     cost.pay_date = _parse_date(request.POST.get("pay_date"))
+    cost.refund_date = _parse_date(request.POST.get("refund_date"))
     cost.save()
     return redirect("vehicle_edit", pk=pk)
 

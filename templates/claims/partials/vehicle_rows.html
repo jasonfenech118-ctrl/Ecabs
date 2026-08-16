@@ -1,7 +1,7 @@
 {% for g in groups %}
 <tr class="group-head">
   <td colspan="3"><strong>👤 {{ g.owner }}</strong> <span class="muted">· {{ g.vehicles|length }} vehicle{{ g.vehicles|length|pluralize }}</span></td>
-  <td colspan="4"></td>
+  <td colspan="5"></td>
   <td class="right"><strong>€{{ g.total|floatformat:2 }}</strong></td>
   <td></td>
 </tr>
@@ -27,10 +27,11 @@
   </td>
   <td class="right">{% if v.licence_amount is not None %}€{{ v.licence_amount|floatformat:2 }}{% else %}—{% endif %}</td>
   <td class="right">{% if v.additional_costs is not None %}€{{ v.additional_costs|floatformat:2 }}{% else %}—{% endif %}</td>
+  <td class="right">{% if v.insurance_refund %}<span class="atf-yes">− €{{ v.insurance_refund|floatformat:2 }}</span>{% else %}<span class="muted">—</span>{% endif %}</td>
   <td class="right"><strong>€{{ v.total_costs|floatformat:2 }}</strong></td>
   <td><a href="{% url 'vehicle_edit' v.pk %}" class="btn btn-sm">Manage</a></td>
 </tr>
 {% endfor %}
 {% empty %}
-<tr><td colspan="9" class="empty">No vehicles match.</td></tr>
+<tr><td colspan="10" class="empty">No vehicles match.</td></tr>
 {% endfor %}

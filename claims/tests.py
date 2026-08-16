@@ -1115,6 +1115,43 @@ class ViewTests(TestCase):
         self.assertEqual(Claim.objects.count(), 3)
         self.assertEqual(OtherCharge.objects.filter(claim=second).count(), 1)
 
+    def test_cancelled_insurance_refund_is_deducted(self):
+        """A refund from a cancelled policy comes off the vehicle's cost and
+        off the budget, in the month the money came back."""
+        from datetime import date
+        from decimal import Decimal
+
+        from claims.models import Vehicle, VehicleCost
+        from claims.views import _fleet_cost_budget
+
+        vehicle = Vehicle.objects.create(registration="REF-1", owner="eCabs")
+        cost = VehicleCost.objects.create(
+            vehicle=vehicle, year=2026, insurance_amount=Decimal("600.00"),
+            licence_amount=Decimal("100.00"), pay_date=date(2026, 1, 10))
+        self.assertEqual(vehicle.total_costs, Decimal("700.00"))
+
+        # Policy cancelled in June; €250 comes back.
+        cost.insurance_refund = Decimal("250.00")
+        cost.refund_date = date(2026, 6, 15)
+        cost.save()
+
+        vehicle.refresh_from_db()
+        self.assertEqual(vehicle.total_costs, Decimal("450.00"))
+
+        budget = _fleet_cost_budget()
+        by_month = {r["label"]: r["total"] for r in budget["rows"]}
+        self.assertEqual(by_month["Jan 2026"], Decimal("700.00"))
+        self.assertEqual(by_month["Jun 2026"], Decimal("-250.00"))
+        self.assertEqual(budget["grand_total"], Decimal("450.00"))
+
+        # With no refund date it lands in the pay-date month instead.
+        cost.refund_date = None
+        cost.save()
+        again = {r["label"]: r["total"] for r in _fleet_cost_budget()["rows"]}
+        self.assertEqual(again["Jan 2026"], Decimal("450.00"))
+
+        self.assertContains(self.client.get(reverse("vehicle_list")), "Refund")
+
     def test_master_sheet_and_csv(self):
         from decimal import Decimal
 

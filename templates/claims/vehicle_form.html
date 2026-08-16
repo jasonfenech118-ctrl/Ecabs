@@ -48,8 +48,13 @@
         <label class="field" style="margin:0; width:120px"><span>Insurance €</span><input type="number" step="0.01" min="0" name="insurance_amount" value="{{ c.insurance_amount|default_if_none:'' }}"></label>
         <label class="field" style="margin:0"><span>Pay date</span><input type="date" name="pay_date" value="{{ c.pay_date|date:'Y-m-d' }}"></label>
         <label class="field" style="margin:0; width:120px"><span>Licence €</span><input type="number" step="0.01" min="0" name="licence_amount" value="{{ c.licence_amount|default_if_none:'' }}"></label>
+        <label class="field" style="margin:0; width:130px"><span>Refund € <span class="muted">(if cancelled)</span></span><input type="number" step="0.01" min="0" name="insurance_refund" value="{{ c.insurance_refund|default_if_none:'' }}" placeholder="0.00"></label>
+        <label class="field" style="margin:0"><span>Refund date</span><input type="date" name="refund_date" value="{{ c.refund_date|date:'Y-m-d' }}"></label>
         <button type="submit" class="btn btn-sm btn-primary">Save</button>
       </form>
+      {% if c.insurance_refund %}
+      <p class="muted" style="font-size:.8rem; margin:.35rem 0 0">Insurance cancelled — €{{ c.insurance_refund|floatformat:2 }} refunded, deducted from this year's cost.</p>
+      {% endif %}
 
       <div style="margin-top:.7rem">
         <strong>Additional costs</strong> <span class="muted">· €{{ c.additional_total|floatformat:2 }}</span>
@@ -91,6 +96,8 @@
         <label class="field" style="margin:0; width:120px"><span>Insurance €</span><input type="number" step="0.01" min="0" name="insurance_amount" placeholder="0.00"></label>
         <label class="field" style="margin:0"><span>Pay date</span><input type="date" name="pay_date"></label>
         <label class="field" style="margin:0; width:120px"><span>Licence €</span><input type="number" step="0.01" min="0" name="licence_amount" placeholder="0.00"></label>
+        <label class="field" style="margin:0; width:130px"><span>Refund € <span class="muted">(if cancelled)</span></span><input type="number" step="0.01" min="0" name="insurance_refund" placeholder="0.00"></label>
+        <label class="field" style="margin:0"><span>Refund date</span><input type="date" name="refund_date"></label>
         <button type="submit" class="btn btn-primary">Save year</button>
       </form>
       <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">Add the year, then add as many <strong>additional costs</strong> to it as you like (each with a note and a date). The most recent year shows on the fleet list; its <strong>pay date</strong> drives the reminder.</p>

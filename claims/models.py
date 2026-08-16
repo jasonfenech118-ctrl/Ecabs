@@ -117,6 +117,11 @@ class Vehicle(models.Model):
         return c.additional_total if c else None
 
     @property
+    def insurance_refund(self):
+        c = self.current_cost
+        return c.insurance_refund if c else None
+
+    @property
     def pay_date(self):
         c = self.current_cost
         return c.pay_date if c else None
@@ -163,6 +168,12 @@ class VehicleCost(models.Model):
     pay_date = models.DateField("Insurance pay date", null=True, blank=True)
     licence_amount = models.DecimalField(
         "Licence amount (€)", max_digits=10, decimal_places=2, null=True, blank=True)
+    # Money back when a policy is cancelled part-way through the year — comes
+    # off what the vehicle cost, in the month the refund landed.
+    insurance_refund = models.DecimalField(
+        "Insurance refund (€)", max_digits=10, decimal_places=2, null=True, blank=True,
+        help_text="Refund received if the insurance was cancelled")
+    refund_date = models.DateField("Refund date", null=True, blank=True)
 
     class Meta:
         ordering = ["-year"]
@@ -173,11 +184,16 @@ class VehicleCost(models.Model):
         return sum((a.amount or Decimal("0")) for a in self.additionals.all())
 
     @property
+    def refund_total(self):
+        return self.insurance_refund or Decimal("0")
+
+    @property
     def total(self):
         return (
             (self.insurance_amount or Decimal("0"))
             + (self.licence_amount or Decimal("0"))
             + self.additional_total
+            - self.refund_total
         )
 
     def __str__(self):
