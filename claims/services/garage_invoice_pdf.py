@@ -169,30 +169,38 @@ def build_garage_invoice_pdf(inv):
     # Same three columns either way. On a Fast drop invoice each line also
     # carries its registration and date, written underneath the description
     # rather than in columns of their own.
-    head = [_p("Description", 8, colors.white, bold=True),
-            _p("Unit Price", 8, colors.white, bold=True, align=2),
-            _p("Total", 8, colors.white, bold=True, align=2)]
-    rows = [head]
-    for ln in inv.lines.all():
-        description = ln.description or ""
-        if inv.is_fastdrop:
-            beneath = [bit for bit in (
-                ln.reg_no,
-                ln.line_date.strftime("%d/%m/%Y") if ln.line_date else "",
-            ) if bit]
-            if beneath:
-                description += (
-                    f'<br/><font size="7" color="#666666">'
-                    f'{" &nbsp;·&nbsp; ".join(beneath)}</font>'
-                )
-        rows.append([
-            _p(description, 8, leading=11),
-            _p(_euro(ln.unit_price) if ln.unit_price is not None else "", 8, align=2),
-            _p(_euro(ln.amount), 8, align=2),
-        ])
-    while len(rows) < 12:
-        rows.append(["", "", ""])
-    col_widths = [134 * mm, 22 * mm, 22 * mm]
+    if inv.is_fastdrop:
+        head = [_p("Reg No", 8, colors.white, bold=True),
+                _p("Date", 8, colors.white, bold=True),
+                _p("Description", 8, colors.white, bold=True),
+                _p("Unit Price", 8, colors.white, bold=True, align=2),
+                _p("Total", 8, colors.white, bold=True, align=2)]
+        rows = [head]
+        for ln in inv.lines.all():
+            rows.append([
+                _p(ln.reg_no, 8),
+                _p(ln.line_date.strftime("%d/%m/%Y") if ln.line_date else "", 8),
+                _p(ln.description, 8),
+                _p(_euro(ln.unit_price) if ln.unit_price is not None else "", 8, align=2),
+                _p(_euro(ln.amount), 8, align=2),
+            ])
+        while len(rows) < 12:
+            rows.append(["", "", "", "", ""])
+        col_widths = [20 * mm, 22 * mm, 92 * mm, 22 * mm, 22 * mm]
+    else:
+        head = [_p("Description", 8, colors.white, bold=True),
+                _p("Unit Price", 8, colors.white, bold=True, align=2),
+                _p("Total", 8, colors.white, bold=True, align=2)]
+        rows = [head]
+        for ln in inv.lines.all():
+            rows.append([
+                _p(ln.description, 8),
+                _p(_euro(ln.unit_price) if ln.unit_price is not None else "", 8, align=2),
+                _p(_euro(ln.amount), 8, align=2),
+            ])
+        while len(rows) < 12:
+            rows.append(["", "", ""])
+        col_widths = [134 * mm, 22 * mm, 22 * mm]
 
     tbl = Table(rows, colWidths=col_widths, repeatRows=1)
     style = [
