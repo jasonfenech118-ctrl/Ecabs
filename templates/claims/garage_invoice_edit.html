@@ -10,9 +10,12 @@
     <h1>{{ inv.invoice_no|default:"New invoice" }}</h1>
     <div class="sub">Fill in the details, add repair lines, then open the PDF</div>
   </div>
-  <div class="row" style="gap:.5rem">
+  <div class="row" style="gap:.5rem; flex-wrap:wrap">
     <a href="{% url 'garage_invoices' %}" class="btn">← All invoices</a>
     <a href="{% url 'garage_invoice_pdf' inv.pk %}" target="_blank" rel="noopener" class="btn btn-primary">📄 Open PDF</a>
+    <form method="post" action="{% url 'garage_invoice_delete' inv.pk %}" style="display:inline" onsubmit="return confirm('Delete {{ inv.invoice_no|default:'this invoice'|escapejs }}? This cannot be undone.')">
+      {% csrf_token %}<button type="submit" class="btn btn-danger">🗑 Delete invoice</button>
+    </form>
   </div>
 </div>
 
@@ -30,12 +33,12 @@
       <div class="for-kind-row" style="margin-top:.6rem">
         {% for val, lbl in inv.ForKind.choices %}
         <label class="for-kind-opt {% if inv.for_kind == val %}selected{% endif %}">
-          <input type="radio" name="for_kind" value="{{ val }}" {% if inv.for_kind == val %}checked{% endif %}>
+          <input type="radio" name="for_kind" value="{{ val }}" {% if inv.for_kind == val %}checked{% endif %} onchange="this.form.submit()">
           <span>{% if val == 'group' %}🏢 {% else %}🔧 {% endif %}{{ lbl }}</span>
         </label>
         {% endfor %}
       </div>
-      <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">Choose <strong>Fast drop</strong> for repairs billed to the hire company, or <strong>My own garage</strong> for your private customers. Press <strong>Save invoice details</strong> after changing it.</p>
+      <p class="muted" style="font-size:.8rem; margin:.5rem 0 0">Choose <strong>Fast drop</strong> for repairs billed to the hire company, or <strong>My own garage</strong> for your private customers. The form updates <strong>as soon as you pick one</strong> — for My own garage a <strong>Registration No</strong> box appears in the details.</p>
     </details>
   </div>
 
