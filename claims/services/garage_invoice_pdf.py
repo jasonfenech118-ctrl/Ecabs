@@ -158,17 +158,21 @@ def build_garage_invoice_pdf(inv):
     story += [header, Spacer(1, 10)]
 
     # --- Bill to -------------------------------------------------------------
+    # Only show the fields that are actually filled in — empty labels just
+    # clutter the invoice and make it harder to read.
     addr = (inv.bill_address or "").replace("\n", "<br/>")
+    left = [_p("BILL TO", 8, MUTED, bold=True), Spacer(1, 3)]
+    for label, value in (
+        ("Contact Name", inv.bill_contact_name),
+        ("Client Company Name", inv.bill_company_name),
+        ("Address", addr),
+        ("Email", inv.bill_email),
+        ("Client VAT", inv.bill_vat),
+    ):
+        if (value or "").strip():
+            left += [_p(label, 8, MUTED), _p(value, 9, INK), Spacer(1, 2)]
     bill = Table([[
-        [
-            _p("BILL TO", 8, MUTED, bold=True),
-            Spacer(1, 3),
-            _p("Contact Name", 8, MUTED), _p(inv.bill_contact_name, 9, INK),
-            _p("Client Company Name", 8, MUTED), _p(inv.bill_company_name, 9, INK),
-            _p("Address", 8, MUTED), _p(addr, 9, INK),
-            _p("Email", 8, MUTED), _p(inv.bill_email, 9, INK),
-            _p("Client VAT", 8, MUTED), _p(inv.bill_vat, 9, INK),
-        ],
+        left,
         [_p(inv.bill_to, 13, INK, bold=True)],
     ]], colWidths=[95 * mm, 83 * mm])
     bill.setStyle(TableStyle([
@@ -196,7 +200,9 @@ def build_garage_invoice_pdf(inv):
                 _p(_euro(ln.unit_price) if ln.unit_price is not None else "", 8, align=2),
                 _p(_euro(ln.amount), 8, align=2),
             ])
-        while len(rows) < 12:
+        # A few blank rows for a tidy ruled look — not a whole empty page.
+        target = min(max(len(rows) + 2, 6), 12)
+        while len(rows) < target:
             rows.append(["", "", "", "", ""])
         col_widths = [20 * mm, 22 * mm, 92 * mm, 22 * mm, 22 * mm]
     else:
@@ -210,7 +216,9 @@ def build_garage_invoice_pdf(inv):
                 _p(_euro(ln.unit_price) if ln.unit_price is not None else "", 8, align=2),
                 _p(_euro(ln.amount), 8, align=2),
             ])
-        while len(rows) < 12:
+        # A few blank rows for a tidy ruled look — not a whole empty page.
+        target = min(max(len(rows) + 2, 6), 12)
+        while len(rows) < target:
             rows.append(["", "", ""])
         col_widths = [134 * mm, 22 * mm, 22 * mm]
 
