@@ -13,7 +13,7 @@
   <div class="row" style="gap:.5rem; flex-wrap:wrap">
     <a href="{% url 'garage_invoices' %}" class="btn">← All invoices</a>
     <a href="{% url 'garage_invoice_pdf' inv.pk %}" target="_blank" rel="noopener" class="btn btn-primary">📄 Open PDF</a>
-    <form method="post" action="{% url 'garage_invoice_delete' inv.pk %}" style="display:inline" onsubmit="return confirm('Delete {{ inv.invoice_no|default:'this invoice'|escapejs }}? This cannot be undone.')">
+    <form method="post" action="{% url 'garage_invoice_delete' inv.pk %}" style="display:inline">
       {% csrf_token %}<button type="submit" class="btn btn-danger">🗑 Delete invoice</button>
     </form>
   </div>
