@@ -22,6 +22,7 @@ GARAGE_ALLOWED_URL_NAMES = {
     "garage_invoices",
     "garage_invoice_new",
     "garage_invoice_edit",
+    "garage_invoice_delete",
     "garage_invoice_line_add",
     "garage_invoice_line_update",
     "garage_invoice_pdf",

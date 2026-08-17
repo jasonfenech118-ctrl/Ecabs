@@ -1843,6 +1843,25 @@ class GarageInvoicePrivacyTests(TestCase):
         r2 = self.client.get(reverse("garage_invoice_pdf", args=[theirs.pk]))
         self.assertRedirects(r2, reverse("garage_invoices"))
 
+    def test_garage_user_can_delete_own_invoice(self):
+        """A garage user must be able to delete their own invoice — the delete
+        URL has to be on the garage allow-list or the middleware bounces it."""
+        from .models import GarageInvoice
+
+        mine = self._new_invoice_as(self.mario)
+        self.client.force_login(self.mario)
+        r = self.client.post(reverse("garage_invoice_delete", args=[mine.pk]))
+        self.assertRedirects(r, reverse("garage_invoices"))
+        self.assertFalse(GarageInvoice.objects.filter(pk=mine.pk).exists())
+
+    def test_garage_user_cannot_delete_others_invoice(self):
+        from .models import GarageInvoice
+
+        theirs = self._new_invoice_as(self.francis)
+        self.client.force_login(self.mario)
+        self.client.post(reverse("garage_invoice_delete", args=[theirs.pk]))
+        self.assertTrue(GarageInvoice.objects.filter(pk=theirs.pk).exists())
+
     def test_admin_defaults_to_vai_drive_but_can_filter_personal(self):
         from .models import GarageInvoice
 
