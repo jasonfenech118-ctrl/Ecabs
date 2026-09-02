@@ -1062,6 +1062,14 @@ class GarageInvoice(models.Model):
     def balance_due(self):
         return self.subtotal_less_discount + self.vat_amount
 
+    @property
+    def plate_numbers(self):
+        regs = dict.fromkeys(
+            r for line in self.lines.all()
+            if (r := line.reg_no.strip())
+        )
+        return list(regs)
+
 
 class GarageInvoiceLine(models.Model):
     """One repair line on a garage invoice."""
