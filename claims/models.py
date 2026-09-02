@@ -1064,11 +1064,15 @@ class GarageInvoice(models.Model):
 
     @property
     def plate_numbers(self):
-        regs = dict.fromkeys(
-            r for line in self.lines.all()
-            if (r := line.reg_no.strip())
-        )
-        return list(regs)
+        plates = []
+        header_reg = getattr(self, "vehicle_reg", "") or ""
+        if header_reg.strip():
+            plates.append(header_reg.strip())
+        for line in self.lines.all():
+            r = line.reg_no.strip()
+            if r and r not in plates:
+                plates.append(r)
+        return plates
 
 
 class GarageInvoiceLine(models.Model):
