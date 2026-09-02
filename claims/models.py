@@ -1216,6 +1216,18 @@ class GarageInvoice(models.Model):
         return self.subtotal_less_discount + self.vat_amount
 
     @property
+    def plate_numbers(self):
+        plates = []
+        header_reg = (self.vehicle_reg or "").strip()
+        if header_reg:
+            plates.append(header_reg)
+        for line in self.lines.all():
+            r = line.reg_no.strip()
+            if r and r not in plates:
+                plates.append(r)
+        return plates
+
+    @property
     def is_fastdrop(self):
         """Fast drop invoices keep the old repair-line layout, with a Date and
         a Reg No on each line instead of one registration in the header.
