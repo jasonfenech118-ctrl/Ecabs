@@ -971,6 +971,41 @@ class GarageJobLabour(models.Model):
         return f"{self.label} — €{self.cost}"
 
 
+class NumberSequence(models.Model):
+    """High-water mark for a document's running number.
+
+    Numbers only move forward so a deleted document never causes reuse.
+    """
+
+    key = models.CharField(max_length=40, unique=True)
+    last_value = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["key"]
+
+    def __str__(self):
+        return f"{self.key} → {self.last_value}"
+
+
+def next_document_number(key, model, field, start, fmt):
+    """Hand out the next unused number for a document type."""
+    import re
+
+    from django.db import transaction
+
+    with transaction.atomic():
+        seq, _ = (NumberSequence.objects.select_for_update()
+                  .get_or_create(key=key, defaults={"last_value": start}))
+        highest = max(seq.last_value, start)
+        for raw in model.objects.values_list(field, flat=True):
+            match = re.search(r"(\d+)", raw or "")
+            if match:
+                highest = max(highest, int(match.group(1)))
+        seq.last_value = highest + 1
+        seq.save(update_fields=["last_value"])
+        return fmt.format(seq.last_value)
+
+
 class GarageInvoice(models.Model):
     """An invoice the panel-beater garage raises to bill the hire company for
     repairs. The issuer (garage) details default to ACR Garage but can be

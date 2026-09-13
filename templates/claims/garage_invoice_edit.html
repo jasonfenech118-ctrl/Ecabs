@@ -41,7 +41,7 @@
       <label class="field"><span>VAT No</span><input name="issuer_vat" value="{{ inv.issuer_vat }}"></label>
       <label class="field"><span>Email</span><input name="issuer_email" value="{{ inv.issuer_email }}"></label>
       <div class="row" style="gap:.6rem">
-        <label class="field" style="flex:1"><span>Invoice No</span><input name="invoice_no" value="{{ inv.invoice_no }}"></label>
+        <label class="field" style="flex:1"><span>Invoice No</span><input value="{{ inv.invoice_no }}" readonly style="background:#f3f4f6; cursor:default"></label>
         <label class="field" style="flex:1"><span>Invoice date <span class="muted">(type it)</span></span><input type="date" name="invoice_date" value="{{ inv.invoice_date|date:'Y-m-d' }}"></label>
       </div>
       <label class="field"><span>Status</span>

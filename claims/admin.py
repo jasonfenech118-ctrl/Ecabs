@@ -17,6 +17,7 @@ from .models import (
     GarageJobLabour,
     GeneralClaim,
     InsuranceClaim,
+    NumberSequence,
     OtherCharge,
     Reminder,
     RepairType,
@@ -213,6 +214,11 @@ class InsuranceClaimAdmin(admin.ModelAdmin):
     list_filter = ("company", "insurer")
     search_fields = ("insurer", "reference", "description")
     date_hierarchy = "date_paid"
+
+
+@admin.register(NumberSequence)
+class NumberSequenceAdmin(admin.ModelAdmin):
+    list_display = ("key", "last_value")
 
 
 @admin.register(AccidentPhoto)

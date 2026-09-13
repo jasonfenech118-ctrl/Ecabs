@@ -41,6 +41,7 @@ from .models import (
     GarageJobLabour,
     GeneralClaim,
     InsuranceClaim,
+    next_document_number,
     Reminder,
     RepairLine,
     RepairType,
@@ -443,15 +444,10 @@ def garage_job_update(request, pk):
 # --- Garage invoices ---------------------------------------------------------
 
 def _next_invoice_no():
-    """Suggest the next INV number from the highest numeric suffix seen."""
-    import re
-
-    best = 1052
-    for raw in GarageInvoice.objects.values_list("invoice_no", flat=True):
-        m = re.search(r"(\d+)", raw or "")
-        if m:
-            best = max(best, int(m.group(1)))
-    return f"INV NO. {best + 1}"
+    """The next INV number. Never reused, even after an invoice is deleted."""
+    return next_document_number(
+        "garage_invoice", GarageInvoice, "invoice_no", 1052, "INV NO. {}"
+    )
 
 
 @login_required
@@ -700,7 +696,7 @@ def garage_invoice_edit(request, pk):
         return redirect("garage_invoices")
     if request.method == "POST":
         for f in ("issuer_name", "payable_to", "issuer_contact", "issuer_vat",
-                  "issuer_email", "invoice_no", "bill_to", "bill_contact_name",
+                  "issuer_email", "bill_to", "bill_contact_name",
                   "bill_company_name", "bill_address", "bill_email", "bill_vat",
                   "remarks"):
             setattr(inv, f, request.POST.get(f, getattr(inv, f)))
