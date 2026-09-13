@@ -766,7 +766,7 @@ def garage_invoice_edit(request, pk):
         return redirect("garage_invoices")
     if request.method == "POST":
         for f in ("issuer_name", "payable_to", "issuer_contact", "issuer_vat",
-                  "issuer_email", "issuer_iban", "invoice_no", "vehicle_reg",
+                  "issuer_email", "issuer_iban", "vehicle_reg",
                   "vehicle_make_model",
                   "claim_no", "bill_to", "bill_contact_name", "bill_company_name",
                   "bill_address", "bill_email", "bill_vat", "remarks"):
