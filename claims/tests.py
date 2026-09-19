@@ -739,6 +739,7 @@ class ViewTests(TestCase):
         self.assertEqual(claim.status_label, "Awaiting parts")
 
     def test_open_claims_bill_switches_to_actual(self):
+        from datetime import date
         from decimal import Decimal
 
         claim = Claim.objects.create(
@@ -746,11 +747,29 @@ class ViewTests(TestCase):
             estimate_amount=Decimal("999.00"), labour_amount=Decimal("800.00"),
             amount_paid=Decimal("200.00"), created_by=self.user,
         )
-        # real amounts entered → actual outstanding supersedes the estimate
+        # Amounts are entered a box at a time, so a part-filled claim must not
+        # replace the estimate yet — otherwise the bill silently drops.
+        self.assertFalse(claim.bill_is_actual)
+        self.assertEqual(claim.effective_bill, Decimal("999.00"))
+
+        # Once the recovery is billed the itemised figures take over.
+        claim.bills_sent_on = date(2026, 1, 15)
+        claim.save()
         self.assertTrue(claim.bill_is_actual)
         self.assertEqual(claim.effective_bill, Decimal("600.00"))
         r = self.client.get(reverse("claim_group", args=["open"]))
         self.assertContains(r, "actual")
+
+    def test_bill_is_actual_without_an_estimate(self):
+        """With no estimate to protect, itemised amounts count straight away."""
+        from decimal import Decimal
+
+        claim = Claim.objects.create(
+            status=Claim.Status.OPEN, vehicle_registration="ECB-NOEST",
+            labour_amount=Decimal("800.00"), created_by=self.user,
+        )
+        self.assertTrue(claim.bill_is_actual)
+        self.assertEqual(claim.effective_bill, Decimal("800.00"))
 
     def test_claim_sheets_sort(self):
         from datetime import date

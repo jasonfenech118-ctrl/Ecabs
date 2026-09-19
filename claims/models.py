@@ -567,9 +567,18 @@ class Claim(models.Model):
 
     @property
     def bill_is_actual(self):
-        """True once real recovery amounts have been entered, so the actual
-        outstanding supersedes the manual estimate."""
-        return self.total_claim_amount > 0
+        """True once the itemised recovery is the figure to trust.
+
+        Amounts are typed in a box at a time, so a part-filled claim would
+        otherwise replace a whole estimate with the first figure entered. The
+        estimate therefore stands until the recovery is billed — or until
+        there is no estimate left to fall back on.
+        """
+        if self.total_claim_amount <= 0:
+            return False
+        if not self.estimate_amount:
+            return True
+        return bool(self.bills_sent_on or self.invoice_number)
 
     @property
     def effective_bill(self):
