@@ -70,10 +70,12 @@ FINISHED_STATUSES = [
 
 
 def open_claims_qs(base=None):
-    """Claims still being worked: anything that isn't a draft or finished —
-    so it also includes claims on a custom status."""
+    """Claims still being worked: anything that isn't a draft or finished.
+    At-fault claims are excluded — they have their own register."""
     qs = base if base is not None else Claim.objects.all()
-    return qs.exclude(status=Claim.Status.DRAFT).exclude(status__in=FINISHED_STATUSES)
+    return (qs.exclude(status=Claim.Status.DRAFT)
+              .exclude(status__in=FINISHED_STATUSES)
+              .exclude(fault=Claim.Fault.OUR_DRIVER))
 
 
 # Sort options for the claim sheets. Each: key, label, DB ordering.
@@ -164,6 +166,7 @@ def home(request):
     now = timezone.now()
     counts = {
         "open_claims": open_claims_qs().count(),
+        "at_fault_claims": Claim.objects.filter(fault=Claim.Fault.OUR_DRIVER).exclude(status=Claim.Status.DRAFT).exclude(status__in=FINISHED_STATUSES).count(),
         "reminders_due": Reminder.objects.filter(
             completed_at__isnull=True, due_at__lte=now + timedelta(days=1)
         ).count(),
@@ -961,7 +964,7 @@ def general_claim_delete(request, pk):
 def dashboard(request):
     sync_auto_reminders()
     now = timezone.now()
-    claims = Claim.objects.all()
+    claims = Claim.objects.exclude(fault=Claim.Fault.OUR_DRIVER)
     stats = {
         "open": open_claims_qs(claims).count(),
         "drafts": claims.filter(status=Claim.Status.DRAFT).count(),
@@ -1073,7 +1076,7 @@ def metrics(request):
 # --- Claim list & search -------------------------------------------------------
 
 def _filtered_claims(request):
-    qs = Claim.objects.select_related("created_by")
+    qs = Claim.objects.select_related("created_by").exclude(fault=Claim.Fault.OUR_DRIVER)
     q = request.GET.get("q", "").strip()
     status = request.GET.get("status", "").strip()
     if q:
@@ -1125,7 +1128,8 @@ def claim_group(request, group):
         title = "Open claims"
         subtitle = "Claims still being worked — anything not a draft or finished"
     elif group == "closed":
-        qs = Claim.objects.filter(status__in=FINISHED_STATUSES)
+        qs = (Claim.objects.filter(status__in=FINISHED_STATUSES)
+              .exclude(fault=Claim.Fault.OUR_DRIVER))
         title = "Closed claims"
         subtitle = "Finished claims — settled, closed or rejected"
     elif group == "overdue":
