@@ -13,7 +13,7 @@
 </div>
 
 <div class="card">
-  <form class="toolbar"
+  <form method="get" action="{% url 'claim_list' %}" class="toolbar"
         hx-get="{% url 'claim_list' %}"
         hx-target="#claim-rows"
         hx-trigger="input changed delay:400ms from:find input, change from:find select"
@@ -30,6 +30,8 @@
         <option value="{{ key }}" {% if key == sort %}selected{% endif %}>Sort: {{ label }}</option>
       {% endfor %}
     </select>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    {% if q or status %}<a href="{% url 'claim_list' %}" class="btn btn-sm">Clear</a>{% endif %}
   </form>
 
   <div class="table-wrap">
