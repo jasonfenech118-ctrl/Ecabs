@@ -1587,9 +1587,8 @@ def claim_list(request):
         "q": request.GET.get("q", ""),
         "status": request.GET.get("status", ""),
     }
-    # HTMX search requests only need the table body swapped.
     if request.headers.get("HX-Request"):
-        return render(request, "claims/partials/claim_rows.html", context)
+        return render(request, "claims/partials/claim_results.html", context)
     return render(request, "claims/claim_list.html", context)
 
 

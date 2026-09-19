@@ -1,0 +1,17 @@
+<p class="muted" style="margin:0 0 .5rem; font-size:.82rem">
+  Showing <strong>{{ total }}</strong> claim{{ total|pluralize }}{% if status %} with status <strong>{{ status }}</strong>{% endif %}{% if q %} matching "<strong>{{ q }}</strong>"{% endif %}{% if total > 100 %} (first 100){% endif %}
+</p>
+
+<div class="table-wrap">
+  <table class="list">
+    <thead>
+      <tr>
+        <th>Ref</th><th>Status</th><th>Our plate</th><th>TP plate</th>
+        <th>Accident date</th><th>Insurer</th><th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include "claims/partials/claim_rows.html" %}
+    </tbody>
+  </table>
+</div>
