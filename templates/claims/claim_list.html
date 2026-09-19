@@ -34,6 +34,10 @@
     {% if q or status %}<a href="{% url 'claim_list' %}" class="btn btn-sm">Clear</a>{% endif %}
   </form>
 
+  <p class="muted" style="margin:0 0 .5rem; font-size:.82rem">
+    Showing <strong>{{ total }}</strong> claim{{ total|pluralize }}{% if status %} with status <strong>{{ status }}</strong>{% endif %}{% if q %} matching "<strong>{{ q }}</strong>"{% endif %}{% if total > 100 %} (first 100){% endif %}
+  </p>
+
   <div class="table-wrap">
     <table class="list">
       <thead>

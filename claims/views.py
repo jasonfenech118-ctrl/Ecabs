@@ -1576,9 +1576,11 @@ def _filtered_claims(request):
 @login_required
 def claim_list(request):
     qs, sort = _apply_sort(_filtered_claims(request), request)
+    total = qs.count()
     claims = qs[:100]
     context = {
         "claims": claims,
+        "total": total,
         "statuses": claim_status_choices(),
         "sorts": CLAIM_SORTS,
         "sort": sort,
