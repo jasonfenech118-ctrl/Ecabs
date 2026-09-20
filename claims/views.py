@@ -1545,11 +1545,15 @@ def metrics(request):
 # --- Claim list & search -------------------------------------------------------
 
 def _filtered_claims(request):
-    qs = Claim.objects.select_related("created_by").exclude(fault=Claim.Fault.OUR_DRIVER)
+    qs = Claim.objects.select_related("created_by")
     q = request.GET.get("q", "").strip()
     status = request.GET.get("status", "").strip()
+    # At-fault claims have their own register, so they stay out of the browsed
+    # list — but a search still has to find them, or a claim looks lost.
+    if not q:
+        qs = qs.exclude(fault=Claim.Fault.OUR_DRIVER)
     if q:
-        qs = qs.filter(
+        matches = (
             Q(reference__icontains=q)
             | Q(vehicle_registration__icontains=q)
             | Q(third_party_name__icontains=q)
@@ -1560,6 +1564,12 @@ def _filtered_claims(request):
             | Q(policy_number__icontains=q)
             | Q(accident_location__icontains=q)
         )
+        # The case number is printed on every statement as "VD-00017", so
+        # searching that — or just "17" — has to land on the claim.
+        digits = "".join(ch for ch in q if ch.isdigit())
+        if digits and len(digits) <= 9:
+            matches |= Q(case_number=int(digits))
+        qs = qs.filter(matches)
     if status:
         # Match the main status or any other one ticked on the claim.
         qs = qs.filter(
