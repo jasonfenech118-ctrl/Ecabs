@@ -1545,13 +1545,12 @@ def metrics(request):
 # --- Claim list & search -------------------------------------------------------
 
 def _filtered_claims(request):
+    # The full register, at-fault included: staff read it by case number and a
+    # hole in the sequence reads as a lost claim. At-fault rows are badged, and
+    # stay out of the open/closed groups, the dashboard and every money total.
     qs = Claim.objects.select_related("created_by")
     q = request.GET.get("q", "").strip()
     status = request.GET.get("status", "").strip()
-    # At-fault claims have their own register, so they stay out of the browsed
-    # list — but a search still has to find them, or a claim looks lost.
-    if not q:
-        qs = qs.exclude(fault=Claim.Fault.OUR_DRIVER)
     if q:
         matches = (
             Q(reference__icontains=q)
