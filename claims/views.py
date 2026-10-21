@@ -1167,14 +1167,15 @@ def parts_receipt_edit(request, pk):
             except InvalidOperation:
                 pass
 
-        raw_discount = (request.POST.get("discount_amount") or "0").strip()
+        raw_discount = (request.POST.get("discount_pct") or "0").strip()
         try:
             discount = Decimal(raw_discount)
-            if not discount.is_finite() or discount < 0 or discount > Decimal("99999999.99"):
+            if not discount.is_finite() or discount < 0 or discount > Decimal("100"):
                 raise InvalidOperation
-            rec.discount_amount = discount.quantize(Decimal("0.01"))
+            if (request.POST.get("discount_pct") or "").strip() or rec.discount_pct is not None:
+                rec.discount_pct = discount.quantize(Decimal("0.01"))
         except InvalidOperation:
-            return HttpResponseBadRequest("Enter a valid, non-negative discount amount.")
+            return HttpResponseBadRequest("Enter a discount percentage between 0 and 100.")
 
         status = request.POST.get("status")
         if status in dict(PartsReceipt.Status.choices):

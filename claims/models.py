@@ -1568,7 +1568,8 @@ class PartsReceipt(models.Model):
     supplier = models.CharField("Supplier", max_length=160, blank=True)
     reference = models.CharField("Reference", max_length=120, blank=True)
 
-    discount_amount = models.DecimalField("Discount €", max_digits=10, decimal_places=2, default=0)
+    discount_amount = models.DecimalField("Legacy discount €", max_digits=10, decimal_places=2, default=0)
+    discount_pct = models.DecimalField("Discount %", max_digits=5, decimal_places=2, null=True, blank=True, default=0)
 
     vat_rate = models.DecimalField("VAT rate %", max_digits=5, decimal_places=2, default=18)
 
@@ -1614,8 +1615,15 @@ class PartsReceipt(models.Model):
         return sum((ln.line_total for ln in self.lines.all()), Decimal("0"))
 
     @property
+    def applied_discount_amount(self):
+        # Preserve euro discounts on receipts saved before percentage support.
+        if self.discount_pct is None:
+            return self.discount_amount or Decimal("0")
+        return (self.subtotal * self.discount_pct / Decimal("100")).quantize(Decimal("0.01"))
+
+    @property
     def subtotal_less_discount(self):
-        return max(Decimal("0"), self.subtotal - max(Decimal("0"), self.discount_amount or Decimal("0")))
+        return max(Decimal("0"), self.subtotal - self.applied_discount_amount)
 
     @property
     def vat_amount(self):

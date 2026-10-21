@@ -202,7 +202,7 @@ def build_parts_receipt_pdf(rec):
 
     totals_data = [
         trow("Subtotal", _euro(rec.subtotal)),
-        trow("Discount", "− " + _euro(rec.discount_amount)),
+        trow(f"Discount ({rec.discount_pct:g}%)" if rec.discount_pct is not None else "Discount", "− " + _euro(rec.applied_discount_amount)),
         trow("Subtotal after discount", _euro(rec.subtotal_less_discount)),
         trow(f"VAT @ {rec.vat_rate:g}%", _euro(rec.vat_amount)),
         trow("Total", _euro(rec.total), bold=True),

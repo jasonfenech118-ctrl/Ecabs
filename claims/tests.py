@@ -1007,20 +1007,36 @@ class ViewTests(TestCase):
                                            ("25.50", "74.50", "13.41", "87.91"),
                                            ("", "100", "18", "118"),
                                            ("100", "0", "0", "0")]:
-            self.client.post(url, {"discount_amount": discount, "vat_rate": "18",
+            self.client.post(url, {"discount_pct": discount, "vat_rate": "18",
                 f"line_{line.pk}_quantity": "1", f"line_{line.pk}_unit_price": "100"})
             rec.refresh_from_db()
             self.assertEqual(rec.subtotal_less_discount, Decimal(net))
             self.assertEqual(rec.vat_amount, Decimal(vat))
             self.assertEqual(rec.total, Decimal(total))
-        for invalid in ("-1", "NaN", "Infinity", "abc"):
-            self.client.post(url, {"discount_amount": invalid})
+        for invalid in ("-1", "100.01", "NaN", "Infinity", "abc"):
+            self.client.post(url, {"discount_pct": invalid})
             rec.refresh_from_db()
-            self.assertEqual(rec.discount_amount, Decimal("100"))
+            self.assertEqual(rec.discount_pct, Decimal("100"))
         self.assertContains(self.client.get(url), "Subtotal after discount")
         response = self.client.get(reverse("parts_receipt_pdf", args=[rec.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.startswith(b"%PDF-"))
+
+    def test_parts_percentage_and_legacy_discount(self):
+        from decimal import Decimal
+        from claims.models import PartsReceipt, PartsReceiptLine
+        rec = PartsReceipt.objects.create(discount_pct=Decimal("12.50"))
+        PartsReceiptLine.objects.create(receipt=rec, quantity=2, unit_price=100)
+        self.assertEqual(rec.applied_discount_amount, Decimal("25"))
+        self.assertEqual(rec.total, Decimal("206.50"))
+        rec.discount_pct = None
+        rec.discount_amount = Decimal("17")
+        rec.save()
+        self.assertEqual(rec.total, Decimal("215.94"))
+        self.client.post(reverse("parts_receipt_edit", args=[rec.pk]), {"discount_pct": ""})
+        rec.refresh_from_db()
+        self.assertIsNone(rec.discount_pct)
+        self.assertEqual(rec.discount_amount, Decimal("17"))
 
     def test_claim_can_hold_several_statuses(self):
         """Several statuses tick on one claim; a finishing one closes it."""
