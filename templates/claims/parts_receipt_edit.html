@@ -96,8 +96,13 @@
 
     <label class="field mt"><span>Notes</span><textarea name="notes" rows="2">{{ rec.notes }}</textarea></label>
 
+    <label class="field" style="max-width:220px"><span>Discount € (before VAT)</span><input type="number" name="discount_amount" step="0.01" min="0" max="99999999.99" value="{{ rec.discount_amount }}"></label>
+    <p class="muted">Set the discount for this receipt. VAT is calculated on the subtotal after discount; the subtotal cannot fall below zero.</p>
+
     <div class="inv-totals">
       <div><span>Subtotal</span><strong>€{{ rec.subtotal|floatformat:2|intcomma }}</strong></div>
+      <div><span>Discount</span><strong>− €{{ rec.discount_amount|floatformat:2|intcomma }}</strong></div>
+      <div><span>Subtotal after discount</span><strong>€{{ rec.subtotal_less_discount|floatformat:2|intcomma }}</strong></div>
       <div><span>VAT ({{ rec.vat_rate }}%)</span><strong>€{{ rec.vat_amount|floatformat:2|intcomma }}</strong></div>
       <div class="inv-due"><span>Total</span><strong>€{{ rec.total|floatformat:2|intcomma }}</strong></div>
     </div>

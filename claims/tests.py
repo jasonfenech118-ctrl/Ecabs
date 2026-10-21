@@ -996,6 +996,32 @@ class ViewTests(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertTrue(r.content.startswith(b"%PDF-"))
 
+    def test_parts_discount_before_vat(self):
+        from decimal import Decimal
+        from claims.models import PartsReceipt, PartsReceiptLine
+
+        rec = PartsReceipt.objects.create()
+        line = PartsReceiptLine.objects.create(receipt=rec, quantity=1, unit_price=100)
+        url = reverse("parts_receipt_edit", args=[rec.pk])
+        for discount, net, vat, total in [("10", "90", "16.20", "106.20"),
+                                           ("25.50", "74.50", "13.41", "87.91"),
+                                           ("", "100", "18", "118"),
+                                           ("100", "0", "0", "0")]:
+            self.client.post(url, {"discount_amount": discount, "vat_rate": "18",
+                f"line_{line.pk}_quantity": "1", f"line_{line.pk}_unit_price": "100"})
+            rec.refresh_from_db()
+            self.assertEqual(rec.subtotal_less_discount, Decimal(net))
+            self.assertEqual(rec.vat_amount, Decimal(vat))
+            self.assertEqual(rec.total, Decimal(total))
+        for invalid in ("-1", "NaN", "Infinity", "abc"):
+            self.client.post(url, {"discount_amount": invalid})
+            rec.refresh_from_db()
+            self.assertEqual(rec.discount_amount, Decimal("100"))
+        self.assertContains(self.client.get(url), "Subtotal after discount")
+        response = self.client.get(reverse("parts_receipt_pdf", args=[rec.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.content.startswith(b"%PDF-"))
+
     def test_claim_can_hold_several_statuses(self):
         """Several statuses tick on one claim; a finishing one closes it."""
         claim = Claim.objects.create(

@@ -202,6 +202,8 @@ def build_parts_receipt_pdf(rec):
 
     totals_data = [
         trow("Subtotal", _euro(rec.subtotal)),
+        trow("Discount", "− " + _euro(rec.discount_amount)),
+        trow("Subtotal after discount", _euro(rec.subtotal_less_discount)),
         trow(f"VAT @ {rec.vat_rate:g}%", _euro(rec.vat_amount)),
         trow("Total", _euro(rec.total), bold=True),
     ]
@@ -249,7 +251,7 @@ def build_parts_receipt_pdf(rec):
     vat_rows = [vat_head, [
         _p(f"NA-SOVAT{rec.vat_rate:g}", 8),
         _p(f"{rec.vat_rate:g}", 8, align=2),
-        _p(_euro(rec.subtotal), 8, align=2),
+        _p(_euro(rec.subtotal_less_discount), 8, align=2),
         _p(_euro(rec.vat_amount), 8, align=2),
     ]]
     vat_tbl = Table(vat_rows, colWidths=[40 * mm, 20 * mm, 30 * mm, 30 * mm])

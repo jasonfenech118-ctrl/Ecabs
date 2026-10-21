@@ -1568,6 +1568,8 @@ class PartsReceipt(models.Model):
     supplier = models.CharField("Supplier", max_length=160, blank=True)
     reference = models.CharField("Reference", max_length=120, blank=True)
 
+    discount_amount = models.DecimalField("Discount €", max_digits=10, decimal_places=2, default=0)
+
     vat_rate = models.DecimalField("VAT rate %", max_digits=5, decimal_places=2, default=18)
 
     class Status(models.TextChoices):
@@ -1612,12 +1614,16 @@ class PartsReceipt(models.Model):
         return sum((ln.line_total for ln in self.lines.all()), Decimal("0"))
 
     @property
+    def subtotal_less_discount(self):
+        return max(Decimal("0"), self.subtotal - max(Decimal("0"), self.discount_amount or Decimal("0")))
+
+    @property
     def vat_amount(self):
-        return (self.subtotal * (self.vat_rate or Decimal("0")) / Decimal("100")).quantize(Decimal("0.01"))
+        return (self.subtotal_less_discount * (self.vat_rate or Decimal("0")) / Decimal("100")).quantize(Decimal("0.01"))
 
     @property
     def total(self):
-        return self.subtotal + self.vat_amount
+        return self.subtotal_less_discount + self.vat_amount
 
     @property
     def is_paid(self):
